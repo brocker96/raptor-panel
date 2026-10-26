@@ -1,16 +1,16 @@
 <?php
 
-namespace Pterodactyl\Http\Requests\Api\Client\Servers\Databases;
+namespace Raptor\Http\Requests\Api\Client\Servers\Databases;
 
 use Webmozart\Assert\Assert;
-use Pterodactyl\Models\Server;
+use Raptor\Models\Server;
 use Illuminate\Validation\Rule;
-use Pterodactyl\Models\Database;
-use Pterodactyl\Models\Permission;
+use Raptor\Models\Database;
+use Raptor\Models\Permission;
 use Illuminate\Database\Query\Builder;
-use Pterodactyl\Contracts\Http\ClientPermissionsRequest;
-use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
-use Pterodactyl\Services\Databases\DatabaseManagementService;
+use Raptor\Contracts\Http\ClientPermissionsRequest;
+use Raptor\Http\Requests\Api\Client\ClientApiRequest;
+use Raptor\Services\Databases\DatabaseManagementService;
 
 class StoreDatabaseRequest extends ClientApiRequest implements ClientPermissionsRequest
 {

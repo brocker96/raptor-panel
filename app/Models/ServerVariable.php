@@ -1,6 +1,6 @@
 <?php
 
-namespace Pterodactyl\Models;
+namespace Raptor\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -42,7 +42,7 @@ class ServerVariable extends Model
     /**
      * Returns the server this variable is associated with.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\Pterodactyl\Models\Server, $this>
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\Raptor\Models\Server, $this>
      */
     public function server(): BelongsTo
     {
@@ -52,7 +52,7 @@ class ServerVariable extends Model
     /**
      * Returns information about a given variables parent.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\Pterodactyl\Models\EggVariable, $this>
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\Raptor\Models\EggVariable, $this>
      */
     public function variable(): BelongsTo
     {

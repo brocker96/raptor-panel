@@ -1,6 +1,6 @@
 <?php
 
-namespace Pterodactyl\Http\ViewComposers;
+namespace Raptor\Http\ViewComposers;
 
 use Illuminate\View\View;
 
@@ -13,7 +13,7 @@ class AssetComposer
     public function compose(View $view): void
     {
         $view->with('siteConfiguration', [
-            'name' => config('app.name') ?? 'Pterodactyl',
+            'name' => config('app.name') ?? 'Raptor Panel',
             'locale' => config('app.locale') ?? 'en',
             'recaptcha' => [
                 'enabled' => config('recaptcha.enabled', false),

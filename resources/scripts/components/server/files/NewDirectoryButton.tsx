@@ -9,7 +9,7 @@ import tw from 'twin.macro';
 import { Button } from '@/components/elements/button/index';
 import { FileObject } from '@/api/server/files/loadDirectory';
 import { useFlashKey } from '@/plugins/useFlash';
-import useFileManagerSwr from '@/plugins/useFileManagerSwr';
+import { useFileManagerMutate } from '@/plugins/useFileManagerSwr';
 import { WithClassname } from '@/components/types';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import { Dialog, DialogWrapperContext } from '@/components/elements/dialog';
@@ -54,7 +54,7 @@ const NewDirectoryDialog = asDialog({
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
     const directory = ServerContext.useStoreState((state) => state.files.directory);
 
-    const { mutate } = useFileManagerSwr();
+    const mutate = useFileManagerMutate();
     const { close } = useContext(DialogWrapperContext);
     const { clearAndAddHttpError } = useFlashKey('files:directory-modal');
 

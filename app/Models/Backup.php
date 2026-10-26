@@ -1,10 +1,10 @@
 <?php
 
-namespace Pterodactyl\Models;
+namespace Raptor\Models;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Pterodactyl\Contracts\Models\Identifiable;
-use Pterodactyl\Models\Traits\HasRealtimeIdentifier;
+use Raptor\Contracts\Models\Identifiable;
+use Raptor\Models\Traits\HasRealtimeIdentifier;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -25,7 +25,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property \Carbon\CarbonImmutable $updated_at
  * @property \Carbon\CarbonImmutable|null $deleted_at
  * @property Server $server
- * @property \Pterodactyl\Models\AuditLog[] $audits
+ * @property \Raptor\Models\AuditLog[] $audits
  */
 #[Attributes\Identifiable('bkup')]
 class Backup extends Model implements Identifiable
@@ -77,7 +77,7 @@ class Backup extends Model implements Identifiable
     ];
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\Pterodactyl\Models\Server, $this>
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\Raptor\Models\Server, $this>
      */
     public function server(): BelongsTo
     {

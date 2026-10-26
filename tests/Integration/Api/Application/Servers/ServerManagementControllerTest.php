@@ -1,11 +1,11 @@
 <?php
 
-namespace Pterodactyl\Tests\Integration\Api\Application\Servers;
+namespace Raptor\Tests\Integration\Api\Application\Servers;
 
 use Illuminate\Http\Response;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Repositories\Wings\DaemonServerRepository;
-use Pterodactyl\Tests\Integration\Api\Application\ApplicationApiIntegrationTestCase;
+use Raptor\Models\Server;
+use Raptor\Repositories\Wings\DaemonServerRepository;
+use Raptor\Tests\Integration\Api\Application\ApplicationApiIntegrationTestCase;
 
 class ServerManagementControllerTest extends ApplicationApiIntegrationTestCase
 {

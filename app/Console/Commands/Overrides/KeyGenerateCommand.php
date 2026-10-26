@@ -1,6 +1,6 @@
 <?php
 
-namespace Pterodactyl\Console\Commands\Overrides;
+namespace Raptor\Console\Commands\Overrides;
 
 use Illuminate\Foundation\Console\KeyGenerateCommand as BaseKeyGenerateCommand;
 

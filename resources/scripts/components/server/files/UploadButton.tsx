@@ -7,7 +7,7 @@ import { ModalMask } from '@/components/elements/Modal';
 import Fade from '@/components/elements/Fade';
 import useEventListener from '@/plugins/useEventListener';
 import { useFlashKey } from '@/plugins/useFlash';
-import useFileManagerSwr from '@/plugins/useFileManagerSwr';
+import { useFileManagerMutate } from '@/plugins/useFileManagerSwr';
 import { ServerContext } from '@/state/server';
 import { WithClassname } from '@/components/types';
 import Portal from '@/components/elements/Portal';
@@ -27,7 +27,7 @@ export default ({ className }: WithClassname) => {
     const [visible, setVisible] = useState(false);
     const timeouts = useRef<ReturnType<typeof setTimeout>[]>([]);
 
-    const { mutate } = useFileManagerSwr();
+    const mutate = useFileManagerMutate();
     const { addError, clearAndAddHttpError } = useFlashKey('files');
 
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);

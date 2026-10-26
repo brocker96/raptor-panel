@@ -1,19 +1,19 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Api\Application\Servers;
+namespace Raptor\Http\Controllers\Api\Application\Servers;
 
 use Illuminate\Http\Response;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Database;
+use Raptor\Models\Server;
+use Raptor\Models\Database;
 use Illuminate\Http\JsonResponse;
-use Pterodactyl\Services\Databases\DatabasePasswordService;
-use Pterodactyl\Services\Databases\DatabaseManagementService;
-use Pterodactyl\Transformers\Api\Application\ServerDatabaseTransformer;
-use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
-use Pterodactyl\Http\Requests\Api\Application\Servers\Databases\GetServerDatabaseRequest;
-use Pterodactyl\Http\Requests\Api\Application\Servers\Databases\GetServerDatabasesRequest;
-use Pterodactyl\Http\Requests\Api\Application\Servers\Databases\ServerDatabaseWriteRequest;
-use Pterodactyl\Http\Requests\Api\Application\Servers\Databases\StoreServerDatabaseRequest;
+use Raptor\Services\Databases\DatabasePasswordService;
+use Raptor\Services\Databases\DatabaseManagementService;
+use Raptor\Transformers\Api\Application\ServerDatabaseTransformer;
+use Raptor\Http\Controllers\Api\Application\ApplicationApiController;
+use Raptor\Http\Requests\Api\Application\Servers\Databases\GetServerDatabaseRequest;
+use Raptor\Http\Requests\Api\Application\Servers\Databases\GetServerDatabasesRequest;
+use Raptor\Http\Requests\Api\Application\Servers\Databases\ServerDatabaseWriteRequest;
+use Raptor\Http\Requests\Api\Application\Servers\Databases\StoreServerDatabaseRequest;
 
 class DatabaseController extends ApplicationApiController
 {

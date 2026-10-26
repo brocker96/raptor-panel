@@ -1,6 +1,6 @@
 <?php
 
-namespace Pterodactyl\Console\Commands\Environment\Addons;
+namespace Raptor\Console\Commands\Environment\Addons;
 
 use Illuminate\Support\Str;
 use Illuminate\Console\Command;

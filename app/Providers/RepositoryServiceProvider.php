@@ -1,42 +1,42 @@
 <?php
 
-namespace Pterodactyl\Providers;
+namespace Raptor\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Pterodactyl\Repositories\Eloquent\EggRepository;
-use Pterodactyl\Repositories\Eloquent\NestRepository;
-use Pterodactyl\Repositories\Eloquent\NodeRepository;
-use Pterodactyl\Repositories\Eloquent\TaskRepository;
-use Pterodactyl\Repositories\Eloquent\UserRepository;
-use Pterodactyl\Repositories\Eloquent\ApiKeyRepository;
-use Pterodactyl\Repositories\Eloquent\ServerRepository;
-use Pterodactyl\Repositories\Eloquent\SessionRepository;
-use Pterodactyl\Repositories\Eloquent\SubuserRepository;
-use Pterodactyl\Repositories\Eloquent\DatabaseRepository;
-use Pterodactyl\Repositories\Eloquent\LocationRepository;
-use Pterodactyl\Repositories\Eloquent\ScheduleRepository;
-use Pterodactyl\Repositories\Eloquent\SettingsRepository;
-use Pterodactyl\Repositories\Eloquent\AllocationRepository;
-use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
-use Pterodactyl\Repositories\Eloquent\EggVariableRepository;
-use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
-use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
-use Pterodactyl\Contracts\Repository\TaskRepositoryInterface;
-use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
-use Pterodactyl\Repositories\Eloquent\DatabaseHostRepository;
-use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Repositories\Eloquent\ServerVariableRepository;
-use Pterodactyl\Contracts\Repository\SessionRepositoryInterface;
-use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
-use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
-use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
-use Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface;
-use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
-use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
-use Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface;
-use Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface;
-use Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface;
+use Raptor\Repositories\Eloquent\EggRepository;
+use Raptor\Repositories\Eloquent\NestRepository;
+use Raptor\Repositories\Eloquent\NodeRepository;
+use Raptor\Repositories\Eloquent\TaskRepository;
+use Raptor\Repositories\Eloquent\UserRepository;
+use Raptor\Repositories\Eloquent\ApiKeyRepository;
+use Raptor\Repositories\Eloquent\ServerRepository;
+use Raptor\Repositories\Eloquent\SessionRepository;
+use Raptor\Repositories\Eloquent\SubuserRepository;
+use Raptor\Repositories\Eloquent\DatabaseRepository;
+use Raptor\Repositories\Eloquent\LocationRepository;
+use Raptor\Repositories\Eloquent\ScheduleRepository;
+use Raptor\Repositories\Eloquent\SettingsRepository;
+use Raptor\Repositories\Eloquent\AllocationRepository;
+use Raptor\Contracts\Repository\EggRepositoryInterface;
+use Raptor\Repositories\Eloquent\EggVariableRepository;
+use Raptor\Contracts\Repository\NestRepositoryInterface;
+use Raptor\Contracts\Repository\NodeRepositoryInterface;
+use Raptor\Contracts\Repository\TaskRepositoryInterface;
+use Raptor\Contracts\Repository\UserRepositoryInterface;
+use Raptor\Repositories\Eloquent\DatabaseHostRepository;
+use Raptor\Contracts\Repository\ApiKeyRepositoryInterface;
+use Raptor\Contracts\Repository\ServerRepositoryInterface;
+use Raptor\Repositories\Eloquent\ServerVariableRepository;
+use Raptor\Contracts\Repository\SessionRepositoryInterface;
+use Raptor\Contracts\Repository\SubuserRepositoryInterface;
+use Raptor\Contracts\Repository\DatabaseRepositoryInterface;
+use Raptor\Contracts\Repository\LocationRepositoryInterface;
+use Raptor\Contracts\Repository\ScheduleRepositoryInterface;
+use Raptor\Contracts\Repository\SettingsRepositoryInterface;
+use Raptor\Contracts\Repository\AllocationRepositoryInterface;
+use Raptor\Contracts\Repository\EggVariableRepositoryInterface;
+use Raptor\Contracts\Repository\DatabaseHostRepositoryInterface;
+use Raptor\Contracts\Repository\ServerVariableRepositoryInterface;
 
 class RepositoryServiceProvider extends ServiceProvider
 {

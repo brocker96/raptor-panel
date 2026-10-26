@@ -1,6 +1,8 @@
 import React, { lazy, useEffect } from 'react';
 import { createBrowserRouter, Route, RouterProvider, Routes, useNavigate } from 'react-router-dom';
 import { StoreProvider } from 'easy-peasy';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { queryClient } from '@/api/query';
 import { store } from '@/state';
 import { SiteSettings } from '@/state/settings';
 import ProgressBar from '@/components/elements/ProgressBar';
@@ -19,7 +21,7 @@ const AuthenticationRouter = lazy(() => import('@/routers/AuthenticationRouter')
 
 interface ExtendedWindow extends Window {
     SiteConfiguration?: SiteSettings;
-    PterodactylUser?: {
+    RaptorUser?: {
         uuid: string;
         username: string;
         email: string;
@@ -82,17 +84,17 @@ const Root = () => {
 const router = createBrowserRouter([{ path: '*', element: <Root /> }]);
 
 const App = () => {
-    const { PterodactylUser, SiteConfiguration } = window as ExtendedWindow;
-    if (PterodactylUser && !store.getState().user.data) {
+    const { RaptorUser, SiteConfiguration } = window as ExtendedWindow;
+    if (RaptorUser && !store.getState().user.data) {
         store.getActions().user.setUserData({
-            uuid: PterodactylUser.uuid,
-            username: PterodactylUser.username,
-            email: PterodactylUser.email,
-            language: PterodactylUser.language,
-            rootAdmin: PterodactylUser.root_admin,
-            useTotp: PterodactylUser.use_totp,
-            createdAt: new Date(PterodactylUser.created_at),
-            updatedAt: new Date(PterodactylUser.updated_at),
+            uuid: RaptorUser.uuid,
+            username: RaptorUser.username,
+            email: RaptorUser.email,
+            language: RaptorUser.language,
+            rootAdmin: RaptorUser.root_admin,
+            useTotp: RaptorUser.use_totp,
+            createdAt: new Date(RaptorUser.created_at),
+            updatedAt: new Date(RaptorUser.updated_at),
         });
     }
 
@@ -103,12 +105,14 @@ const App = () => {
     return (
         <>
             <GlobalStylesheet />
-            <StoreProvider store={store}>
-                <ProgressBar />
-                <div css={tw`mx-auto w-auto`}>
-                    <RouterProvider router={router} />
-                </div>
-            </StoreProvider>
+            <QueryClientProvider client={queryClient}>
+                <StoreProvider store={store}>
+                    <ProgressBar />
+                    <div css={tw`mx-auto w-auto`}>
+                        <RouterProvider router={router} />
+                    </div>
+                </StoreProvider>
+            </QueryClientProvider>
         </>
     );
 };

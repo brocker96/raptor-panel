@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import tw from 'twin.macro';
 import VariableBox from '@/components/server/startup/VariableBox';
@@ -41,13 +41,6 @@ const StartupContainer = () => {
         !Object.values(data.dockerImages)
             .map((v) => v.toLowerCase())
             .includes(variables.dockerImage.toLowerCase());
-
-    useEffect(() => {
-        // Since we're passing in initial data this will not trigger on mount automatically. We
-        // want to always fetch fresh information from the API however when we're loading the startup
-        // information.
-        mutate();
-    }, []);
 
     useDeepCompareEffect(() => {
         if (!data) return;

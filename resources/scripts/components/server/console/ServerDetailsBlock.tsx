@@ -16,6 +16,7 @@ import StatBlock from '@/components/server/console/StatBlock';
 import useWebsocketEvent from '@/plugins/useWebsocketEvent';
 import classNames from 'classnames';
 import { capitalize } from '@/lib/strings';
+import parseStats from '@/plugins/parseStats';
 
 type Stats = Record<'memory' | 'cpu' | 'disk' | 'uptime' | 'rx' | 'tx', number>;
 
@@ -71,12 +72,8 @@ const ServerDetailsBlock = ({ className }: { className?: string }) => {
     }, [instance, connected]);
 
     useWebsocketEvent(SocketEvent.STATS, (data) => {
-        let stats: any = {};
-        try {
-            stats = JSON.parse(data);
-        } catch (e) {
-            return;
-        }
+        const stats = parseStats(data);
+        if (!stats) return;
 
         setStats({
             memory: stats.memory_bytes,

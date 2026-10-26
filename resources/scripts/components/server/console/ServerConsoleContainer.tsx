@@ -5,11 +5,15 @@ import ServerContentBlock from '@/components/elements/ServerContentBlock';
 import isEqual from 'react-fast-compare';
 import Spinner from '@/components/elements/Spinner';
 import Features from '@feature/Features';
-import Console from '@/components/server/console/Console';
-import StatGraphs from '@/components/server/console/StatGraphs';
+import { lazyWithPreload } from '@/lib/lazy';
 import PowerButtons from '@/components/server/console/PowerButtons';
 import ServerDetailsBlock from '@/components/server/console/ServerDetailsBlock';
 import { Alert } from '@/components/elements/alert';
+
+// The terminal and the charts are the heaviest parts of the panel (xterm and chart.js), they are
+// loaded separately so that the rest of the page renders immediately.
+const Console = lazyWithPreload(() => import('@/components/server/console/Console'));
+const StatGraphs = lazyWithPreload(() => import('@/components/server/console/StatGraphs'));
 
 export type PowerAction = 'start' | 'stop' | 'restart' | 'kill';
 

@@ -1,14 +1,14 @@
 <?php
 
-namespace Pterodactyl\Services\Servers;
+namespace Raptor\Services\Servers;
 
 use Illuminate\Http\Response;
-use Pterodactyl\Models\Server;
+use Raptor\Models\Server;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Repositories\Wings\DaemonServerRepository;
-use Pterodactyl\Services\Databases\DatabaseManagementService;
-use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
+use Raptor\Repositories\Wings\DaemonServerRepository;
+use Raptor\Services\Databases\DatabaseManagementService;
+use Raptor\Exceptions\Http\Connection\DaemonConnectionException;
 
 class ServerDeletionService
 {
@@ -38,7 +38,7 @@ class ServerDeletionService
      * Delete a server from the panel, clear any allocation notes, and remove any associated databases from hosts.
      *
      * @throws \Throwable
-     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Raptor\Exceptions\DisplayException
      */
     public function handle(Server $server): void
     {

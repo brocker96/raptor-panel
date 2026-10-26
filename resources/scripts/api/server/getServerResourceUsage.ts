@@ -13,9 +13,9 @@ export interface ServerStats {
     uptime: number;
 }
 
-export default (server: string): Promise<ServerStats> => {
+export default (server: string, signal?: AbortSignal): Promise<ServerStats> => {
     return new Promise((resolve, reject) => {
-        http.get(`/api/client/servers/${server}/resources`)
+        http.get(`/api/client/servers/${server}/resources`, { signal })
             .then(({ data: { attributes } }) =>
                 resolve({
                     status: attributes.current_state,

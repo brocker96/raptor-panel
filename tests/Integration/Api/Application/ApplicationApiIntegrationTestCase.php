@@ -1,18 +1,18 @@
 <?php
 
-namespace Pterodactyl\Tests\Integration\Api\Application;
+namespace Raptor\Tests\Integration\Api\Application;
 
 use Illuminate\Http\Request;
-use Pterodactyl\Models\User;
+use Raptor\Models\User;
 use PHPUnit\Framework\Assert;
-use Pterodactyl\Models\ApiKey;
-use Pterodactyl\Services\Acl\Api\AdminAcl;
-use Pterodactyl\Tests\Integration\IntegrationTestCase;
+use Raptor\Models\ApiKey;
+use Raptor\Services\Acl\Api\AdminAcl;
+use Raptor\Tests\Integration\IntegrationTestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Pterodactyl\Tests\Traits\Integration\CreatesTestModels;
-use Pterodactyl\Transformers\Api\Application\BaseTransformer;
-use Pterodactyl\Transformers\Api\Client\BaseClientTransformer;
-use Pterodactyl\Tests\Traits\Http\IntegrationJsonRequestAssertions;
+use Raptor\Tests\Traits\Integration\CreatesTestModels;
+use Raptor\Transformers\Api\Application\BaseTransformer;
+use Raptor\Transformers\Api\Client\BaseClientTransformer;
+use Raptor\Tests\Traits\Http\IntegrationJsonRequestAssertions;
 
 abstract class ApplicationApiIntegrationTestCase extends IntegrationTestCase
 {

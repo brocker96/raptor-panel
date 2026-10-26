@@ -1,4 +1,4 @@
-import useSWR, { SWRConfiguration } from 'swr';
+import { ResourceOptions, useResource } from '@/api/query';
 import http, { FractalResponseList } from '@/api/http';
 import { rawDataToServerEggVariable } from '@/api/transformers';
 import { ServerEggVariable } from '@/api/server/types';
@@ -9,9 +9,9 @@ interface Response {
     dockerImages: Record<string, string>;
 }
 
-export default (uuid: string, initialData?: Response | null, config?: SWRConfiguration<Response>) =>
-    useSWR(
-        [uuid, '/startup'],
+export default (uuid: string, initialData?: Response | null, options?: ResourceOptions<Response>) =>
+    useResource<Response>(
+        ['server:startup', uuid],
         async (): Promise<Response> => {
             const { data } = await http.get(`/api/client/servers/${uuid}/startup`);
 
@@ -23,11 +23,7 @@ export default (uuid: string, initialData?: Response | null, config?: SWRConfigu
                 dockerImages: data.meta.docker_images || {},
             };
         },
-        {
-            fallbackData: initialData || undefined,
-            // When initial data is provided there is no need to immediately hit the API again.
-            revalidateOnMount: !initialData,
-            errorRetryCount: 3,
-            ...(config || {}),
-        }
+        // The data already known from the server details is rendered immediately while the
+        // latest startup information is fetched in the background.
+        { placeholderData: initialData || undefined, ...options }
     );

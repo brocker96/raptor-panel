@@ -1,9 +1,9 @@
 <?php
 
-namespace Pterodactyl\Events\Server;
+namespace Raptor\Events\Server;
 
-use Pterodactyl\Events\Event;
-use Pterodactyl\Models\Server;
+use Raptor\Events\Event;
+use Raptor\Models\Server;
 use Illuminate\Queue\SerializesModels;
 
 class Updating extends Event

@@ -4,6 +4,7 @@ import babel from '@rolldown/plugin-babel';
 import react from '@vitejs/plugin-react';
 import laravel from 'laravel-vite-plugin';
 import { defineConfig } from 'vite';
+import compress from './build/compress';
 
 const resolve = (path: string) => fileURLToPath(new URL(path, import.meta.url));
 
@@ -13,6 +14,7 @@ export default defineConfig(({ mode }) => ({
         'import.meta.env.BUILD_HASH': JSON.stringify(Date.now().toString(16)),
     },
     plugins: [
+        compress(),
         laravel({
             input: 'resources/scripts/index.tsx',
             refresh: ['resources/views/**'],

@@ -1,22 +1,22 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
+namespace Raptor\Http\Controllers\Api\Client\Servers;
 
-use Pterodactyl\Models\Server;
+use Raptor\Models\Server;
 use Illuminate\Http\JsonResponse;
-use Pterodactyl\Facades\Activity;
-use Pterodactyl\Models\Allocation;
+use Raptor\Facades\Activity;
+use Raptor\Models\Allocation;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Repositories\Eloquent\ServerRepository;
-use Pterodactyl\Transformers\Api\Client\AllocationTransformer;
-use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
-use Pterodactyl\Services\Allocations\FindAssignableAllocationService;
-use Pterodactyl\Http\Requests\Api\Client\Servers\Network\GetNetworkRequest;
-use Pterodactyl\Http\Requests\Api\Client\Servers\Network\NewAllocationRequest;
-use Pterodactyl\Http\Requests\Api\Client\Servers\Network\DeleteAllocationRequest;
-use Pterodactyl\Http\Requests\Api\Client\Servers\Network\UpdateAllocationRequest;
-use Pterodactyl\Http\Requests\Api\Client\Servers\Network\SetPrimaryAllocationRequest;
+use Raptor\Exceptions\DisplayException;
+use Raptor\Repositories\Eloquent\ServerRepository;
+use Raptor\Transformers\Api\Client\AllocationTransformer;
+use Raptor\Http\Controllers\Api\Client\ClientApiController;
+use Raptor\Services\Allocations\FindAssignableAllocationService;
+use Raptor\Http\Requests\Api\Client\Servers\Network\GetNetworkRequest;
+use Raptor\Http\Requests\Api\Client\Servers\Network\NewAllocationRequest;
+use Raptor\Http\Requests\Api\Client\Servers\Network\DeleteAllocationRequest;
+use Raptor\Http\Requests\Api\Client\Servers\Network\UpdateAllocationRequest;
+use Raptor\Http\Requests\Api\Client\Servers\Network\SetPrimaryAllocationRequest;
 
 class NetworkAllocationController extends ClientApiController
 {
@@ -37,6 +37,8 @@ class NetworkAllocationController extends ClientApiController
      */
     public function index(GetNetworkRequest $request, Server $server): array
     {
+        $server->allocations->each->setRelation('server', $server);
+
         return $this->fractal->collection($server->allocations)
             ->transformWith($this->getTransformer(AllocationTransformer::class))
             ->toArray();
@@ -45,8 +47,8 @@ class NetworkAllocationController extends ClientApiController
     /**
      * Set the primary allocation for a server.
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Raptor\Exceptions\Model\DataValidationException
+     * @throws \Raptor\Exceptions\Repository\RecordNotFoundException
      */
     public function update(UpdateAllocationRequest $request, Server $server, Allocation $allocation): array
     {
@@ -69,8 +71,8 @@ class NetworkAllocationController extends ClientApiController
     /**
      * Set the primary allocation for a server.
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Raptor\Exceptions\Model\DataValidationException
+     * @throws \Raptor\Exceptions\Repository\RecordNotFoundException
      */
     public function setPrimary(SetPrimaryAllocationRequest $request, Server $server, Allocation $allocation): array
     {

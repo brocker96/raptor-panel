@@ -1,6 +1,6 @@
 <?php
 
-namespace Pterodactyl\Models;
+namespace Raptor\Models;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,8 +13,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property string|null $description
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Server[] $servers
- * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Egg[] $eggs
+ * @property \Illuminate\Database\Eloquent\Collection|\Raptor\Models\Server[] $servers
+ * @property \Illuminate\Database\Eloquent\Collection|\Raptor\Models\Egg[] $eggs
  */
 class Nest extends Model
 {
@@ -49,7 +49,7 @@ class Nest extends Model
     /**
      * Gets all eggs associated with this service.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\Pterodactyl\Models\Egg, $this>
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\Raptor\Models\Egg, $this>
      */
     public function eggs(): HasMany
     {
@@ -59,7 +59,7 @@ class Nest extends Model
     /**
      * Gets all servers associated with this nest.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\Pterodactyl\Models\Server, $this>
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\Raptor\Models\Server, $this>
      */
     public function servers(): HasMany
     {

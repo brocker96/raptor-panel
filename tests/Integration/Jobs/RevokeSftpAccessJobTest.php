@@ -1,15 +1,15 @@
 <?php
 
-namespace Pterodactyl\Tests\Integration\Jobs;
+namespace Raptor\Tests\Integration\Jobs;
 
-use Pterodactyl\Models\Node;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Jobs\RevokeSftpAccessJob;
+use Raptor\Models\Node;
+use Raptor\Models\Server;
+use Raptor\Jobs\RevokeSftpAccessJob;
 use PHPUnit\Framework\Attributes\TestWith;
 use GuzzleHttp\Exception\TransferException;
-use Pterodactyl\Tests\Integration\IntegrationTestCase;
-use Pterodactyl\Repositories\Wings\DaemonRevocationRepository;
-use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
+use Raptor\Tests\Integration\IntegrationTestCase;
+use Raptor\Repositories\Wings\DaemonRevocationRepository;
+use Raptor\Exceptions\Http\Connection\DaemonConnectionException;
 
 class RevokeSftpAccessJobTest extends IntegrationTestCase
 {

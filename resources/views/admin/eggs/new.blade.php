@@ -47,7 +47,7 @@
                             </div>
                             <div class="form-group">
                                 <div class="checkbox checkbox-primary no-margin-bottom">
-                                    <input id="pForceOutgoingIp" name="force_outgoing_ip" type="checkbox" value="1" {{ \Pterodactyl\Helpers\Utilities::checked('force_outgoing_ip', 0) }} />
+                                    <input id="pForceOutgoingIp" name="force_outgoing_ip" type="checkbox" value="1" {{ \Raptor\Helpers\Utilities::checked('force_outgoing_ip', 0) }} />
                                     <label for="pForceOutgoingIp" class="strong">Force Outgoing IP</label>
                                     <p class="text-muted small">
                                         Forces all outgoing network traffic to have its Source IP NATed to the IP of the server's primary allocation IP.
@@ -150,7 +150,7 @@
     });
     $('#pNestId').on('change', function (event) {
         $('#pConfigFrom').html('<option value="">None</option>').select2({
-            data: $.map(_.get(Pterodactyl.nests, $(this).val() + '.eggs', []), function (item) {
+            data: $.map(_.get(Raptor.nests, $(this).val() + '.eggs', []), function (item) {
                 return {
                     id: item.id,
                     text: item.name + ' <' + item.author + '>',

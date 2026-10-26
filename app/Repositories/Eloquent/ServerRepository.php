@@ -1,14 +1,14 @@
 <?php
 
-namespace Pterodactyl\Repositories\Eloquent;
+namespace Raptor\Repositories\Eloquent;
 
-use Pterodactyl\Models\Server;
+use Raptor\Models\Server;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
+use Raptor\Exceptions\Repository\RecordNotFoundException;
+use Raptor\Contracts\Repository\ServerRepositoryInterface;
 
 class ServerRepository extends EloquentRepository implements ServerRepositoryInterface
 {

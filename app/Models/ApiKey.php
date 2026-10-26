@@ -1,16 +1,16 @@
 <?php
 
-namespace Pterodactyl\Models;
+namespace Raptor\Models;
 
 use Illuminate\Support\Str;
 use Webmozart\Assert\Assert;
-use Pterodactyl\Services\Acl\Api\AdminAcl;
+use Raptor\Services\Acl\Api\AdminAcl;
 use Laravel\Sanctum\Contracts\HasAbilities;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
- * Pterodactyl\Models\ApiKey.
+ * Raptor\Models\ApiKey.
  *
  * @property int $id
  * @property int $user_id
@@ -175,7 +175,7 @@ class ApiKey extends Model implements HasAbilities
     /**
      * Returns the user this token is assigned to.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\Pterodactyl\Models\User, $this>
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\Raptor\Models\User, $this>
      */
     public function user(): BelongsTo
     {
@@ -185,7 +185,7 @@ class ApiKey extends Model implements HasAbilities
     /**
      * Required for support with Laravel Sanctum.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\Pterodactyl\Models\User, $this>
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\Raptor\Models\User, $this>
      *
      * @see \Laravel\Sanctum\Guard::supportsTokens()
      */

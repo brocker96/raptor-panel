@@ -1,9 +1,9 @@
 <?php
 
-namespace Pterodactyl\Http\Requests\Api\Application\Servers;
+namespace Raptor\Http\Requests\Api\Application\Servers;
 
-use Pterodactyl\Services\Acl\Api\AdminAcl;
-use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
+use Raptor\Services\Acl\Api\AdminAcl;
+use Raptor\Http\Requests\Api\Application\ApplicationApiRequest;
 
 class GetExternalServerRequest extends ApplicationApiRequest
 {

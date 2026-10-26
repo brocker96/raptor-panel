@@ -1,4 +1,4 @@
-# Pterodactyl Panel - Docker Image
+# Raptor Panel - Docker Image
 This is a ready to use docker image for the panel.
 
 ## Requirements

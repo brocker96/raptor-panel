@@ -1,8 +1,8 @@
 <?php
 
-namespace Pterodactyl\Console\Commands\Node;
+namespace Raptor\Console\Commands\Node;
 
-use Pterodactyl\Models\Node;
+use Raptor\Models\Node;
 use Illuminate\Console\Command;
 
 class NodeConfigurationCommand extends Command

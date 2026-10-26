@@ -1,15 +1,15 @@
 <?php
 
-namespace Pterodactyl\Services\Schedules;
+namespace Raptor\Services\Schedules;
 
 use Exception;
-use Pterodactyl\Models\Schedule;
+use Raptor\Models\Schedule;
 use Illuminate\Contracts\Bus\Dispatcher;
-use Pterodactyl\Jobs\Schedule\RunTaskJob;
+use Raptor\Jobs\Schedule\RunTaskJob;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Repositories\Wings\DaemonServerRepository;
-use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
+use Raptor\Exceptions\DisplayException;
+use Raptor\Repositories\Wings\DaemonServerRepository;
+use Raptor\Exceptions\Http\Connection\DaemonConnectionException;
 
 class ProcessScheduleService
 {

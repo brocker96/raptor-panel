@@ -1,6 +1,6 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Auth;
+namespace Raptor\Http\Controllers\Auth;
 
 use Illuminate\Support\Str;
 use Illuminate\Http\JsonResponse;
@@ -8,12 +8,12 @@ use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Contracts\Events\Dispatcher;
-use Pterodactyl\Events\User\PasswordChanged;
-use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Http\Controllers\Controller;
+use Raptor\Events\User\PasswordChanged;
+use Raptor\Exceptions\DisplayException;
+use Raptor\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ResetsPasswords;
-use Pterodactyl\Http\Requests\Auth\ResetPasswordRequest;
-use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
+use Raptor\Http\Requests\Auth\ResetPasswordRequest;
+use Raptor\Contracts\Repository\UserRepositoryInterface;
 
 class ResetPasswordController extends Controller
 {
@@ -68,11 +68,11 @@ class ResetPasswordController extends Controller
      * account do not automatically log them in. In those cases, send the user back to the login
      * form with a note telling them their password was changed and to log back in.
      *
-     * @param \Illuminate\Contracts\Auth\CanResetPassword&\Pterodactyl\Models\User $user
+     * @param \Illuminate\Contracts\Auth\CanResetPassword&\Raptor\Models\User $user
      * @param string $password
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Raptor\Exceptions\Model\DataValidationException
+     * @throws \Raptor\Exceptions\Repository\RecordNotFoundException
      */
     protected function resetPassword($user, $password)
     {

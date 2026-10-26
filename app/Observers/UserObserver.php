@@ -1,9 +1,9 @@
 <?php
 
-namespace Pterodactyl\Observers;
+namespace Raptor\Observers;
 
-use Pterodactyl\Events;
-use Pterodactyl\Models\User;
+use Raptor\Events;
+use Raptor\Models\User;
 
 class UserObserver
 {

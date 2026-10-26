@@ -1,8 +1,8 @@
 <?php
 
-namespace Pterodactyl\Http\Requests\Admin;
+namespace Raptor\Http\Requests\Admin;
 
-use Pterodactyl\Models\Server;
+use Raptor\Models\Server;
 use Illuminate\Support\Collection;
 
 class ServerDetailsFormRequest extends AdminFormRequest

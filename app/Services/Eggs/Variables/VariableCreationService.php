@@ -1,12 +1,12 @@
 <?php
 
-namespace Pterodactyl\Services\Eggs\Variables;
+namespace Raptor\Services\Eggs\Variables;
 
-use Pterodactyl\Models\EggVariable;
-use Pterodactyl\Traits\Services\ValidatesValidationRules;
+use Raptor\Models\EggVariable;
+use Raptor\Traits\Services\ValidatesValidationRules;
 use Illuminate\Contracts\Validation\Factory as ValidationFactory;
-use Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface;
-use Pterodactyl\Exceptions\Service\Egg\Variable\ReservedVariableNameException;
+use Raptor\Contracts\Repository\EggVariableRepositoryInterface;
+use Raptor\Exceptions\Service\Egg\Variable\ReservedVariableNameException;
 
 class VariableCreationService
 {
@@ -31,8 +31,8 @@ class VariableCreationService
     /**
      * Create a new variable for a given Egg.
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Service\Egg\Variable\BadValidationRuleException
+     * @throws \Raptor\Exceptions\Model\DataValidationException
+     * @throws \Raptor\Exceptions\Service\Egg\Variable\BadValidationRuleException
      * @throws ReservedVariableNameException
      */
     public function handle(int $egg, array $data): EggVariable

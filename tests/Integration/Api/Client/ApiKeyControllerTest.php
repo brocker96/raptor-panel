@@ -1,12 +1,12 @@
 <?php
 
-namespace Pterodactyl\Tests\Integration\Api\Client;
+namespace Raptor\Tests\Integration\Api\Client;
 
-use Pterodactyl\Models\User;
+use Raptor\Models\User;
 use Illuminate\Http\Response;
-use Pterodactyl\Models\ApiKey;
+use Raptor\Models\ApiKey;
 use Illuminate\Support\Facades\Event;
-use Pterodactyl\Events\ActivityLogged;
+use Raptor\Events\ActivityLogged;
 
 class ApiKeyControllerTest extends ClientApiIntegrationTestCase
 {

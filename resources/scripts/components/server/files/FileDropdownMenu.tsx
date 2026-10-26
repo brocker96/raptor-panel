@@ -23,7 +23,7 @@ import getFileDownloadUrl from '@/api/server/files/getFileDownloadUrl';
 import useFlash from '@/plugins/useFlash';
 import tw from 'twin.macro';
 import { FileObject } from '@/api/server/files/loadDirectory';
-import useFileManagerSwr from '@/plugins/useFileManagerSwr';
+import { useFileManagerMutate } from '@/plugins/useFileManagerSwr';
 import DropdownMenu from '@/components/elements/DropdownMenu';
 import styled from 'styled-components/macro';
 import useEventListener from '@/plugins/useEventListener';
@@ -61,7 +61,7 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
     const [showConfirmation, setShowConfirmation] = useState(false);
 
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
-    const { mutate } = useFileManagerSwr();
+    const mutate = useFileManagerMutate();
     const { clearAndAddHttpError, clearFlashes } = useFlash();
     const directory = ServerContext.useStoreState((state) => state.files.directory);
 

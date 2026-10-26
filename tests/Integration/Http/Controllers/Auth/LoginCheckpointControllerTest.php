@@ -1,17 +1,17 @@
 <?php
 
-namespace Pterodactyl\Tests\Integration\Http\Controllers\Auth;
+namespace Raptor\Tests\Integration\Http\Controllers\Auth;
 
 use Carbon\Carbon;
-use Pterodactyl\Models\User;
+use Raptor\Models\User;
 use PragmaRX\Google2FA\Google2FA;
 use Illuminate\Auth\Events\Failed;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Session;
-use Pterodactyl\Events\Auth\DirectLogin;
+use Raptor\Events\Auth\DirectLogin;
 use PHPUnit\Framework\Attributes\TestWith;
-use Pterodactyl\Tests\Integration\Http\HttpTestCase;
-use Pterodactyl\Events\Auth\ProvidedAuthenticationToken;
+use Raptor\Tests\Integration\Http\HttpTestCase;
+use Raptor\Events\Auth\ProvidedAuthenticationToken;
 
 class LoginCheckpointControllerTest extends HttpTestCase
 {

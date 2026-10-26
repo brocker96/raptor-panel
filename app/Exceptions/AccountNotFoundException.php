@@ -1,6 +1,6 @@
 <?php
 
-namespace Pterodactyl\Exceptions;
+namespace Raptor\Exceptions;
 
 class AccountNotFoundException extends \Exception
 {

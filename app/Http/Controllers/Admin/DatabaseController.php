@@ -1,19 +1,19 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Admin;
+namespace Raptor\Http\Controllers\Admin;
 
 use Illuminate\View\View;
-use Pterodactyl\Models\DatabaseHost;
+use Raptor\Models\DatabaseHost;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
-use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Services\Databases\Hosts\HostUpdateService;
-use Pterodactyl\Http\Requests\Admin\DatabaseHostFormRequest;
-use Pterodactyl\Services\Databases\Hosts\HostCreationService;
-use Pterodactyl\Services\Databases\Hosts\HostDeletionService;
-use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
-use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
-use Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface;
+use Raptor\Http\Controllers\Controller;
+use Raptor\Services\Databases\Hosts\HostUpdateService;
+use Raptor\Http\Requests\Admin\DatabaseHostFormRequest;
+use Raptor\Services\Databases\Hosts\HostCreationService;
+use Raptor\Services\Databases\Hosts\HostDeletionService;
+use Raptor\Contracts\Repository\DatabaseRepositoryInterface;
+use Raptor\Contracts\Repository\LocationRepositoryInterface;
+use Raptor\Contracts\Repository\DatabaseHostRepositoryInterface;
 
 class DatabaseController extends Controller
 {
@@ -45,7 +45,7 @@ class DatabaseController extends Controller
     /**
      * Display database host to user.
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Raptor\Exceptions\Repository\RecordNotFoundException
      */
     public function view(int $host): View
     {
@@ -114,7 +114,7 @@ class DatabaseController extends Controller
     /**
      * Handle request to delete a database host.
      *
-     * @throws \Pterodactyl\Exceptions\Service\HasActiveServersException
+     * @throws \Raptor\Exceptions\Service\HasActiveServersException
      */
     public function delete(int $host): RedirectResponse
     {

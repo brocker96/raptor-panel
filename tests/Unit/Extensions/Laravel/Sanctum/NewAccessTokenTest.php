@@ -1,13 +1,13 @@
 <?php
 
-namespace Pterodactyl\Tests\Unit\Extensions\Laravel\Sanctum;
+namespace Raptor\Tests\Unit\Extensions\Laravel\Sanctum;
 
-use Pterodactyl\Models\ApiKey;
-use Pterodactyl\Tests\TestCase;
+use Raptor\Models\ApiKey;
+use Raptor\Tests\TestCase;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Contracts\Support\Arrayable;
 use Laravel\Sanctum\NewAccessToken as SanctumAccessToken;
-use Pterodactyl\Extensions\Laravel\Sanctum\NewAccessToken;
+use Raptor\Extensions\Laravel\Sanctum\NewAccessToken;
 
 class NewAccessTokenTest extends TestCase
 {

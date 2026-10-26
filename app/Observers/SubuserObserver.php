@@ -1,11 +1,11 @@
 <?php
 
-namespace Pterodactyl\Observers;
+namespace Raptor\Observers;
 
-use Pterodactyl\Events;
-use Pterodactyl\Models\Subuser;
-use Pterodactyl\Notifications\AddedToServer;
-use Pterodactyl\Notifications\RemovedFromServer;
+use Raptor\Events;
+use Raptor\Models\Subuser;
+use Raptor\Notifications\AddedToServer;
+use Raptor\Notifications\RemovedFromServer;
 
 class SubuserObserver
 {

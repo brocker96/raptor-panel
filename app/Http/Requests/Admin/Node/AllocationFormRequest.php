@@ -1,8 +1,8 @@
 <?php
 
-namespace Pterodactyl\Http\Requests\Admin\Node;
+namespace Raptor\Http\Requests\Admin\Node;
 
-use Pterodactyl\Http\Requests\Admin\AdminFormRequest;
+use Raptor\Http\Requests\Admin\AdminFormRequest;
 
 class AllocationFormRequest extends AdminFormRequest
 {

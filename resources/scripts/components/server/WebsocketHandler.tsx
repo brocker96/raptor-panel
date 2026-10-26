@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Websocket } from '@/plugins/Websocket';
 import { ServerContext } from '@/state/server';
 import getWebsocketToken from '@/api/server/getWebsocketToken';
@@ -9,8 +9,14 @@ import tw from 'twin.macro';
 
 const reconnectErrors = ['jwt: exp claim is invalid', 'jwt: created too far in past (denylist)'];
 
+// The number of JWT errors in a row (without a successful authentication in between) after which
+// we stop requesting new tokens, otherwise a misconfigured node would cause an endless loop.
+const MAX_JWT_FAILURES = 3;
+
 export default () => {
-    let updatingToken = false;
+    // Kept in a ref, a plain variable would be reset on every render and allow duplicate token requests.
+    const updatingToken = useRef(false);
+    const jwtFailures = useRef(0);
     const [error, setError] = useState<'connecting' | string>('');
     const { connected, instance } = ServerContext.useStoreState((state) => state.socket);
     const uuid = ServerContext.useStoreState((state) => state.server.data?.uuid);
@@ -18,21 +24,26 @@ export default () => {
     const { setInstance, setConnectionState } = ServerContext.useStoreActions((actions) => actions.socket);
 
     const updateToken = (uuid: string, socket: Websocket) => {
-        if (updatingToken) return;
+        if (updatingToken.current) return;
 
-        updatingToken = true;
+        updatingToken.current = true;
         getWebsocketToken(uuid)
             .then((data) => socket.setToken(data.token, true))
             .catch((error) => console.error(error))
             .then(() => {
-                updatingToken = false;
+                updatingToken.current = false;
             });
     };
 
     const connect = (uuid: string) => {
-        const socket = new Websocket();
+        // Fresh credentials are fetched before every reconnect, tokens are short lived and may have
+        // expired while the connection was down.
+        const socket = new Websocket().setConnectionProvider(() => getWebsocketToken(uuid));
 
-        socket.on('auth success', () => setConnectionState(true));
+        socket.on('auth success', () => {
+            jwtFailures.current = 0;
+            setConnectionState(true);
+        });
         socket.on('SOCKET_CLOSE', () => setConnectionState(false));
         socket.on('SOCKET_CONNECT_ERROR', () => {
             setError('Failed to connect to websocket instance after multiple attempts: try refreshing the page.');
@@ -53,9 +64,11 @@ export default () => {
             setConnectionState(false);
             console.warn('JWT validation error from wings:', error);
 
-            if (reconnectErrors.find((v) => error.toLowerCase().indexOf(v) >= 0)) {
+            const recoverable = reconnectErrors.find((v) => error.toLowerCase().indexOf(v) >= 0);
+            if (recoverable && ++jwtFailures.current <= MAX_JWT_FAILURES) {
                 updateToken(uuid, socket);
             } else {
+                socket.close();
                 setError(
                     'There was an error validating the credentials provided for the websocket. Please refresh the page.'
                 );

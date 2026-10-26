@@ -1,16 +1,16 @@
 <?php
 
-namespace Pterodactyl\Services\Helpers;
+namespace Raptor\Services\Helpers;
 
 use GuzzleHttp\Client;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Arr;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
-use Pterodactyl\Exceptions\Service\Helper\CdnVersionFetchingException;
+use Raptor\Exceptions\Service\Helper\CdnVersionFetchingException;
 
 class SoftwareVersionService
 {
-    public const VERSION_CACHE_KEY = 'pterodactyl:versioning_data';
+    public const VERSION_CACHE_KEY = 'raptor:versioning_data';
 
     private static array $result;
 
@@ -41,11 +41,12 @@ class SoftwareVersionService
     }
 
     /**
-     * Get the URL to the discord server.
+     * Get the URL where users can get help. The release feed belongs to the upstream project, so its
+     * support link is intentionally not used here.
      */
     public function getDiscord(): string
     {
-        return Arr::get(self::$result, 'discord') ?? 'https://pterodactyl.io/discord';
+        return 'https://github.com/xvmandz/raptor-panel/discussions';
     }
 
     /**
@@ -85,9 +86,9 @@ class SoftwareVersionService
      */
     protected function cacheVersionData(): array
     {
-        return $this->cache->remember(self::VERSION_CACHE_KEY, CarbonImmutable::now()->addMinutes(config('pterodactyl.cdn.cache_time', 60)), function () {
+        return $this->cache->remember(self::VERSION_CACHE_KEY, CarbonImmutable::now()->addMinutes(config('raptor.cdn.cache_time', 60)), function () {
             try {
-                $response = $this->client->request('GET', config('pterodactyl.cdn.url'));
+                $response = $this->client->request('GET', config('raptor.cdn.url'));
 
                 if ($response->getStatusCode() === 200) {
                     return json_decode($response->getBody(), true);

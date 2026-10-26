@@ -1,11 +1,11 @@
 <?php
 
-namespace Pterodactyl\Services\Users;
+namespace Raptor\Services\Users;
 
-use Pterodactyl\Models\User;
+use Raptor\Models\User;
 use Illuminate\Contracts\Hashing\Hasher;
-use Pterodactyl\Events\User\PasswordChanged;
-use Pterodactyl\Traits\Services\HasUserLevels;
+use Raptor\Events\User\PasswordChanged;
+use Raptor\Traits\Services\HasUserLevels;
 
 class UserUpdateService
 {

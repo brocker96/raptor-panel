@@ -1,9 +1,9 @@
 <?php
 
-namespace Pterodactyl\Http\Requests\Api\Client\Servers\Files;
+namespace Raptor\Http\Requests\Api\Client\Servers\Files;
 
-use Pterodactyl\Models\Permission;
-use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
+use Raptor\Models\Permission;
+use Raptor\Http\Requests\Api\Client\ClientApiRequest;
 
 class ListFilesRequest extends ClientApiRequest
 {

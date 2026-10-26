@@ -1,6 +1,6 @@
 <?php
 
-namespace Pterodactyl\Enum;
+namespace Raptor\Enum;
 
 enum JwtScope: string
 {

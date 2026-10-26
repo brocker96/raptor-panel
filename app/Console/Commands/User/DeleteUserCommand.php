@@ -1,11 +1,11 @@
 <?php
 
-namespace Pterodactyl\Console\Commands\User;
+namespace Raptor\Console\Commands\User;
 
-use Pterodactyl\Models\User;
+use Raptor\Models\User;
 use Webmozart\Assert\Assert;
 use Illuminate\Console\Command;
-use Pterodactyl\Services\Users\UserDeletionService;
+use Raptor\Services\Users\UserDeletionService;
 
 class DeleteUserCommand extends Command
 {

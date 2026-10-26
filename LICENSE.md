@@ -1,7 +1,10 @@
 # The MIT License (MIT)
 
 ```
-Pterodactyl®
+Raptor Panel
+Copyright © xvmandz and contributors
+
+Based on Pterodactyl®
 Copyright © Dane Everitt <dane@daneeveritt.com> and contributors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy

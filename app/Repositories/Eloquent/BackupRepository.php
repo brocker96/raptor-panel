@@ -1,10 +1,10 @@
 <?php
 
-namespace Pterodactyl\Repositories\Eloquent;
+namespace Raptor\Repositories\Eloquent;
 
 use Carbon\Carbon;
-use Pterodactyl\Models\Backup;
-use Pterodactyl\Models\Server;
+use Raptor\Models\Backup;
+use Raptor\Models\Server;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -35,7 +35,7 @@ class BackupRepository extends EloquentRepository
     /**
      * Returns a query filtering only non-failed backups for a specific server.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\Pterodactyl\Models\Backup, \Pterodactyl\Models\Server>
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\Raptor\Models\Backup, \Raptor\Models\Server>
      */
     public function getNonFailedBackups(Server $server): HasMany
     {

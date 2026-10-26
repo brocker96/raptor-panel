@@ -1,9 +1,9 @@
 <?php
 
-namespace Pterodactyl\Tests\Unit\Console\Commands\Environment\Addons;
+namespace Raptor\Tests\Unit\Console\Commands\Environment\Addons;
 
 use Illuminate\Console\Command;
-use Pterodactyl\Tests\TestCase;
+use Raptor\Tests\TestCase;
 use Illuminate\Support\Facades\File;
 use Illuminate\Testing\PendingCommand;
 use Illuminate\Support\Facades\Process;

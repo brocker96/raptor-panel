@@ -1,14 +1,14 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Admin\Servers;
+namespace Raptor\Http\Controllers\Admin\Servers;
 
 use Illuminate\View\View;
 use Illuminate\Http\Request;
-use Pterodactyl\Models\Server;
+use Raptor\Models\Server;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
-use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Models\Filters\AdminServerFilter;
+use Raptor\Http\Controllers\Controller;
+use Raptor\Models\Filters\AdminServerFilter;
 
 class ServerController extends Controller
 {
@@ -23,7 +23,7 @@ class ServerController extends Controller
                 AllowedFilter::exact('owner_id'),
                 AllowedFilter::custom('*', new AdminServerFilter()),
             ])
-            ->paginate(config()->get('pterodactyl.paginate.admin.servers'));
+            ->paginate(config()->get('raptor.paginate.admin.servers'));
 
         return view('admin.servers.index', ['servers' => $servers]);
     }

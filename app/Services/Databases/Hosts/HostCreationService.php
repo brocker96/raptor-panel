@@ -1,13 +1,13 @@
 <?php
 
-namespace Pterodactyl\Services\Databases\Hosts;
+namespace Raptor\Services\Databases\Hosts;
 
-use Pterodactyl\Models\DatabaseHost;
+use Raptor\Models\DatabaseHost;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Contracts\Encryption\Encrypter;
-use Pterodactyl\Extensions\DynamicDatabaseConnection;
-use Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface;
+use Raptor\Extensions\DynamicDatabaseConnection;
+use Raptor\Contracts\Repository\DatabaseHostRepositoryInterface;
 
 class HostCreationService
 {

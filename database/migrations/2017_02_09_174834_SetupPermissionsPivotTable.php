@@ -1,7 +1,7 @@
 <?php
 
-use Pterodactyl\Models\Subuser;
-use Pterodactyl\Models\Permission;
+use Raptor\Models\Subuser;
+use Raptor\Models\Permission;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;

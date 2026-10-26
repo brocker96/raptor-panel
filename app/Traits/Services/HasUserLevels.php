@@ -1,8 +1,8 @@
 <?php
 
-namespace Pterodactyl\Traits\Services;
+namespace Raptor\Traits\Services;
 
-use Pterodactyl\Models\User;
+use Raptor\Models\User;
 
 trait HasUserLevels
 {

@@ -1,10 +1,10 @@
 <?php
 
-namespace Pterodactyl\Console\Commands;
+namespace Raptor\Console\Commands;
 
 use Illuminate\Console\Command;
 use Symfony\Component\VarDumper\VarDumper;
-use Pterodactyl\Services\Telemetry\TelemetryCollectionService;
+use Raptor\Services\Telemetry\TelemetryCollectionService;
 
 class TelemetryCommand extends Command
 {
@@ -23,7 +23,7 @@ class TelemetryCommand extends Command
     /**
      * Handle execution of command.
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Raptor\Exceptions\Model\DataValidationException
      */
     public function handle()
     {

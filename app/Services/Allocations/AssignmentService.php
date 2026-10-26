@@ -1,16 +1,16 @@
 <?php
 
-namespace Pterodactyl\Services\Allocations;
+namespace Raptor\Services\Allocations;
 
 use IPTools\Network;
-use Pterodactyl\Models\Node;
+use Raptor\Models\Node;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
-use Pterodactyl\Exceptions\Service\Allocation\CidrOutOfRangeException;
-use Pterodactyl\Exceptions\Service\Allocation\PortOutOfRangeException;
-use Pterodactyl\Exceptions\Service\Allocation\InvalidPortMappingException;
-use Pterodactyl\Exceptions\Service\Allocation\TooManyPortsInRangeException;
+use Raptor\Exceptions\DisplayException;
+use Raptor\Contracts\Repository\AllocationRepositoryInterface;
+use Raptor\Exceptions\Service\Allocation\CidrOutOfRangeException;
+use Raptor\Exceptions\Service\Allocation\PortOutOfRangeException;
+use Raptor\Exceptions\Service\Allocation\InvalidPortMappingException;
+use Raptor\Exceptions\Service\Allocation\TooManyPortsInRangeException;
 
 class AssignmentService
 {

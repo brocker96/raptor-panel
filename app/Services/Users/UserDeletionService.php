@@ -1,10 +1,10 @@
 <?php
 
-namespace Pterodactyl\Services\Users;
+namespace Raptor\Services\Users;
 
-use Pterodactyl\Models\User;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Exceptions\DisplayException;
+use Raptor\Models\User;
+use Raptor\Models\Server;
+use Raptor\Exceptions\DisplayException;
 
 class UserDeletionService
 {

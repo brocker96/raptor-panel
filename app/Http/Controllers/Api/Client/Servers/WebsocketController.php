@@ -1,17 +1,17 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
+namespace Raptor\Http\Controllers\Api\Client\Servers;
 
 use Carbon\CarbonImmutable;
-use Pterodactyl\Enum\JwtScope;
-use Pterodactyl\Models\Server;
+use Raptor\Enum\JwtScope;
+use Raptor\Models\Server;
 use Illuminate\Http\JsonResponse;
-use Pterodactyl\Models\Permission;
-use Pterodactyl\Services\Nodes\NodeJWTService;
-use Pterodactyl\Exceptions\Http\HttpForbiddenException;
-use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
-use Pterodactyl\Services\Servers\GetUserPermissionsService;
-use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
+use Raptor\Models\Permission;
+use Raptor\Services\Nodes\NodeJWTService;
+use Raptor\Exceptions\Http\HttpForbiddenException;
+use Raptor\Http\Requests\Api\Client\ClientApiRequest;
+use Raptor\Services\Servers\GetUserPermissionsService;
+use Raptor\Http\Controllers\Api\Client\ClientApiController;
 
 class WebsocketController extends ClientApiController
 {

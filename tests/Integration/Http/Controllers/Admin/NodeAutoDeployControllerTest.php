@@ -1,13 +1,13 @@
 <?php
 
-namespace Pterodactyl\Tests\Integration\Http\Controllers\Admin;
+namespace Raptor\Tests\Integration\Http\Controllers\Admin;
 
-use Pterodactyl\Models\Node;
-use Pterodactyl\Models\User;
-use Pterodactyl\Models\ApiKey;
-use Pterodactyl\Models\Location;
-use Pterodactyl\Services\Acl\Api\AdminAcl;
-use Pterodactyl\Tests\Integration\Http\HttpTestCase;
+use Raptor\Models\Node;
+use Raptor\Models\User;
+use Raptor\Models\ApiKey;
+use Raptor\Models\Location;
+use Raptor\Services\Acl\Api\AdminAcl;
+use Raptor\Tests\Integration\Http\HttpTestCase;
 
 class NodeAutoDeployControllerTest extends HttpTestCase
 {

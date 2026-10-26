@@ -9,7 +9,7 @@ import {
     PointElement,
 } from 'chart.js';
 import { DeepPartial } from 'ts-essentials';
-import { useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { deepmerge, deepmergeCustom } from 'deepmerge-ts';
 import { theme } from 'twin.macro';
 import { hexToRgba } from '@/lib/helpers';
@@ -109,34 +109,55 @@ interface UseChartOptions {
 }
 
 function useChart(label: string, opts?: UseChartOptions) {
-    const options = getOptions(
-        typeof opts?.options === 'number' ? { scales: { y: { min: 0, suggestedMax: opts.options } } } : opts?.options
+    // The options are only computed once, passing a new object on every render would make chart.js
+    // re-resolve all of its options (and redraw) every time new stats arrive.
+    const options = useMemo(
+        () =>
+            getOptions(
+                typeof opts?.options === 'number'
+                    ? { scales: { y: { min: 0, suggestedMax: opts.options } } }
+                    : opts?.options
+            ),
+        // Only the maximum (the server limit) can change between renders.
+        [
+            typeof opts?.options === 'number'
+                ? opts.options
+                : (opts?.options?.scales?.y as { suggestedMax?: number })?.suggestedMax,
+        ]
     );
-    const [data, setData] = useState(getEmptyData(label, opts?.sets || 1, opts?.callback));
+    const [data, setData] = useState(() => getEmptyData(label, opts?.sets || 1, opts?.callback));
 
-    const push = (items: number | null | (number | null)[]) =>
-        setData((state) =>
-            merge(state, {
-                datasets: (Array.isArray(items) ? items : [items]).map((item, index) => ({
-                    ...state.datasets[index],
-                    data: state.datasets[index].data
-                        .slice(1)
-                        .concat(typeof item === 'number' ? Number(item.toFixed(2)) : item),
-                })),
-            })
-        );
+    const push = useCallback(
+        (items: number | null | (number | null)[]) =>
+            setData((state) =>
+                merge(state, {
+                    datasets: (Array.isArray(items) ? items : [items]).map((item, index) => ({
+                        ...state.datasets[index],
+                        data: state.datasets[index].data
+                            .slice(1)
+                            .concat(typeof item === 'number' ? Number(item.toFixed(2)) : item),
+                    })),
+                })
+            ),
+        []
+    );
 
-    const clear = () =>
-        setData((state) =>
-            merge(state, {
-                datasets: state.datasets.map((value) => ({
-                    ...value,
-                    data: Array(20).fill(-5),
-                })),
-            })
-        );
+    const clear = useCallback(
+        () =>
+            setData((state) =>
+                merge(state, {
+                    datasets: state.datasets.map((value) => ({
+                        ...value,
+                        data: Array(20).fill(-5),
+                    })),
+                })
+            ),
+        []
+    );
 
-    return { props: { data, options }, push, clear };
+    const props = useMemo(() => ({ data, options }), [data, options]);
+
+    return { props, push, clear };
 }
 
 function useChartTickLabel(label: string, max: number, tickLabel: string, roundTo?: number) {

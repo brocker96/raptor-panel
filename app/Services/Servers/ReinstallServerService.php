@@ -1,11 +1,11 @@
 <?php
 
-namespace Pterodactyl\Services\Servers;
+namespace Raptor\Services\Servers;
 
-use Pterodactyl\Models\Server;
+use Raptor\Models\Server;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Repositories\Wings\DaemonServerRepository;
+use Raptor\Exceptions\DisplayException;
+use Raptor\Repositories\Wings\DaemonServerRepository;
 
 class ReinstallServerService
 {

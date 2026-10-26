@@ -1,6 +1,6 @@
 <?php
 
-namespace Pterodactyl\Helpers;
+namespace Raptor\Helpers;
 
 use Carbon\CarbonImmutable;
 

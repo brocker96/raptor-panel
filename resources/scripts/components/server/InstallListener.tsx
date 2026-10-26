@@ -1,7 +1,7 @@
 import useWebsocketEvent from '@/plugins/useWebsocketEvent';
 import { ServerContext } from '@/state/server';
 import { SocketEvent } from '@/components/server/events';
-import { mutate } from 'swr';
+import { queryClient } from '@/api/query';
 import { getDirectorySwrKey } from '@/plugins/useFileManagerSwr';
 
 const InstallListener = () => {
@@ -10,7 +10,9 @@ const InstallListener = () => {
     const setServerFromState = ServerContext.useStoreActions((actions) => actions.server.setServerFromState);
 
     useWebsocketEvent(SocketEvent.BACKUP_RESTORE_COMPLETED, () => {
-        mutate(getDirectorySwrKey(uuid, '/'), undefined);
+        // The restored files replace everything on the server, so drop every cached directory listing.
+        const prefix = getDirectorySwrKey(uuid, '');
+        queryClient.resetQueries({ predicate: (query) => String(query.queryKey[0]).startsWith(prefix) });
         setServerFromState((s) => ({ ...s, status: null }));
     });
 

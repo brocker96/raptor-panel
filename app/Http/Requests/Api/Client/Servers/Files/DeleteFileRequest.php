@@ -1,10 +1,10 @@
 <?php
 
-namespace Pterodactyl\Http\Requests\Api\Client\Servers\Files;
+namespace Raptor\Http\Requests\Api\Client\Servers\Files;
 
-use Pterodactyl\Models\Permission;
-use Pterodactyl\Contracts\Http\ClientPermissionsRequest;
-use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
+use Raptor\Models\Permission;
+use Raptor\Contracts\Http\ClientPermissionsRequest;
+use Raptor\Http\Requests\Api\Client\ClientApiRequest;
 
 class DeleteFileRequest extends ClientApiRequest implements ClientPermissionsRequest
 {

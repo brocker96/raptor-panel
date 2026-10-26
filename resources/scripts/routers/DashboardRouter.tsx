@@ -6,7 +6,7 @@ import { NotFound } from '@/components/elements/ScreenBlock';
 import TransitionRouter from '@/TransitionRouter';
 import SubNavigation from '@/components/elements/SubNavigation';
 import Spinner from '@/components/elements/Spinner';
-import routes from '@/routers/routes';
+import routes, { preload } from '@/routers/routes';
 
 const accountPath = (path: string) => `/account/${path}`.replace(/\/+/g, '/').replace(/(.)\/$/, '$1');
 
@@ -21,9 +21,14 @@ export default () => {
                     <div>
                         {routes.account
                             .filter((route) => !!route.name)
-                            .map(({ path, name, exact = false }) => (
-                                <NavLink key={path} to={accountPath(path)} end={exact}>
-                                    {name}
+                            .map((route) => (
+                                <NavLink
+                                    key={route.path}
+                                    to={accountPath(route.path)}
+                                    end={route.exact ?? false}
+                                    {...preload(route)}
+                                >
+                                    {route.name}
                                 </NavLink>
                             ))}
                     </div>

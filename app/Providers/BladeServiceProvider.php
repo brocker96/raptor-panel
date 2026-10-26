@@ -1,6 +1,6 @@
 <?php
 
-namespace Pterodactyl\Providers;
+namespace Raptor\Providers;
 
 use Illuminate\Support\ServiceProvider;
 

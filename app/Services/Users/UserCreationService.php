@@ -1,15 +1,15 @@
 <?php
 
-namespace Pterodactyl\Services\Users;
+namespace Raptor\Services\Users;
 
 use Ramsey\Uuid\Uuid;
-use Pterodactyl\Models\User;
-use Pterodactyl\Facades\Activity;
+use Raptor\Models\User;
+use Raptor\Facades\Activity;
 use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Contracts\Auth\PasswordBroker;
-use Pterodactyl\Notifications\AccountCreated;
-use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
+use Raptor\Notifications\AccountCreated;
+use Raptor\Contracts\Repository\UserRepositoryInterface;
 
 class UserCreationService
 {
@@ -28,7 +28,7 @@ class UserCreationService
      * Create a new user on the system.
      *
      * @throws \Exception
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Raptor\Exceptions\Model\DataValidationException
      */
     public function handle(array $data): User
     {

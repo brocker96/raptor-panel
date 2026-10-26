@@ -1,10 +1,10 @@
 <?php
 
-namespace Pterodactyl\Models;
+namespace Raptor\Models;
 
 use Illuminate\Validation\Rules\NotIn;
-use Pterodactyl\Contracts\Models\Identifiable;
-use Pterodactyl\Models\Traits\HasRealtimeIdentifier;
+use Raptor\Contracts\Models\Identifiable;
+use Raptor\Models\Traits\HasRealtimeIdentifier;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
@@ -16,9 +16,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @property string $target
  * @property bool $read_only
  * @property bool $user_mountable
- * @property \Pterodactyl\Models\Egg[]|\Illuminate\Database\Eloquent\Collection $eggs
- * @property \Pterodactyl\Models\Node[]|\Illuminate\Database\Eloquent\Collection $nodes
- * @property \Pterodactyl\Models\Server[]|\Illuminate\Database\Eloquent\Collection $servers
+ * @property \Raptor\Models\Egg[]|\Illuminate\Database\Eloquent\Collection $eggs
+ * @property \Raptor\Models\Node[]|\Illuminate\Database\Eloquent\Collection $nodes
+ * @property \Raptor\Models\Server[]|\Illuminate\Database\Eloquent\Collection $servers
  */
 #[Attributes\Identifiable('moun')]
 class Mount extends Model implements Identifiable
@@ -100,7 +100,7 @@ class Mount extends Model implements Identifiable
     /**
      * Returns all eggs that have this mount assigned.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<\Pterodactyl\Models\Egg, $this>
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<\Raptor\Models\Egg, $this>
      */
     public function eggs(): BelongsToMany
     {
@@ -110,7 +110,7 @@ class Mount extends Model implements Identifiable
     /**
      * Returns all nodes that have this mount assigned.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<\Pterodactyl\Models\Node, $this>
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<\Raptor\Models\Node, $this>
      */
     public function nodes(): BelongsToMany
     {
@@ -120,7 +120,7 @@ class Mount extends Model implements Identifiable
     /**
      * Returns all servers that have this mount assigned.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<\Pterodactyl\Models\Server, $this>
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<\Raptor\Models\Server, $this>
      */
     public function servers(): BelongsToMany
     {

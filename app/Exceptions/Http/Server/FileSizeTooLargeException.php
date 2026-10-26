@@ -1,8 +1,8 @@
 <?php
 
-namespace Pterodactyl\Exceptions\Http\Server;
+namespace Raptor\Exceptions\Http\Server;
 
-use Pterodactyl\Exceptions\DisplayException;
+use Raptor\Exceptions\DisplayException;
 
 class FileSizeTooLargeException extends DisplayException
 {

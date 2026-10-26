@@ -1,16 +1,16 @@
 <?php
 
-namespace Pterodactyl\Tests\Unit\Http\Middleware\Api\Daemon;
+namespace Raptor\Tests\Unit\Http\Middleware\Api\Daemon;
 
 use Mockery as m;
 use Mockery\MockInterface;
-use Pterodactyl\Models\Node;
+use Raptor\Models\Node;
 use Illuminate\Contracts\Encryption\Encrypter;
-use Pterodactyl\Repositories\Eloquent\NodeRepository;
+use Raptor\Repositories\Eloquent\NodeRepository;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
-use Pterodactyl\Http\Middleware\Api\Daemon\DaemonAuthenticate;
-use Pterodactyl\Tests\Unit\Http\Middleware\MiddlewareTestCase;
+use Raptor\Exceptions\Repository\RecordNotFoundException;
+use Raptor\Http\Middleware\Api\Daemon\DaemonAuthenticate;
+use Raptor\Tests\Unit\Http\Middleware\MiddlewareTestCase;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 

@@ -1,11 +1,11 @@
 <?php
 
-namespace Pterodactyl\Tests\Integration\Api\Client\Server\Files;
+namespace Raptor\Tests\Integration\Api\Client\Server\Files;
 
 use Mockery\MockInterface;
-use Pterodactyl\Models\Permission;
-use Pterodactyl\Repositories\Wings\DaemonFileRepository;
-use Pterodactyl\Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
+use Raptor\Models\Permission;
+use Raptor\Repositories\Wings\DaemonFileRepository;
+use Raptor\Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
 
 class CompressFilesTest extends ClientApiIntegrationTestCase
 {

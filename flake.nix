@@ -1,5 +1,5 @@
 {
-  description = "Pterodactyl Panel";
+  description = "Raptor Panel";
 
   inputs = {
     flake-parts = {

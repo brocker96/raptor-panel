@@ -1,9 +1,9 @@
 <?php
 
-namespace Pterodactyl\Events\Subuser;
+namespace Raptor\Events\Subuser;
 
-use Pterodactyl\Events\Event;
-use Pterodactyl\Models\Subuser;
+use Raptor\Events\Event;
+use Raptor\Models\Subuser;
 use Illuminate\Queue\SerializesModels;
 
 class Deleting extends Event

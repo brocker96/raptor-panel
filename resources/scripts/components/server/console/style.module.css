@@ -18,6 +18,20 @@
     }
 }
 
+.stat_content {
+    /* Lets the value below size itself relative to the width of the block. */
+    container-type: inline-size;
+}
+
+.stat_value {
+    @apply h-[1.75rem] w-full leading-[1.75rem];
+    font-size: 1.125rem;
+
+    @supports (font-size: 1cqi) {
+        font-size: clamp(0.75rem, 11cqi, 1.5rem);
+    }
+}
+
 .terminal {
     @apply flex flex-col w-full;
 

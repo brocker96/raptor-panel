@@ -1,8 +1,8 @@
 <?php
 
-namespace Pterodactyl\Tests\Integration\Api\Application\Servers;
+namespace Raptor\Tests\Integration\Api\Application\Servers;
 
-use Pterodactyl\Tests\Integration\Api\Application\ApplicationApiIntegrationTestCase;
+use Raptor\Tests\Integration\Api\Application\ApplicationApiIntegrationTestCase;
 
 class ServerControllerTest extends ApplicationApiIntegrationTestCase
 {

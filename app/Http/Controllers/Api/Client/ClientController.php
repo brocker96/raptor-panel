@@ -1,14 +1,14 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Api\Client;
+namespace Raptor\Http\Controllers\Api\Client;
 
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Permission;
+use Raptor\Models\Server;
+use Raptor\Models\Permission;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
-use Pterodactyl\Models\Filters\MultiFieldServerFilter;
-use Pterodactyl\Transformers\Api\Client\ServerTransformer;
-use Pterodactyl\Http\Requests\Api\Client\GetServersRequest;
+use Raptor\Models\Filters\MultiFieldServerFilter;
+use Raptor\Transformers\Api\Client\ServerTransformer;
+use Raptor\Http\Requests\Api\Client\GetServersRequest;
 
 class ClientController extends ClientApiController
 {
@@ -31,7 +31,13 @@ class ClientController extends ClientApiController
 
         // Start the query builder and ensure we eager load any requested relationships from the request.
         $builder = QueryBuilder::for(
-            Server::query()->with($this->getIncludesForTransformer($transformer, ['node']))
+            Server::query()->with($this->getIncludesForTransformer($transformer, [
+                'node',
+                'egg.configFrom',
+                'transfer',
+                'allocations',
+                'subusers',
+            ]))
         )->allowedFilters([
             'uuid',
             'name',
@@ -62,6 +68,10 @@ class ClientController extends ClientApiController
         }
 
         $servers = $builder->paginate(min($request->query('per_page', 50), 100))->appends($request->query());
+
+        // The variables relationship cannot be eager loaded by Eloquent, so it is loaded for the
+        // entire page in two queries instead of two queries for every server.
+        Server::loadVariablesFor($servers->getCollection());
 
         return $this->fractal->transformWith($transformer)->collection($servers)->toArray();
     }

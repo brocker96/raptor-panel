@@ -1,6 +1,6 @@
 <?php
 
-namespace Pterodactyl\Traits\Controllers;
+namespace Raptor\Traits\Controllers;
 
 use Illuminate\Http\Request;
 

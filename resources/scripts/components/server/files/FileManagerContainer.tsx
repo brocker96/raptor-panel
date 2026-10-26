@@ -2,7 +2,7 @@ import React, { useEffect, useMemo } from 'react';
 import { httpErrorToHuman } from '@/api/http';
 import { CSSTransition } from 'react-transition-group';
 import Spinner from '@/components/elements/Spinner';
-import FileObjectRow from '@/components/server/files/FileObjectRow';
+import VirtualFileList from '@/components/server/files/VirtualFileList';
 import FileManagerBreadcrumbs from '@/components/server/files/FileManagerBreadcrumbs';
 import { FileObject } from '@/api/server/files/loadDirectory';
 import NewDirectoryButton from '@/components/server/files/NewDirectoryButton';
@@ -34,7 +34,6 @@ export default () => {
     const id = ServerContext.useStoreState((state) => state.server.data!.id);
     const { hash } = useLocation();
     const { data: files, error, mutate } = useFileManagerSwr();
-    const directory = ServerContext.useStoreState((state) => state.files.directory);
     const clearFlashes = useStoreActions((actions) => actions.flashes.clearFlashes);
     const setDirectory = ServerContext.useStoreActions((actions) => actions.files.setDirectory);
 
@@ -47,12 +46,7 @@ export default () => {
         setDirectory(hashToPath(hash));
     }, [hash]);
 
-    useEffect(() => {
-        mutate();
-    }, [directory]);
-
-    // Sort before limiting the output so that directories always come first, even in very large listings.
-    const sortedFiles = useMemo(() => (files ? sortFiles([...files]).slice(0, 250) : []), [files]);
+    const sortedFiles = useMemo(() => (files ? sortFiles([...files]) : []), [files]);
 
     const onSelectAllClick = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSelectedFiles(e.currentTarget.checked ? files?.map((file) => file.name) || [] : []);
@@ -97,17 +91,7 @@ export default () => {
                     ) : (
                         <CSSTransition classNames={'fade'} timeout={150} appear in>
                             <div>
-                                {files.length > 250 && (
-                                    <div css={tw`rounded bg-yellow-400 mb-px p-3`}>
-                                        <p css={tw`text-yellow-900 text-sm text-center`}>
-                                            This directory is too large to display in the browser, limiting the output
-                                            to the first 250 files.
-                                        </p>
-                                    </div>
-                                )}
-                                {sortedFiles.map((file) => (
-                                    <FileObjectRow key={file.key} file={file} />
-                                ))}
+                                <VirtualFileList files={sortedFiles} />
                                 <MassActionsBar />
                             </div>
                         </CSSTransition>

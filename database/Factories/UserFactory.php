@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\Pterodactyl\Models\User>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\Raptor\Models\User>
  */
 class UserFactory extends Factory
 {

@@ -1,9 +1,9 @@
 <?php
 
-namespace Pterodactyl\Services\Servers;
+namespace Raptor\Services\Servers;
 
-use Pterodactyl\Models\Mount;
-use Pterodactyl\Models\Server;
+use Raptor\Models\Mount;
+use Raptor\Models\Server;
 
 class ServerConfigurationStructureService
 {

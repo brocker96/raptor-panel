@@ -1,22 +1,22 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
+namespace Raptor\Http\Controllers\Api\Client\Servers;
 
 use Illuminate\Http\Request;
-use Pterodactyl\Models\Server;
+use Raptor\Models\Server;
 use Illuminate\Http\JsonResponse;
-use Pterodactyl\Facades\Activity;
-use Pterodactyl\Models\Permission;
-use Pterodactyl\Jobs\RevokeSftpAccessJob;
-use Pterodactyl\Repositories\Eloquent\SubuserRepository;
-use Pterodactyl\Services\Subusers\SubuserCreationService;
-use Pterodactyl\Transformers\Api\Client\SubuserTransformer;
-use Pterodactyl\Repositories\Wings\DaemonRevocationRepository;
-use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
-use Pterodactyl\Http\Requests\Api\Client\Servers\Subusers\GetSubuserRequest;
-use Pterodactyl\Http\Requests\Api\Client\Servers\Subusers\StoreSubuserRequest;
-use Pterodactyl\Http\Requests\Api\Client\Servers\Subusers\DeleteSubuserRequest;
-use Pterodactyl\Http\Requests\Api\Client\Servers\Subusers\UpdateSubuserRequest;
+use Raptor\Facades\Activity;
+use Raptor\Models\Permission;
+use Raptor\Jobs\RevokeSftpAccessJob;
+use Raptor\Repositories\Eloquent\SubuserRepository;
+use Raptor\Services\Subusers\SubuserCreationService;
+use Raptor\Transformers\Api\Client\SubuserTransformer;
+use Raptor\Repositories\Wings\DaemonRevocationRepository;
+use Raptor\Http\Controllers\Api\Client\ClientApiController;
+use Raptor\Http\Requests\Api\Client\Servers\Subusers\GetSubuserRequest;
+use Raptor\Http\Requests\Api\Client\Servers\Subusers\StoreSubuserRequest;
+use Raptor\Http\Requests\Api\Client\Servers\Subusers\DeleteSubuserRequest;
+use Raptor\Http\Requests\Api\Client\Servers\Subusers\UpdateSubuserRequest;
 
 class SubuserController extends ClientApiController
 {
@@ -36,6 +36,8 @@ class SubuserController extends ClientApiController
      */
     public function index(GetSubuserRequest $request, Server $server): array
     {
+        $server->loadMissing('subusers.user');
+
         return $this->fractal->collection($server->subusers)
             ->transformWith($this->getTransformer(SubuserTransformer::class))
             ->toArray();
@@ -56,9 +58,9 @@ class SubuserController extends ClientApiController
     /**
      * Create a new subuser for the given server.
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Service\Subuser\ServerSubuserExistsException
-     * @throws \Pterodactyl\Exceptions\Service\Subuser\UserIsServerOwnerException
+     * @throws \Raptor\Exceptions\Model\DataValidationException
+     * @throws \Raptor\Exceptions\Service\Subuser\ServerSubuserExistsException
+     * @throws \Raptor\Exceptions\Service\Subuser\UserIsServerOwnerException
      * @throws \Throwable
      */
     public function store(StoreSubuserRequest $request, Server $server): array
@@ -82,12 +84,12 @@ class SubuserController extends ClientApiController
     /**
      * Update a given subuser in the system for the server.
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Raptor\Exceptions\Model\DataValidationException
+     * @throws \Raptor\Exceptions\Repository\RecordNotFoundException
      */
     public function update(UpdateSubuserRequest $request, Server $server): array
     {
-        /** @var \Pterodactyl\Models\Subuser $subuser */
+        /** @var \Raptor\Models\Subuser $subuser */
         $subuser = $request->attributes->get('subuser');
 
         $permissions = $this->getDefaultPermissions($request);
@@ -129,7 +131,7 @@ class SubuserController extends ClientApiController
      */
     public function delete(DeleteSubuserRequest $request, Server $server): JsonResponse
     {
-        /** @var \Pterodactyl\Models\Subuser $subuser */
+        /** @var \Raptor\Models\Subuser $subuser */
         $subuser = $request->attributes->get('subuser');
 
         $log = Activity::event('server:subuser.delete')

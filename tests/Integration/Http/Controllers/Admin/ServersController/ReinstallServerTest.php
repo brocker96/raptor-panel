@@ -1,11 +1,11 @@
 <?php
 
-namespace Pterodactyl\Tests\Integration\Http\Controllers\Admin\ServersController;
+namespace Raptor\Tests\Integration\Http\Controllers\Admin\ServersController;
 
-use Pterodactyl\Models\User;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Tests\Integration\Http\HttpTestCase;
-use Pterodactyl\Repositories\Wings\DaemonServerRepository;
+use Raptor\Models\User;
+use Raptor\Models\Server;
+use Raptor\Tests\Integration\Http\HttpTestCase;
+use Raptor\Repositories\Wings\DaemonServerRepository;
 
 class ReinstallServerTest extends HttpTestCase
 {

@@ -1,12 +1,12 @@
 <?php
 
-namespace Pterodactyl\Console\Commands\Schedule;
+namespace Raptor\Console\Commands\Schedule;
 
 use Illuminate\Console\Command;
-use Pterodactyl\Models\Schedule;
+use Raptor\Models\Schedule;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Builder;
-use Pterodactyl\Services\Schedules\ProcessScheduleService;
+use Raptor\Services\Schedules\ProcessScheduleService;
 
 class ProcessRunnableCommand extends Command
 {

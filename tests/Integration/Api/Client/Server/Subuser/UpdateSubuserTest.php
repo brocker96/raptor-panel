@@ -1,13 +1,13 @@
 <?php
 
-namespace Pterodactyl\Tests\Integration\Api\Client\Server\Subuser;
+namespace Raptor\Tests\Integration\Api\Client\Server\Subuser;
 
-use Pterodactyl\Models\User;
-use Pterodactyl\Models\Subuser;
-use Pterodactyl\Models\Permission;
+use Raptor\Models\User;
+use Raptor\Models\Subuser;
+use Raptor\Models\Permission;
 use Illuminate\Support\Facades\Bus;
-use Pterodactyl\Jobs\RevokeSftpAccessJob;
-use Pterodactyl\Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
+use Raptor\Jobs\RevokeSftpAccessJob;
+use Raptor\Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
 
 class UpdateSubuserTest extends ClientApiIntegrationTestCase
 {

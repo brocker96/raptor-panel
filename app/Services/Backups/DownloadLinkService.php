@@ -1,13 +1,13 @@
 <?php
 
-namespace Pterodactyl\Services\Backups;
+namespace Raptor\Services\Backups;
 
 use Carbon\CarbonImmutable;
-use Pterodactyl\Models\User;
-use Pterodactyl\Enum\JwtScope;
-use Pterodactyl\Models\Backup;
-use Pterodactyl\Services\Nodes\NodeJWTService;
-use Pterodactyl\Extensions\Backups\BackupManager;
+use Raptor\Models\User;
+use Raptor\Enum\JwtScope;
+use Raptor\Models\Backup;
+use Raptor\Services\Nodes\NodeJWTService;
+use Raptor\Extensions\Backups\BackupManager;
 
 class DownloadLinkService
 {
@@ -47,7 +47,7 @@ class DownloadLinkService
      */
     protected function getS3BackupUrl(Backup $backup): string
     {
-        /** @var \Pterodactyl\Extensions\Filesystem\S3Filesystem $adapter */
+        /** @var \Raptor\Extensions\Filesystem\S3Filesystem $adapter */
         $adapter = $this->backupManager->adapter(Backup::ADAPTER_AWS_S3);
 
         $request = $adapter->getClient()->createPresignedRequest(

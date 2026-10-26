@@ -1,18 +1,18 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
+namespace Raptor\Http\Controllers\Api\Client\Servers;
 
-use Pterodactyl\Models\User;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Permission;
-use Pterodactyl\Models\ActivityLog;
+use Raptor\Models\User;
+use Raptor\Models\Server;
+use Raptor\Models\Permission;
+use Raptor\Models\ActivityLog;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Query\JoinClause;
-use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
-use Pterodactyl\Transformers\Api\Client\ActivityLogTransformer;
-use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
+use Raptor\Http\Requests\Api\Client\ClientApiRequest;
+use Raptor\Transformers\Api\Client\ActivityLogTransformer;
+use Raptor\Http\Controllers\Api\Client\ClientApiController;
 
 class ActivityLogController extends ClientApiController
 {

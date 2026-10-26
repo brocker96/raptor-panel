@@ -1,8 +1,8 @@
 <?php
 
-namespace Pterodactyl\Extensions\Laravel\Sanctum;
+namespace Raptor\Extensions\Laravel\Sanctum;
 
-use Pterodactyl\Models\ApiKey;
+use Raptor\Models\ApiKey;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Contracts\Support\Arrayable;
 

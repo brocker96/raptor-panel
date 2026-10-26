@@ -10,6 +10,7 @@ import { CloudDownloadIcon, CloudUploadIcon } from '@heroicons/react/solid';
 import { theme } from 'twin.macro';
 import ChartBlock from '@/components/server/console/ChartBlock';
 import Tooltip from '@/components/elements/tooltip/Tooltip';
+import parseStats from '@/plugins/parseStats';
 
 export default () => {
     const status = ServerContext.useStoreState((state) => state.status.value);
@@ -50,12 +51,9 @@ export default () => {
     }, [status]);
 
     useWebsocketEvent(SocketEvent.STATS, (data: string) => {
-        let values: any = {};
-        try {
-            values = JSON.parse(data);
-        } catch (e) {
-            return;
-        }
+        const values = parseStats(data);
+        if (!values) return;
+
         cpu.push(values.cpu_absolute);
         memory.push(Math.floor(values.memory_bytes / 1024 / 1024));
         network.push([

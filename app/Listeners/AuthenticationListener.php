@@ -1,13 +1,13 @@
 <?php
 
-namespace Pterodactyl\Listeners;
+namespace Raptor\Listeners;
 
-use Pterodactyl\Facades\Activity;
+use Raptor\Facades\Activity;
 use Illuminate\Auth\Events\Failed;
-use Pterodactyl\Events\Auth\DirectLogin;
+use Raptor\Events\Auth\DirectLogin;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Contracts\Events\Dispatcher;
-use Pterodactyl\Extensions\Illuminate\Events\Contracts\SubscribesToEvents;
+use Raptor\Extensions\Illuminate\Events\Contracts\SubscribesToEvents;
 
 class AuthenticationListener implements SubscribesToEvents
 {

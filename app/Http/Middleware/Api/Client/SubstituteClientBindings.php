@@ -1,8 +1,8 @@
 <?php
 
-namespace Pterodactyl\Http\Middleware\Api\Client;
+namespace Raptor\Http\Middleware\Api\Client;
 
-use Pterodactyl\Models\Server;
+use Raptor\Models\Server;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 
 class SubstituteClientBindings extends SubstituteBindings
@@ -25,7 +25,7 @@ class SubstituteClientBindings extends SubstituteBindings
         });
 
         $this->router->bind('user', function ($value, $route) {
-            /** @var \Pterodactyl\Models\Subuser $match */
+            /** @var \Raptor\Models\Subuser $match */
             $match = $route->parameter('server')
                 ->subusers()
                 ->whereRelation('user', 'uuid', '=', $value)

@@ -1,6 +1,6 @@
 <?php
 
-namespace Pterodactyl\Models;
+namespace Raptor\Models;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -66,7 +66,7 @@ class Subuser extends Model
     /**
      * Gets the server associated with a subuser.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\Pterodactyl\Models\Server, $this>
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\Raptor\Models\Server, $this>
      */
     public function server(): BelongsTo
     {
@@ -76,7 +76,7 @@ class Subuser extends Model
     /**
      * Gets the user associated with a subuser.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\Pterodactyl\Models\User, $this>
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\Raptor\Models\User, $this>
      */
     public function user(): BelongsTo
     {
@@ -86,7 +86,7 @@ class Subuser extends Model
     /**
      * Gets the permissions associated with a subuser.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\Pterodactyl\Models\Permission, $this>
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\Raptor\Models\Permission, $this>
      */
     public function permissions(): HasMany
     {

@@ -1,9 +1,9 @@
 <?php
 
-namespace Pterodactyl\Tests\Integration\Http\Controllers\Admin\ServersController;
+namespace Raptor\Tests\Integration\Http\Controllers\Admin\ServersController;
 
-use Pterodactyl\Models\User;
-use Pterodactyl\Tests\Integration\Http\HttpTestCase;
+use Raptor\Models\User;
+use Raptor\Tests\Integration\Http\HttpTestCase;
 
 class UpdateServerDetailsTest extends HttpTestCase
 {

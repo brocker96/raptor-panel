@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { Suspense, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import useEventListener from '@/plugins/useEventListener';
-import SearchModal from '@/components/dashboard/search/SearchModal';
+import { lazyWithPreload } from '@/lib/lazy';
 import Tooltip from '@/components/elements/tooltip/Tooltip';
+
+// The search modal is part of the navigation bar on every page, but only downloaded once needed.
+const SearchModal = lazyWithPreload(() => import('@/components/dashboard/search/SearchModal'));
 
 export default () => {
     const [visible, setVisible] = useState(false);
@@ -18,9 +21,18 @@ export default () => {
 
     return (
         <>
-            {visible && <SearchModal appear visible={visible} onDismissed={() => setVisible(false)} />}
+            {visible && (
+                <Suspense fallback={null}>
+                    <SearchModal appear visible={visible} onDismissed={() => setVisible(false)} />
+                </Suspense>
+            )}
             <Tooltip placement={'bottom'} content={'Search'}>
-                <div className={'navigation-link'} onClick={() => setVisible(true)}>
+                <div
+                    className={'navigation-link'}
+                    onClick={() => setVisible(true)}
+                    onMouseEnter={() => SearchModal.preload()}
+                    onTouchStart={() => SearchModal.preload()}
+                >
                     <FontAwesomeIcon icon={faSearch} />
                 </div>
             </Tooltip>

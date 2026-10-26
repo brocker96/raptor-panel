@@ -86,7 +86,7 @@ The project aims to preserve the security principles of Pterodactyl while improv
 >
 > The project is based on Pterodactyl's `1.0-develop` branch.
 >
-> Major changes, improvements, and new features are planned. The current codebase may still closely resemble the original Pterodactyl Panel.
+> Major changes, improvements, and new features are planned. The current codebase may still closely resemble the original Raptor Panel.
 >
 > Raptor Panel is not yet recommended for production environments.
 
@@ -158,7 +158,7 @@ Dedicated Raptor Panel documentation is planned.
 Until then, the original Pterodactyl documentation may be useful for understanding the underlying architecture.
 
 - [Pterodactyl Documentation](https://pterodactyl.io/)
-- [Pterodactyl Panel Installation](https://pterodactyl.io/panel/1.0/getting_started.html)
+- [Raptor Panel Installation](https://pterodactyl.io/panel/1.0/getting_started.html)
 - [Wings Documentation](https://pterodactyl.io/wings/1.0/installing.html)
 - [Pterodactyl GitHub](https://github.com/pterodactyl/panel)
 
@@ -204,7 +204,7 @@ Without Pterodactyl and its open-source community, Raptor Panel would not exist.
 
 ## 📜 License
 
-Raptor Panel is based on Pterodactyl Panel, which is distributed under the MIT License.
+Raptor Panel is based on Raptor Panel, which is distributed under the MIT License.
 
 Original Pterodactyl copyright:
 

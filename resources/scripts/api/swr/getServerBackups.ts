@@ -1,4 +1,4 @@
-import useSWR from 'swr';
+import { useResource } from '@/api/query';
 import http, { getPaginationSet, PaginatedResult } from '@/api/http';
 import { ServerBackup } from '@/api/server/types';
 import { rawDataToServerBackup } from '@/api/transformers';
@@ -18,13 +18,17 @@ export default () => {
     const { page } = useContext(Context);
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
 
-    return useSWR<BackupResponse>(['server:backups', uuid, page], async () => {
-        const { data } = await http.get(`/api/client/servers/${uuid}/backups`, { params: { page } });
+    return useResource<BackupResponse>(
+        ['server:backups', uuid, page],
+        async () => {
+            const { data } = await http.get(`/api/client/servers/${uuid}/backups`, { params: { page } });
 
-        return {
-            items: (data.data || []).map(rawDataToServerBackup),
-            pagination: getPaginationSet(data.meta.pagination),
-            backupCount: data.meta.backup_count,
-        };
-    });
+            return {
+                items: (data.data || []).map(rawDataToServerBackup),
+                pagination: getPaginationSet(data.meta.pagination),
+                backupCount: data.meta.backup_count,
+            };
+        },
+        { keepPrevious: true }
+    );
 };

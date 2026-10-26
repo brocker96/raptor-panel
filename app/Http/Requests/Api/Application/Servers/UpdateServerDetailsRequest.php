@@ -1,8 +1,8 @@
 <?php
 
-namespace Pterodactyl\Http\Requests\Api\Application\Servers;
+namespace Raptor\Http\Requests\Api\Application\Servers;
 
-use Pterodactyl\Models\Server;
+use Raptor\Models\Server;
 
 class UpdateServerDetailsRequest extends ServerWriteRequest
 {

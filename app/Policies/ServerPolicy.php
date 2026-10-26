@@ -1,9 +1,9 @@
 <?php
 
-namespace Pterodactyl\Policies;
+namespace Raptor\Policies;
 
-use Pterodactyl\Models\User;
-use Pterodactyl\Models\Server;
+use Raptor\Models\User;
+use Raptor\Models\Server;
 
 class ServerPolicy
 {

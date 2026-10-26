@@ -1,14 +1,14 @@
 <?php
 
-namespace Pterodactyl\Tests\Integration\Services\Users;
+namespace Raptor\Tests\Integration\Services\Users;
 
-use Pterodactyl\Models\User;
-use Pterodactyl\Models\Subuser;
+use Raptor\Models\User;
+use Raptor\Models\Subuser;
 use Illuminate\Support\Facades\Bus;
-use Pterodactyl\Jobs\RevokeSftpAccessJob;
-use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Services\Users\UserDeletionService;
-use Pterodactyl\Tests\Integration\IntegrationTestCase;
+use Raptor\Jobs\RevokeSftpAccessJob;
+use Raptor\Exceptions\DisplayException;
+use Raptor\Services\Users\UserDeletionService;
+use Raptor\Tests\Integration\IntegrationTestCase;
 
 class UserDeletionServiceTest extends IntegrationTestCase
 {

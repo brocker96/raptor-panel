@@ -1,18 +1,18 @@
 <?php
 
-namespace Pterodactyl\Models\Traits;
+namespace Raptor\Models\Traits;
 
 use Illuminate\Support\Str;
 use Laravel\Sanctum\Sanctum;
-use Pterodactyl\Models\ApiKey;
+use Raptor\Models\ApiKey;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Pterodactyl\Extensions\Laravel\Sanctum\NewAccessToken;
+use Raptor\Extensions\Laravel\Sanctum\NewAccessToken;
 
 /**
  * @template TToken of \Laravel\Sanctum\Contracts\HasAbilities
  *
- * @mixin \Pterodactyl\Models\Model
+ * @mixin \Raptor\Models\Model
  */
 trait HasAccessTokens
 {

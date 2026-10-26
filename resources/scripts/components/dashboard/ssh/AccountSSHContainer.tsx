@@ -15,10 +15,7 @@ import DeleteSSHKeyButton from '@/components/dashboard/ssh/DeleteSSHKeyButton';
 
 export default () => {
     const { clearAndAddHttpError } = useFlashKey('account');
-    const { data, isValidating, error } = useSSHKeys({
-        revalidateOnMount: true,
-        revalidateOnFocus: false,
-    });
+    const { data, isValidating, error } = useSSHKeys({ refetchOnWindowFocus: false });
 
     useEffect(() => {
         clearAndAddHttpError(error);

@@ -1,26 +1,26 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
+namespace Raptor\Http\Controllers\Api\Client\Servers;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Schedule;
+use Raptor\Models\Server;
+use Raptor\Models\Schedule;
 use Illuminate\Http\JsonResponse;
-use Pterodactyl\Facades\Activity;
-use Pterodactyl\Helpers\Utilities;
-use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Repositories\Eloquent\ScheduleRepository;
-use Pterodactyl\Services\Schedules\ProcessScheduleService;
-use Pterodactyl\Transformers\Api\Client\ScheduleTransformer;
-use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
+use Raptor\Facades\Activity;
+use Raptor\Helpers\Utilities;
+use Raptor\Exceptions\DisplayException;
+use Raptor\Repositories\Eloquent\ScheduleRepository;
+use Raptor\Services\Schedules\ProcessScheduleService;
+use Raptor\Transformers\Api\Client\ScheduleTransformer;
+use Raptor\Http\Controllers\Api\Client\ClientApiController;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Pterodactyl\Http\Requests\Api\Client\Servers\Schedules\ViewScheduleRequest;
-use Pterodactyl\Http\Requests\Api\Client\Servers\Schedules\StoreScheduleRequest;
-use Pterodactyl\Http\Requests\Api\Client\Servers\Schedules\DeleteScheduleRequest;
-use Pterodactyl\Http\Requests\Api\Client\Servers\Schedules\UpdateScheduleRequest;
-use Pterodactyl\Http\Requests\Api\Client\Servers\Schedules\TriggerScheduleRequest;
+use Raptor\Http\Requests\Api\Client\Servers\Schedules\ViewScheduleRequest;
+use Raptor\Http\Requests\Api\Client\Servers\Schedules\StoreScheduleRequest;
+use Raptor\Http\Requests\Api\Client\Servers\Schedules\DeleteScheduleRequest;
+use Raptor\Http\Requests\Api\Client\Servers\Schedules\UpdateScheduleRequest;
+use Raptor\Http\Requests\Api\Client\Servers\Schedules\TriggerScheduleRequest;
 
 class ScheduleController extends ClientApiController
 {
@@ -48,7 +48,7 @@ class ScheduleController extends ClientApiController
      * Store a new schedule for a server.
      *
      * @throws DisplayException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Raptor\Exceptions\Model\DataValidationException
      */
     public function store(StoreScheduleRequest $request, Server $server): array
     {
@@ -96,8 +96,8 @@ class ScheduleController extends ClientApiController
      * Updates a given schedule with the new data provided.
      *
      * @throws DisplayException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Raptor\Exceptions\Model\DataValidationException
+     * @throws \Raptor\Exceptions\Repository\RecordNotFoundException
      */
     public function update(UpdateScheduleRequest $request, Server $server, Schedule $schedule): array
     {

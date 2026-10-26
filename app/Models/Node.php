@@ -1,15 +1,15 @@
 <?php
 
-namespace Pterodactyl\Models;
+namespace Raptor\Models;
 
 use Illuminate\Support\Str;
 use Symfony\Component\Yaml\Yaml;
 use Illuminate\Container\Container;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Encryption\Encrypter;
-use Pterodactyl\Contracts\Models\Identifiable;
+use Raptor\Contracts\Models\Identifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Pterodactyl\Models\Traits\HasRealtimeIdentifier;
+use Raptor\Models\Traits\HasRealtimeIdentifier;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
@@ -38,9 +38,9 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property Location $location
- * @property \Pterodactyl\Models\Mount[]|\Illuminate\Database\Eloquent\Collection $mounts
- * @property \Pterodactyl\Models\Server[]|\Illuminate\Database\Eloquent\Collection $servers
- * @property \Pterodactyl\Models\Allocation[]|\Illuminate\Database\Eloquent\Collection $allocations
+ * @property \Raptor\Models\Mount[]|\Illuminate\Database\Eloquent\Collection $mounts
+ * @property \Raptor\Models\Server[]|\Illuminate\Database\Eloquent\Collection $servers
+ * @property \Raptor\Models\Allocation[]|\Illuminate\Database\Eloquent\Collection $allocations
  */
 #[Attributes\Identifiable('node')]
 class Node extends Model implements Identifiable
@@ -199,7 +199,7 @@ class Node extends Model implements Identifiable
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough<\Pterodactyl\Models\Mount, \Pterodactyl\Models\MountNode, $this>
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough<\Raptor\Models\Mount, \Raptor\Models\MountNode, $this>
      */
     public function mounts(): HasManyThrough
     {
@@ -209,7 +209,7 @@ class Node extends Model implements Identifiable
     /**
      * Gets the location associated with a node.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\Pterodactyl\Models\Location, $this>
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\Raptor\Models\Location, $this>
      */
     public function location(): BelongsTo
     {
@@ -219,7 +219,7 @@ class Node extends Model implements Identifiable
     /**
      * Gets the servers associated with a node.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\Pterodactyl\Models\Server, $this>
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\Raptor\Models\Server, $this>
      */
     public function servers(): HasMany
     {
@@ -229,7 +229,7 @@ class Node extends Model implements Identifiable
     /**
      * Gets the allocations associated with a node.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\Pterodactyl\Models\Allocation, $this>
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\Raptor\Models\Allocation, $this>
      */
     public function allocations(): HasMany
     {

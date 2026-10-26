@@ -1,8 +1,8 @@
 <?php
 
-namespace Pterodactyl\Transformers\Api\Client;
+namespace Raptor\Transformers\Api\Client;
 
-use Pterodactyl\Models\Subuser;
+use Raptor\Models\Subuser;
 
 class SubuserTransformer extends BaseClientTransformer
 {
@@ -17,7 +17,7 @@ class SubuserTransformer extends BaseClientTransformer
     /**
      * Transforms a subuser into a model that can be shown to a front-end user.
      *
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws \Raptor\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function transform(Subuser $model): array
     {

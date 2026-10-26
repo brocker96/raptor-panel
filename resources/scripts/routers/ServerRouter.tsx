@@ -18,7 +18,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
 import ConflictStateRenderer from '@/components/server/ConflictStateRenderer';
 import PermissionRoute from '@/components/elements/PermissionRoute';
-import routes from '@/routers/routes';
+import routes, { preload } from '@/routers/routes';
+import { whenIdle } from '@/lib/lazy';
 
 export default () => {
     const params = useParams<{ id: string }>();
@@ -45,6 +46,18 @@ export default () => {
         },
         []
     );
+
+    // Once the server has loaded and the browser is idle, download the most used screens ahead of
+    // time so that switching to them does not show a loading spinner.
+    useEffect(() => {
+        if (!uuid) return;
+
+        return whenIdle(() => {
+            routes.server
+                .filter((route) => ['/', '/files', '/files/:action'].includes(route.path))
+                .forEach((route) => route.component.preload().catch(() => undefined));
+        });
+    }, [uuid]);
 
     useEffect(() => {
         setError('');
@@ -78,12 +91,17 @@ export default () => {
                                     .map((route) =>
                                         route.permission ? (
                                             <Can key={route.path} action={route.permission} matchAny>
-                                                <NavLink to={to(route.path)} end={route.exact}>
+                                                <NavLink to={to(route.path)} end={route.exact} {...preload(route)}>
                                                     {route.name}
                                                 </NavLink>
                                             </Can>
                                         ) : (
-                                            <NavLink key={route.path} to={to(route.path)} end={route.exact}>
+                                            <NavLink
+                                                key={route.path}
+                                                to={to(route.path)}
+                                                end={route.exact}
+                                                {...preload(route)}
+                                            >
                                                 {route.name}
                                             </NavLink>
                                         )

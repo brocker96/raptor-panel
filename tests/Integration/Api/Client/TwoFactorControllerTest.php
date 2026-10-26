@@ -1,12 +1,12 @@
 <?php
 
-namespace Pterodactyl\Tests\Integration\Api\Client;
+namespace Raptor\Tests\Integration\Api\Client;
 
 use Carbon\Carbon;
-use Pterodactyl\Models\User;
+use Raptor\Models\User;
 use Illuminate\Http\Response;
 use PragmaRX\Google2FA\Google2FA;
-use Pterodactyl\Models\RecoveryToken;
+use Raptor\Models\RecoveryToken;
 use PHPUnit\Framework\ExpectationFailedException;
 
 class TwoFactorControllerTest extends ClientApiIntegrationTestCase

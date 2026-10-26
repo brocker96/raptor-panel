@@ -5,6 +5,7 @@ import { SearchAddon } from '@xterm/addon-search';
 import { WebLinksAddon } from '@xterm/addon-web-links';
 import { Unicode11Addon } from '@xterm/addon-unicode11';
 import { ScrollDownHelperAddon } from '@/plugins/XtermScrollDownHelperAddon';
+import TerminalWriteBuffer from '@/plugins/TerminalWriteBuffer';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import { ServerContext } from '@/state/server';
 import { usePermissions } from '@/plugins/usePermissions';
@@ -55,7 +56,7 @@ const terminalProps: ITerminalOptions & ITerminalInitOnlyOptions = {
     theme: theme,
 };
 
-const TERMINAL_PRELUDE = '\u001b[1m\u001b[33mcontainer@pterodactyl~ \u001b[0m';
+const TERMINAL_PRELUDE = '\u001b[1m\u001b[33mcontainer@raptor~ \u001b[0m';
 
 export default () => {
     const ref = useRef<HTMLDivElement>(null);
@@ -85,25 +86,26 @@ export default () => {
     const [searchVisible, setSearchVisible] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
 
+    // Output is batched and written to the terminal at most once per frame.
+    const output = useMemo(() => new TerminalWriteBuffer((data) => terminal.write(data)), [terminal]);
+
     const handleConsoleOutput = (line: string, prelude = false) =>
-        terminal.writeln((prelude ? TERMINAL_PRELUDE : '') + line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m');
+        output.push((prelude ? TERMINAL_PRELUDE : '') + line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m');
 
     const handleTransferStatus = (status: string) => {
         switch (status) {
             // Sent by either the source or target node if a failure occurs.
             case 'failure':
-                terminal.writeln(TERMINAL_PRELUDE + 'Transfer has failed.\u001b[0m');
+                output.push(TERMINAL_PRELUDE + 'Transfer has failed.\u001b[0m');
                 return;
         }
     };
 
     const handleDaemonErrorOutput = (line: string) =>
-        terminal.writeln(
-            TERMINAL_PRELUDE + '\u001b[1m\u001b[41m' + line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m'
-        );
+        output.push(TERMINAL_PRELUDE + '\u001b[1m\u001b[41m' + line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m');
 
     const handlePowerChangeEvent = (state: string) =>
-        terminal.writeln(TERMINAL_PRELUDE + 'Server marked as ' + state + '...\u001b[0m');
+        output.push(TERMINAL_PRELUDE + 'Server marked as ' + state + '...\u001b[0m');
 
     const setCommandFromHistory = (index: number) => {
         setHistoryIndex(index);
@@ -235,7 +237,13 @@ export default () => {
         };
     }, [terminal]);
 
-    useEffect(() => () => terminal.dispose(), [terminal]);
+    useEffect(
+        () => () => {
+            output.clear();
+            terminal.dispose();
+        },
+        [terminal]
+    );
 
     useEffect(() => {
         const listeners: Record<string, (s: string) => void> = {
@@ -251,6 +259,7 @@ export default () => {
         if (connected && instance) {
             // Do not clear the console if the server is being transferred.
             if (!isTransferring) {
+                output.clear();
                 terminal.clear();
             }
 

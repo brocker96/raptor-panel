@@ -1,8 +1,8 @@
 <?php
 
-namespace Pterodactyl\Events\User;
+namespace Raptor\Events\User;
 
-use Pterodactyl\Models\User;
+use Raptor\Models\User;
 use Illuminate\Foundation\Events\Dispatchable;
 
 final class PasswordChanged

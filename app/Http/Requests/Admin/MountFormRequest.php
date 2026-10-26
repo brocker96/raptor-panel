@@ -1,8 +1,8 @@
 <?php
 
-namespace Pterodactyl\Http\Requests\Admin;
+namespace Raptor\Http\Requests\Admin;
 
-use Pterodactyl\Models\Mount;
+use Raptor\Models\Mount;
 
 class MountFormRequest extends AdminFormRequest
 {

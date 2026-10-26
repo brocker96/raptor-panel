@@ -14,6 +14,9 @@ import { usePermissions } from '@/plugins/usePermissions';
 import { join } from 'pathe';
 import { bytesToString } from '@/lib/formatters';
 import styles from './style.module.css';
+import routes, { preload } from '@/routers/routes';
+
+const editorRoute = routes.server.find((route) => route.path === '/files/:action')!;
 
 const Clickable = memo(({ file, children }: { file: FileObject; children: React.ReactNode }) => {
     const [canRead] = usePermissions(['file.read']);
@@ -26,6 +29,7 @@ const Clickable = memo(({ file, children }: { file: FileObject; children: React.
     ) : (
         <NavLink
             className={styles.details}
+            {...(file.isFile ? preload(editorRoute) : {})}
             to={`/server/${id}/files${file.isFile ? '/edit' : ''}#${encodePathSegments(join(directory, file.name))}`}
         >
             {children}

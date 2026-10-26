@@ -1,9 +1,9 @@
 <?php
 
-namespace Pterodactyl\Exceptions\Transformer;
+namespace Raptor\Exceptions\Transformer;
 
-use Pterodactyl\Exceptions\PterodactylException;
+use Raptor\Exceptions\RaptorException;
 
-class InvalidTransformerLevelException extends PterodactylException
+class InvalidTransformerLevelException extends RaptorException
 {
 }

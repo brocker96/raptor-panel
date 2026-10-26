@@ -1,21 +1,21 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
+namespace Raptor\Http\Controllers\Api\Client\Servers;
 
 use Illuminate\Http\Response;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Database;
-use Pterodactyl\Facades\Activity;
-use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Services\Databases\DatabasePasswordService;
-use Pterodactyl\Transformers\Api\Client\DatabaseTransformer;
-use Pterodactyl\Services\Databases\DatabaseManagementService;
-use Pterodactyl\Services\Databases\DeployServerDatabaseService;
-use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
-use Pterodactyl\Http\Requests\Api\Client\Servers\Databases\GetDatabasesRequest;
-use Pterodactyl\Http\Requests\Api\Client\Servers\Databases\StoreDatabaseRequest;
-use Pterodactyl\Http\Requests\Api\Client\Servers\Databases\DeleteDatabaseRequest;
-use Pterodactyl\Http\Requests\Api\Client\Servers\Databases\RotatePasswordRequest;
+use Raptor\Models\Server;
+use Raptor\Models\Database;
+use Raptor\Facades\Activity;
+use Raptor\Exceptions\DisplayException;
+use Raptor\Services\Databases\DatabasePasswordService;
+use Raptor\Transformers\Api\Client\DatabaseTransformer;
+use Raptor\Services\Databases\DatabaseManagementService;
+use Raptor\Services\Databases\DeployServerDatabaseService;
+use Raptor\Http\Controllers\Api\Client\ClientApiController;
+use Raptor\Http\Requests\Api\Client\Servers\Databases\GetDatabasesRequest;
+use Raptor\Http\Requests\Api\Client\Servers\Databases\StoreDatabaseRequest;
+use Raptor\Http\Requests\Api\Client\Servers\Databases\DeleteDatabaseRequest;
+use Raptor\Http\Requests\Api\Client\Servers\Databases\RotatePasswordRequest;
 
 class DatabaseController extends ClientApiController
 {
@@ -44,8 +44,8 @@ class DatabaseController extends ClientApiController
      * Create a new database for the given server and return it.
      *
      * @throws \Throwable
-     * @throws \Pterodactyl\Exceptions\Service\Database\TooManyDatabasesException
-     * @throws \Pterodactyl\Exceptions\Service\Database\DatabaseClientFeatureNotEnabledException
+     * @throws \Raptor\Exceptions\Service\Database\TooManyDatabasesException
+     * @throws \Raptor\Exceptions\Service\Database\DatabaseClientFeatureNotEnabledException
      */
     public function store(StoreDatabaseRequest $request, Server $server): array
     {
@@ -89,7 +89,7 @@ class DatabaseController extends ClientApiController
     /**
      * Removes a database from the server.
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Raptor\Exceptions\Repository\RecordNotFoundException
      */
     public function delete(DeleteDatabaseRequest $request, Server $server, Database $database): Response
     {

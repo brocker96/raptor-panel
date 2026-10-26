@@ -1,17 +1,17 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Api\Client;
+namespace Raptor\Http\Controllers\Api\Client;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Http\JsonResponse;
-use Pterodactyl\Facades\Activity;
+use Raptor\Facades\Activity;
 use Illuminate\Support\Facades\RateLimiter;
-use Pterodactyl\Services\Users\UserUpdateService;
-use Pterodactyl\Transformers\Api\Client\AccountTransformer;
-use Pterodactyl\Http\Requests\Api\Client\Account\UpdateEmailRequest;
-use Pterodactyl\Http\Requests\Api\Client\Account\UpdatePasswordRequest;
+use Raptor\Services\Users\UserUpdateService;
+use Raptor\Transformers\Api\Client\AccountTransformer;
+use Raptor\Http\Requests\Api\Client\Account\UpdateEmailRequest;
+use Raptor\Http\Requests\Api\Client\Account\UpdatePasswordRequest;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 
 class AccountController extends ClientApiController

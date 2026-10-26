@@ -1,11 +1,11 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Api\Application\Nodes;
+namespace Raptor\Http\Controllers\Api\Application\Nodes;
 
-use Pterodactyl\Models\Node;
+use Raptor\Models\Node;
 use Illuminate\Http\JsonResponse;
-use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
-use Pterodactyl\Http\Requests\Api\Application\Nodes\GetNodeConfigurationRequest;
+use Raptor\Http\Controllers\Api\Application\ApplicationApiController;
+use Raptor\Http\Requests\Api\Application\Nodes\GetNodeConfigurationRequest;
 
 class NodeConfigurationController extends ApplicationApiController
 {

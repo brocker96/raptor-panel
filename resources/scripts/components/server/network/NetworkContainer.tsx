@@ -21,11 +21,9 @@ const NetworkContainer = () => {
     const setServerFromState = ServerContext.useStoreActions((actions) => actions.server.setServerFromState);
 
     const { clearFlashes, clearAndAddHttpError } = useFlashKey('server:network');
-    const { data, error, mutate } = getServerAllocations();
-
-    useEffect(() => {
-        mutate(allocations);
-    }, []);
+    // The allocations already known from the server details are rendered right away while the
+    // latest list is fetched.
+    const { data, error, mutate } = getServerAllocations(allocations);
 
     useEffect(() => {
         clearAndAddHttpError(error);

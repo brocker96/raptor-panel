@@ -1,11 +1,11 @@
 <?php
 
-namespace Pterodactyl\Http\Middleware;
+namespace Raptor\Http\Middleware;
 
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Prologue\Alerts\AlertsMessageBag;
-use Pterodactyl\Exceptions\Http\TwoFactorAuthRequiredException;
+use Raptor\Exceptions\Http\TwoFactorAuthRequiredException;
 
 class RequireTwoFactorAuthentication
 {
@@ -43,7 +43,7 @@ class RequireTwoFactorAuthentication
             return $next($request);
         }
 
-        $level = (int) config('pterodactyl.auth.2fa_required');
+        $level = (int) config('raptor.auth.2fa_required');
         // If this setting is not configured, or the user is already using 2FA then we can just
         // send them right through, nothing else needs to be checked.
         //

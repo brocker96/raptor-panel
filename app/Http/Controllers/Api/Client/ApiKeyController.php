@@ -1,15 +1,15 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Api\Client;
+namespace Raptor\Http\Controllers\Api\Client;
 
-use Pterodactyl\Models\ApiKey;
+use Raptor\Models\ApiKey;
 use Illuminate\Http\JsonResponse;
-use Pterodactyl\Facades\Activity;
+use Raptor\Facades\Activity;
 use Illuminate\Support\Facades\DB;
-use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
-use Pterodactyl\Transformers\Api\Client\ApiKeyTransformer;
-use Pterodactyl\Http\Requests\Api\Client\Account\StoreApiKeyRequest;
+use Raptor\Exceptions\DisplayException;
+use Raptor\Http\Requests\Api\Client\ClientApiRequest;
+use Raptor\Transformers\Api\Client\ApiKeyTransformer;
+use Raptor\Http\Requests\Api\Client\Account\StoreApiKeyRequest;
 
 class ApiKeyController extends ClientApiController
 {

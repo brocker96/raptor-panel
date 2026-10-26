@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useRef, useState } from 'react';
+import React, { memo, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEthernet, faHdd, faMemory, faMicrochip, faServer } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
@@ -10,6 +10,8 @@ import GreyRowBox from '@/components/elements/GreyRowBox';
 import Spinner from '@/components/elements/Spinner';
 import styled from 'styled-components/macro';
 import isEqual from 'react-fast-compare';
+import { queryClient, useResource } from '@/api/query';
+import useInView from '@/plugins/useInView';
 
 // Determines if the current value is in an alarm threshold so we can show it in red rather
 // than the more faded default style.
@@ -47,35 +49,33 @@ const StatusIndicatorBox = styled(GreyRowBox)<{ $status: ServerPowerState | unde
     }
 `;
 
-type Timer = ReturnType<typeof setInterval>;
-
 export default ({ server, className }: { server: Server; className?: string }) => {
-    const interval = useRef<Timer>(null) as React.MutableRefObject<Timer>;
-    const [isSuspended, setIsSuspended] = useState(server.status === 'suspended');
-    const [stats, setStats] = useState<ServerStats | null>(null);
+    const ref = useRef<HTMLAnchorElement>(null);
+    const inView = useInView(ref);
+    const suspendedByStatus = server.status === 'suspended';
 
-    const getStats = () =>
-        getServerResourceUsage(server.uuid)
-            .then((data) => setStats(data))
-            .catch((error) => console.error(error));
+    // Resource usage is refreshed every 30 seconds, but only for rows that are visible on the screen
+    // and while the browser tab is in the foreground. There is no need to waste a request on a
+    // suspended server, or one whose node is under maintenance.
+    const { data } = useResource<ServerStats>(
+        ['server:resources', server.uuid],
+        (signal) => getServerResourceUsage(server.uuid, signal),
+        {
+            enabled: inView && !suspendedByStatus && !server.isNodeUnderMaintenance,
+            staleTime: 25_000,
+            refetchInterval: 30_000,
+        }
+    );
+    const stats = data ?? null;
+    const isSuspended = stats?.isSuspended || suspendedByStatus;
 
+    // Disabling a query does not stop a request that is already in flight, so explicitly cancel it
+    // (aborting the HTTP request through its signal) once the row scrolls out of view.
     useEffect(() => {
-        setIsSuspended(stats?.isSuspended || server.status === 'suspended');
-    }, [stats?.isSuspended, server.status]);
-
-    useEffect(() => {
-        // Don't waste a HTTP request if there is nothing important to show to the user because
-        // the server is suspended.
-        if (isSuspended || server.isNodeUnderMaintenance) return;
-
-        getStats().then(() => {
-            interval.current = setInterval(() => getStats(), 30000);
-        });
-
-        return () => {
-            interval.current && clearInterval(interval.current);
-        };
-    }, [isSuspended, server.isNodeUnderMaintenance]);
+        if (!inView) {
+            queryClient.cancelQueries({ queryKey: ['server:resources', server.uuid] });
+        }
+    }, [inView, server.uuid]);
 
     const alarms = { cpu: false, memory: false, disk: false };
     if (stats) {
@@ -89,7 +89,13 @@ export default ({ server, className }: { server: Server; className?: string }) =
     const cpuLimit = server.limits.cpu !== 0 ? server.limits.cpu + ' %' : 'Unlimited';
 
     return (
-        <StatusIndicatorBox as={Link} to={`/server/${server.id}`} className={className} $status={stats?.status}>
+        <StatusIndicatorBox
+            as={Link}
+            ref={ref}
+            to={`/server/${server.id}`}
+            className={className}
+            $status={stats?.status}
+        >
             <div css={tw`flex items-center col-span-12 sm:col-span-5 lg:col-span-6`}>
                 <div className={'icon mr-4'}>
                     <FontAwesomeIcon icon={faServer} />

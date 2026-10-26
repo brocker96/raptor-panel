@@ -1,18 +1,18 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Auth;
+namespace Raptor\Http\Controllers\Auth;
 
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 use Carbon\CarbonInterface;
-use Pterodactyl\Models\User;
+use Raptor\Models\User;
 use Illuminate\Http\JsonResponse;
 use PragmaRX\Google2FA\Google2FA;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Pterodactyl\Events\Auth\ProvidedAuthenticationToken;
-use Pterodactyl\Http\Requests\Auth\LoginCheckpointRequest;
+use Raptor\Events\Auth\ProvidedAuthenticationToken;
+use Raptor\Http\Requests\Auth\LoginCheckpointRequest;
 use Illuminate\Contracts\Validation\Factory as ValidationFactory;
 
 class LoginCheckpointController extends AbstractLoginController
@@ -79,7 +79,7 @@ class LoginCheckpointController extends AbstractLoginController
                 $decrypted,
                 $request->input('authentication_code') ?? '',
                 $oldTimestamp,
-                config('pterodactyl.auth.2fa.window') ?? 1,
+                config('raptor.auth.2fa.window') ?? 1,
             );
 
             if ($verified !== false) {

@@ -1,15 +1,15 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
+namespace Raptor\Http\Controllers\Api\Client\Servers;
 
 use Carbon\CarbonImmutable;
-use Pterodactyl\Models\User;
-use Pterodactyl\Enum\JwtScope;
-use Pterodactyl\Models\Server;
+use Raptor\Models\User;
+use Raptor\Enum\JwtScope;
+use Raptor\Models\Server;
 use Illuminate\Http\JsonResponse;
-use Pterodactyl\Services\Nodes\NodeJWTService;
-use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
-use Pterodactyl\Http\Requests\Api\Client\Servers\Files\UploadFileRequest;
+use Raptor\Services\Nodes\NodeJWTService;
+use Raptor\Http\Controllers\Api\Client\ClientApiController;
+use Raptor\Http\Requests\Api\Client\Servers\Files\UploadFileRequest;
 
 class FileUploadController extends ClientApiController
 {

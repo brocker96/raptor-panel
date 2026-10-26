@@ -1,12 +1,12 @@
 <?php
 
-namespace Pterodactyl\Facades;
+namespace Raptor\Facades;
 
 use Illuminate\Support\Facades\Facade;
-use Pterodactyl\Services\Activity\ActivityLogTargetableService;
+use Raptor\Services\Activity\ActivityLogTargetableService;
 
 /**
- * @mixin \Pterodactyl\Services\Activity\ActivityLogTargetableService
+ * @mixin \Raptor\Services\Activity\ActivityLogTargetableService
  */
 class LogTarget extends Facade
 {

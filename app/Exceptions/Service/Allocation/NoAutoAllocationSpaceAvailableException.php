@@ -1,8 +1,8 @@
 <?php
 
-namespace Pterodactyl\Exceptions\Service\Allocation;
+namespace Raptor\Exceptions\Service\Allocation;
 
-use Pterodactyl\Exceptions\DisplayException;
+use Raptor\Exceptions\DisplayException;
 
 class NoAutoAllocationSpaceAvailableException extends DisplayException
 {

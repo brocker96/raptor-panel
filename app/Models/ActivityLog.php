@@ -1,21 +1,21 @@
 <?php
 
-namespace Pterodactyl\Models;
+namespace Raptor\Models;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Event;
-use Pterodactyl\Events\ActivityLogged;
+use Raptor\Events\ActivityLogged;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\MassPrunable;
-use Pterodactyl\Contracts\Models\Identifiable;
+use Raptor\Contracts\Models\Identifiable;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Pterodactyl\Models\Traits\HasRealtimeIdentifier;
+use Raptor\Models\Traits\HasRealtimeIdentifier;
 use Illuminate\Database\Eloquent\Model as IlluminateModel;
 
 /**
- * \Pterodactyl\Models\ActivityLog.
+ * \Raptor\Models\ActivityLog.
  *
  * @property int $id
  * @property string|null $batch
@@ -28,7 +28,7 @@ use Illuminate\Database\Eloquent\Model as IlluminateModel;
  * @property \Illuminate\Support\Collection|null $properties
  * @property Carbon $timestamp
  * @property IlluminateModel|\Eloquent $actor
- * @property \Illuminate\Database\Eloquent\Collection<int, \Pterodactyl\Models\ActivityLogSubject> $subjects
+ * @property \Illuminate\Database\Eloquent\Collection<int, \Raptor\Models\ActivityLogSubject> $subjects
  * @property int|null $subjects_count
  * @property ApiKey|null $apiKey
  *
@@ -100,7 +100,7 @@ class ActivityLog extends Model implements Identifiable
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\Pterodactyl\Models\ActivityLogSubject, $this>
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\Raptor\Models\ActivityLogSubject, $this>
      */
     public function subjects(): HasMany
     {
@@ -108,7 +108,7 @@ class ActivityLog extends Model implements Identifiable
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne<\Pterodactyl\Models\ApiKey, $this>
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne<\Raptor\Models\ApiKey, $this>
      */
     public function apiKey(): HasOne
     {

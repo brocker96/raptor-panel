@@ -6,7 +6,7 @@
 @endsection
 
 @section('content-header')
-    <h1>Advanced Settings<small>Configure advanced settings for Pterodactyl.</small></h1>
+    <h1>Advanced Settings<small>Configure advanced settings for Raptor Panel.</small></h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.index') }}">Admin</a></li>
         <li class="active">Settings</li>
@@ -68,14 +68,14 @@
                             <div class="form-group col-md-6">
                                 <label class="control-label">Connection Timeout</label>
                                 <div>
-                                    <input type="number" required class="form-control" name="pterodactyl:guzzle:connect_timeout" value="{{ old('pterodactyl:guzzle:connect_timeout', config('pterodactyl.guzzle.connect_timeout')) }}">
+                                    <input type="number" required class="form-control" name="raptor:guzzle:connect_timeout" value="{{ old('raptor:guzzle:connect_timeout', config('raptor.guzzle.connect_timeout')) }}">
                                     <p class="text-muted small">The amount of time in seconds to wait for a connection to be opened before throwing an error.</p>
                                 </div>
                             </div>
                             <div class="form-group col-md-6">
                                 <label class="control-label">Request Timeout</label>
                                 <div>
-                                    <input type="number" required class="form-control" name="pterodactyl:guzzle:timeout" value="{{ old('pterodactyl:guzzle:timeout', config('pterodactyl.guzzle.timeout')) }}">
+                                    <input type="number" required class="form-control" name="raptor:guzzle:timeout" value="{{ old('raptor:guzzle:timeout', config('raptor.guzzle.timeout')) }}">
                                     <p class="text-muted small">The amount of time in seconds to wait for a request to be completed before throwing an error.</p>
                                 </div>
                             </div>
@@ -91,9 +91,9 @@
                             <div class="form-group col-md-4">
                                 <label class="control-label">Status</label>
                                 <div>
-                                    <select class="form-control" name="pterodactyl:client_features:allocations:enabled">
+                                    <select class="form-control" name="raptor:client_features:allocations:enabled">
                                         <option value="false">Disabled</option>
-                                        <option value="true" @if(old('pterodactyl:client_features:allocations:enabled', config('pterodactyl.client_features.allocations.enabled'))) selected @endif>Enabled</option>
+                                        <option value="true" @if(old('raptor:client_features:allocations:enabled', config('raptor.client_features.allocations.enabled'))) selected @endif>Enabled</option>
                                     </select>
                                     <p class="text-muted small">If enabled users will have the option to automatically create new allocations for their server via the frontend.</p>
                                 </div>
@@ -101,14 +101,14 @@
                             <div class="form-group col-md-4">
                                 <label class="control-label">Starting Port</label>
                                 <div>
-                                    <input type="number" class="form-control" name="pterodactyl:client_features:allocations:range_start" value="{{ old('pterodactyl:client_features:allocations:range_start', config('pterodactyl.client_features.allocations.range_start')) }}">
+                                    <input type="number" class="form-control" name="raptor:client_features:allocations:range_start" value="{{ old('raptor:client_features:allocations:range_start', config('raptor.client_features.allocations.range_start')) }}">
                                     <p class="text-muted small">The starting port in the range that can be automatically allocated.</p>
                                 </div>
                             </div>
                             <div class="form-group col-md-4">
                                 <label class="control-label">Ending Port</label>
                                 <div>
-                                    <input type="number" class="form-control" name="pterodactyl:client_features:allocations:range_end" value="{{ old('pterodactyl:client_features:allocations:range_end', config('pterodactyl.client_features.allocations.range_end')) }}">
+                                    <input type="number" class="form-control" name="raptor:client_features:allocations:range_end" value="{{ old('raptor:client_features:allocations:range_end', config('raptor.client_features.allocations.range_end')) }}">
                                     <p class="text-muted small">The ending port in the range that can be automatically allocated.</p>
                                 </div>
                             </div>

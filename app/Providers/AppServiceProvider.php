@@ -1,8 +1,8 @@
 <?php
 
-namespace Pterodactyl\Providers;
+namespace Raptor\Providers;
 
-use Pterodactyl\Models;
+use Raptor\Models;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Pagination\Paginator;
@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
-use Pterodactyl\Extensions\Themes\Theme;
+use Raptor\Extensions\Themes\Theme;
 use Illuminate\Database\Eloquent\Relations\Relation;
 
 class AppServiceProvider extends ServiceProvider
@@ -58,7 +58,7 @@ class AppServiceProvider extends ServiceProvider
     {
         // Only load the settings service provider if the environment
         // is configured to allow it.
-        if (!config('pterodactyl.load_environment_only', false) && $this->app->environment() !== 'testing') {
+        if (!config('raptor.load_environment_only', false) && $this->app->environment() !== 'testing') {
             $this->app->register(SettingsServiceProvider::class);
         }
 

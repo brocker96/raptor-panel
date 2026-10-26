@@ -1,5 +1,5 @@
 {
-    "name": "pterodactyl/panel",
+    "name": "xvmandz/raptor-panel",
     "description": "The free, open-source game management panel. Supporting Minecraft, Spigot, BungeeCord, and SRCDS servers.",
     "license": "MIT",
     "authors": [
@@ -67,17 +67,18 @@
     },
     "autoload": {
         "files": [
-            "app/helpers.php"
+            "app/helpers.php",
+            "app/legacy-namespace.php"
         ],
         "psr-4": {
-            "Pterodactyl\\": "app/",
+            "Raptor\\": "app/",
             "Database\\Factories\\": "database/Factories/",
             "Database\\Seeders\\": "database/Seeders/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Pterodactyl\\Tests\\": "tests/"
+            "Raptor\\Tests\\": "tests/"
         }
     },
     "scripts": {

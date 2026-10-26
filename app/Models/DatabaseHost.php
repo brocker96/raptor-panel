@@ -1,6 +1,6 @@
 <?php
 
-namespace Pterodactyl\Models;
+namespace Raptor\Models;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -72,7 +72,7 @@ class DatabaseHost extends Model
     /**
      * Gets the node associated with a database host.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\Pterodactyl\Models\Node, $this>
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\Raptor\Models\Node, $this>
      */
     public function node(): BelongsTo
     {
@@ -82,7 +82,7 @@ class DatabaseHost extends Model
     /**
      * Gets the databases associated with this host.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\Pterodactyl\Models\Database, $this>
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\Raptor\Models\Database, $this>
      */
     public function databases(): HasMany
     {

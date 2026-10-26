@@ -1,11 +1,11 @@
 <?php
 
-namespace Pterodactyl\Tests\Integration\Api\Application\Nodes;
+namespace Raptor\Tests\Integration\Api\Application\Nodes;
 
-use Pterodactyl\Models\Node;
-use Pterodactyl\Models\Location;
-use Pterodactyl\Services\Acl\Api\AdminAcl;
-use Pterodactyl\Tests\Integration\Api\Application\ApplicationApiIntegrationTestCase;
+use Raptor\Models\Node;
+use Raptor\Models\Location;
+use Raptor\Services\Acl\Api\AdminAcl;
+use Raptor\Tests\Integration\Api\Application\ApplicationApiIntegrationTestCase;
 
 class NodeConfigurationControllerTest extends ApplicationApiIntegrationTestCase
 {

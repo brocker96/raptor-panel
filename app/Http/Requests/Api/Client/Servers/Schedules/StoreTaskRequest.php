@@ -1,11 +1,11 @@
 <?php
 
-namespace Pterodactyl\Http\Requests\Api\Client\Servers\Schedules;
+namespace Raptor\Http\Requests\Api\Client\Servers\Schedules;
 
-use Pterodactyl\Models\Task;
-use Pterodactyl\Models\Server;
+use Raptor\Models\Task;
+use Raptor\Models\Server;
 use Illuminate\Validation\Rule;
-use Pterodactyl\Models\Permission;
+use Raptor\Models\Permission;
 
 class StoreTaskRequest extends ViewScheduleRequest
 {

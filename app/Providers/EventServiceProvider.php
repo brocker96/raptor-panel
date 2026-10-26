@@ -1,20 +1,20 @@
 <?php
 
-namespace Pterodactyl\Providers;
+namespace Raptor\Providers;
 
-use Pterodactyl\Models\User;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Subuser;
-use Pterodactyl\Models\EggVariable;
-use Pterodactyl\Observers\UserObserver;
-use Pterodactyl\Observers\ServerObserver;
-use Pterodactyl\Observers\SubuserObserver;
-use Pterodactyl\Listeners\TwoFactorListener;
-use Pterodactyl\Listeners\RevocationListener;
-use Pterodactyl\Observers\EggVariableObserver;
-use Pterodactyl\Listeners\AuthenticationListener;
-use Pterodactyl\Events\Server\Installed as ServerInstalledEvent;
-use Pterodactyl\Notifications\ServerInstalled as ServerInstalledNotification;
+use Raptor\Models\User;
+use Raptor\Models\Server;
+use Raptor\Models\Subuser;
+use Raptor\Models\EggVariable;
+use Raptor\Observers\UserObserver;
+use Raptor\Observers\ServerObserver;
+use Raptor\Observers\SubuserObserver;
+use Raptor\Listeners\TwoFactorListener;
+use Raptor\Listeners\RevocationListener;
+use Raptor\Observers\EggVariableObserver;
+use Raptor\Listeners\AuthenticationListener;
+use Raptor\Events\Server\Installed as ServerInstalledEvent;
+use Raptor\Notifications\ServerInstalled as ServerInstalledNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider

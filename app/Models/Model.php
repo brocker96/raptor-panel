@@ -1,6 +1,6 @@
 <?php
 
-namespace Pterodactyl\Models;
+namespace Raptor\Models;
 
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Arr;
@@ -10,7 +10,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Validation\ValidationException;
-use Pterodactyl\Exceptions\Model\DataValidationException;
+use Raptor\Exceptions\Model\DataValidationException;
 use Illuminate\Database\Eloquent\Model as IlluminateModel;
 use Illuminate\Contracts\Validation\Factory as ValidationFactory;
 
