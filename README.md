@@ -5,8 +5,6 @@
      alt="Raptor Panel"
      width="900">
 
-# Raptor Panel
-
 **Modern server management. Built for performance.**
 
 An open-source server management panel based on Pterodactyl, focused on performance, simplicity, and a refined user experience.
