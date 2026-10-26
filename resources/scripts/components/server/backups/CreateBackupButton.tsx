@@ -82,7 +82,7 @@ export default () => {
         createServerBackup(uuid, values)
             .then((backup) => {
                 mutate(
-                    (data) => ({ ...data, items: data.items.concat(backup), backupCount: data.backupCount + 1 }),
+                    (data) => data && { ...data, items: data.items.concat(backup), backupCount: data.backupCount + 1 },
                     false
                 );
                 setVisible(false);

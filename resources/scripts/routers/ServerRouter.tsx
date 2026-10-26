@@ -1,6 +1,6 @@
 import TransferListener from '@/components/server/TransferListener';
 import React, { useEffect, useState } from 'react';
-import { NavLink, Route, Switch, useRouteMatch } from 'react-router-dom';
+import { NavLink, Route, Routes, useLocation, useParams } from 'react-router-dom';
 import NavigationBar from '@/components/NavigationBar';
 import TransitionRouter from '@/TransitionRouter';
 import WebsocketHandler from '@/components/server/WebsocketHandler';
@@ -16,13 +16,12 @@ import InstallListener from '@/components/server/InstallListener';
 import ErrorBoundary from '@/components/elements/ErrorBoundary';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
-import { useLocation } from 'react-router';
 import ConflictStateRenderer from '@/components/server/ConflictStateRenderer';
 import PermissionRoute from '@/components/elements/PermissionRoute';
 import routes from '@/routers/routes';
 
 export default () => {
-    const match = useRouteMatch<{ id: string }>();
+    const params = useParams<{ id: string }>();
     const location = useLocation();
 
     const rootAdmin = useStoreState((state) => state.user.data!.rootAdmin);
@@ -35,12 +34,10 @@ export default () => {
     const getServer = ServerContext.useStoreActions((actions) => actions.server.getServer);
     const clearServerState = ServerContext.useStoreActions((actions) => actions.clearServerState);
 
-    const to = (value: string, url = false) => {
-        if (value === '/') {
-            return url ? match.url : match.path;
-        }
-        return `${(url ? match.url : match.path).replace(/\/*$/, '')}/${value.replace(/^\/+/, '')}`;
-    };
+    // Absolute URL used for navigation links, and the path relative to "/server/:id" used for
+    // matching the nested routes.
+    const to = (value: string) => `/server/${params.id}/${value.replace(/^\/+/, '')}`.replace(/\/$/, '');
+    const relative = (value: string) => value.replace(/^\/+/, '') || '/';
 
     useEffect(
         () => () => {
@@ -52,7 +49,7 @@ export default () => {
     useEffect(() => {
         setError('');
 
-        getServer(match.params.id).catch((error) => {
+        getServer(params.id!).catch((error) => {
             console.error(error);
             setError(httpErrorToHuman(error));
         });
@@ -60,7 +57,7 @@ export default () => {
         return () => {
             clearServerState();
         };
-    }, [match.params.id]);
+    }, [params.id]);
 
     return (
         <React.Fragment key={'server-router'}>
@@ -81,12 +78,12 @@ export default () => {
                                     .map((route) =>
                                         route.permission ? (
                                             <Can key={route.path} action={route.permission} matchAny>
-                                                <NavLink to={to(route.path, true)} exact={route.exact}>
+                                                <NavLink to={to(route.path)} end={route.exact}>
                                                     {route.name}
                                                 </NavLink>
                                             </Can>
                                         ) : (
-                                            <NavLink key={route.path} to={to(route.path, true)} exact={route.exact}>
+                                            <NavLink key={route.path} to={to(route.path)} end={route.exact}>
                                                 {route.name}
                                             </NavLink>
                                         )
@@ -108,16 +105,22 @@ export default () => {
                     ) : (
                         <ErrorBoundary>
                             <TransitionRouter>
-                                <Switch location={location}>
+                                <Routes location={location}>
                                     {routes.server.map(({ path, permission, component: Component }) => (
-                                        <PermissionRoute key={path} permission={permission} path={to(path)} exact>
-                                            <Spinner.Suspense>
-                                                <Component />
-                                            </Spinner.Suspense>
-                                        </PermissionRoute>
+                                        <Route
+                                            key={path}
+                                            path={relative(path)}
+                                            element={
+                                                <PermissionRoute permission={permission}>
+                                                    <Spinner.Suspense>
+                                                        <Component />
+                                                    </Spinner.Suspense>
+                                                </PermissionRoute>
+                                            }
+                                        />
                                     ))}
-                                    <Route path={'*'} component={NotFound} />
-                                </Switch>
+                                    <Route path={'*'} element={<NotFound />} />
+                                </Routes>
                             </TransitionRouter>
                         </ErrorBoundary>
                     )}

@@ -3,22 +3,21 @@ import { useEffect, useRef } from 'react';
 export default (
     eventName: string,
     handler: (e: Event | CustomEvent | UIEvent | any) => void,
-    options?: boolean | EventListenerOptions
+    options?: boolean | AddEventListenerOptions
 ) => {
-    const savedHandler = useRef<any>(null);
+    const savedHandler = useRef(handler);
+    savedHandler.current = handler;
+
+    const capture = typeof options === 'boolean' ? options : !!options?.capture;
+    const passive = typeof options === 'object' ? options.passive : undefined;
 
     useEffect(() => {
-        savedHandler.current = handler;
-    }, [handler]);
+        const eventListener = (event: Event) => savedHandler.current(event);
 
-    useEffect(() => {
-        const isSupported = window && window.addEventListener;
-        if (!isSupported) return;
+        window.addEventListener(eventName, eventListener, { capture, passive });
 
-        const eventListener = (event: any) => savedHandler.current(event);
-        window.addEventListener(eventName, eventListener, options);
-        return () => {
-            window.removeEventListener(eventName, eventListener);
-        };
-    }, [eventName, window]);
+        // The capture flag must match the one used when registering the listener, otherwise
+        // the browser will not remove it and the handler would leak across mounts.
+        return () => window.removeEventListener(eventName, eventListener, { capture });
+    }, [eventName, capture, passive]);
 };

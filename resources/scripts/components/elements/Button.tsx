@@ -95,7 +95,7 @@ const ButtonStyle = styled.button<Omit<Props, 'isLoading'>>`
 
 type ComponentProps = Omit<JSX.IntrinsicElements['button'], 'ref' | keyof Props> & Props;
 
-const Button: React.FC<ComponentProps> = ({ children, isLoading, ...props }) => (
+const Button: React.FC<React.PropsWithChildren<ComponentProps>> = ({ children, isLoading, ...props }) => (
     <ButtonStyle {...props}>
         {isLoading && (
             <div css={tw`flex absolute justify-center items-center w-full h-full left-0 top-0`}>

@@ -1,13 +1,14 @@
 import React from 'react';
-import { NavLink, Route, Switch } from 'react-router-dom';
+import { NavLink, Route, Routes, useLocation } from 'react-router-dom';
 import NavigationBar from '@/components/NavigationBar';
 import DashboardContainer from '@/components/dashboard/DashboardContainer';
 import { NotFound } from '@/components/elements/ScreenBlock';
 import TransitionRouter from '@/TransitionRouter';
 import SubNavigation from '@/components/elements/SubNavigation';
-import { useLocation } from 'react-router';
 import Spinner from '@/components/elements/Spinner';
 import routes from '@/routers/routes';
+
+const accountPath = (path: string) => `/account/${path}`.replace(/\/+/g, '/').replace(/(.)\/$/, '$1');
 
 export default () => {
     const location = useLocation();
@@ -21,7 +22,7 @@ export default () => {
                         {routes.account
                             .filter((route) => !!route.name)
                             .map(({ path, name, exact = false }) => (
-                                <NavLink key={path} to={`/account/${path}`.replace('//', '/')} exact={exact}>
+                                <NavLink key={path} to={accountPath(path)} end={exact}>
                                     {name}
                                 </NavLink>
                             ))}
@@ -30,19 +31,13 @@ export default () => {
             )}
             <TransitionRouter>
                 <React.Suspense fallback={<Spinner centered />}>
-                    <Switch location={location}>
-                        <Route path={'/'} exact>
-                            <DashboardContainer />
-                        </Route>
+                    <Routes location={location}>
+                        <Route path={'/'} element={<DashboardContainer />} />
                         {routes.account.map(({ path, component: Component }) => (
-                            <Route key={path} path={`/account/${path}`.replace('//', '/')} exact>
-                                <Component />
-                            </Route>
+                            <Route key={path} path={accountPath(path)} element={<Component />} />
                         ))}
-                        <Route path={'*'}>
-                            <NotFound />
-                        </Route>
-                    </Switch>
+                        <Route path={'*'} element={<NotFound />} />
+                    </Routes>
                 </React.Suspense>
             </TransitionRouter>
         </>

@@ -1,29 +1,34 @@
-import { Terminal, ITerminalAddon } from 'xterm';
+import type { IDisposable, ITerminalAddon, Terminal } from '@xterm/xterm';
 
 export class ScrollDownHelperAddon implements ITerminalAddon {
-    private terminal: Terminal = new Terminal();
+    private terminal?: Terminal;
     private element?: HTMLDivElement;
+    private disposables: IDisposable[] = [];
 
     activate(terminal: Terminal): void {
         this.terminal = terminal;
 
-        this.terminal.onScroll(() => {
-            if (this.isScrolledDown()) {
-                this.hide();
-            }
-        });
-
-        this.terminal.onLineFeed(() => {
-            if (!this.isScrolledDown()) {
-                this.show();
-            }
-        });
+        this.disposables.push(
+            terminal.onScroll(() => {
+                if (this.isScrolledDown()) {
+                    this.hide();
+                }
+            }),
+            terminal.onLineFeed(() => {
+                if (!this.isScrolledDown()) {
+                    this.show();
+                }
+            })
+        );
 
         this.show();
     }
 
     dispose(): void {
-        // ignore
+        this.disposables.forEach((d) => d.dispose());
+        this.disposables = [];
+        this.element?.remove();
+        this.element = undefined;
     }
 
     show(): void {
@@ -50,8 +55,10 @@ export class ScrollDownHelperAddon implements ITerminalAddon {
         this.element.style.zIndex = '999';
         this.element.style.cursor = 'pointer';
 
+        this.element.setAttribute('role', 'button');
+        this.element.setAttribute('aria-label', 'Scroll to bottom');
         this.element.addEventListener('click', () => {
-            this.terminal.scrollToBottom();
+            this.terminal?.scrollToBottom();
         });
 
         this.terminal.element.appendChild(this.element);
@@ -64,6 +71,8 @@ export class ScrollDownHelperAddon implements ITerminalAddon {
     }
 
     isScrolledDown(): boolean {
+        if (!this.terminal) return true;
+
         return this.terminal.buffer.active.viewportY === this.terminal.buffer.active.baseY;
     }
 }

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { httpErrorToHuman } from '@/api/http';
 import { CSSTransition } from 'react-transition-group';
 import Spinner from '@/components/elements/Spinner';
@@ -51,6 +51,9 @@ export default () => {
         mutate();
     }, [directory]);
 
+    // Sort before limiting the output so that directories always come first, even in very large listings.
+    const sortedFiles = useMemo(() => (files ? sortFiles([...files]).slice(0, 250) : []), [files]);
+
     const onSelectAllClick = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSelectedFiles(e.currentTarget.checked ? files?.map((file) => file.name) || [] : []);
     };
@@ -102,7 +105,7 @@ export default () => {
                                         </p>
                                     </div>
                                 )}
-                                {sortFiles(files.slice(0, 250)).map((file) => (
+                                {sortedFiles.map((file) => (
                                     <FileObjectRow key={file.key} file={file} />
                                 ))}
                                 <MassActionsBar />

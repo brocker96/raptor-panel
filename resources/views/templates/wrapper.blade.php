@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
         <title>{{ config('app.name', 'Pterodactyl') }}</title>
 
         @section('meta')
             <meta charset="utf-8">
             <meta http-equiv="X-UA-Compatible" content="IE=edge">
-            <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+            <meta content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover, interactive-widget=resizes-content" name="viewport">
             <meta name="csrf-token" content="{{ csrf_token() }}">
             <meta name="robots" content="noindex">
             <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png">
@@ -17,6 +17,8 @@
             <link rel="shortcut icon" href="/favicons/favicon.ico">
             <meta name="msapplication-config" content="/favicons/browserconfig.xml">
             <meta name="theme-color" content="#0e4688">
+            <meta name="color-scheme" content="dark">
+            <meta name="mobile-web-app-capable" content="yes">
         @show
 
         @section('user-data')
@@ -43,7 +45,8 @@
             @yield('below-container')
         @show
         @section('scripts')
-            {!! $asset->js('main.js') !!}
+            @viteReactRefresh
+            @vite('resources/scripts/index.tsx')
         @show
     </body>
 </html>

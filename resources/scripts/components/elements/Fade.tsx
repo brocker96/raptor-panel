@@ -35,7 +35,7 @@ const Container = styled.div<{ timeout: number }>`
     }
 `;
 
-const Fade: React.FC<Props> = ({ timeout, children, ...props }) => (
+const Fade: React.FC<React.PropsWithChildren<Props>> = ({ timeout, children, ...props }) => (
     <Container timeout={timeout}>
         <CSSTransition timeout={timeout} classNames={'fade'} {...props}>
             {children}

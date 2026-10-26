@@ -1,4 +1,4 @@
-import useSWR, { ConfigInterface } from 'swr';
+import useSWR, { SWRConfiguration } from 'swr';
 import http, { FractalResponseList } from '@/api/http';
 import { rawDataToServerEggVariable } from '@/api/transformers';
 import { ServerEggVariable } from '@/api/server/types';
@@ -9,7 +9,7 @@ interface Response {
     dockerImages: Record<string, string>;
 }
 
-export default (uuid: string, initialData?: Response | null, config?: ConfigInterface<Response>) =>
+export default (uuid: string, initialData?: Response | null, config?: SWRConfiguration<Response>) =>
     useSWR(
         [uuid, '/startup'],
         async (): Promise<Response> => {
@@ -23,5 +23,11 @@ export default (uuid: string, initialData?: Response | null, config?: ConfigInte
                 dockerImages: data.meta.docker_images || {},
             };
         },
-        { initialData: initialData || undefined, errorRetryCount: 3, ...(config || {}) }
+        {
+            fallbackData: initialData || undefined,
+            // When initial data is provided there is no need to immediately hit the API again.
+            revalidateOnMount: !initialData,
+            errorRetryCount: 3,
+            ...(config || {}),
+        }
     );

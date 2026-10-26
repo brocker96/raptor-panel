@@ -1,0 +1,134 @@
+/*
+ * The file editor is designed mobile first: on small screens it takes the entire width and
+ * remaining height of the viewport, with a touch friendly toolbar pinned to the bottom. On larger
+ * screens it falls back to the regular content container layout.
+ */
+.page {
+    @apply flex flex-col mx-auto;
+    max-width: 1200px;
+    /* Navigation bar + sub-navigation. */
+    height: calc(100vh - 6.5rem);
+    height: calc(100dvh - 6.5rem);
+    min-height: 22rem;
+
+    @screen sm {
+        @apply mx-4 mt-6;
+        height: calc(100vh - 11rem);
+        height: calc(100dvh - 11rem);
+        min-height: 28rem;
+    }
+
+    @screen xl {
+        @apply mx-auto;
+    }
+}
+
+.header {
+    @apply flex items-center gap-2 px-2 py-1.5 sm:px-0 sm:pb-3 sm:pt-0 min-w-0;
+}
+
+.back {
+    @apply flex-shrink-0 p-2 -ml-1 rounded text-neutral-300 hover:text-neutral-100 hover:bg-neutral-700;
+}
+
+.breadcrumbs {
+    @apply flex-1 min-w-0 overflow-x-auto whitespace-nowrap;
+    scrollbar-width: none;
+    /* Fade the start of the path so long paths read naturally while scrolled to the end. */
+    mask-image: linear-gradient(to right, transparent 0, black 1rem);
+    direction: rtl;
+
+    & > * {
+        direction: ltr;
+    }
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+.status {
+    @apply flex flex-shrink-0 items-center gap-1 text-xs text-green-400;
+
+    &.status_dirty {
+        @apply text-yellow-400;
+
+        &::before {
+            content: '';
+            @apply block w-2 h-2 rounded-full bg-yellow-400;
+        }
+    }
+}
+
+.notice {
+    @apply mx-2 sm:mx-0 mb-2 sm:mb-4 p-3 sm:p-4 border-l-4 bg-neutral-900 rounded border-cyan-400 text-neutral-300 text-sm;
+
+    & code {
+        @apply font-mono bg-black rounded py-px px-1;
+    }
+}
+
+.editor_wrapper {
+    @apply relative flex-1 min-h-0 overflow-hidden bg-black sm:rounded;
+    /* Keep CodeMirror's internal z-indexes (e.g. the search panel) below dialogs. */
+    isolation: isolate;
+}
+
+.editor {
+    @apply h-full;
+    --editor-font-size: 13px;
+
+    @screen sm {
+        --editor-font-size: 13px;
+    }
+
+    & :global(.cm-editor) {
+        @apply h-full outline-none;
+    }
+
+    & :global(.cm-gutters) {
+        @apply select-none;
+    }
+}
+
+.toolbar {
+    @apply flex items-center gap-2 bg-neutral-800 border-t border-neutral-700 px-2 pt-2;
+    padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+
+    @screen sm {
+        @apply bg-transparent border-0 px-0 pt-4 pb-0;
+    }
+}
+
+.tools {
+    @apply flex items-center sm:gap-1;
+}
+
+.tool {
+    @apply flex items-center justify-center w-9 sm:w-10 h-10 rounded text-neutral-300 transition-colors duration-100;
+    @apply hover:text-neutral-100 hover:bg-neutral-700 active:bg-neutral-600 disabled:opacity-50;
+
+    &.tool_active {
+        @apply text-cyan-300 bg-neutral-700;
+    }
+}
+
+.language {
+    @apply flex-1 min-w-0 h-10 rounded bg-neutral-900 border-0 text-neutral-200 text-base sm:text-sm pl-3 pr-8;
+    @apply focus:ring-1 focus:ring-cyan-500 sm:flex-none sm:w-48 sm:ml-auto;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='%23C3D1DF' d='M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z'/%3e%3c/svg%3e ");
+    background-size: 1rem;
+    background-repeat: no-repeat;
+    background-position: right 0.625rem center;
+}
+
+.save {
+    @apply flex flex-shrink-0 items-center justify-center gap-2 h-10 px-3 sm:px-4 rounded font-medium text-sm;
+    @apply bg-blue-600 text-blue-50 hover:bg-blue-500 active:bg-blue-700 transition-colors duration-100;
+    @apply disabled:opacity-60 disabled:cursor-not-allowed;
+
+    & .shortcut {
+        @apply hidden lg:inline font-sans text-2xs px-1 py-px rounded bg-blue-700 text-blue-200;
+    }
+}

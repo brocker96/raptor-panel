@@ -1,4 +1,4 @@
-import useSWR, { ConfigInterface, responseInterface } from 'swr';
+import useSWR, { SWRConfiguration, SWRResponse } from 'swr';
 import { ActivityLog, Transformers } from '@definitions/user';
 import { AxiosError } from 'axios';
 import http, { PaginatedResult, QueryBuilderParams, withQueryBuilderParams } from '@/api/http';
@@ -11,12 +11,12 @@ export type ActivityLogFilters = QueryBuilderParams<'ip' | 'event', 'timestamp'>
 
 const useActivityLogs = (
     filters?: ActivityLogFilters,
-    config?: ConfigInterface<PaginatedResult<ActivityLog>, AxiosError>
-): responseInterface<PaginatedResult<ActivityLog>, AxiosError> => {
+    config?: SWRConfiguration<PaginatedResult<ActivityLog>, AxiosError>
+): SWRResponse<PaginatedResult<ActivityLog>, AxiosError> => {
     const uuid = ServerContext.useStoreState((state) => state.server.data?.uuid);
     const key = useServerSWRKey(['activity', useFilteredObject(filters || {})]);
 
-    return useSWR<PaginatedResult<ActivityLog>>(
+    return useSWR<PaginatedResult<ActivityLog>, AxiosError>(
         key,
         async () => {
             const { data } = await http.get(`/api/client/servers/${uuid}/activity`, {

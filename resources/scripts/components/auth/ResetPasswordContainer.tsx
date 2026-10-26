@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { RouteComponentProps } from 'react-router';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import performPasswordReset from '@/api/auth/performPasswordReset';
 import { httpErrorToHuman } from '@/api/http';
 import LoginFormContainer from '@/components/auth/LoginFormContainer';
@@ -18,7 +17,9 @@ interface Values {
     passwordConfirmation: string;
 }
 
-export default ({ match, location }: RouteComponentProps<{ token: string }>) => {
+export default () => {
+    const location = useLocation();
+    const { token = '' } = useParams<{ token: string }>();
     const [email, setEmail] = useState('');
 
     const { clearFlashes, addFlash } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
@@ -30,7 +31,7 @@ export default ({ match, location }: RouteComponentProps<{ token: string }>) => 
 
     const submit = ({ password, passwordConfirmation }: Values, { setSubmitting }: FormikHelpers<Values>) => {
         clearFlashes();
-        performPasswordReset(email, { token: match.params.token, password, passwordConfirmation })
+        performPasswordReset(email, { token, password, passwordConfirmation })
             .then(() => {
                 // @ts-expect-error this is valid
                 window.location = '/';

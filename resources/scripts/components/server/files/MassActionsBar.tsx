@@ -50,7 +50,7 @@ const MassActionsBar = () => {
 
         deleteFiles(uuid, directory, selectedFiles)
             .then(() => {
-                mutate((files) => files.filter((f) => selectedFiles.indexOf(f.name) < 0), false);
+                mutate((files) => files?.filter((f) => selectedFiles.indexOf(f.name) < 0), false);
                 setSelectedFiles([]);
             })
             .catch((error) => {
@@ -93,9 +93,14 @@ const MassActionsBar = () => {
                     />
                 )}
                 <Portal>
-                    <div className={'pointer-events-none fixed bottom-0 mb-6 flex justify-center w-full z-50'}>
+                    <div
+                        className={'pointer-events-none fixed bottom-0 flex justify-center w-full z-50 px-2'}
+                        style={{ marginBottom: 'max(1.5rem, env(safe-area-inset-bottom))' }}
+                    >
                         <Fade timeout={75} in={selectedFiles.length > 0} unmountOnExit>
-                            <div css={tw`flex items-center space-x-4 pointer-events-auto rounded p-4 bg-black/50`}>
+                            <div
+                                css={tw`flex items-center space-x-2 sm:space-x-4 pointer-events-auto rounded p-3 sm:p-4 bg-black/75 backdrop-blur-sm shadow-lg`}
+                            >
                                 <Button onClick={() => setShowMove(true)}>Move</Button>
                                 <Button onClick={onClickCompress}>Archive</Button>
                                 <Button.Danger variant={Button.Variants.Secondary} onClick={() => setShowConfirm(true)}>

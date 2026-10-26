@@ -1,17 +1,18 @@
 import http from '@/api/http';
 import { AxiosError } from 'axios';
-import { History } from 'history';
+import { navigate } from '@/components/history';
 
-export const setupInterceptors = (history: History) => {
+export const setupInterceptors = () => {
     http.interceptors.response.use(
         (resp) => resp,
         (error: AxiosError) => {
             if (error.response?.status === 400) {
                 if (
-                    (error.response?.data as Record<string, any>).errors?.[0].code === 'TwoFactorAuthRequiredException'
+                    (error.response?.data as Record<string, any> | undefined)?.errors?.[0]?.code ===
+                    'TwoFactorAuthRequiredException'
                 ) {
                     if (!window.location.pathname.startsWith('/account')) {
-                        history.replace('/account', { twoFactorRedirect: true });
+                        navigate('/account', { replace: true, state: { twoFactorRedirect: true } });
                     }
                 }
             }

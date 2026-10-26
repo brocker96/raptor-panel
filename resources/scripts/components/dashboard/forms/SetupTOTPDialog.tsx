@@ -3,7 +3,7 @@ import { Dialog, DialogWrapperContext } from '@/components/elements/dialog';
 import getTwoFactorTokenData, { TwoFactorTokenData } from '@/api/account/getTwoFactorTokenData';
 import { useFlashKey } from '@/plugins/useFlash';
 import tw from 'twin.macro';
-import QRCode from 'qrcode.react';
+import { QRCodeSVG } from 'qrcode.react';
 import { Button } from '@/components/elements/button/index';
 import Spinner from '@/components/elements/Spinner';
 import { Input } from '@/components/elements/inputs';
@@ -62,11 +62,7 @@ const ConfigureTwoFactorForm = ({ onTokens }: Props) => {
         <form id={'enable-totp-form'} onSubmit={submit}>
             <FlashMessageRender byKey={'account:two-step'} className={'mt-4'} />
             <div className={'flex items-center justify-center w-56 h-56 p-2 bg-gray-50 shadow mx-auto mt-6'}>
-                {!token ? (
-                    <Spinner />
-                ) : (
-                    <QRCode renderAs={'svg'} value={token.image_url_data} css={tw`w-full h-full shadow-none`} />
-                )}
+                {!token ? <Spinner /> : <QRCodeSVG value={token.image_url_data} css={tw`w-full h-full shadow-none`} />}
             </div>
             <CopyOnClick text={token?.secret}>
                 <p className={'font-mono text-sm text-gray-100 text-center mt-2'}>

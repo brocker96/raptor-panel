@@ -31,7 +31,25 @@
     }
 
     & > .container {
-        @apply rounded-t p-1 sm:p-2 bg-black min-h-[16rem] flex-1 font-mono text-sm;
+        @apply relative rounded-t p-1 sm:p-2 bg-black min-h-[16rem] flex-1 font-mono text-sm;
+
+        & .search_toggle {
+            @apply absolute top-2 right-3 z-10 p-2 rounded text-gray-400 bg-gray-900/80;
+            @apply opacity-60 hover:opacity-100 focus:opacity-100 transition-opacity duration-100;
+        }
+
+        & .search_bar {
+            @apply absolute top-2 right-3 left-3 sm:left-auto z-10 flex items-center gap-1 p-1 rounded shadow-lg bg-gray-800;
+
+            & input {
+                @apply flex-1 sm:w-56 min-w-0 bg-gray-900 text-gray-100 rounded px-2 py-1.5 text-base sm:text-sm;
+                @apply border-0 outline-none focus:ring-1 focus:ring-cyan-500;
+            }
+
+            & button {
+                @apply p-2 rounded text-gray-300 hover:text-gray-50 hover:bg-gray-700;
+            }
+        }
 
         & #terminal {
             @apply h-full;
@@ -50,8 +68,16 @@
         @apply flex items-center top-0 left-0 absolute z-10 select-none h-full px-3 transition-colors duration-100;
     }
 
+    & .command_actions {
+        @apply absolute right-0 top-0 h-full flex items-center pr-1 sm:hidden;
+
+        & button {
+            @apply p-2 text-gray-300 active:text-gray-50 disabled:opacity-40;
+        }
+    }
+
     & .command_input {
-        @apply relative bg-gray-900 px-2 text-gray-100 pl-10 pr-4 py-2 w-full font-mono text-sm sm:rounded-b;
+        @apply relative bg-gray-900 px-2 text-gray-100 pl-10 pr-24 sm:pr-4 py-3 sm:py-2 w-full font-mono text-base sm:text-sm sm:rounded-b;
         @apply focus:ring-0 outline-none focus-visible:outline-none;
         @apply border-0 border-b-2 border-transparent transition-colors duration-100;
         @apply active:border-cyan-500 focus:border-cyan-500;

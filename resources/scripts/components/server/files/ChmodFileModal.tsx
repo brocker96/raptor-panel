@@ -33,7 +33,7 @@ const ChmodFileModal = ({ files, ...props }: OwnProps) => {
 
         mutate(
             (data) =>
-                data.map((f) =>
+                data?.map((f) =>
                     f.name === files[0].file ? { ...f, mode: fileBitsToString(mode, !f.isFile), modeBits: mode } : f
                 ),
             false

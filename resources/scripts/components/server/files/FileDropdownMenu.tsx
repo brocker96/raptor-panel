@@ -76,7 +76,7 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
 
         // For UI speed, immediately remove the file from the listing before calling the deletion function.
         // If the delete actually fails, we'll fetch the current directory contents again automatically.
-        mutate((files) => files.filter((f) => f.key !== file.key), false);
+        mutate((files) => files?.filter((f) => f.key !== file.key), false);
 
         deleteFiles(uuid, directory, [file.name]).catch((error) => {
             mutate();
@@ -142,7 +142,12 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
             <DropdownMenu
                 ref={onClickRef}
                 renderToggle={(onClick) => (
-                    <div css={tw`px-4 py-2 hover:text-white`} onClick={onClick}>
+                    <div
+                        css={tw`px-4 py-3 sm:py-2 hover:text-white`}
+                        onClick={onClick}
+                        role={'button'}
+                        aria-label={'File actions'}
+                    >
                         <FontAwesomeIcon icon={faEllipsisH} />
                         {modal ? (
                             modal === 'chmod' ? (

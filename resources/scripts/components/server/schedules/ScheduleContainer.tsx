@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import getServerSchedules from '@/api/server/schedules/getServerSchedules';
 import { ServerContext } from '@/state/server';
 import Spinner from '@/components/elements/Spinner';
-import { useHistory, useRouteMatch } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import ScheduleRow from '@/components/server/schedules/ScheduleRow';
 import { httpErrorToHuman } from '@/api/http';
@@ -15,9 +15,9 @@ import { Button } from '@/components/elements/button/index';
 import ServerContentBlock from '@/components/elements/ServerContentBlock';
 
 export default () => {
-    const match = useRouteMatch();
-    const history = useHistory();
+    const navigate = useNavigate();
 
+    const id = ServerContext.useStoreState((state) => state.server.data!.id);
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
     const { clearFlashes, addError } = useFlash();
     const [loading, setLoading] = useState(true);
@@ -53,11 +53,11 @@ export default () => {
                             <GreyRowBox
                                 as={'a'}
                                 key={schedule.id}
-                                href={`${match.url}/${schedule.id}`}
+                                href={`/server/${id}/schedules/${schedule.id}`}
                                 css={tw`cursor-pointer mb-2 flex-wrap`}
                                 onClick={(e: any) => {
                                     e.preventDefault();
-                                    history.push(`${match.url}/${schedule.id}`);
+                                    navigate(`/server/${id}/schedules/${schedule.id}`);
                                 }}
                             >
                                 <ScheduleRow schedule={schedule} />

@@ -11,9 +11,9 @@ interface Props {
     isBlue?: boolean;
 }
 
-interface Spinner extends React.FC<Props> {
+interface Spinner extends React.FC<React.PropsWithChildren<Props>> {
     Size: Record<'SMALL' | 'BASE' | 'LARGE', SpinnerSize>;
-    Suspense: React.FC<Props>;
+    Suspense: React.FC<React.PropsWithChildren<Props>>;
 }
 
 const spin = keyframes`

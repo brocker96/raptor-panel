@@ -1,24 +1,21 @@
 import React, { lazy } from 'react';
-import ServerConsole from '@/components/server/console/ServerConsoleContainer';
-import DatabasesContainer from '@/components/server/databases/DatabasesContainer';
-import ScheduleContainer from '@/components/server/schedules/ScheduleContainer';
-import UsersContainer from '@/components/server/users/UsersContainer';
-import BackupContainer from '@/components/server/backups/BackupContainer';
-import NetworkContainer from '@/components/server/network/NetworkContainer';
-import StartupContainer from '@/components/server/startup/StartupContainer';
-import FileManagerContainer from '@/components/server/files/FileManagerContainer';
-import SettingsContainer from '@/components/server/settings/SettingsContainer';
-import AccountOverviewContainer from '@/components/dashboard/AccountOverviewContainer';
-import AccountApiContainer from '@/components/dashboard/AccountApiContainer';
-import AccountSSHContainer from '@/components/dashboard/ssh/AccountSSHContainer';
-import ActivityLogContainer from '@/components/dashboard/activity/ActivityLogContainer';
-import ServerActivityLogContainer from '@/components/server/ServerActivityLogContainer';
-
-// Each of the router files is already code split out appropriately — so
-// all of the items above will only be loaded in when that router is loaded.
-//
-// These specific lazy loaded routes are to avoid loading in heavy screens
-// for the server dashboard when they're only needed for specific instances.
+// Every screen is lazy loaded so that each page only downloads the code it needs. This is
+// especially important as this file is shared by both the dashboard and server routers, a
+// static import here would make the dashboard download the console, charts and editor.
+const ServerConsole = lazy(() => import('@/components/server/console/ServerConsoleContainer'));
+const DatabasesContainer = lazy(() => import('@/components/server/databases/DatabasesContainer'));
+const ScheduleContainer = lazy(() => import('@/components/server/schedules/ScheduleContainer'));
+const UsersContainer = lazy(() => import('@/components/server/users/UsersContainer'));
+const BackupContainer = lazy(() => import('@/components/server/backups/BackupContainer'));
+const NetworkContainer = lazy(() => import('@/components/server/network/NetworkContainer'));
+const StartupContainer = lazy(() => import('@/components/server/startup/StartupContainer'));
+const FileManagerContainer = lazy(() => import('@/components/server/files/FileManagerContainer'));
+const SettingsContainer = lazy(() => import('@/components/server/settings/SettingsContainer'));
+const AccountOverviewContainer = lazy(() => import('@/components/dashboard/AccountOverviewContainer'));
+const AccountApiContainer = lazy(() => import('@/components/dashboard/AccountApiContainer'));
+const AccountSSHContainer = lazy(() => import('@/components/dashboard/ssh/AccountSSHContainer'));
+const ActivityLogContainer = lazy(() => import('@/components/dashboard/activity/ActivityLogContainer'));
+const ServerActivityLogContainer = lazy(() => import('@/components/server/ServerActivityLogContainer'));
 const FileEditContainer = lazy(() => import('@/components/server/files/FileEditContainer'));
 const ScheduleEditContainer = lazy(() => import('@/components/server/schedules/ScheduleEditContainer'));
 
@@ -81,7 +78,7 @@ export default {
             component: FileManagerContainer,
         },
         {
-            path: '/files/:action(edit|new)',
+            path: '/files/:action',
             permission: 'file.*',
             name: undefined,
             component: FileEditContainer,

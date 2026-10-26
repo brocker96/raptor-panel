@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Link, RouteComponentProps } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import login from '@/api/auth/login';
 import LoginFormContainer from '@/components/auth/LoginFormContainer';
 import { useStoreState } from 'easy-peasy';
@@ -16,7 +16,8 @@ interface Values {
     password: string;
 }
 
-const LoginContainer = ({ history }: RouteComponentProps) => {
+const LoginContainer = () => {
+    const navigate = useNavigate();
     const ref = useRef<Reaptcha>(null);
     const [token, setToken] = useState('');
 
@@ -51,7 +52,7 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
                     return;
                 }
 
-                history.replace('/auth/login/checkpoint', { token: response.confirmationToken });
+                navigate('/auth/login/checkpoint', { replace: true, state: { token: response.confirmationToken } });
             })
             .catch((error) => {
                 console.error(error);

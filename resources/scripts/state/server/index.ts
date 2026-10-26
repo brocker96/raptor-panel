@@ -3,7 +3,6 @@ import { action, Action, computed, Computed, createContextStore, thunk, Thunk } 
 import socket, { SocketStore } from './socket';
 import files, { ServerFileStore } from '@/state/server/files';
 import subusers, { ServerSubuserStore } from '@/state/server/subusers';
-import { composeWithDevTools } from 'redux-devtools-extension';
 import schedules, { ServerScheduleStore } from '@/state/server/schedules';
 import databases, { ServerDatabaseStore } from '@/state/server/databases';
 import isEqual from 'react-fast-compare';
@@ -115,9 +114,7 @@ export const ServerContext = createContextStore<ServerStore>(
         }),
     },
     {
-        compose: composeWithDevTools({
-            name: 'ServerStore',
-            trace: true,
-        }),
+        name: 'ServerStore',
+        devTools: import.meta.env.DEV,
     }
 );

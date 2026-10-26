@@ -6,7 +6,7 @@ interface Props extends PageContentBlockProps {
     title: string;
 }
 
-const ServerContentBlock: React.FC<Props> = ({ title, children, ...props }) => {
+const ServerContentBlock: React.FC<React.PropsWithChildren<Props>> = ({ title, children, ...props }) => {
     const name = ServerContext.useStoreState((state) => state.server.data!.name);
 
     return (

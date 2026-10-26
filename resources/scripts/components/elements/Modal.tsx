@@ -55,7 +55,7 @@ const ModalContainer = styled.div<{ alignTop?: boolean }>`
     }
 `;
 
-const Modal: React.FC<ModalProps> = ({
+const Modal: React.FC<React.PropsWithChildren<ModalProps>> = ({
     visible,
     appear,
     dismissable,
@@ -69,7 +69,7 @@ const Modal: React.FC<ModalProps> = ({
     const [render, setRender] = useState(visible);
 
     const isDismissable = useMemo(() => {
-        return (dismissable || true) && !(showSpinnerOverlay || false);
+        return (dismissable ?? true) && !showSpinnerOverlay;
     }, [dismissable, showSpinnerOverlay]);
 
     useEffect(() => {
@@ -140,7 +140,7 @@ const Modal: React.FC<ModalProps> = ({
     );
 };
 
-const PortaledModal: React.FC<ModalProps> = ({ children, ...props }) => {
+const PortaledModal: React.FC<React.PropsWithChildren<ModalProps>> = ({ children, ...props }) => {
     const element = useRef(document.getElementById('modal-portal'));
 
     return createPortal(<Modal {...props}>{children}</Modal>, element.current!);

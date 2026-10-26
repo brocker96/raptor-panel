@@ -71,7 +71,7 @@ const options: ChartOptions<'line'> = {
 };
 
 function getOptions(opts?: DeepPartial<ChartOptions<'line'>> | undefined): ChartOptions<'line'> {
-    return deepmerge(options, opts || {});
+    return deepmerge(options, opts || {}) as ChartOptions<'line'>;
 }
 
 type ChartDatasetCallback = (value: ChartDataset<'line'>, index: number) => ChartDataset<'line'>;

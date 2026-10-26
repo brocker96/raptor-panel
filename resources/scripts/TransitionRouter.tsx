@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route } from 'react-router';
+import { useLocation } from 'react-router-dom';
 import { SwitchTransition } from 'react-transition-group';
 import Fade from '@/components/elements/Fade';
 import styled from 'styled-components/macro';
@@ -13,17 +13,20 @@ const StyledSwitchTransition = styled(SwitchTransition)`
     }
 `;
 
-const TransitionRouter: React.FC = ({ children }) => {
+/**
+ * Fades between route changes. The children passed in must render their routes using the
+ * location provided by the parent (`<Routes location={location}>`) so that the exiting page
+ * continues to render the previous route while the transition is running.
+ */
+const TransitionRouter = ({ children }: { children: React.ReactNode }) => {
+    const location = useLocation();
+
     return (
-        <Route
-            render={({ location }) => (
-                <StyledSwitchTransition>
-                    <Fade timeout={150} key={location.pathname + location.search} in appear unmountOnExit>
-                        <section>{children}</section>
-                    </Fade>
-                </StyledSwitchTransition>
-            )}
-        />
+        <StyledSwitchTransition>
+            <Fade timeout={150} key={location.pathname + location.search} in appear unmountOnExit>
+                <section>{children}</section>
+            </Fade>
+        </StyledSwitchTransition>
     );
 };
 

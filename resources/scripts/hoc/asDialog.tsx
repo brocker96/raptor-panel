@@ -3,16 +3,15 @@ import { Dialog, DialogProps, DialogWrapperContext, WrapperProps } from '@/compo
 
 function asDialog(
     initialProps?: WrapperProps
-    // eslint-disable-next-line @typescript-eslint/ban-types
 ): <P extends {}>(C: React.ComponentType<P>) => React.FunctionComponent<P & DialogProps> {
-    return function (Component) {
-        return function ({ open, onClose, ...rest }) {
+    return function <P extends {}>(Component: React.ComponentType<P>) {
+        return function ({ open, onClose, ...rest }: P & DialogProps) {
             const [props, setProps] = useState<WrapperProps>(initialProps || {});
 
             return (
                 <DialogWrapperContext.Provider value={{ props, setProps, close: onClose }}>
                     <Dialog {...props} open={open} onClose={onClose}>
-                        <Component {...(rest as React.ComponentProps<typeof Component>)} />
+                        <Component {...(rest as unknown as P)} />
                     </Dialog>
                 </DialogWrapperContext.Provider>
             );

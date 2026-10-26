@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { Link, RouteComponentProps } from 'react-router-dom';
+import { Link, Navigate, useLocation } from 'react-router-dom';
 import loginCheckpoint from '@/api/auth/loginCheckpoint';
 import LoginFormContainer from '@/components/auth/LoginFormContainer';
 import { ActionCreator } from 'easy-peasy';
-import { StaticContext } from 'react-router';
 import { useFormikContext, withFormik } from 'formik';
 import useFlash from '@/plugins/useFlash';
 import { FlashStore } from '@/state/flashes';
@@ -16,9 +15,8 @@ interface Values {
     recoveryCode: '';
 }
 
-type OwnProps = RouteComponentProps<Record<string, string | undefined>, StaticContext, { token?: string }>;
-
-type Props = OwnProps & {
+type Props = {
+    token: string;
     clearAndAddHttpError: ActionCreator<FlashStore['clearAndAddHttpError']['payload']>;
 };
 
@@ -73,8 +71,8 @@ const LoginCheckpointContainer = () => {
 };
 
 const EnhancedForm = withFormik<Props, Values>({
-    handleSubmit: ({ code, recoveryCode }, { setSubmitting, props: { clearAndAddHttpError, location } }) => {
-        loginCheckpoint(location.state?.token || '', code, recoveryCode)
+    handleSubmit: ({ code, recoveryCode }, { setSubmitting, props: { clearAndAddHttpError, token } }) => {
+        loginCheckpoint(token, code, recoveryCode)
             .then((response) => {
                 if (response.complete) {
                     // @ts-expect-error this is valid
@@ -97,16 +95,14 @@ const EnhancedForm = withFormik<Props, Values>({
     }),
 })(LoginCheckpointContainer);
 
-export default ({ history, location, ...props }: OwnProps) => {
+export default () => {
+    const location = useLocation();
     const { clearAndAddHttpError } = useFlash();
 
-    if (!location.state?.token) {
-        history.replace('/auth/login');
-
-        return null;
+    const token = (location.state as { token?: string } | null)?.token;
+    if (!token) {
+        return <Navigate to={'/auth/login'} replace />;
     }
 
-    return (
-        <EnhancedForm clearAndAddHttpError={clearAndAddHttpError} history={history} location={location} {...props} />
-    );
+    return <EnhancedForm clearAndAddHttpError={clearAndAddHttpError} token={token} />;
 };

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import getServerSchedule from '@/api/server/schedules/getServerSchedule';
 import Spinner from '@/components/elements/Spinner';
 import FlashMessageRender from '@/components/FlashMessageRender';
@@ -18,9 +18,9 @@ import { format } from 'date-fns';
 import ScheduleCronRow from '@/components/server/schedules/ScheduleCronRow';
 import RunScheduleButton from '@/components/server/schedules/RunScheduleButton';
 
-interface Params {
+type Params = {
     id: string;
-}
+};
 
 const CronBox = ({ title, value }: { title: string; value: string }) => (
     <div css={tw`bg-neutral-700 rounded p-3`}>
@@ -41,7 +41,7 @@ const ActivePill = ({ active }: { active: boolean }) => (
 );
 
 export default () => {
-    const history = useHistory();
+    const navigate = useNavigate();
     const { id: scheduleId } = useParams<Params>();
 
     const id = ServerContext.useStoreState((state) => state.server.data!.id);
@@ -157,7 +157,7 @@ export default () => {
                         <Can action={'schedule.delete'}>
                             <DeleteScheduleButton
                                 scheduleId={schedule.id}
-                                onDeleted={() => history.push(`/server/${id}/schedules`)}
+                                onDeleted={() => navigate(`/server/${id}/schedules`)}
                             />
                         </Can>
                         {schedule.tasks.length > 0 && (
