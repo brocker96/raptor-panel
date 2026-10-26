@@ -3,7 +3,7 @@
 
 <img src=".github/raptor-logo.png"
      alt="Raptor Panel"
-     width="650">
+     width="900">
 
 # Raptor Panel
 
