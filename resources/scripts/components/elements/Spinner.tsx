@@ -32,13 +32,13 @@ const SpinnerComponent = styled.div<Props>`
             ? tw`w-4 h-4 border-2`
             : props.size === 'large'
             ? css`
-                  ${tw`w-16 h-16`};
-                  border-width: 6px;
+                  ${tw`w-12 h-12`};
+                  border-width: 4px;
               `
             : null};
 
-    border-color: ${(props) => (!props.isBlue ? 'rgba(255, 255, 255, 0.2)' : 'hsla(212, 92%, 43%, 0.2)')};
-    border-top-color: ${(props) => (!props.isBlue ? 'rgb(255, 255, 255)' : 'hsl(212, 92%, 43%)')};
+    border-color: ${(props) => (!props.isBlue ? 'rgba(255, 255, 255, 0.12)' : 'rgb(82 211 33 / 0.2)')};
+    border-top-color: #52d321;
 `;
 
 const Spinner: Spinner = ({ centered, ...props }) =>

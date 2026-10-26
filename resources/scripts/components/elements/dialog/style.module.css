@@ -3,12 +3,12 @@
 }
 
 .panel {
-    @apply relative bg-gray-600 rounded max-w-xl w-full mx-auto shadow-lg text-left;
-    @apply ring-4 ring-gray-800 ring-opacity-80;
+    @apply relative bg-gray-900 rounded-xl max-w-xl w-full mx-auto shadow-2xl text-left overflow-hidden;
+    @apply ring-1 ring-white/10;
 }
 
 .title {
-    @apply font-header text-xl font-medium mb-2 text-gray-50 pr-4;
+    @apply font-header text-lg font-semibold mb-1.5 text-gray-50 pr-4;
 }
 
 .close_icon {
@@ -19,18 +19,18 @@
     @apply flex items-center justify-center w-10 h-10 rounded-full mr-4;
 
     &.danger {
-        @apply bg-red-500 text-red-50;
+        @apply bg-red-500/15 text-red-400 ring-1 ring-inset ring-red-500/30;
     }
 
     &.warning {
-        @apply bg-yellow-600 text-yellow-50;
+        @apply bg-yellow-500/15 text-yellow-400 ring-1 ring-inset ring-yellow-500/30;
     }
 
     &.success {
-        @apply bg-green-600 text-green-50;
+        @apply bg-raptor-500/15 text-raptor-400 ring-1 ring-inset ring-raptor-500/30;
     }
 
     &.info {
-        @apply bg-primary-500 text-primary-50;
+        @apply bg-gray-700 text-gray-200 ring-1 ring-inset ring-white/10;
     }
 }

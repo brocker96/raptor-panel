@@ -4,22 +4,22 @@
  * screens it falls back to the regular content container layout.
  */
 .page {
-    @apply flex flex-col mx-auto;
-    max-width: 1200px;
-    /* Navigation bar + sub-navigation. */
-    height: calc(100vh - 6.5rem);
-    height: calc(100dvh - 6.5rem);
+    @apply flex flex-col -mx-4 -mt-4;
+    /* The top bar of the shell, the bottom navigation is hidden while editing. */
+    height: calc(100vh - 3.5rem);
+    height: calc(100dvh - 3.5rem);
     min-height: 22rem;
 
     @screen sm {
-        @apply mx-4 mt-6;
-        height: calc(100vh - 11rem);
-        height: calc(100dvh - 11rem);
+        @apply mx-0 mt-0;
+        height: calc(100vh - 5.5rem);
+        height: calc(100dvh - 5.5rem);
         min-height: 28rem;
     }
 
-    @screen xl {
-        @apply mx-auto;
+    @screen lg {
+        height: calc(100vh - 6.5rem);
+        height: calc(100dvh - 6.5rem);
     }
 }
 

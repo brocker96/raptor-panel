@@ -2,6 +2,8 @@ import React, { useLayoutEffect, useRef, useState } from 'react';
 import { useWindowVirtualizer } from '@tanstack/react-virtual';
 import { FileObject } from '@/api/server/files/loadDirectory';
 import FileObjectRow from '@/components/server/files/FileObjectRow';
+import classNames from 'classnames';
+import styles from './style.module.css';
 
 // Rows show a second line with the size and date on small screens.
 const estimateRowHeight = () => (window.matchMedia('(max-width: 639px)').matches ? 58 : 37);
@@ -42,7 +44,11 @@ const VirtualFileList = ({ files }: { files: FileObject[] }) => {
     const items = virtualizer.getVirtualItems();
 
     return (
-        <div ref={container} className={'relative w-full'} style={{ height: virtualizer.getTotalSize() }}>
+        <div
+            ref={container}
+            className={classNames(styles.file_list, 'relative w-full')}
+            style={{ height: virtualizer.getTotalSize() }}
+        >
             <div
                 className={'absolute top-0 left-0 w-full'}
                 style={{ transform: `translateY(${(items[0]?.start ?? scrollMargin) - scrollMargin}px)` }}

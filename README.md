@@ -1,22 +1,48 @@
 <div align="center">
 
+<img src=".github/raptor-logo.png" alt="Raptor Panel" width="820">
 
-<img src=".github/raptor-logo.png"
-     alt="Raptor Panel"
-     width="900">
+**Modern game server management. Built for performance.**
 
-**Modern server management. Built for performance.**
+[![License](https://img.shields.io/github/license/xvmandz/raptor-panel?style=for-the-badge&color=52d321)](./LICENSE.md)
+[![GitHub Stars](https://img.shields.io/github/stars/xvmandz/raptor-panel?style=for-the-badge&logo=github&color=52d321)](https://github.com/xvmandz/raptor-panel/stargazers)
+[![GitHub Issues](https://img.shields.io/github/issues/xvmandz/raptor-panel?style=for-the-badge&color=52d321)](https://github.com/xvmandz/raptor-panel/issues)
 
-An open-source server management panel based on Pterodactyl, focused on performance, simplicity, and a refined user experience.
-
-[![License](https://img.shields.io/github/license/xvmandz/raptor-panel?style=for-the-badge)](./LICENSE.md)
-[![GitHub Stars](https://img.shields.io/github/stars/xvmandz/raptor-panel?style=for-the-badge&logo=github)](https://github.com/xvmandz/raptor-panel/stargazers)
-[![GitHub Contributors](https://img.shields.io/github/contributors/xvmandz/raptor-panel?style=for-the-badge)](https://github.com/xvmandz/raptor-panel/graphs/contributors)
-[![GitHub Issues](https://img.shields.io/github/issues/xvmandz/raptor-panel?style=for-the-badge)](https://github.com/xvmandz/raptor-panel/issues)
+<img src=".github/screenshots/desktop-03-console.png" alt="Raptor Panel console" width="900">
 
 </div>
 
 ---
+
+## ⚡ Raptor vs. upstream — measured, not promised
+
+| | Pterodactyl 1.x | Raptor Panel |
+|---|---|---|
+| Front-end build | 31 s (webpack) | **10 s** (Vite 8 / Rolldown) |
+| JS for the dashboard | 1.7 MiB | **0.77 MiB** |
+| SQL queries for the server list (50/page) | 340 | **15** |
+| `GET /api/client` | 191 ms | **39 ms** |
+| Activity page on a 175k-entry log | 551 ms | **0.5 ms** |
+| Directory with 5,000 files | capped at 250 | **all of them**, ~18 DOM rows |
+| 3,000-line console burst | one write per line | **one batched write per frame** |
+| Dashboard polling | every card, even in background tabs | **only visible cards, tab in foreground** |
+| WebSocket reconnect | fixed 1 s retry, stale token | **backoff + jitter, fresh token** |
+| Phone support | desktop UI squeezed | **bottom navigation, mobile editor** |
+
+<table>
+<tr>
+<td><img src=".github/screenshots/desktop-02-dashboard.png" alt="Dashboard"></td>
+<td><img src=".github/screenshots/desktop-04-files.png" alt="Files"></td>
+</tr>
+<tr>
+<td><img src=".github/screenshots/desktop-01-login.png" alt="Login"></td>
+<td align="center"><img src=".github/screenshots/mobile-03-console.png" alt="Mobile console" width="260"> <img src=".github/screenshots/mobile-06-editor.png" alt="Mobile editor" width="260"></td>
+</tr>
+</table>
+
+## 🧱 Stack
+
+React 18 · TypeScript · Vite 8 · TanStack Query · React Router 7 · CodeMirror 6 · xterm.js 5 · Tailwind CSS · Laravel 12 · PHP 8.2+
 
 ## 🦖 About Raptor Panel
 

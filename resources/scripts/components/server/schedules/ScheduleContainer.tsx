@@ -38,7 +38,10 @@ export default () => {
     }, []);
 
     return (
-        <ServerContentBlock title={'Schedules'}>
+        <ServerContentBlock
+            title={'Schedules'}
+            description={'Automate restarts, backups and commands on a recurring basis.'}
+        >
             <FlashMessageRender byKey={'schedules'} css={tw`mb-4`} />
             {!schedules.length && loading ? (
                 <Spinner size={'large'} centered />

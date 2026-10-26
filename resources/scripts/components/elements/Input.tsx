@@ -6,19 +6,13 @@ export interface Props {
     hasError?: boolean;
 }
 
+// The panel no longer has light surfaces, "light" inputs use a slightly raised background instead.
 const light = css<Props>`
-    ${tw`bg-white border-neutral-200 text-neutral-800`};
-    &:focus {
-        ${tw`border-primary-400`}
-    }
-
-    &:disabled {
-        ${tw`bg-neutral-100 border-neutral-200`};
-    }
+    ${tw`bg-gray-800`};
 `;
 
 const checkboxStyle = css<Props>`
-    ${tw`bg-neutral-500 cursor-pointer appearance-none inline-block align-middle select-none flex-shrink-0 w-4 h-4 text-primary-400 border border-neutral-300 rounded-sm`};
+    ${tw`bg-gray-900 cursor-pointer appearance-none inline-block align-middle select-none flex-shrink-0 w-4 h-4 text-raptor-500 border border-gray-500 rounded`};
     color-adjust: exact;
     background-origin: border-box;
     transition: all 75ms linear, box-shadow 25ms linear;
@@ -31,8 +25,8 @@ const checkboxStyle = css<Props>`
     }
 
     &:focus {
-        ${tw`outline-none border-primary-300`};
-        box-shadow: 0 0 0 1px rgba(9, 103, 210, 0.25);
+        ${tw`outline-none border-raptor-400`};
+        box-shadow: 0 0 0 3px rgb(82 211 33 / 0.25);
     }
 `;
 
@@ -40,12 +34,12 @@ const inputStyle = css<Props>`
     // Reset to normal styling.
     resize: none;
     ${tw`appearance-none outline-none w-full min-w-0`};
-    ${tw`p-3 border-2 rounded text-sm transition-all duration-150`};
-    ${tw`bg-neutral-600 border-neutral-500 hover:border-neutral-400 text-neutral-200 shadow-none focus:ring-0`};
+    ${tw`px-3 py-2.5 border rounded-md text-sm transition-all duration-150`};
+    ${tw`bg-gray-900 border-gray-700 hover:border-gray-600 text-gray-100 placeholder-gray-500 shadow-none focus:ring-0`};
 
     & + .input-help {
         ${tw`mt-1 text-xs`};
-        ${(props) => (props.hasError ? tw`text-red-200` : tw`text-neutral-200`)};
+        ${(props) => (props.hasError ? tw`text-red-300` : tw`text-gray-400`)};
     }
 
     &:required,
@@ -54,8 +48,8 @@ const inputStyle = css<Props>`
     }
 
     &:not(:disabled):not(:read-only):focus {
-        ${tw`shadow-md border-primary-300 ring-2 ring-primary-400 ring-opacity-50`};
-        ${(props) => props.hasError && tw`border-red-300 ring-red-200`};
+        ${tw`border-raptor-500 ring-[3px] ring-raptor-500/20`};
+        ${(props) => props.hasError && tw`border-red-400 ring-red-500/20`};
     }
 
     &:disabled {
@@ -63,7 +57,7 @@ const inputStyle = css<Props>`
     }
 
     ${(props) => props.isLight && light};
-    ${(props) => props.hasError && tw`text-red-100 border-red-400 hover:border-red-300`};
+    ${(props) => props.hasError && tw`text-red-100 border-red-500/70 hover:border-red-400`};
 `;
 
 const Input = styled.input<Props>`

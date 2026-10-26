@@ -25,7 +25,7 @@ const LoginCheckpointContainer = () => {
     const [isMissingDevice, setIsMissingDevice] = useState(false);
 
     return (
-        <LoginFormContainer title={'Device Checkpoint'} css={tw`w-full flex`}>
+        <LoginFormContainer title={'Device Checkpoint'}>
             <div css={tw`mt-6`}>
                 <Field
                     light
@@ -53,16 +53,13 @@ const LoginCheckpointContainer = () => {
                         setFieldValue('recoveryCode', '');
                         setIsMissingDevice((s) => !s);
                     }}
-                    css={tw`cursor-pointer text-xs text-neutral-500 tracking-wide uppercase no-underline hover:text-neutral-700`}
+                    className={'cursor-pointer text-sm text-gray-400 hover:text-raptor-400 no-underline'}
                 >
                     {!isMissingDevice ? "I've Lost My Device" : 'I Have My Device'}
                 </span>
             </div>
             <div css={tw`mt-6 text-center`}>
-                <Link
-                    to={'/auth/login'}
-                    css={tw`text-xs text-neutral-500 tracking-wide uppercase no-underline hover:text-neutral-700`}
-                >
+                <Link to={'/auth/login'} className={'text-sm text-gray-400 hover:text-raptor-400 no-underline'}>
                     Return to Login
                 </Link>
             </div>

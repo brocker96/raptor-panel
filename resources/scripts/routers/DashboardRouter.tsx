@@ -1,11 +1,11 @@
-import React from 'react';
-import { NavLink, Route, Routes, useLocation } from 'react-router-dom';
-import NavigationBar from '@/components/NavigationBar';
+import React, { useMemo } from 'react';
+import { Route, Routes, useLocation } from 'react-router-dom';
+import { ServerIcon } from '@heroicons/react/outline';
 import DashboardContainer from '@/components/dashboard/DashboardContainer';
 import { NotFound } from '@/components/elements/ScreenBlock';
 import TransitionRouter from '@/TransitionRouter';
-import SubNavigation from '@/components/elements/SubNavigation';
 import Spinner from '@/components/elements/Spinner';
+import Shell, { NavEntry } from '@/components/layout/Shell';
 import routes, { preload } from '@/routers/routes';
 
 const accountPath = (path: string) => `/account/${path}`.replace(/\/+/g, '/').replace(/(.)\/$/, '$1');
@@ -13,27 +13,28 @@ const accountPath = (path: string) => `/account/${path}`.replace(/\/+/g, '/').re
 export default () => {
     const location = useLocation();
 
+    const nav = useMemo<NavEntry[]>(
+        () => [
+            { to: '/', label: 'Servers', icon: ServerIcon, end: true },
+            ...routes.account
+                .filter((route) => !!route.name)
+                .map((route) => ({
+                    to: accountPath(route.path),
+                    label: route.name!,
+                    icon: route.icon,
+                    end: route.exact ?? false,
+                    linkProps: preload(route),
+                })),
+        ],
+        []
+    );
+
+    const current = nav.find((entry) =>
+        entry.end ? location.pathname === entry.to : location.pathname.startsWith(entry.to)
+    );
+
     return (
-        <>
-            <NavigationBar />
-            {location.pathname.startsWith('/account') && (
-                <SubNavigation>
-                    <div>
-                        {routes.account
-                            .filter((route) => !!route.name)
-                            .map((route) => (
-                                <NavLink
-                                    key={route.path}
-                                    to={accountPath(route.path)}
-                                    end={route.exact ?? false}
-                                    {...preload(route)}
-                                >
-                                    {route.name}
-                                </NavLink>
-                            ))}
-                    </div>
-                </SubNavigation>
-            )}
+        <Shell nav={nav} primary={['/', '/account', '/account/api', '/account/activity']} title={current?.label}>
             <TransitionRouter>
                 <React.Suspense fallback={<Spinner centered />}>
                     <Routes location={location}>
@@ -45,6 +46,6 @@ export default () => {
                     </Routes>
                 </React.Suspense>
             </TransitionRouter>
-        </>
+        </Shell>
     );
 };

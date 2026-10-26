@@ -1,28 +1,39 @@
 import tw from 'twin.macro';
 import { createGlobalStyle } from 'styled-components/macro';
-import font from '@fontsource-variable/ibm-plex-sans/files/ibm-plex-sans-latin-wght-normal.woff2';
 
 export default createGlobalStyle`
-    @font-face {
-        font-family: 'IBM Plex Sans';
-        font-style: normal;
-        font-display: swap;
-        font-weight: 100 700;
-        src: url(${font}) format('woff2-variations');
-        unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+    :root {
+        color-scheme: dark;
+        -webkit-tap-highlight-color: transparent;
     }
 
     body {
-        ${tw`font-sans bg-neutral-800 text-neutral-200`};
-        letter-spacing: 0.015em;
+        ${tw`font-sans bg-gray-950 text-gray-200 antialiased`};
+        font-feature-settings: 'cv11', 'ss01', 'ss03';
+        /* Subtle brand glow behind the page. */
+        background-image: radial-gradient(60rem 30rem at 10% -10%, rgb(82 211 33 / 0.07), transparent 60%),
+            radial-gradient(50rem 30rem at 110% 0%, rgb(82 211 33 / 0.04), transparent 60%);
+        background-attachment: fixed;
     }
 
     h1, h2, h3, h4, h5, h6 {
-        ${tw`font-medium tracking-normal font-header`};
+        ${tw`font-semibold tracking-tight font-header text-gray-50`};
     }
 
     p {
-        ${tw`text-neutral-200 leading-snug font-sans`};
+        ${tw`text-gray-300 leading-relaxed font-sans`};
+    }
+
+    ::selection {
+        ${tw`bg-raptor-500/30 text-white`};
+    }
+
+    a {
+        ${tw`text-raptor-400 hover:text-raptor-300 transition-colors`};
+    }
+
+    code {
+        ${tw`font-mono`};
     }
 
     form {
@@ -55,7 +66,7 @@ export default createGlobalStyle`
         border-right-width: 4px;
         border-left-width: 4px;
         -webkit-border-radius: 9px 4px;
-        -webkit-box-shadow: inset 0 0 0 1px hsl(211, 10%, 53%), inset 0 0 0 4px hsl(209deg 18% 30%);
+        -webkit-box-shadow: inset 0 0 0 1px #4d5550, inset 0 0 0 4px #2c322f;
     }
 
     ::-webkit-scrollbar-track-piece {

@@ -1,25 +1,61 @@
 import TransferListener from '@/components/server/TransferListener';
-import React, { useEffect, useState } from 'react';
-import { NavLink, Route, Routes, useLocation, useParams } from 'react-router-dom';
-import NavigationBar from '@/components/NavigationBar';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Link, Route, Routes, useLocation, useParams } from 'react-router-dom';
+import { ChevronLeftIcon, ExternalLinkIcon } from '@heroicons/react/outline';
 import TransitionRouter from '@/TransitionRouter';
 import WebsocketHandler from '@/components/server/WebsocketHandler';
 import { ServerContext } from '@/state/server';
-import { CSSTransition } from 'react-transition-group';
-import Can from '@/components/elements/Can';
 import Spinner from '@/components/elements/Spinner';
 import { NotFound, ServerError } from '@/components/elements/ScreenBlock';
 import { httpErrorToHuman } from '@/api/http';
 import { useStoreState } from 'easy-peasy';
-import SubNavigation from '@/components/elements/SubNavigation';
 import InstallListener from '@/components/server/InstallListener';
 import ErrorBoundary from '@/components/elements/ErrorBoundary';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
 import ConflictStateRenderer from '@/components/server/ConflictStateRenderer';
 import PermissionRoute from '@/components/elements/PermissionRoute';
+import Shell, { NavEntry } from '@/components/layout/Shell';
+import StatusDot from '@/components/server/StatusDot';
 import routes, { preload } from '@/routers/routes';
+import { checkPermissions } from '@/plugins/usePermissions';
 import { whenIdle } from '@/lib/lazy';
+
+const ServerContextCard = () => {
+    const name = ServerContext.useStoreState((state) => state.server.data!.name);
+    const node = ServerContext.useStoreState((state) => state.server.data!.node);
+    const serverId = ServerContext.useStoreState((state) => state.server.data!.internalId);
+    const status = ServerContext.useStoreState((state) => state.status.value);
+    const rootAdmin = useStoreState((state) => state.user.data!.rootAdmin);
+
+    return (
+        <div className={'rounded-lg bg-gray-900 ring-1 ring-inset ring-gray-800 p-3'}>
+            <Link
+                to={'/'}
+                className={'flex items-center gap-1 text-xs font-medium text-gray-400 hover:text-gray-200 no-underline'}
+            >
+                <ChevronLeftIcon className={'w-3.5 h-3.5'} />
+                All servers
+            </Link>
+            <div className={'mt-2 flex items-center gap-2 min-w-0'}>
+                <StatusDot status={status} />
+                <p className={'flex-1 min-w-0 font-semibold text-gray-50 truncate'} title={name}>
+                    {name}
+                </p>
+                {rootAdmin && (
+                    // eslint-disable-next-line react/jsx-no-target-blank
+                    <a
+                        href={`/admin/servers/view/${serverId}`}
+                        target={'_blank'}
+                        className={'text-gray-500 hover:text-gray-200'}
+                        title={'View in admin area'}
+                    >
+                        <ExternalLinkIcon className={'w-4 h-4'} />
+                    </a>
+                )}
+            </div>
+            <p className={'mt-0.5 text-xs text-gray-500 truncate'}>{node}</p>
+        </div>
+    );
+};
 
 export default () => {
     const params = useParams<{ id: string }>();
@@ -30,8 +66,9 @@ export default () => {
 
     const id = ServerContext.useStoreState((state) => state.server.data?.id);
     const uuid = ServerContext.useStoreState((state) => state.server.data?.uuid);
+    const name = ServerContext.useStoreState((state) => state.server.data?.name);
+    const permissions = ServerContext.useStoreState((state) => state.server.permissions);
     const inConflictState = ServerContext.useStoreState((state) => state.server.inConflictState);
-    const serverId = ServerContext.useStoreState((state) => state.server.data?.internalId);
     const getServer = ServerContext.useStoreActions((actions) => actions.server.getServer);
     const clearServerState = ServerContext.useStoreActions((actions) => actions.clearServerState);
 
@@ -72,78 +109,75 @@ export default () => {
         };
     }, [params.id]);
 
+    const nav = useMemo<NavEntry[]>(
+        () =>
+            routes.server
+                .filter((route) => !!route.name)
+                .filter((route) => !route.permission || checkPermissions(permissions, route.permission).some(Boolean))
+                .map((route) => ({
+                    to: to(route.path),
+                    label: route.name!,
+                    icon: route.icon,
+                    end: route.exact,
+                    linkProps: preload(route),
+                })),
+        [permissions, params.id]
+    );
+
+    // The name of the page being viewed, shown in the top bar.
+    const current = nav
+        .filter((entry) => location.pathname === entry.to || location.pathname.startsWith(entry.to + '/'))
+        .sort((a, b) => b.to.length - a.to.length)[0];
+
+    if (!uuid || !id) {
+        return (
+            <Shell nav={[]} title={null}>
+                {error ? <ServerError message={error} /> : <Spinner size={'large'} centered />}
+            </Shell>
+        );
+    }
+
     return (
-        <React.Fragment key={'server-router'}>
-            <NavigationBar />
-            {!uuid || !id ? (
-                error ? (
-                    <ServerError message={error} />
-                ) : (
-                    <Spinner size={'large'} centered />
-                )
+        <Shell
+            nav={nav}
+            primary={['', 'files', 'backups', 'settings'].map((path) => to(path))}
+            context={<ServerContextCard />}
+            title={
+                <span className={'flex items-center gap-2 min-w-0'}>
+                    <span className={'truncate text-gray-400 font-medium hidden sm:inline'}>{name}</span>
+                    <span className={'text-gray-600 hidden sm:inline'}>/</span>
+                    <span className={'truncate'}>{current?.label || name}</span>
+                </span>
+            }
+            banner={<WebsocketHandler />}
+            fullscreen={/\/files\/(edit|new)$/.test(location.pathname)}
+        >
+            <InstallListener />
+            <TransferListener />
+            {inConflictState && (!rootAdmin || (rootAdmin && !location.pathname.endsWith(`/server/${id}`))) ? (
+                <ConflictStateRenderer />
             ) : (
-                <>
-                    <CSSTransition timeout={150} classNames={'fade'} appear in>
-                        <SubNavigation>
-                            <div>
-                                {routes.server
-                                    .filter((route) => !!route.name)
-                                    .map((route) =>
-                                        route.permission ? (
-                                            <Can key={route.path} action={route.permission} matchAny>
-                                                <NavLink to={to(route.path)} end={route.exact} {...preload(route)}>
-                                                    {route.name}
-                                                </NavLink>
-                                            </Can>
-                                        ) : (
-                                            <NavLink
-                                                key={route.path}
-                                                to={to(route.path)}
-                                                end={route.exact}
-                                                {...preload(route)}
-                                            >
-                                                {route.name}
-                                            </NavLink>
-                                        )
-                                    )}
-                                {rootAdmin && (
-                                    // eslint-disable-next-line react/jsx-no-target-blank
-                                    <a href={`/admin/servers/view/${serverId}`} target={'_blank'}>
-                                        <FontAwesomeIcon icon={faExternalLinkAlt} />
-                                    </a>
-                                )}
-                            </div>
-                        </SubNavigation>
-                    </CSSTransition>
-                    <InstallListener />
-                    <TransferListener />
-                    <WebsocketHandler />
-                    {inConflictState && (!rootAdmin || (rootAdmin && !location.pathname.endsWith(`/server/${id}`))) ? (
-                        <ConflictStateRenderer />
-                    ) : (
-                        <ErrorBoundary>
-                            <TransitionRouter>
-                                <Routes location={location}>
-                                    {routes.server.map(({ path, permission, component: Component }) => (
-                                        <Route
-                                            key={path}
-                                            path={relative(path)}
-                                            element={
-                                                <PermissionRoute permission={permission}>
-                                                    <Spinner.Suspense>
-                                                        <Component />
-                                                    </Spinner.Suspense>
-                                                </PermissionRoute>
-                                            }
-                                        />
-                                    ))}
-                                    <Route path={'*'} element={<NotFound />} />
-                                </Routes>
-                            </TransitionRouter>
-                        </ErrorBoundary>
-                    )}
-                </>
+                <ErrorBoundary>
+                    <TransitionRouter>
+                        <Routes location={location}>
+                            {routes.server.map(({ path, permission, component: Component }) => (
+                                <Route
+                                    key={path}
+                                    path={relative(path)}
+                                    element={
+                                        <PermissionRoute permission={permission}>
+                                            <Spinner.Suspense>
+                                                <Component />
+                                            </Spinner.Suspense>
+                                        </PermissionRoute>
+                                    }
+                                />
+                            ))}
+                            <Route path={'*'} element={<NotFound />} />
+                        </Routes>
+                    </TransitionRouter>
+                </ErrorBoundary>
             )}
-        </React.Fragment>
+        </Shell>
     );
 };

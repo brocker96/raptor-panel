@@ -53,7 +53,12 @@ const FileObjectRow = ({ file }: { file: FileObject }) => (
     >
         <SelectFileCheckbox name={file.name} />
         <Clickable file={file}>
-            <div css={tw`flex-none text-neutral-400 ml-6 mr-3 sm:mr-4 text-lg pl-3`}>
+            <div
+                css={[
+                    tw`flex-none ml-6 mr-3 sm:mr-4 text-lg pl-3`,
+                    file.isFile ? tw`text-gray-500` : tw`text-raptor-400`,
+                ]}
+            >
                 {file.isFile ? (
                     <FontAwesomeIcon
                         icon={file.isSymlink ? faFileImport : file.isArchiveType() ? faFileArchive : faFileAlt}
@@ -65,13 +70,17 @@ const FileObjectRow = ({ file }: { file: FileObject }) => (
             <div css={tw`flex-1 min-w-0`}>
                 <div css={tw`truncate`}>{file.name}</div>
                 {/* On small screens the size and modification date are shown below the name. */}
-                <div css={tw`flex gap-2 text-xs text-neutral-400 truncate sm:hidden`}>
+                <div css={tw`flex gap-2 text-xs text-gray-500 truncate sm:hidden`}>
                     {file.isFile && <span>{bytesToString(file.size)}</span>}
                     <span>{modifiedAt(file)}</span>
                 </div>
             </div>
-            {file.isFile && <div css={tw`w-1/6 text-right mr-4 hidden sm:block`}>{bytesToString(file.size)}</div>}
-            <div css={tw`w-1/5 text-right mr-4 hidden md:block`} title={file.modifiedAt.toString()}>
+            {file.isFile && (
+                <div css={tw`w-1/6 text-right mr-4 hidden sm:block text-gray-400 tabular-nums`}>
+                    {bytesToString(file.size)}
+                </div>
+            )}
+            <div css={tw`w-1/5 text-right mr-4 hidden md:block text-gray-500`} title={file.modifiedAt.toString()}>
                 {modifiedAt(file)}
             </div>
         </Clickable>

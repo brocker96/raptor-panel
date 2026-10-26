@@ -4,6 +4,7 @@ import Can from '@/components/elements/Can';
 import { ServerContext } from '@/state/server';
 import { PowerAction } from '@/components/server/console/ServerConsoleContainer';
 import { Dialog } from '@/components/elements/dialog';
+import { PlayIcon, RefreshIcon, StopIcon } from '@heroicons/react/solid';
 
 interface PowerButtonProps {
     className?: string;
@@ -54,11 +55,13 @@ export default ({ className }: PowerButtonProps) => {
                     disabled={status !== 'offline'}
                     onClick={onButtonClick.bind(this, 'start')}
                 >
+                    <PlayIcon />
                     Start
                 </Button>
             </Can>
             <Can action={'control.restart'}>
                 <Button.Text className={'flex-1'} disabled={!status} onClick={onButtonClick.bind(this, 'restart')}>
+                    <RefreshIcon />
                     Restart
                 </Button.Text>
             </Can>
@@ -68,6 +71,7 @@ export default ({ className }: PowerButtonProps) => {
                     disabled={status === 'offline'}
                     onClick={onButtonClick.bind(this, killable ? 'kill' : 'stop')}
                 >
+                    <StopIcon />
                     {killable ? 'Kill' : 'Stop'}
                 </Button.Danger>
             </Can>

@@ -10,7 +10,7 @@ export default () => {
     const navigate = useNavigate();
 
     return (
-        <div className={'pt-8 xl:pt-32'}>
+        <div>
             <Routes>
                 <Route path={'login'} element={<LoginContainer />} />
                 <Route path={'login/checkpoint'} element={<LoginCheckpointContainer />} />

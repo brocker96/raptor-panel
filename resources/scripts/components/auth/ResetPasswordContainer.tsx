@@ -62,7 +62,7 @@ export default () => {
             })}
         >
             {({ isSubmitting }) => (
-                <LoginFormContainer title={'Reset Password'} css={tw`w-full flex`}>
+                <LoginFormContainer title={'Reset Password'}>
                     <div>
                         <label>Email</label>
                         <Input value={email} isLight disabled />
@@ -85,10 +85,7 @@ export default () => {
                         </Button>
                     </div>
                     <div css={tw`mt-6 text-center`}>
-                        <Link
-                            to={'/auth/login'}
-                            css={tw`text-xs text-neutral-500 tracking-wide no-underline uppercase hover:text-neutral-600`}
-                        >
+                        <Link to={'/auth/login'} className={'text-sm text-gray-400 hover:text-raptor-400 no-underline'}>
                             Return to Login
                         </Link>
                     </div>

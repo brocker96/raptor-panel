@@ -1,7 +1,5 @@
 import React, { useEffect } from 'react';
-import ContentContainer from '@/components/elements/ContentContainer';
-import { CSSTransition } from 'react-transition-group';
-import tw from 'twin.macro';
+import classNames from 'classnames';
 import FlashMessageRender from '@/components/FlashMessageRender';
 
 export interface PageContentBlockProps {
@@ -10,6 +8,10 @@ export interface PageContentBlockProps {
     showFlashKey?: string;
 }
 
+/**
+ * Wraps the content of a page. The surrounding layout (navigation, padding and width) is provided
+ * by the application shell, this only sets the document title and renders flash messages.
+ */
 const PageContentBlock: React.FC<React.PropsWithChildren<PageContentBlockProps>> = ({
     title,
     showFlashKey,
@@ -23,27 +25,31 @@ const PageContentBlock: React.FC<React.PropsWithChildren<PageContentBlockProps>>
     }, [title]);
 
     return (
-        <CSSTransition timeout={150} classNames={'fade'} appear in>
-            <>
-                <ContentContainer css={tw`my-4 sm:my-10`} className={className}>
-                    {showFlashKey && <FlashMessageRender byKey={showFlashKey} css={tw`mb-4`} />}
-                    {children}
-                </ContentContainer>
-                <ContentContainer css={tw`mb-4`}>
-                    <p css={tw`text-center text-neutral-500 text-xs`}>
-                        <a
-                            rel={'noopener nofollow noreferrer'}
-                            href={'https://pterodactyl.io'}
-                            target={'_blank'}
-                            css={tw`no-underline text-neutral-500 hover:text-neutral-300`}
-                        >
-                            Pterodactyl&reg;
-                        </a>
-                        &nbsp;&copy; 2015 - {new Date().getFullYear()}
-                    </p>
-                </ContentContainer>
-            </>
-        </CSSTransition>
+        <div className={'animate-fade-in'}>
+            <div className={classNames('min-h-[50vh]', className)}>
+                {showFlashKey && <FlashMessageRender byKey={showFlashKey} className={'mb-4'} />}
+                {children}
+            </div>
+            <footer className={'mt-12 mb-2 text-center text-xs text-gray-600'}>
+                <a
+                    rel={'noopener nofollow noreferrer'}
+                    href={'https://github.com/xvmandz/raptor-panel'}
+                    target={'_blank'}
+                    className={'text-gray-500 hover:text-gray-300'}
+                >
+                    Raptor Panel
+                </a>
+                {' · based on '}
+                <a
+                    rel={'noopener nofollow noreferrer'}
+                    href={'https://pterodactyl.io'}
+                    target={'_blank'}
+                    className={'text-gray-500 hover:text-gray-300'}
+                >
+                    Pterodactyl&reg;
+                </a>
+            </footer>
+        </div>
     );
 };
 

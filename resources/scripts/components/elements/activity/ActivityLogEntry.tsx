@@ -44,9 +44,11 @@ export default ({ activity, children }: Props) => {
     const properties = wrapProperties(activity.properties);
 
     return (
-        <div className={'grid grid-cols-10 py-4 border-b-2 border-gray-800 last:rounded-b last:border-0 group'}>
+        <div className={'grid grid-cols-10 py-3.5 border-b border-gray-800 last:border-0 hover:bg-white/[0.02] group'}>
             <div className={'hidden sm:flex sm:col-span-1 items-center justify-center select-none'}>
-                <div className={'flex items-center w-10 h-10 rounded-full bg-gray-600 overflow-hidden'}>
+                <div
+                    className={'flex items-center w-9 h-9 rounded-full bg-gray-800 ring-1 ring-white/5 overflow-hidden'}
+                >
                     <Avatar name={actor?.uuid || 'system'} />
                 </div>
             </div>
@@ -59,7 +61,7 @@ export default ({ activity, children }: Props) => {
                         <span className={'text-gray-400'}>&nbsp;&mdash;&nbsp;</span>
                         <Link
                             to={`#${pathTo({ event: activity.event })}`}
-                            className={'transition-colors duration-75 active:text-cyan-400 hover:text-cyan-400'}
+                            className={'transition-colors duration-75 active:text-raptor-400 hover:text-raptor-400'}
                         >
                             {activity.event}
                         </Link>

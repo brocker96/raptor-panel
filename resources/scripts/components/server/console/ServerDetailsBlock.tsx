@@ -1,44 +1,65 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import {
-    faClock,
-    faCloudDownloadAlt,
-    faCloudUploadAlt,
-    faHdd,
-    faMemory,
-    faMicrochip,
-    faWifi,
-} from '@fortawesome/free-solid-svg-icons';
-import { bytesToString, ip, mbToBytes } from '@/lib/formatters';
+import classNames from 'classnames';
+import { ArrowDownIcon, ArrowUpIcon, ChipIcon, ClockIcon, DatabaseIcon, ServerIcon } from '@heroicons/react/outline';
+import { bytesToString, mbToBytes } from '@/lib/formatters';
 import { ServerContext } from '@/state/server';
 import { SocketEvent, SocketRequest } from '@/components/server/events';
 import UptimeDuration from '@/components/server/UptimeDuration';
-import StatBlock from '@/components/server/console/StatBlock';
 import useWebsocketEvent from '@/plugins/useWebsocketEvent';
-import classNames from 'classnames';
-import { capitalize } from '@/lib/strings';
 import parseStats from '@/plugins/parseStats';
+import styles from './style.module.css';
 
 type Stats = Record<'memory' | 'cpu' | 'disk' | 'uptime' | 'rx' | 'tx', number>;
 
-const getBackgroundColor = (value: number, max: number | null): string | undefined => {
-    const delta = !max ? 0 : value / max;
+interface MetricProps {
+    icon: React.ComponentType<React.ComponentProps<'svg'>>;
+    label: string;
+    value: React.ReactNode;
+    limit?: string | null;
+    /** Usage between 0 and 1, renders a progress bar when provided. */
+    usage?: number | null;
+    offline?: boolean;
+    children?: React.ReactNode;
+}
 
-    if (delta > 0.8) {
-        if (delta > 0.9) {
-            return 'bg-red-500';
-        }
-        return 'bg-yellow-500';
-    }
+const Metric = ({ icon: Icon, label, value, limit, usage, offline, children }: MetricProps) => {
+    const level = usage === undefined || usage === null ? null : usage > 0.9 ? 'danger' : usage > 0.75 ? 'warn' : 'ok';
 
-    return undefined;
+    return (
+        <div className={styles.metric}>
+            <div className={'flex items-center gap-2 text-xs font-medium text-gray-400'}>
+                <Icon className={'w-4 h-4'} />
+                {label}
+            </div>
+            <div className={'mt-2 flex items-baseline gap-1 min-w-0'}>
+                <span
+                    className={classNames('text-xl font-semibold tracking-tight truncate tabular-nums', {
+                        'text-gray-500': offline,
+                        'text-gray-50': !offline,
+                    })}
+                >
+                    {offline ? 'Offline' : value}
+                </span>
+                {limit !== undefined && !offline && (
+                    <span className={'text-xs text-gray-500 truncate'}>/ {limit || '∞'}</span>
+                )}
+            </div>
+            {usage !== undefined && (
+                <div className={styles.metric_bar}>
+                    <div
+                        className={classNames('h-full rounded-full transition-[width] duration-500', {
+                            'bg-raptor-500': level === 'ok' || level === null,
+                            'bg-yellow-400': level === 'warn',
+                            'bg-red-500': level === 'danger',
+                        })}
+                        style={{ width: `${Math.min(100, Math.max(0, (offline ? 0 : usage || 0) * 100))}%` }}
+                    />
+                </div>
+            )}
+            {children}
+        </div>
+    );
 };
-
-const Limit = ({ limit, children }: { limit: string | null; children: React.ReactNode }) => (
-    <>
-        {children}
-        <span className={'ml-1 text-gray-300 text-[70%] select-none'}>/ {limit || <>&infin;</>}</span>
-    </>
-);
 
 const ServerDetailsBlock = ({ className }: { className?: string }) => {
     const [stats, setStats] = useState<Stats>({ memory: 0, cpu: 0, disk: 0, uptime: 0, tx: 0, rx: 0 });
@@ -56,12 +77,6 @@ const ServerDetailsBlock = ({ className }: { className?: string }) => {
         }),
         [limits]
     );
-
-    const allocation = ServerContext.useStoreState((state) => {
-        const match = state.server.data!.allocations.find((allocation) => allocation.isDefault);
-
-        return !match ? 'n/a' : `${match.alias || ip(match.ip)}:${match.port}`;
-    });
 
     useEffect(() => {
         if (!connected || !instance) {
@@ -85,51 +100,48 @@ const ServerDetailsBlock = ({ className }: { className?: string }) => {
         });
     });
 
+    const offline = status === 'offline' || status === null;
+
     return (
-        <div className={classNames('grid grid-cols-6 gap-2 md:gap-4', className)}>
-            <StatBlock icon={faWifi} title={'Address'} copyOnClick={allocation}>
-                {allocation}
-            </StatBlock>
-            <StatBlock
-                icon={faClock}
-                title={'Uptime'}
-                color={getBackgroundColor(status === 'running' ? 0 : status !== 'offline' ? 9 : 10, 10)}
-            >
-                {status === null ? (
-                    'Offline'
-                ) : stats.uptime > 0 ? (
-                    <UptimeDuration uptime={stats.uptime / 1000} />
-                ) : (
-                    capitalize(status)
+        <div className={classNames('grid grid-cols-2 lg:grid-cols-5 gap-3', className)}>
+            <Metric
+                icon={ChipIcon}
+                label={'CPU'}
+                value={`${stats.cpu.toFixed(1)}%`}
+                limit={textLimits.cpu}
+                usage={limits.cpu ? stats.cpu / limits.cpu : null}
+                offline={offline}
+            />
+            <Metric
+                icon={ServerIcon}
+                label={'Memory'}
+                value={bytesToString(stats.memory)}
+                limit={textLimits.memory}
+                usage={limits.memory ? stats.memory / mbToBytes(limits.memory) : null}
+                offline={offline}
+            />
+            <Metric
+                icon={DatabaseIcon}
+                label={'Disk'}
+                value={bytesToString(stats.disk)}
+                limit={textLimits.disk}
+                usage={limits.disk ? stats.disk / mbToBytes(limits.disk) : null}
+            />
+            <Metric icon={ArrowDownIcon} label={'Network'} value={bytesToString(stats.rx)} offline={offline}>
+                {!offline && (
+                    <p className={'mt-1 flex items-center gap-1 text-xs text-gray-500'}>
+                        <ArrowUpIcon className={'w-3 h-3'} /> {bytesToString(stats.tx)} sent
+                    </p>
                 )}
-            </StatBlock>
-            <StatBlock icon={faMicrochip} title={'CPU Load'} color={getBackgroundColor(stats.cpu, limits.cpu)}>
-                {status === 'offline' ? (
-                    <span className={'text-gray-400'}>Offline</span>
-                ) : (
-                    <Limit limit={textLimits.cpu}>{stats.cpu.toFixed(2)}%</Limit>
-                )}
-            </StatBlock>
-            <StatBlock
-                icon={faMemory}
-                title={'Memory'}
-                color={getBackgroundColor(stats.memory / 1024, limits.memory * 1024)}
-            >
-                {status === 'offline' ? (
-                    <span className={'text-gray-400'}>Offline</span>
-                ) : (
-                    <Limit limit={textLimits.memory}>{bytesToString(stats.memory)}</Limit>
-                )}
-            </StatBlock>
-            <StatBlock icon={faHdd} title={'Disk'} color={getBackgroundColor(stats.disk / 1024, limits.disk * 1024)}>
-                <Limit limit={textLimits.disk}>{bytesToString(stats.disk)}</Limit>
-            </StatBlock>
-            <StatBlock icon={faCloudDownloadAlt} title={'Network (Inbound)'}>
-                {status === 'offline' ? <span className={'text-gray-400'}>Offline</span> : bytesToString(stats.rx)}
-            </StatBlock>
-            <StatBlock icon={faCloudUploadAlt} title={'Network (Outbound)'}>
-                {status === 'offline' ? <span className={'text-gray-400'}>Offline</span> : bytesToString(stats.tx)}
-            </StatBlock>
+            </Metric>
+            <div className={'col-span-2 lg:col-span-1'}>
+                <Metric
+                    icon={ClockIcon}
+                    label={'Uptime'}
+                    value={stats.uptime > 0 ? <UptimeDuration uptime={stats.uptime / 1000} /> : '—'}
+                    offline={offline}
+                />
+            </div>
         </div>
     );
 };

@@ -32,20 +32,27 @@
     }
 }
 
+.metric {
+    @apply relative rounded-lg bg-gray-900/80 border border-gray-800 p-4 h-full overflow-hidden shadow-card;
+}
+
+.metric_bar {
+    @apply mt-3 h-1 w-full rounded-full bg-gray-800 overflow-hidden;
+}
+
 .terminal {
     @apply flex flex-col w-full;
 
-    & .overflows_container {
-        @apply -ml-4 sm:ml-0;
-        width: calc(100% + 2rem);
+    @apply rounded-xl overflow-hidden border border-gray-800 shadow-card;
 
-        @screen sm {
-            @apply w-full;
-        }
+    & .overflows_container {
+        @apply w-full;
     }
 
     & > .container {
-        @apply relative rounded-t p-1 sm:p-2 bg-black min-h-[16rem] flex-1 font-mono text-sm;
+        @apply relative p-2 sm:p-3 bg-black flex-1 font-mono text-sm;
+        height: min(60vh, 36rem);
+        min-height: 18rem;
 
         & .search_toggle {
             @apply absolute top-2 right-3 z-10 p-2 rounded text-gray-400 bg-gray-900/80;
@@ -91,7 +98,7 @@
     }
 
     & .command_input {
-        @apply relative bg-gray-900 px-2 text-gray-100 pl-10 pr-24 sm:pr-4 py-3 sm:py-2 w-full font-mono text-base sm:text-sm sm:rounded-b;
+        @apply relative bg-gray-900 px-2 text-gray-100 pl-10 pr-24 sm:pr-4 py-3 w-full font-mono text-base sm:text-sm border-t border-gray-800;
         @apply focus:ring-0 outline-none focus-visible:outline-none;
         @apply border-0 border-b-2 border-transparent transition-colors duration-100;
         @apply active:border-cyan-500 focus:border-cyan-500;
@@ -99,5 +106,5 @@
 }
 
 .chart_container {
-    @apply bg-gray-600 rounded shadow-lg pt-2 border-b-4 border-gray-700 relative;
+    @apply relative rounded-lg bg-gray-900/80 border border-gray-800 pt-2 pb-1 shadow-card overflow-hidden;
 }

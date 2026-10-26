@@ -1,55 +1,77 @@
 import React, { forwardRef } from 'react';
 import { Form } from 'formik';
-import styled from 'styled-components/macro';
-import { breakpoint } from '@/theme';
 import FlashMessageRender from '@/components/FlashMessageRender';
-import tw from 'twin.macro';
+import Logo from '@/components/layout/Logo';
 
 type Props = React.DetailedHTMLProps<React.FormHTMLAttributes<HTMLFormElement>, HTMLFormElement> & {
     title?: string;
+    subtitle?: string;
 };
 
-const Container = styled.div`
-    ${breakpoint('sm')`
-        ${tw`w-4/5 mx-auto`}
-    `};
+const highlights = [
+    'Live console with instant search',
+    'File editor that works on your phone',
+    'Fast on the smallest VPS',
+];
 
-    ${breakpoint('md')`
-        ${tw`p-10`}
-    `};
-
-    ${breakpoint('lg')`
-        ${tw`w-3/5`}
-    `};
-
-    ${breakpoint('xl')`
-        ${tw`w-full`}
-        max-width: 700px;
-    `};
-`;
-
-export default forwardRef<HTMLFormElement, Props>(({ title, ...props }, ref) => (
-    <Container>
-        {title && <h2 css={tw`text-3xl text-center text-neutral-100 font-medium py-4`}>{title}</h2>}
-        <FlashMessageRender css={tw`mb-2 px-1`} />
-        <Form {...props} ref={ref}>
-            <div css={tw`md:flex w-full bg-white shadow-lg rounded-lg p-6 md:pl-0 mx-1`}>
-                <div css={tw`flex-none select-none mb-6 md:mb-0 self-center`}>
-                    <img src={'/assets/svgs/pterodactyl.svg'} css={tw`block w-48 md:w-64 mx-auto`} />
-                </div>
-                <div css={tw`flex-1`}>{props.children}</div>
+export default forwardRef<HTMLFormElement, Props>(({ title, subtitle, className, ...props }, ref) => (
+    <div className={'min-h-screen grid lg:grid-cols-2'}>
+        <aside
+            className={'hidden lg:flex relative overflow-hidden flex-col justify-between p-12 border-r border-gray-800'}
+        >
+            {/* Brand panel, a large glowing mark on a subtle grid. */}
+            <div
+                className={'absolute inset-0 opacity-[0.07]'}
+                style={{
+                    backgroundImage:
+                        'linear-gradient(rgb(255 255 255) 1px, transparent 1px), linear-gradient(90deg, rgb(255 255 255) 1px, transparent 1px)',
+                    backgroundSize: '48px 48px',
+                    maskImage: 'radial-gradient(ellipse at center, black 30%, transparent 75%)',
+                }}
+            />
+            <div
+                className={'absolute -left-24 top-1/3 w-[36rem] h-[36rem] rounded-full bg-raptor-500/20 blur-[120px]'}
+            />
+            <div className={'relative'}>
+                <Logo size={'md'} />
             </div>
-        </Form>
-        <p css={tw`text-center text-neutral-500 text-xs mt-4`}>
-            &copy; 2015 - {new Date().getFullYear()}&nbsp;
-            <a
-                rel={'noopener nofollow noreferrer'}
-                href={'https://pterodactyl.io'}
-                target={'_blank'}
-                css={tw`no-underline text-neutral-500 hover:text-neutral-300`}
-            >
-                Pterodactyl Software
-            </a>
-        </p>
-    </Container>
+            <div className={'relative'}>
+                <img
+                    src={'/brand/raptor-icon-256.webp'}
+                    alt={''}
+                    className={'w-40 h-40 mb-8 drop-shadow-[0_0_40px_rgb(82_211_33_/_0.45)]'}
+                />
+                <h1 className={'text-4xl xl:text-5xl leading-tight'}>
+                    Game servers,
+                    <br />
+                    <span className={'text-raptor-400'}>without the friction.</span>
+                </h1>
+                <ul className={'mt-8 space-y-3'}>
+                    {highlights.map((item) => (
+                        <li key={item} className={'flex items-center gap-3 text-gray-300'}>
+                            <span className={'w-1.5 h-1.5 rounded-full bg-raptor-500'} />
+                            {item}
+                        </li>
+                    ))}
+                </ul>
+            </div>
+            <p className={'relative text-xs text-gray-600'}>Raptor Panel · based on Pterodactyl&reg;</p>
+        </aside>
+        <main className={'flex flex-col items-center justify-center px-4 py-10 sm:px-8'}>
+            <div className={'w-full max-w-sm'}>
+                <div className={'lg:hidden flex justify-center mb-8'}>
+                    <Logo size={'md'} />
+                </div>
+                {title && <h2 className={'text-2xl'}>{title}</h2>}
+                {subtitle && <p className={'mt-1 text-sm text-gray-400'}>{subtitle}</p>}
+                <FlashMessageRender className={'mt-6'} />
+                <Form {...props} ref={ref} className={'mt-6 ' + (className || '')}>
+                    <div className={'w-full'}>{props.children}</div>
+                </Form>
+                <p className={'lg:hidden mt-10 text-center text-xs text-gray-600'}>
+                    Raptor Panel · based on Pterodactyl&reg;
+                </p>
+            </div>
+        </main>
+    </div>
 ));

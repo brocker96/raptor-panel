@@ -190,6 +190,17 @@ export default () => {
 
         addons.fit.fit();
 
+        // The terminal measures the character size of its font once. If the web font finishes
+        // loading afterwards the measurement is wrong, so re-apply the font once it is available.
+        document.fonts?.load(`${terminal.options.fontSize}px "JetBrains Mono Variable"`).then(() => {
+            if (!terminal.element) return;
+
+            const family = terminal.options.fontFamily;
+            terminal.options.fontFamily = 'monospace';
+            terminal.options.fontFamily = family;
+            addons.fit.fit();
+        });
+
         // Add support for capturing keys
         terminal.attachCustomKeyEventHandler((e: KeyboardEvent) => {
             if (e.type !== 'keydown') {

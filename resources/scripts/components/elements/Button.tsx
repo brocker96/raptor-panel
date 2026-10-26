@@ -11,85 +11,51 @@ interface Props {
 }
 
 const ButtonStyle = styled.button<Omit<Props, 'isLoading'>>`
-    ${tw`relative inline-block rounded p-2 uppercase tracking-wide text-sm transition-all duration-150 border`};
+    ${tw`relative inline-flex items-center justify-center gap-2 rounded-md font-semibold text-sm transition-all duration-150 select-none`};
+    ${tw`focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950`};
 
     ${(props) =>
         ((!props.isSecondary && !props.color) || props.color === 'primary') &&
-        css<Props>`
-            ${(props) => !props.isSecondary && tw`bg-primary-500 border-primary-600 border text-primary-50`};
-
-            &:hover:not(:disabled) {
-                ${tw`bg-primary-600 border-primary-700`};
-            }
+        !props.isSecondary &&
+        css`
+            ${tw`bg-raptor-500 text-gray-950 hover:bg-raptor-400 focus-visible:ring-raptor-400`};
+            box-shadow: 0 0 0 1px rgb(82 211 33 / 0.4), 0 6px 20px -6px rgb(82 211 33 / 0.55);
         `};
 
     ${(props) =>
         props.color === 'grey' &&
-        css`
-            ${tw`border-neutral-600 bg-neutral-500 text-neutral-50`};
+        !props.isSecondary &&
+        tw`bg-gray-700 text-gray-100 ring-1 ring-inset ring-white/5 hover:bg-gray-600 hover:text-white`};
 
-            &:hover:not(:disabled) {
-                ${tw`bg-neutral-600 border-neutral-700`};
-            }
-        `};
+    ${(props) => props.color === 'green' && !props.isSecondary && tw`bg-emerald-600 text-white hover:bg-emerald-500`};
 
-    ${(props) =>
-        props.color === 'green' &&
-        css<Props>`
-            ${tw`border-green-600 bg-green-500 text-green-50`};
+    ${(props) => props.color === 'red' && !props.isSecondary && tw`bg-red-600 text-white hover:bg-red-500`};
 
-            &:hover:not(:disabled) {
-                ${tw`bg-green-600 border-green-700`};
-            }
-
-            ${(props) =>
-                props.isSecondary &&
-                css`
-                    &:active:not(:disabled) {
-                        ${tw`bg-green-600 border-green-700`};
-                    }
-                `};
-        `};
-
-    ${(props) =>
-        props.color === 'red' &&
-        css<Props>`
-            ${tw`border-red-600 bg-red-500 text-red-50`};
-
-            &:hover:not(:disabled) {
-                ${tw`bg-red-600 border-red-700`};
-            }
-
-            ${(props) =>
-                props.isSecondary &&
-                css`
-                    &:active:not(:disabled) {
-                        ${tw`bg-red-600 border-red-700`};
-                    }
-                `};
-        `};
-
-    ${(props) => props.size === 'xsmall' && tw`px-2 py-1 text-xs`};
-    ${(props) => (!props.size || props.size === 'small') && tw`px-4 py-2`};
-    ${(props) => props.size === 'large' && tw`p-4 text-sm`};
-    ${(props) => props.size === 'xlarge' && tw`p-4 w-full`};
+    ${(props) => props.size === 'xsmall' && tw`px-2.5 h-7 text-xs`};
+    ${(props) => (!props.size || props.size === 'small') && tw`px-4 h-10`};
+    ${(props) => props.size === 'large' && tw`px-5 h-12`};
+    ${(props) => props.size === 'xlarge' && tw`px-5 h-12 w-full text-base`};
 
     ${(props) =>
         props.isSecondary &&
         css<Props>`
-            ${tw`border-neutral-600 bg-transparent text-neutral-200`};
+            ${tw`bg-transparent text-gray-200 ring-1 ring-inset ring-gray-600`};
 
             &:hover:not(:disabled) {
-                ${tw`border-neutral-500 text-neutral-100`};
-                ${(props) => props.color === 'red' && tw`bg-red-500 border-red-600 text-red-50`};
-                ${(props) => props.color === 'primary' && tw`bg-primary-500 border-primary-600 text-primary-50`};
-                ${(props) => props.color === 'green' && tw`bg-green-500 border-green-600 text-green-50`};
+                ${tw`bg-white/5 text-white ring-gray-500`};
+                ${(props) => props.color === 'red' && tw`bg-red-500/10 text-red-300 ring-red-500/50`};
+                ${(props) => props.color === 'primary' && tw`bg-raptor-500/10 text-raptor-300 ring-raptor-500/50`};
+                ${(props) => props.color === 'green' && tw`bg-emerald-500/10 text-emerald-300 ring-emerald-500/50`};
             }
         `};
 
+    &:active:not(:disabled) {
+        transform: scale(0.98);
+    }
+
     &:disabled {
-        opacity: 0.55;
-        cursor: default;
+        opacity: 0.5;
+        cursor: not-allowed;
     }
 `;
 

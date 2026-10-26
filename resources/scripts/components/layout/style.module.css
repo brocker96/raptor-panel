@@ -1,0 +1,94 @@
+.shell {
+    @apply min-h-screen lg:pl-64;
+}
+
+.sidebar {
+    @apply hidden lg:flex flex-col fixed inset-y-0 left-0 w-64 z-30;
+    @apply bg-gray-950/80 backdrop-blur border-r border-gray-800/80;
+}
+
+.nav {
+    @apply flex-1 overflow-y-auto px-3 py-2 space-y-0.5;
+}
+
+.nav_item {
+    @apply flex items-center gap-3 h-9 px-3 rounded-md text-sm font-medium text-gray-400 no-underline;
+    @apply hover:text-gray-100 hover:bg-white/5 transition-colors duration-100;
+
+    &.active {
+        @apply text-white bg-raptor-500/10;
+        box-shadow: inset 2px 0 0 0 theme('colors.raptor.500');
+
+        & .nav_icon {
+            @apply text-raptor-400;
+        }
+    }
+}
+
+.nav_icon {
+    @apply w-5 h-5 flex-shrink-0;
+}
+
+.sidebar_footer {
+    @apply p-3 border-t border-gray-800/80;
+}
+
+.user_badge {
+    @apply flex items-center gap-3 p-2 rounded-md no-underline hover:bg-white/5 min-w-0;
+}
+
+.main {
+    @apply flex flex-col min-h-screen;
+}
+
+.topbar {
+    @apply sticky top-0 z-20 flex items-center gap-3 h-14 px-4 lg:px-8;
+    @apply bg-gray-950/75 backdrop-blur border-b border-gray-800/80;
+    padding-top: env(safe-area-inset-top);
+}
+
+.content {
+    @apply flex-1 w-full max-w-[1400px] mx-auto px-4 lg:px-8 pt-4 lg:pt-8;
+    /* Leave room for the bottom navigation on phones. */
+    padding-bottom: calc(5rem + env(safe-area-inset-bottom));
+
+    @screen lg {
+        @apply pb-10;
+    }
+}
+
+.content_fullscreen {
+    @apply pb-0;
+
+    @screen sm {
+        @apply pb-4;
+    }
+}
+
+.bottom_bar {
+    @apply lg:hidden fixed bottom-0 inset-x-0 z-30 flex items-stretch;
+    @apply bg-gray-950/90 backdrop-blur border-t border-gray-800;
+    padding-bottom: env(safe-area-inset-bottom);
+}
+
+.tab {
+    @apply flex-1 flex flex-col items-center justify-center gap-1 h-16 text-gray-400 no-underline;
+    @apply active:bg-white/5 transition-colors;
+
+    &.active {
+        @apply text-raptor-400;
+    }
+}
+
+.tab_label {
+    @apply text-[0.68rem] font-medium leading-none;
+}
+
+.sheet_backdrop {
+    @apply lg:hidden fixed inset-0 z-40 flex items-end bg-gray-950/70 backdrop-blur-sm animate-fade-in;
+}
+
+.sheet {
+    @apply w-full rounded-t-2xl bg-gray-900 ring-1 ring-white/10 p-3 shadow-2xl;
+    padding-bottom: calc(0.75rem + env(safe-area-inset-bottom));
+}

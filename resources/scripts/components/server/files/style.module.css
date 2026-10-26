@@ -1,25 +1,29 @@
 .manager_actions {
-    @apply grid grid-cols-2 sm:grid-cols-3 w-full gap-4 mb-4;
+    @apply grid grid-cols-3 w-full gap-2 mb-3;
 
     & button {
-        @apply w-full first:col-span-2 sm:first:col-span-1;
+        @apply w-full px-2;
     }
 
     @screen md {
         @apply flex flex-1 justify-end mb-0;
 
         & button {
-            @apply w-auto;
+            @apply w-auto px-4;
         }
     }
 }
 
+.file_list {
+    @apply rounded-xl border border-gray-800 bg-gray-800/70 overflow-hidden shadow-card;
+}
+
 .file_row {
-    @apply flex items-center cursor-pointer bg-neutral-700 rounded-sm text-sm no-underline;
-    @apply hover:text-neutral-100 hover:bg-neutral-600;
+    @apply relative flex items-center cursor-pointer bg-gray-900 text-sm no-underline;
+    @apply hover:text-gray-100 hover:bg-gray-800/90 transition-colors duration-75;
 
     & > .details {
-        @apply flex flex-1 min-w-0 items-center text-neutral-300 no-underline px-4 py-2.5 sm:py-2 overflow-hidden;
+        @apply flex flex-1 min-w-0 items-center text-gray-200 no-underline px-4 py-3 sm:py-2.5 overflow-hidden;
 
         &:not(a) {
             @apply cursor-default;
