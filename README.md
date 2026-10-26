@@ -1,7 +1,7 @@
 <div align="center">
 
 
-<img src=".github/assets/raptor-logo.png"
+<img src=".github/raptor-logo.png"
      alt="Raptor Panel"
      width="650">
 
