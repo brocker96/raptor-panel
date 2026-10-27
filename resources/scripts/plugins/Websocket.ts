@@ -71,6 +71,15 @@ export class Websocket extends EventEmitter {
         }
     };
 
+    // Can be turned off in Settings → Cloudflare for setups where every message counts.
+    private keepalive = true;
+
+    setKeepalive(enabled: boolean): this {
+        this.keepalive = enabled;
+
+        return this;
+    }
+
     setConnectionProvider(provider: () => Promise<ConnectionDetails>): this {
         this.provider = provider;
 
@@ -232,12 +241,13 @@ export class Websocket extends EventEmitter {
             if (this.socket !== socket || socket.readyState !== WebSocket.OPEN) return;
 
             const idle = Date.now() - this.lastMessageAt;
-            if (idle >= DEAD_AFTER) {
+            // Without keepalives an idle but healthy connection is indistinguishable from a dead one.
+            if (this.keepalive && idle >= DEAD_AFTER) {
                 // Nothing came back, not even an answer to the keepalive: replace the connection.
                 this.detach();
                 this.emit('SOCKET_CLOSE');
                 this.scheduleReconnect();
-            } else if (this.authenticated && idle >= KEEPALIVE_INTERVAL) {
+            } else if (this.keepalive && this.authenticated && idle >= KEEPALIVE_INTERVAL) {
                 this.send('send stats');
             }
         }, 5_000);

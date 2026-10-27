@@ -17,6 +17,7 @@ import Spinner from '@/components/elements/Spinner';
 
 const DashboardRouter = lazy(() => import('@/routers/DashboardRouter'));
 const ServerRouter = lazy(() => import('@/routers/ServerRouter'));
+const AdminRouter = lazy(() => import('@/routers/AdminRouter'));
 const AuthenticationRouter = lazy(() => import('@/routers/AuthenticationRouter'));
 
 interface ExtendedWindow extends Window {
@@ -63,6 +64,16 @@ const Root = () => {
                             <ServerContext.Provider>
                                 <ServerRouter />
                             </ServerContext.Provider>
+                        </Spinner.Suspense>
+                    </AuthenticatedRoute>
+                }
+            />
+            <Route
+                path={'/admin/*'}
+                element={
+                    <AuthenticatedRoute>
+                        <Spinner.Suspense>
+                            <AdminRouter />
                         </Spinner.Suspense>
                     </AuthenticatedRoute>
                 }

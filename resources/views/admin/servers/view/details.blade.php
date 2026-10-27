@@ -69,7 +69,7 @@
 
     $('#pUserId').select2({
         ajax: {
-            url: '/admin/users/accounts.json',
+            url: '/admin/legacy/users/accounts.json',
             dataType: 'json',
             delay: 250,
             data: function (params) {

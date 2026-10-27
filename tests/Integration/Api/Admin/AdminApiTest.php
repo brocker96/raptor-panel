@@ -11,8 +11,10 @@ use Raptor\Models\ApiKey;
 use Raptor\Models\Server;
 use Raptor\Models\Location;
 use Raptor\Models\Allocation;
+use Raptor\Helpers\Cloudflare;
 use Raptor\Models\ActivityLog;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Http;
 use Raptor\Services\Acl\Api\AdminAcl;
 use Raptor\Tests\Integration\IntegrationTestCase;
 
@@ -38,6 +40,7 @@ class AdminApiTest extends IntegrationTestCase
 
     private function cleanup(): void
     {
+        \Raptor\Models\Setting::query()->where('key', 'like', 'settings::raptor:cloudflare:%')->delete();
         ActivityLog::query()->delete();
         ApiKey::query()->delete();
         Mount::query()->delete();
@@ -266,5 +269,26 @@ class AdminApiTest extends IntegrationTestCase
 
         $this->actingAs($this->admin)->getJson('/api/admin/activity/events')->assertOk()->assertJsonPath('data.0', 'admin:location.create');
         $this->actingAs($this->admin)->getJson('/api/admin/system/failed-jobs')->assertOk()->assertJsonPath('meta.total', 0);
+    }
+
+    public function testCloudflareSettings(): void
+    {
+        Node::factory()->create(['location_id' => Location::factory()->create()->id, 'fqdn' => '104.16.0.10', 'scheme' => 'https', 'daemonListen' => 8080]);
+
+        $this->actingAs($this->admin)->getJson('/api/admin/settings/cloudflare', ['CF-Ray' => '8a1b2c3d4e5f-FRA'])
+            ->assertOk()
+            ->assertJsonPath('settings.trust_proxies', true)
+            ->assertJsonPath('request.via_cloudflare', true)
+            ->assertJsonPath('nodes.0.proxied', true)
+            ->assertJsonPath('nodes.0.issues.0.level', 'error');
+
+        $this->actingAs($this->admin)->patchJson('/api/admin/settings/cloudflare', ['trust_proxies' => false, 'websocket_keepalive' => true])->assertOk();
+        $this->assertDatabaseHas('settings', ['key' => 'settings::raptor:cloudflare:trust_proxies', 'value' => 'false']);
+
+        Http::fake([
+            'www.cloudflare.com/ips-v4' => Http::response(implode("\n", array_slice(Cloudflare::DEFAULT_RANGES, 0, 15))),
+            'www.cloudflare.com/ips-v6' => Http::response(implode("\n", array_slice(Cloudflare::DEFAULT_RANGES, 15))),
+        ]);
+        $this->actingAs($this->admin)->postJson('/api/admin/settings/cloudflare/ranges')->assertOk()->assertJsonCount(count(Cloudflare::DEFAULT_RANGES), 'list');
     }
 }

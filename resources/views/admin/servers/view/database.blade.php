@@ -120,7 +120,7 @@
         }, function () {
             $.ajax({
                 method: 'DELETE',
-                url: '/admin/servers/view/{{ $server->id }}/database/' + self.data('id') + '/delete',
+                url: '/admin/legacy/servers/view/{{ $server->id }}/database/' + self.data('id') + '/delete',
                 headers: { 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content') },
             }).done(function () {
                 self.parent().parent().slideUp();
@@ -141,7 +141,7 @@
         $(this).addClass('disabled').find('i').addClass('fa-spin');
         $.ajax({
             type: 'PATCH',
-            url: '/admin/servers/view/{{ $server->id }}/database',
+            url: '/admin/legacy/servers/view/{{ $server->id }}/database',
             headers: { 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content') },
             data: { database: $(this).data('id') },
         }).done(function (data) {

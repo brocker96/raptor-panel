@@ -25,6 +25,14 @@
     }
 }
 
+.nav_group {
+    @apply px-3 pt-4 pb-1 text-2xs font-semibold uppercase tracking-wider text-gray-500;
+
+    &:first-child {
+        @apply pt-1;
+    }
+}
+
 .nav_icon {
     @apply w-5 h-5 flex-shrink-0;
 }

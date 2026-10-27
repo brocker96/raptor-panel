@@ -345,7 +345,7 @@
             // Persist 'Server Owner' select2
             @if (old('owner_id'))
                 $.ajax({
-                    url: '/admin/users/accounts.json?user_id={{ old('owner_id') }}',
+                    url: '/admin/legacy/users/accounts.json?user_id={{ old('owner_id') }}',
                     dataType: 'json',
                 }).then(function (data) {
                     initUserIdSelect([ data ]);

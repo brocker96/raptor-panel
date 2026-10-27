@@ -41,15 +41,13 @@ const ServerContextCard = () => {
                     {name}
                 </p>
                 {rootAdmin && (
-                    // eslint-disable-next-line react/jsx-no-target-blank
-                    <a
-                        href={`/admin/servers/view/${serverId}`}
-                        target={'_blank'}
+                    <Link
+                        to={`/admin/servers/${serverId}`}
                         className={'text-gray-500 hover:text-gray-200'}
                         title={'View in admin area'}
                     >
                         <ExternalLinkIcon className={'w-4 h-4'} />
-                    </a>
+                    </Link>
                 )}
             </div>
             <p className={'mt-0.5 text-xs text-gray-500 truncate'}>{node}</p>

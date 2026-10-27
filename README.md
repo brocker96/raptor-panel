@@ -62,6 +62,33 @@ All options are documented at the top of [`install.sh`](install.sh).
 </tr>
 </table>
 
+## 🛡️ Admin area, rebuilt in React
+
+The whole admin area is a fast React app with animations, live node status and **29 built-in step-by-step guides** —
+every page has a **Guide** button that explains each field, with tips, warnings and FAQ.
+
+- **Overview** — counts, server health, node capacity, 14-day activity chart, health checks.
+- **Servers** — search by name / owner / IP / port, five-step creation wizard, build, startup, databases, mounts,
+  reinstall, suspend, transfer, delete.
+- **Nodes** — live Wings status & latency, config.yml + one-click auto-deploy, bulk allocations with inline aliases.
+- **Nests & eggs** — full egg editor with CodeMirror, variables with rule presets, install scripts, import / export.
+- **Users, locations, database hosts, mounts, API keys** (permission matrix + IP allow-list).
+- **Audit log** for the whole Panel, **System** page with health checks, failed jobs (retry / forget) and cache tools.
+- **Settings → Cloudflare** — trusted proxies, console keepalive, refreshable IP ranges and a per-node DNS / port check.
+
+The original Blade admin is still available at `/admin/legacy`.
+
+<table>
+<tr>
+<td><img src=".github/screenshots/admin-01-overview.png" alt="Admin overview"></td>
+<td><img src=".github/screenshots/admin-02-server.png" alt="Admin server"></td>
+</tr>
+<tr>
+<td><img src=".github/screenshots/admin-03-cloudflare.png" alt="Cloudflare settings"></td>
+<td><img src=".github/screenshots/admin-04-guide.png" alt="Guide drawer"></td>
+</tr>
+</table>
+
 ## 🧱 Stack
 
 React 18 · TypeScript · Vite 8 · TanStack Query · React Router 7 · CodeMirror 6 · xterm.js 5 · Tailwind CSS · Laravel 12 · PHP 8.2+

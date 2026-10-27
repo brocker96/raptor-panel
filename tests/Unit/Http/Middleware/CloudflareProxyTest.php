@@ -4,7 +4,7 @@ namespace Raptor\Tests\Unit\Http\Middleware;
 
 use Raptor\Tests\TestCase;
 use Illuminate\Http\Request;
-use Illuminate\Http\Middleware\TrustProxies;
+use Raptor\Http\Middleware\TrustProxies;
 
 class CloudflareProxyTest extends TestCase
 {
@@ -29,6 +29,22 @@ class CloudflareProxyTest extends TestCase
 
         $this->assertSame('198.51.100.20', $request->ip());
         $this->assertFalse($request->isSecure());
+    }
+
+    public function testCloudflareCanBeDisabled(): void
+    {
+        config()->set('raptor.cloudflare.trust_proxies', false);
+        $request = $this->handle('173.245.48.10', ['HTTP_X_FORWARDED_FOR' => '203.0.113.7']);
+
+        $this->assertSame('173.245.48.10', $request->ip());
+    }
+
+    public function testRefreshedRangesAreUsed(): void
+    {
+        config()->set('raptor.cloudflare.ranges', json_encode(['198.18.0.0/15']));
+
+        $this->assertSame('203.0.113.7', $this->handle('198.18.0.5', ['HTTP_X_FORWARDED_FOR' => '203.0.113.7'])->ip());
+        $this->assertSame('173.245.48.10', $this->handle('173.245.48.10', ['HTTP_X_FORWARDED_FOR' => '203.0.113.7'])->ip());
     }
 
     public function testVisitorsCannotSpoofTheirAddressThroughCloudflare(): void

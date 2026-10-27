@@ -5,7 +5,7 @@ namespace Raptor\Http;
 use Illuminate\Auth\Middleware\Authorize;
 use Illuminate\Http\Middleware\HandleCors;
 use Illuminate\Auth\Middleware\Authenticate;
-use Illuminate\Http\Middleware\TrustProxies;
+use Raptor\Http\Middleware\TrustProxies;
 use Raptor\Http\Middleware\TrimStrings;
 use Illuminate\Session\Middleware\StartSession;
 use Raptor\Http\Middleware\EncryptCookies;

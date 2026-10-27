@@ -272,7 +272,7 @@
 
                 $.ajax({
                     method: 'DELETE',
-                    url: '/admin/mounts/' + {{ $mount->id }} + '/eggs/' + eggId,
+                    url: '/admin/legacy/mounts/' + {{ $mount->id }} + '/eggs/' + eggId,
                     headers: { 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content') },
                 }).done(function () {
                     element.parent().parent().addClass('warning').delay(100).fadeOut();
@@ -295,7 +295,7 @@
 
                 $.ajax({
                     method: 'DELETE',
-                    url: '/admin/mounts/' + {{ $mount->id }} + '/nodes/' + nodeId,
+                    url: '/admin/legacy/mounts/' + {{ $mount->id }} + '/nodes/' + nodeId,
                     headers: { 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content') },
                 }).done(function () {
                     element.parent().parent().addClass('warning').delay(100).fadeOut();

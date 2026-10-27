@@ -1,3 +1,4 @@
+import { store } from '@/state';
 import React, { useEffect, useRef, useState } from 'react';
 import { Websocket } from '@/plugins/Websocket';
 import { ServerContext } from '@/state/server';
@@ -38,7 +39,9 @@ export default () => {
     const connect = (uuid: string) => {
         // Fresh credentials are fetched before every reconnect, tokens are short lived and may have
         // expired while the connection was down.
-        const socket = new Websocket().setConnectionProvider(() => getWebsocketToken(uuid));
+        const socket = new Websocket()
+            .setKeepalive(store.getState().settings.data?.websocketKeepalive !== false)
+            .setConnectionProvider(() => getWebsocketToken(uuid));
 
         socket.on('auth success', () => {
             jwtFailures.current = 0;

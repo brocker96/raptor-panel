@@ -15,6 +15,7 @@ class AssetComposer
         $view->with('siteConfiguration', [
             'name' => config('app.name') ?? 'Raptor Panel',
             'locale' => config('app.locale') ?? 'en',
+            'websocketKeepalive' => filter_var(config('raptor.cloudflare.websocket_keepalive', true), FILTER_VALIDATE_BOOLEAN),
             'recaptcha' => [
                 'enabled' => config('recaptcha.enabled', false),
                 'siteKey' => config('recaptcha.website_key') ?? '',

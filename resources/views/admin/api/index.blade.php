@@ -87,7 +87,7 @@
                 }, function () {
                     $.ajax({
                         method: 'DELETE',
-                        url: '/admin/api/revoke/' + self.data('attr'),
+                        url: '/admin/legacy/api/revoke/' + self.data('attr'),
                         headers: {
                             'X-CSRF-TOKEN': '{{ csrf_token() }}'
                         }

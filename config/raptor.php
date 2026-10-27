@@ -76,6 +76,24 @@ return [
     | Configure the timeout to be used for Guzzle connections here.
     */
 
+    /*
+    |--------------------------------------------------------------------------
+    | Cloudflare
+    |--------------------------------------------------------------------------
+    |
+    | Defaults for running the Panel behind Cloudflare, all of them can be
+    | changed in the admin area under Settings → Cloudflare.
+    |
+    */
+
+    'cloudflare' => [
+        'trust_proxies' => env('TRUSTED_PROXIES_CLOUDFLARE', true),
+        'websocket_keepalive' => env('RAPTOR_WEBSOCKET_KEEPALIVE', true),
+        // Stored as JSON by "Refresh IP ranges" in the admin area, empty means the built-in list.
+        'ranges' => '',
+        'ranges_updated_at' => '',
+    ],
+
     'guzzle' => [
         'timeout' => env('GUZZLE_TIMEOUT', 15),
         'connect_timeout' => env('GUZZLE_CONNECT_TIMEOUT', 5),

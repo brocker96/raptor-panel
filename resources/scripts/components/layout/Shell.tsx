@@ -22,6 +22,8 @@ export interface NavEntry {
     label: string;
     icon?: React.ComponentType<React.ComponentProps<'svg'>>;
     end?: boolean;
+    /** Sidebar section the entry belongs to, a heading is rendered whenever the group changes. */
+    group?: string;
     /** Props spread onto the link, used to preload the route when the user shows intent. */
     linkProps?: Partial<React.ComponentProps<typeof NavLink>>;
 }
@@ -79,6 +81,7 @@ const useLogout = () => {
 const UserLinks = ({ onNavigate, compact }: { onNavigate?: () => void; compact?: boolean }) => {
     const rootAdmin = useStoreState((state) => state.user.data!.rootAdmin);
     const { loggingOut, logout } = useLogout();
+    const inAdmin = useLocation().pathname.startsWith('/admin');
 
     return (
         <>
@@ -95,12 +98,18 @@ const UserLinks = ({ onNavigate, compact }: { onNavigate?: () => void; compact?:
                     />
                 </>
             )}
-            {rootAdmin && (
-                <a href={'/admin'} className={styles.nav_item}>
-                    <ShieldCheckIcon className={styles.nav_icon} aria-hidden />
-                    <span>Admin area</span>
-                </a>
-            )}
+            {rootAdmin &&
+                (inAdmin ? (
+                    <Link to={'/'} onClick={onNavigate} className={styles.nav_item}>
+                        <ServerIcon className={styles.nav_icon} aria-hidden />
+                        <span>Exit admin</span>
+                    </Link>
+                ) : (
+                    <Link to={'/admin'} onClick={onNavigate} className={styles.nav_item}>
+                        <ShieldCheckIcon className={styles.nav_icon} aria-hidden />
+                        <span>Admin area</span>
+                    </Link>
+                ))}
             <button type={'button'} onClick={logout} className={classNames(styles.nav_item, 'w-full')}>
                 <LogoutIcon className={styles.nav_icon} aria-hidden />
                 <span>Sign out</span>
@@ -146,8 +155,13 @@ export default ({ nav, primary, context, title, banner, fullscreen, children }: 
                 </Link>
                 {context && <div className={'px-3 pb-3'}>{context}</div>}
                 <nav className={styles.nav} aria-label={'Main navigation'}>
-                    {nav.map((entry) => (
-                        <NavItem key={entry.to} entry={entry} />
+                    {nav.map((entry, index) => (
+                        <React.Fragment key={entry.to}>
+                            {entry.group && entry.group !== nav[index - 1]?.group && (
+                                <p className={styles.nav_group}>{entry.group}</p>
+                            )}
+                            <NavItem entry={entry} />
+                        </React.Fragment>
                     ))}
                 </nav>
                 <div className={styles.sidebar_footer}>

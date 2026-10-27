@@ -32,6 +32,9 @@ Route::group(['prefix' => '/settings'], function () {
     Route::patch('/mail', [Admin\SettingsController::class, 'updateMail']);
     Route::post('/mail/test', [Admin\SettingsController::class, 'testMail']);
     Route::patch('/advanced', [Admin\SettingsController::class, 'updateAdvanced']);
+    Route::get('/cloudflare', [Admin\CloudflareController::class, 'index']);
+    Route::patch('/cloudflare', [Admin\CloudflareController::class, 'update']);
+    Route::post('/cloudflare/ranges', [Admin\CloudflareController::class, 'refresh']);
 });
 
 Route::group(['prefix' => '/api-keys'], function () {

@@ -154,7 +154,7 @@
     (function getInformation() {
         $.ajax({
             method: 'GET',
-            url: '/admin/nodes/view/{{ $node->id }}/system-information',
+            url: '/admin/legacy/nodes/view/{{ $node->id }}/system-information',
             timeout: 5000,
         }).done(function (data) {
             $('[data-attr="info-version"]').html(escapeHtml(data.version));

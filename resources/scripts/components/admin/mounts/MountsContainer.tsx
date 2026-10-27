@@ -1,0 +1,116 @@
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { FolderIcon, PlusIcon } from '@heroicons/react/outline';
+import { useResource } from '@/api/query';
+import { AdminMount, createMount, getMounts, MountValues } from '@/api/admin';
+import { Page } from '@/components/admin/ui/Page';
+import { Card } from '@/components/admin/ui/Card';
+import { Column, DataTable } from '@/components/admin/ui/DataTable';
+import { Badge, EmptyState } from '@/components/admin/ui/Feedback';
+import { Drawer } from '@/components/admin/ui/Overlay';
+import Button from '@/components/admin/ui/Button';
+import { useAction } from '@/components/admin/ui/hooks';
+import MountForm, { emptyMount } from '@/components/admin/mounts/MountForm';
+
+const columns: Column<AdminMount>[] = [
+    {
+        key: 'name',
+        header: 'Mount',
+        cell: (mount) => (
+            <div className={'min-w-0'}>
+                <p className={'font-medium text-gray-100 truncate'}>{mount.name}</p>
+                <p className={'text-xs text-gray-500 font-mono truncate'}>
+                    {mount.source} → {mount.target}
+                </p>
+            </div>
+        ),
+    },
+    {
+        key: 'flags',
+        header: 'Options',
+        cell: (mount) => (
+            <div className={'flex gap-1.5'}>
+                {mount.read_only ? <Badge>Read only</Badge> : <Badge tone={'yellow'}>Writable</Badge>}
+                {mount.user_mountable && <Badge tone={'blue'}>User mountable</Badge>}
+            </div>
+        ),
+        hideBelow: 'md',
+    },
+    {
+        key: 'counts',
+        header: 'Used by',
+        cell: (mount) => (
+            <span className={'text-xs text-gray-400'}>
+                {mount.counts.eggs} eggs · {mount.counts.nodes} nodes · {mount.counts.servers} servers
+            </span>
+        ),
+    },
+];
+
+export default () => {
+    const navigate = useNavigate();
+    const { data } = useResource(['admin', 'mounts'], getMounts);
+    const [creating, setCreating] = useState(false);
+    const [values, setValues] = useState<MountValues>(emptyMount);
+
+    const create = useAction(createMount, {
+        success: 'Mount created, now link it to eggs and nodes',
+        invalidate: [['admin', 'mounts']],
+        onSuccess: (mount) => navigate(`/admin/mounts/${mount.id}`),
+    });
+
+    return (
+        <Page
+            title={'Mounts'}
+            icon={FolderIcon}
+            description={'Share directories of a node with the servers running on it.'}
+            guide={'mounts'}
+            actions={
+                <Button icon={PlusIcon} onClick={() => setCreating(true)}>
+                    New mount
+                </Button>
+            }
+        >
+            <Card flush>
+                <DataTable
+                    rows={data}
+                    columns={columns}
+                    rowKey={(mount) => mount.id}
+                    onRowClick={(mount) => navigate(`/admin/mounts/${mount.id}`)}
+                    empty={
+                        <EmptyState
+                            icon={FolderIcon}
+                            title={'No mounts'}
+                            description={
+                                'Mounts make a folder of the node, e.g. a shared map or mod cache, available inside servers.'
+                            }
+                            action={
+                                <Button icon={PlusIcon} onClick={() => setCreating(true)}>
+                                    Create mount
+                                </Button>
+                            }
+                        />
+                    }
+                />
+            </Card>
+            <Drawer
+                open={creating}
+                onClose={() => setCreating(false)}
+                icon={FolderIcon}
+                title={'New mount'}
+                footer={
+                    <>
+                        <Button variant={'ghost'} onClick={() => setCreating(false)}>
+                            Cancel
+                        </Button>
+                        <Button loading={create.loading} onClick={() => create.run(values)}>
+                            Create mount
+                        </Button>
+                    </>
+                }
+            >
+                <MountForm values={values} onChange={setValues} errors={create.errors} />
+            </Drawer>
+        </Page>
+    );
+};

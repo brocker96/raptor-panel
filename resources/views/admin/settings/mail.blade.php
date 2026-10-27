@@ -117,7 +117,7 @@
         function saveSettings() {
             return $.ajax({
                 method: 'PATCH',
-                url: '/admin/settings/mail',
+                url: '/admin/legacy/settings/mail',
                 contentType: 'application/json',
                 data: JSON.stringify({
                     'mail:mailers:smtp:host': $('input[name="mail:mailers:smtp:host"]').val(),
@@ -146,7 +146,7 @@
             }, function () {
                 $.ajax({
                     method: 'POST',
-                    url: '/admin/settings/mail/test',
+                    url: '/admin/legacy/settings/mail/test',
                     headers: { 'X-CSRF-TOKEN': $('input[name="_token"]').val() }
                 }).fail(function (jqXHR) {
                     showErrorDialog(jqXHR, 'test');

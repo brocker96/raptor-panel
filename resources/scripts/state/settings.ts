@@ -3,6 +3,8 @@ import { action, Action } from 'easy-peasy';
 export interface SiteSettings {
     name: string;
     locale: string;
+    /** Sends periodic keepalives on the console websocket, see Settings → Cloudflare. */
+    websocketKeepalive?: boolean;
     recaptcha: {
         enabled: boolean;
         siteKey: string;

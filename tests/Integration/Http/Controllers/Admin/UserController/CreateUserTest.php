@@ -10,7 +10,7 @@ class CreateUserTest extends HttpTestCase
     public function testNonAdminCannotAccessEndpoint(): void
     {
         $this->actingAs(User::factory()->create())
-            ->post('/admin/users/new', [
+            ->post('/admin/legacy/users/new', [
                 'email' => 'test@example.com',
                 'username' => 'testuser',
                 'name_first' => 'Test',
@@ -24,7 +24,7 @@ class CreateUserTest extends HttpTestCase
         $admin = User::factory()->admin()->create();
 
         $this->actingAs($admin)
-            ->post('/admin/users/new', [
+            ->post('/admin/legacy/users/new', [
                 'email' => 'created.admin@example.com',
                 'username' => 'createdadmin',
                 'name_first' => 'Created',

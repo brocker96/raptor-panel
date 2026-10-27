@@ -30,6 +30,10 @@ class SettingsServiceProvider extends ServiceProvider
         'raptor:client_features:allocations:enabled',
         'raptor:client_features:allocations:range_start',
         'raptor:client_features:allocations:range_end',
+        'raptor:cloudflare:trust_proxies',
+        'raptor:cloudflare:websocket_keepalive',
+        'raptor:cloudflare:ranges',
+        'raptor:cloudflare:ranges_updated_at',
     ];
 
     /**
