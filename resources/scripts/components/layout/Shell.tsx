@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import classNames from 'classnames';
 import {
@@ -78,7 +78,7 @@ const useLogout = () => {
     return { loggingOut, logout };
 };
 
-const UserLinks = ({ onNavigate, compact }: { onNavigate?: () => void; compact?: boolean }) => {
+const UserLinks = ({ onNavigate }: { onNavigate?: () => void }) => {
     const rootAdmin = useStoreState((state) => state.user.data!.rootAdmin);
     const { loggingOut, logout } = useLogout();
     const inAdmin = useLocation().pathname.startsWith('/admin');
@@ -86,18 +86,8 @@ const UserLinks = ({ onNavigate, compact }: { onNavigate?: () => void; compact?:
     return (
         <>
             <SpinnerOverlay visible={loggingOut} fixed />
-            {!compact && (
-                <>
-                    <NavItem
-                        entry={{ to: '/', label: 'All servers', icon: ServerIcon, end: true }}
-                        onNavigate={onNavigate}
-                    />
-                    <NavItem
-                        entry={{ to: '/account', label: 'Account', icon: UserCircleIcon }}
-                        onNavigate={onNavigate}
-                    />
-                </>
-            )}
+            <NavItem entry={{ to: '/', label: 'All servers', icon: ServerIcon, end: true }} onNavigate={onNavigate} />
+            <NavItem entry={{ to: '/account', label: 'Account', icon: UserCircleIcon }} onNavigate={onNavigate} />
             {rootAdmin &&
                 (inAdmin ? (
                     <Link to={'/'} onClick={onNavigate} className={styles.nav_item}>
@@ -118,12 +108,44 @@ const UserLinks = ({ onNavigate, compact }: { onNavigate?: () => void; compact?:
     );
 };
 
+/** Admin switch and sign out next to the user badge, so the sidebar navigation keeps its room. */
+const FooterActions = () => {
+    const rootAdmin = useStoreState((state) => state.user.data!.rootAdmin);
+    const { loggingOut, logout } = useLogout();
+    const inAdmin = useLocation().pathname.startsWith('/admin');
+
+    return (
+        <div className={'flex items-center gap-0.5 flex-shrink-0'}>
+            <SpinnerOverlay visible={loggingOut} fixed />
+            {rootAdmin && (
+                <Link
+                    to={inAdmin ? '/' : '/admin'}
+                    className={styles.footer_action}
+                    title={inAdmin ? 'Exit admin' : 'Admin area'}
+                    aria-label={inAdmin ? 'Exit admin' : 'Admin area'}
+                >
+                    {inAdmin ? <ServerIcon className={'w-5 h-5'} /> : <ShieldCheckIcon className={'w-5 h-5'} />}
+                </Link>
+            )}
+            <button
+                type={'button'}
+                onClick={logout}
+                className={styles.footer_action}
+                title={'Sign out'}
+                aria-label={'Sign out'}
+            >
+                <LogoutIcon className={'w-5 h-5'} />
+            </button>
+        </div>
+    );
+};
+
 const UserBadge = () => {
     const username = useStoreState((state) => state.user.data!.username);
     const email = useStoreState((state) => state.user.data!.email);
 
     return (
-        <Link to={'/account'} className={styles.user_badge}>
+        <Link to={'/account'} className={styles.user_badge} title={`${username} · ${email}`}>
             <span className={'w-8 h-8 flex-shrink-0 rounded-full overflow-hidden ring-1 ring-white/10'}>
                 <Avatar.User />
             </span>
@@ -139,8 +161,14 @@ export default ({ nav, primary, context, title, banner, fullscreen, children }: 
     const [moreOpen, setMoreOpen] = useState(false);
     const { pathname } = useLocation();
 
-    // Close the "More" sheet whenever the page changes.
-    useEffect(() => setMoreOpen(false), [pathname]);
+    const navRef = useRef<HTMLElement>(null);
+
+    // Close the "More" sheet whenever the page changes and keep the active entry of a sidebar that
+    // scrolls on short screens visible.
+    useEffect(() => {
+        setMoreOpen(false);
+        navRef.current?.querySelector(`.${styles.active}`)?.scrollIntoView({ block: 'nearest' });
+    }, [pathname]);
 
     const preferred = primary ? nav.filter((entry) => primary.includes(entry.to)) : nav;
     const bottomItems = preferred.slice(0, BOTTOM_BAR_ITEMS);
@@ -154,7 +182,7 @@ export default ({ nav, primary, context, title, banner, fullscreen, children }: 
                     <Logo />
                 </Link>
                 {context && <div className={'px-3 pb-3'}>{context}</div>}
-                <nav className={styles.nav} aria-label={'Main navigation'}>
+                <nav ref={navRef} className={styles.nav} aria-label={'Main navigation'}>
                     {nav.map((entry, index) => (
                         <React.Fragment key={entry.to}>
                             {entry.group && entry.group !== nav[index - 1]?.group && (
@@ -166,9 +194,7 @@ export default ({ nav, primary, context, title, banner, fullscreen, children }: 
                 </nav>
                 <div className={styles.sidebar_footer}>
                     <UserBadge />
-                    <div className={'mt-1'}>
-                        <UserLinks compact />
-                    </div>
+                    <FooterActions />
                 </div>
             </aside>
             <div className={styles.main}>

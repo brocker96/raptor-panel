@@ -9,6 +9,7 @@ use Illuminate\Database\Console\PruneCommand;
 use Raptor\Repositories\Eloquent\SettingsRepository;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Raptor\Services\Telemetry\TelemetryCollectionService;
+use Raptor\Console\Commands\Raptor\UpdateCommand;
 use Raptor\Console\Commands\Schedule\ProcessRunnableCommand;
 use Raptor\Console\Commands\Maintenance\PruneOrphanedBackupsCommand;
 use Raptor\Console\Commands\Maintenance\CleanServiceBackupFilesCommand;
@@ -34,6 +35,9 @@ class Kernel extends ConsoleKernel
         // Execute scheduled commands for servers every minute, as if there was a normal cron running.
         $schedule->command(ProcessRunnableCommand::class)->everyMinute()->withoutOverlapping();
         $schedule->command(CleanServiceBackupFilesCommand::class)->daily();
+
+        // Picks up updates requested from the admin area and refreshes the release list.
+        $schedule->command(UpdateCommand::class, ['--pending'])->everyMinute()->withoutOverlapping(120)->runInBackground();
 
         if (config('backups.prune_age')) {
             // Every 30 minutes, run the backup pruning command so that any abandoned backups can be deleted.

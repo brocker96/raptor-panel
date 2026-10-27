@@ -94,6 +94,26 @@ return [
         'ranges_updated_at' => '',
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Updates
+    |--------------------------------------------------------------------------
+    |
+    | The built-in updater looks for new releases of the repository below and
+    | installs them from the admin area or with "php artisan raptor:update".
+    | The "beta" channel also offers pre-releases.
+    */
+
+    'updates' => [
+        'repository' => env('RAPTOR_UPDATE_REPOSITORY', 'brocker96/raptor-panel'),
+        // Optional mirror returning the same JSON as the GitHub releases API.
+        'feed' => env('RAPTOR_UPDATE_FEED'),
+        'channel' => env('RAPTOR_UPDATE_CHANNEL', 'beta'),
+        'auto_check' => env('RAPTOR_UPDATE_AUTO_CHECK', true),
+        // Number of pre-update backups that are kept for rollbacks.
+        'keep_backups' => (int) env('RAPTOR_UPDATE_KEEP_BACKUPS', 3),
+    ],
+
     'guzzle' => [
         'timeout' => env('GUZZLE_TIMEOUT', 15),
         'connect_timeout' => env('GUZZLE_CONNECT_TIMEOUT', 5),

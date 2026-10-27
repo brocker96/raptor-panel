@@ -23,6 +23,15 @@ Route::post('/system/failed-jobs/{uuid}/retry', [Admin\SystemController::class, 
 Route::delete('/system/failed-jobs/{uuid}', [Admin\SystemController::class, 'forget']);
 Route::delete('/system/failed-jobs', [Admin\SystemController::class, 'flush']);
 
+Route::group(['prefix' => '/updates'], function () {
+    Route::get('/', [Admin\UpdateController::class, 'index']);
+    Route::get('/status', [Admin\UpdateController::class, 'status']);
+    Route::put('/channel', [Admin\UpdateController::class, 'channel']);
+    Route::post('/install', [Admin\UpdateController::class, 'install']);
+    Route::post('/rollback', [Admin\UpdateController::class, 'rollback']);
+    Route::delete('/queue', [Admin\UpdateController::class, 'cancel']);
+});
+
 Route::get('/activity', [Admin\ActivityController::class, 'index']);
 Route::get('/activity/events', [Admin\ActivityController::class, 'events']);
 

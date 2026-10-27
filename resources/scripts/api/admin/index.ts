@@ -747,3 +747,73 @@ export const updateCloudflare = (values: CloudflareStatus['settings']) =>
     http.patch('/api/admin/settings/cloudflare', values);
 export const refreshCloudflareRanges = () =>
     http.post<{ list: string[]; updated_at: string }>('/api/admin/settings/cloudflare/ranges').then((r) => r.data);
+
+/* Updates */
+
+export interface Release {
+    version: string;
+    tag: string;
+    name: string;
+    prerelease: boolean;
+    published_at: string | null;
+    url: string | null;
+    notes: string;
+    archive: string | null;
+    checksum: string | null;
+}
+
+export interface UpdateState {
+    status: 'idle' | 'queued' | 'running' | 'completed' | 'failed';
+    action: 'install' | 'rollback' | null;
+    target: string | null;
+    step: string | null;
+    error: string | null;
+    requested_by: string | null;
+    requested_at: string | null;
+    started_at: string | null;
+    finished_at: string | null;
+    from: string | null;
+    backup: string | null;
+}
+
+export interface UpdateBackup {
+    id: string;
+    version: string;
+    created_at: string | null;
+    size: number;
+    database: boolean;
+}
+
+export interface UpdateOverview {
+    current: string;
+    development: boolean;
+    repository: string;
+    channel: 'stable' | 'beta';
+    auto_check: boolean;
+    latest: Release | null;
+    update_available: boolean;
+    releases: Release[];
+    error: string | null;
+    state: UpdateState;
+    backups: UpdateBackup[];
+    php_binary: string;
+    base_path: string;
+}
+
+export interface UpdateStatus {
+    version: string;
+    state: UpdateState;
+    log: string;
+}
+
+export const getUpdates = (refresh: boolean, signal?: AbortSignal) =>
+    get<UpdateOverview>('/api/admin/updates', refresh ? { refresh: 1 } : undefined, signal);
+export const getUpdateStatus = (signal?: AbortSignal) =>
+    get<UpdateStatus>('/api/admin/updates/status', undefined, signal);
+export const updateUpdateChannel = (channel: 'stable' | 'beta', autoCheck: boolean) =>
+    http.put<UpdateOverview>('/api/admin/updates/channel', { channel, auto_check: autoCheck }).then((r) => r.data);
+export const installUpdate = (version: string) =>
+    http.post<UpdateStatus>('/api/admin/updates/install', { version }).then((r) => r.data);
+export const rollbackUpdate = (backup: string) =>
+    http.post<UpdateStatus>('/api/admin/updates/rollback', { backup }).then((r) => r.data);
+export const cancelUpdate = () => http.delete('/api/admin/updates/queue');

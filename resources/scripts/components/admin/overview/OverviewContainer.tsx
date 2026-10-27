@@ -3,6 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
+    ArrowCircleUpIcon,
     ChipIcon,
     CollectionIcon,
     ExclamationIcon,
@@ -13,7 +14,7 @@ import {
     ViewGridIcon,
 } from '@heroicons/react/outline';
 import { useResource } from '@/api/query';
-import { getOverview, getSystem, Overview } from '@/api/admin';
+import { getOverview, getSystem, getUpdates, Overview } from '@/api/admin';
 import { Page } from '@/components/admin/ui/Page';
 import { Card } from '@/components/admin/ui/Card';
 import {
@@ -27,7 +28,6 @@ import {
     StatCard,
 } from '@/components/admin/ui/Feedback';
 import Button from '@/components/admin/ui/Button';
-import { item } from '@/components/admin/ui/motion';
 import { ago, formatMb } from '@/components/admin/ui/hooks';
 import { useStoreState } from '@/state/hooks';
 
@@ -130,6 +130,27 @@ const ServerHealth = ({ servers }: { servers: Overview['servers'] }) => {
     );
 };
 
+const UpdateNotice = () => {
+    const { data } = useResource(['admin', 'updates', false], (signal) => getUpdates(false, signal), {
+        staleTime: 10 * 60_000,
+        refetchOnWindowFocus: false,
+    });
+
+    if (!data?.update_available || !data.latest || !data.auto_check) return null;
+
+    return (
+        <div>
+            <Callout tone={'green'} icon={ArrowCircleUpIcon} title={`Raptor Panel ${data.latest.version} is available`}>
+                You are running {data.current}. The update makes a backup first and rolls back automatically if anything
+                fails.{' '}
+                <Link to={'/admin/updates'} className={'font-medium underline'}>
+                    Review and update
+                </Link>
+            </Callout>
+        </div>
+    );
+};
+
 const SystemWarnings = () => {
     const { data } = useResource(['admin', 'system'], getSystem, { staleTime: 60_000 });
     const failing = data?.checks.filter((check) => !check.ok) || [];
@@ -176,6 +197,7 @@ export default () => {
                 </>
             }
         >
+            <UpdateNotice />
             <SystemWarnings />
             {!data ? (
                 <div className={'grid gap-4 grid-cols-2 lg:grid-cols-4'}>

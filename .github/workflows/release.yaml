@@ -35,6 +35,8 @@ jobs:
         run: |
           rm -rf node_modules tests CONTRIBUTING.md flake.lock flake.nix phpunit.xml shell.nix
           tar -czf panel.tar.gz * .editorconfig .env.example .gitignore .prettierrc.json
+          # Verified by the built-in updater before anything is installed.
+          sha256sum panel.tar.gz > panel.tar.gz.sha256
       - name: write changelog
         run: |
           sed -n "/^## ${{ github.ref_name }}/,/^## /{/^## /b;p}" CHANGELOG.md > ./RELEASE_CHANGELOG
@@ -47,3 +49,4 @@ jobs:
           body_path: ./RELEASE_CHANGELOG
           files: |
             panel.tar.gz
+            panel.tar.gz.sha256

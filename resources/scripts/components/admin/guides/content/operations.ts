@@ -2,6 +2,80 @@ import { Guide } from '@/components/admin/guides/types';
 
 export default [
     {
+        key: 'updates',
+        title: 'Updating Raptor Panel',
+        category: 'Operations',
+        summary: 'One-click updates from GitHub releases, what happens during an update and how to roll back.',
+        minutes: 5,
+        sections: [
+            {
+                heading: 'How updates are found',
+                body: 'The Panel reads the releases of its GitHub repository once an hour and shows a notice on the overview when a newer version is available on your update channel. Open **Updates** to see the release notes and press **Check for updates** to look right now.',
+                points: [
+                    'Stable — only final releases.',
+                    'Beta — pre-releases as well, they get new features first and are what the 0.x versions are published as.',
+                    'Development build — a Panel installed from a git branch has the version `canary`. Every release is offered to it, after installing one you get normal updates.',
+                ],
+            },
+            {
+                heading: 'What happens during an update',
+                steps: [
+                    'You press **Update** and the request is queued. The scheduler (the cron job of the Panel) picks it up within a minute.',
+                    'The release archive is downloaded and checked against its SHA-256 checksum.',
+                    'A backup of the Panel files, `.env` and the whole database is written to `storage/app/raptor/updates/backups`.',
+                    'The Panel goes into maintenance mode, the files are replaced, PHP dependencies are installed and the database is migrated.',
+                    'The queue worker is restarted and the Panel comes back online. Reload the page to load the new interface.',
+                ],
+                tips: [
+                    'Game servers keep running, Wings is not touched by a Panel update.',
+                    'The page follows the progress and shows the full log, even while the Panel is in maintenance mode.',
+                ],
+                warning:
+                    'If any step fails, the backup is restored automatically and the error is shown. Nothing stays half updated.',
+            },
+            {
+                heading: 'Rolling back',
+                body: 'The newest backups (three by default, `RAPTOR_UPDATE_KEEP_BACKUPS`) are listed under **Backups**. **Roll back** restores the files and the database of that moment.',
+                warning:
+                    'A rollback also restores the database, so users, servers and settings created after the backup are lost. Files of game servers on the nodes are not affected.',
+            },
+            {
+                heading: 'Updating from the terminal',
+                body: 'Everything is also available as an Artisan command. Run it as the web server user so file permissions stay correct.',
+                code: [
+                    {
+                        language: 'Shell',
+                        content:
+                            'cd /var/www/raptor\nsudo -u www-data php artisan raptor:update --check\nsudo -u www-data php artisan raptor:update            # newest release\nsudo -u www-data php artisan raptor:update 0.3.0      # a specific release\nsudo -u www-data php artisan raptor:update --backups\nsudo -u www-data php artisan raptor:update --rollback=latest',
+                    },
+                ],
+            },
+            {
+                heading: 'Settings',
+                points: [
+                    'RAPTOR_UPDATE_CHANNEL — default channel (`stable` or `beta`), can be changed on the Updates page.',
+                    'RAPTOR_UPDATE_REPOSITORY — repository releases are read from, `brocker96/raptor-panel` by default.',
+                    'RAPTOR_UPDATE_FEED — optional mirror URL that returns the same JSON as the GitHub releases API.',
+                ],
+            },
+        ],
+        faq: [
+            {
+                q: 'The update stays at "Waiting for the scheduler".',
+                a: 'The cron job is missing. Check it with `crontab -u www-data -l`; it must contain `* * * * * php /var/www/raptor/artisan schedule:run`. You can also run `sudo -u www-data php artisan raptor:update --pending` by hand.',
+            },
+            {
+                q: 'It says the files are not writable.',
+                a: 'Run `chown -R www-data:www-data /var/www/raptor` once, then try again.',
+            },
+            {
+                q: 'Can I install an older version?',
+                a: 'Database migrations cannot be undone safely, so going back is only possible with a backup made before the update.',
+            },
+        ],
+        related: ['system'],
+    },
+    {
         key: 'system',
         title: 'System health, queue and caches',
         category: 'Operations',

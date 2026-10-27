@@ -1,6 +1,7 @@
 import React, { lazy, useMemo } from 'react';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import {
+    ArrowCircleUpIcon,
     BookOpenIcon,
     ChipIcon,
     ClipboardListIcon,
@@ -45,6 +46,7 @@ const Settings = lazy(() => import('@/components/admin/settings/SettingsContaine
 const ApiKeys = lazy(() => import('@/components/admin/api/ApiKeysContainer'));
 const AuditLog = lazy(() => import('@/components/admin/activity/AuditLogContainer'));
 const System = lazy(() => import('@/components/admin/system/SystemContainer'));
+const Updates = lazy(() => import('@/components/admin/updates/UpdatesContainer'));
 const GuideHub = lazy(() => import('@/components/admin/guides/GuidesContainer').then((m) => ({ default: m.GuideHub })));
 const GuideView = lazy(() =>
     import('@/components/admin/guides/GuidesContainer').then((m) => ({ default: m.GuideView }))
@@ -64,6 +66,7 @@ const nav: NavEntry[] = [
     { to: '/admin/api', label: 'API keys', icon: KeyIcon, group: 'Panel' },
     { to: '/admin/activity', label: 'Audit log', icon: ClipboardListIcon, group: 'Panel' },
     { to: '/admin/system', label: 'System', icon: TemplateIcon, group: 'Panel' },
+    { to: '/admin/updates', label: 'Updates', icon: ArrowCircleUpIcon, group: 'Panel' },
 ];
 
 const AdminContextCard = () => (
@@ -144,6 +147,7 @@ export default () => {
                             <Route path={'api'} element={<ApiKeys />} />
                             <Route path={'activity'} element={<AuditLog />} />
                             <Route path={'system'} element={<System />} />
+                            <Route path={'updates'} element={<Updates />} />
                             <Route path={'*'} element={<NotFound />} />
                         </Routes>
                     </Spinner.Suspense>

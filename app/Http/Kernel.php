@@ -32,7 +32,7 @@ use Raptor\Http\Middleware\Api\Client\RequireClientApiKey;
 use Raptor\Http\Middleware\RequireTwoFactorAuthentication;
 use Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull;
 use Raptor\Http\Middleware\Api\Client\SubstituteClientBindings;
-use Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance;
+use Raptor\Http\Middleware\PreventRequestsDuringMaintenance;
 use Raptor\Http\Middleware\Api\Application\AuthenticateApplicationUser;
 
 class Kernel extends HttpKernel

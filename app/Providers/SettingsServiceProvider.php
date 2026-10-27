@@ -34,6 +34,8 @@ class SettingsServiceProvider extends ServiceProvider
         'raptor:cloudflare:websocket_keepalive',
         'raptor:cloudflare:ranges',
         'raptor:cloudflare:ranges_updated_at',
+        'raptor:updates:channel',
+        'raptor:updates:auto_check',
     ];
 
     /**
@@ -51,11 +53,14 @@ class SettingsServiceProvider extends ServiceProvider
     ];
 
     /**
-     * Keys that are encrypted and should be decrypted when set in the
-     * configuration array.
+     * Mail drivers that can be selected from the admin area.
      */
     public const SWITCHABLE_MAIL_DRIVERS = ['smtp', 'log'];
 
+    /**
+     * Keys that are encrypted and should be decrypted when set in the
+     * configuration array.
+     */
     protected static array $encrypted = [
         'mail:mailers:smtp:password',
     ];
