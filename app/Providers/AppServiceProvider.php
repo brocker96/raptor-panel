@@ -5,12 +5,13 @@ namespace Raptor\Providers;
 use Raptor\Models;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\URL;
+use Raptor\Extensions\Themes\Theme;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
-use Raptor\Extensions\Themes\Theme;
 use Illuminate\Database\Eloquent\Relations\Relation;
 
 class AppServiceProvider extends ServiceProvider
@@ -21,6 +22,9 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Schema::defaultStringLength(191);
+
+        // Cloudflare's Rocket Loader rewrites script tags and breaks module scripts, opt out of it.
+        Vite::useScriptTagAttributes(['data-cfasync' => 'false']);
 
         View::share('appVersion', $this->versionData()['version'] ?? 'undefined');
         View::share('appIsGit', $this->versionData()['is_git'] ?? false);
@@ -41,8 +45,13 @@ class AppServiceProvider extends ServiceProvider
             'api_key' => Models\ApiKey::class,
             'backup' => Models\Backup::class,
             'database' => Models\Database::class,
+            'database_host' => Models\DatabaseHost::class,
             'egg' => Models\Egg::class,
             'egg_variable' => Models\EggVariable::class,
+            'location' => Models\Location::class,
+            'mount' => Models\Mount::class,
+            'nest' => Models\Nest::class,
+            'node' => Models\Node::class,
             'schedule' => Models\Schedule::class,
             'server' => Models\Server::class,
             'ssh_key' => Models\UserSSHKey::class,

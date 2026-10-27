@@ -23,6 +23,9 @@
 #   RAPTOR_TIMEZONE        PHP timezone, e.g. Europe/Kyiv (default: system timezone or UTC).
 #   RAPTOR_SSL             yes/no - request a Let's Encrypt certificate (default: yes for domains).
 #   RAPTOR_WINGS           yes/no - install Docker + Wings on this machine (default: ask).
+#   RAPTOR_CLOUDFLARE      yes/no - the Panel domain is proxied by Cloudflare (orange cloud).
+#   RAPTOR_NODE_FQDN       Domain for Wings/SFTP/game connections. Behind Cloudflare this should be a
+#                          separate "DNS only" (grey cloud) record, e.g. node.example.com.
 #   RAPTOR_BRANCH          Git branch to install from (default: 0.x_beta).
 #   RAPTOR_RELEASE         Install a pre-built release instead of building from git, e.g. "latest" or "v1.0.0".
 #   RAPTOR_DIR             Install directory (default: /var/www/raptor).
@@ -138,6 +141,19 @@ else
     ask RAPTOR_SSL "Request a free Let's Encrypt HTTPS certificate? (yes/no)" "yes"
 fi
 ask RAPTOR_WINGS "Install Docker + Wings on this server and add it as a node? (yes/no)" "yes"
+if is_ip "$RAPTOR_FQDN"; then
+    RAPTOR_CLOUDFLARE="no"
+else
+    ask RAPTOR_CLOUDFLARE "Is the domain proxied by Cloudflare (orange cloud)? (yes/no)" "no"
+fi
+RAPTOR_NODE_FQDN="${RAPTOR_NODE_FQDN:-}"
+if yes_no "$RAPTOR_WINGS" && yes_no "$RAPTOR_CLOUDFLARE"; then
+    info "Cloudflare only proxies HTTP(S): SFTP and game ports need a \"DNS only\" (grey cloud) record."
+    info "Create e.g. node.$RAPTOR_FQDN -> $PUBLIC_IP as DNS only and enter it below, or keep the Panel"
+    info "domain to run Wings on port 8443 through Cloudflare (SFTP/game ports then need the server IP)."
+    ask RAPTOR_NODE_FQDN "Node domain" "$RAPTOR_FQDN"
+fi
+RAPTOR_NODE_FQDN="${RAPTOR_NODE_FQDN:-$RAPTOR_FQDN}"
 
 GENERATED_PASSWORD=0
 if [[ -z "$RAPTOR_ADMIN_PASSWORD" ]]; then
@@ -151,7 +167,8 @@ info "Panel URL:     $RAPTOR_FQDN ($(yes_no "$RAPTOR_SSL" && echo https || echo 
 info "Install from:  ${RELEASE:+release $RELEASE}${RELEASE:-git branch $BRANCH}"
 info "Directory:     $DIR"
 info "Admin:         $RAPTOR_ADMIN_USERNAME <$RAPTOR_EMAIL>"
-info "Local Wings:   $(yes_no "$RAPTOR_WINGS" && echo yes || echo no)"
+info "Local Wings:   $(yes_no "$RAPTOR_WINGS" && echo "yes ($RAPTOR_NODE_FQDN)" || echo no)"
+info "Cloudflare:    $(yes_no "${RAPTOR_CLOUDFLARE:-no}" && echo yes || echo no)"
 ask CONFIRM "Start the installation? (yes/no)" "yes"
 yes_no "$CONFIRM" || exit 1
 
@@ -325,11 +342,24 @@ CRON_LINE="* * * * * php $DIR/artisan schedule:run >> /dev/null 2>&1"
 
 step "Configuring nginx"
 rm -f /etc/nginx/sites-enabled/default
+
+# Log the real visitor address for requests that come through Cloudflare. The Panel itself trusts
+# the Cloudflare ranges on its own (config/trustedproxy.php).
+CF_REAL_IP=""
+for range in $(curl -fsS --max-time 10 https://www.cloudflare.com/ips-v4 2>/dev/null) $(curl -fsS --max-time 10 https://www.cloudflare.com/ips-v6 2>/dev/null); do
+    CF_REAL_IP+="set_real_ip_from $range;"$'\n'
+done
+if [[ -n "$CF_REAL_IP" ]]; then
+    printf '%sreal_ip_header CF-Connecting-IP;\n' "$CF_REAL_IP" >/etc/nginx/conf.d/cloudflare-real-ip.conf
+fi
+
+SERVER_NAMES="$RAPTOR_FQDN"
+[[ "$RAPTOR_NODE_FQDN" != "$RAPTOR_FQDN" ]] && SERVER_NAMES+=" $RAPTOR_NODE_FQDN"
 cat >/etc/nginx/sites-available/raptor.conf <<NGINX
 server {
     listen 80;
     listen [::]:80;
-    server_name $RAPTOR_FQDN;
+    server_name $SERVER_NAMES;
 
     root $DIR/public;
     index index.php;
@@ -377,7 +407,32 @@ server {
     }
 }
 NGINX
+
+# A loopback-only copy of the Panel that a local Wings uses to talk to it. This keeps Wings
+# independent from DNS, Cloudflare (challenges, Bot Fight Mode) and certificate renewals.
+cat >/etc/nginx/sites-available/raptor-local.conf <<NGINX
+server {
+    listen 127.0.0.1:8090;
+    server_name _;
+    root $DIR/public;
+    index index.php;
+    client_max_body_size 100m;
+
+    location / {
+        try_files \$uri \$uri/ /index.php?\$query_string;
+    }
+
+    location ~ \.php\$ {
+        fastcgi_pass unix:/run/php/php$PHP_VERSION-fpm.sock;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
+        fastcgi_param HTTP_PROXY "";
+        fastcgi_read_timeout 300;
+    }
+}
+NGINX
 ln -sf /etc/nginx/sites-available/raptor.conf /etc/nginx/sites-enabled/raptor.conf
+ln -sf /etc/nginx/sites-available/raptor-local.conf /etc/nginx/sites-enabled/raptor-local.conf
 run nginx -t
 run systemctl reload nginx
 
@@ -390,7 +445,10 @@ fi
 if yes_no "$RAPTOR_SSL"; then
     step "Requesting a Let's Encrypt certificate"
     run apt-get install -y certbot python3-certbot-nginx
-    if certbot --nginx -d "$RAPTOR_FQDN" --redirect --non-interactive --agree-tos -m "$RAPTOR_EMAIL" >>"$LOG_FILE" 2>&1; then
+    CERT_DOMAINS=(-d "$RAPTOR_FQDN")
+    [[ "$RAPTOR_NODE_FQDN" != "$RAPTOR_FQDN" ]] && CERT_DOMAINS+=(-d "$RAPTOR_NODE_FQDN")
+    yes_no "${RAPTOR_CLOUDFLARE:-no}" && info "Behind Cloudflare: set SSL/TLS mode to \"Full (strict)\" once the certificate is issued."
+    if certbot --nginx "${CERT_DOMAINS[@]}" --cert-name "$RAPTOR_FQDN" --redirect --non-interactive --agree-tos -m "$RAPTOR_EMAIL" >>"$LOG_FILE" 2>&1; then
         info "HTTPS is enabled, certificates renew automatically."
     else
         warn "Could not get a certificate. Make sure the domain points to $PUBLIC_IP and port 80 is open."
@@ -429,10 +487,16 @@ if yes_no "$RAPTOR_WINGS"; then
 
     run php artisan p:location:make --short=local --long="This server" --no-interaction
     LOCATION_ID=$(mysql -N -u root panel -e "SELECT id FROM locations WHERE short='local' ORDER BY id DESC LIMIT 1")
+    # Cloudflare does not proxy port 8080 over HTTPS, 8443 is one of the ports it does support.
+    DAEMON_PORT=8080
+    if yes_no "${RAPTOR_CLOUDFLARE:-no}" && [[ "$RAPTOR_NODE_FQDN" == "$RAPTOR_FQDN" ]]; then
+        DAEMON_PORT=8443
+    fi
+
     run php artisan p:node:make --name="Local node" --description="Wings running next to the Panel" \
-        --locationId="$LOCATION_ID" --fqdn="$RAPTOR_FQDN" --public=1 --scheme="$SCHEME" --proxy=0 --maintenance=0 \
+        --locationId="$LOCATION_ID" --fqdn="$RAPTOR_NODE_FQDN" --public=1 --scheme="$SCHEME" --proxy=0 --maintenance=0 \
         --maxMemory="$NODE_MEM" --overallocateMemory=0 --maxDisk="$NODE_DISK" --overallocateDisk=0 \
-        --uploadSize=100 --daemonListeningPort=8080 --daemonSFTPPort=2022 --daemonBase=/var/lib/pterodactyl/volumes \
+        --uploadSize=100 --daemonListeningPort="$DAEMON_PORT" --daemonSFTPPort=2022 --daemonBase=/var/lib/pterodactyl/volumes \
         --no-interaction
     NODE_ID=$(mysql -N -u root panel -e "SELECT id FROM nodes WHERE name='Local node' ORDER BY id DESC LIMIT 1")
 
@@ -441,13 +505,20 @@ if yes_no "$RAPTOR_WINGS"; then
     PORT_START="${PORTS%-*}"
     PORT_END="${PORTS#*-}"
     VALUES=""
+    # Players cannot connect to game ports through Cloudflare, show them the server IP instead.
+    ALLOC_ALIAS="$RAPTOR_NODE_FQDN"
+    [[ "$DAEMON_PORT" == "8443" ]] && ALLOC_ALIAS="$PUBLIC_IP"
     for ((port = PORT_START; port <= PORT_END; port++)); do
-        VALUES+="${VALUES:+,}($NODE_ID,'0.0.0.0','$RAPTOR_FQDN',$port,NOW(),NOW())"
+        VALUES+="${VALUES:+,}($NODE_ID,'0.0.0.0','$ALLOC_ALIAS',$port,NOW(),NOW())"
     done
     mysql -u root panel -e "INSERT IGNORE INTO allocations (node_id, ip, ip_alias, port, created_at, updated_at) VALUES $VALUES" >>"$LOG_FILE" 2>&1
     info "Node #$NODE_ID created with ${NODE_MEM} MB RAM, ${NODE_DISK} MB disk and ports $PORTS."
 
     php artisan p:node:configuration "$NODE_ID" --format=yaml >/etc/pterodactyl/config.yml
+    # Talk to the Panel over the loopback listener instead of the public URL.
+    sed -i -E "s|^remote: .*|remote: 'http://127.0.0.1:8090'|" /etc/pterodactyl/config.yml
+    # A single certificate covers both domains, it is stored under the Panel domain.
+    sed -i "s|/etc/letsencrypt/live/$RAPTOR_NODE_FQDN/|/etc/letsencrypt/live/$RAPTOR_FQDN/|g" /etc/pterodactyl/config.yml
     chmod 600 /etc/pterodactyl/config.yml
 
     cat >/etc/systemd/system/wings.service <<UNIT
@@ -474,9 +545,16 @@ UNIT
     run systemctl daemon-reload
     run systemctl enable --now wings
 
+    # Wings only reads its certificate on start, restart it whenever certbot renews it.
+    if [[ -d /etc/letsencrypt ]]; then
+        mkdir -p /etc/letsencrypt/renewal-hooks/deploy
+        printf '#!/bin/sh\nsystemctl restart wings\n' >/etc/letsencrypt/renewal-hooks/deploy/restart-wings.sh
+        chmod +x /etc/letsencrypt/renewal-hooks/deploy/restart-wings.sh
+    fi
+
     if command -v ufw >/dev/null && ufw status | grep -q "Status: active"; then
-        info "Opening Wings ports 8080, 2022 and $PORTS"
-        run ufw allow 8080/tcp
+        info "Opening Wings ports $DAEMON_PORT, 2022 and $PORTS"
+        run ufw allow "$DAEMON_PORT/tcp"
         run ufw allow 2022/tcp
         run ufw allow "${PORT_START}:${PORT_END}/tcp"
         run ufw allow "${PORT_START}:${PORT_END}/udp"
@@ -514,5 +592,16 @@ fi
 printf '\n   All credentials were saved to %s\n' "$CREDENTIALS_FILE"
 if yes_no "$RAPTOR_WINGS"; then
     printf '   Wings is running as "Local node". Check it with: systemctl status wings\n'
+fi
+if yes_no "${RAPTOR_CLOUDFLARE:-no}"; then
+    printf '\n   %sCloudflare checklist%s\n' "$BOLD" "$RESET"
+    printf '   • SSL/TLS mode: Full (strict)\n'
+    printf '   • Network → WebSockets: enabled (default)\n'
+    if [[ "$RAPTOR_NODE_FQDN" == "$RAPTOR_FQDN" ]] && yes_no "$RAPTOR_WINGS"; then
+        printf '   • Wings listens on 8443 so it works through the orange cloud; SFTP (2022) and game ports\n'
+        printf '     are not proxied by Cloudflare, players and SFTP clients must use %s directly.\n' "$PUBLIC_IP"
+    elif yes_no "$RAPTOR_WINGS"; then
+        printf '   • %s must stay "DNS only" (grey cloud) for SFTP and game connections.\n' "$RAPTOR_NODE_FQDN"
+    fi
 fi
 printf '   Configure email sending in the admin area: Settings → Mail.\n\n'

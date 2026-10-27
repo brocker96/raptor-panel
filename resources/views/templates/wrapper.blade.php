@@ -21,16 +21,19 @@
         @show
 
         @section('user-data')
+            {{-- Cloudflare: keep Rocket Loader away from these scripts and stop Email Obfuscation from rewriting the e-mail address inside the JSON. --}}
+            <!--email_off-->
             @if(!is_null(Auth::user()))
-                <script>
+                <script data-cfasync="false">
                     window.RaptorUser = {!! json_encode(Auth::user()->toVueObject()) !!};
                 </script>
             @endif
             @if(!empty($siteConfiguration))
-                <script>
+                <script data-cfasync="false">
                     window.SiteConfiguration = {!! json_encode($siteConfiguration) !!};
                 </script>
             @endif
+            <!--/email_off-->
         @show
 
         @yield('assets')

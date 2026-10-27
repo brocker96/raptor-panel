@@ -2,15 +2,16 @@
 
 namespace Raptor\Providers;
 
-use Illuminate\Http\Request;
 use Raptor\Models\Database;
+use Illuminate\Http\Request;
 use Raptor\Enum\ResourceLimit;
 use Illuminate\Support\Facades\Route;
+use Raptor\Http\Middleware\TrimStrings;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Support\Facades\RateLimiter;
-use Raptor\Http\Middleware\TrimStrings;
 use Raptor\Http\Middleware\AdminAuthenticate;
 use Raptor\Http\Middleware\RequireTwoFactorAuthentication;
+use Raptor\Http\Middleware\Api\Admin\RequireSessionAuthentication;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 
 class RouteServiceProvider extends ServiceProvider
@@ -52,6 +53,11 @@ class RouteServiceProvider extends ServiceProvider
                     ->prefix('/api/application')
                     ->scopeBindings()
                     ->group(base_path('routes/api-application.php'));
+
+                Route::middleware(['application-api', RequireSessionAuthentication::class, 'throttle:api.client'])
+                    ->prefix('/api/admin')
+                    ->scopeBindings()
+                    ->group(base_path('routes/api-admin.php'));
 
                 Route::middleware(['client-api', 'throttle:api.client'])
                     ->prefix('/api/client')

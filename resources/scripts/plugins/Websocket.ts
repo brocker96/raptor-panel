@@ -8,6 +8,13 @@ const MIN_RECONNECT_DELAY = 1000;
 const MAX_RECONNECT_DELAY = 30_000;
 const MAX_ATTEMPTS = 20;
 
+// Proxies such as Cloudflare close websockets that have been idle for ~100 seconds. A server that is
+// offline does not produce any output, so a cheap "send stats" request is sent whenever the socket
+// has been quiet for a while. If even that gets no answer the connection is considered dead (a
+// half-open TCP connection through a proxy never fires "close") and is replaced.
+export const KEEPALIVE_INTERVAL = 25_000;
+export const DEAD_AFTER = 70_000;
+
 export interface ConnectionDetails {
     token: string;
     socket: string;
@@ -38,6 +45,9 @@ export class Websocket extends EventEmitter {
     private token = '';
 
     private attempts = 0;
+    private lastMessageAt = 0;
+    private authenticated = false;
+    private keepaliveTimer: ReturnType<typeof setInterval> | null = null;
     private reconnectTimer: ReturnType<typeof setTimeout> | null = null;
 
     // Set while a reconnect attempt is fetching fresh connection details, so that the timer, the
@@ -124,8 +134,10 @@ export class Websocket extends EventEmitter {
         this.socket = socket;
 
         socket.onmessage = (e) => {
+            this.lastMessageAt = Date.now();
             try {
                 const { event, args } = JSON.parse(e.data);
+                if (event === 'auth success') this.authenticated = true;
                 args ? this.emit(event, ...args) : this.emit(event);
             } catch (ex) {
                 console.warn('Failed to parse incoming websocket message.', ex);
@@ -134,6 +146,8 @@ export class Websocket extends EventEmitter {
 
         socket.onopen = () => {
             this.attempts = 0;
+            this.lastMessageAt = Date.now();
+            this.startKeepalive(socket);
             this.emit('SOCKET_OPEN');
             this.authenticate();
         };
@@ -146,6 +160,7 @@ export class Websocket extends EventEmitter {
 
             // This socket is done, forget it so that a reconnect is free to open a new one.
             this.socket = null;
+            this.stopKeepalive();
             this.emit('SOCKET_CLOSE');
 
             if (this.url && !NO_RECONNECT_CODES.includes(e.code)) {
@@ -210,6 +225,32 @@ export class Websocket extends EventEmitter {
         }
     }
 
+    private startKeepalive(socket: WebSocket) {
+        this.stopKeepalive();
+
+        this.keepaliveTimer = setInterval(() => {
+            if (this.socket !== socket || socket.readyState !== WebSocket.OPEN) return;
+
+            const idle = Date.now() - this.lastMessageAt;
+            if (idle >= DEAD_AFTER) {
+                // Nothing came back, not even an answer to the keepalive: replace the connection.
+                this.detach();
+                this.emit('SOCKET_CLOSE');
+                this.scheduleReconnect();
+            } else if (this.authenticated && idle >= KEEPALIVE_INTERVAL) {
+                this.send('send stats');
+            }
+        }, 5_000);
+    }
+
+    private stopKeepalive() {
+        if (this.keepaliveTimer) {
+            clearInterval(this.keepaliveTimer);
+            this.keepaliveTimer = null;
+        }
+        this.authenticated = false;
+    }
+
     private clearReconnectTimer() {
         if (this.reconnectTimer) {
             clearTimeout(this.reconnectTimer);
@@ -223,6 +264,7 @@ export class Websocket extends EventEmitter {
         if (!socket) return;
 
         this.socket = null;
+        this.stopKeepalive();
         socket.onmessage = socket.onopen = socket.onerror = socket.onclose = null;
         if (socket.readyState === WebSocket.OPEN || socket.readyState === WebSocket.CONNECTING) {
             socket.close(1000);

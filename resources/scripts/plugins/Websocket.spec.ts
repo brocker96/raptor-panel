@@ -1,4 +1,4 @@
-import { getReconnectDelay, Websocket } from '@/plugins/Websocket';
+import { DEAD_AFTER, getReconnectDelay, KEEPALIVE_INTERVAL, Websocket } from '@/plugins/Websocket';
 
 class FakeSocket {
     static instances: FakeSocket[] = [];
@@ -150,5 +150,35 @@ describe('@/plugins/Websocket.ts', () => {
         await vi.advanceTimersByTimeAsync(60_000);
 
         expect(FakeSocket.instances).toHaveLength(1);
+    });
+
+    it('keeps an idle connection alive through proxies such as Cloudflare', () => {
+        const ws = new Websocket().setToken('token').connect('ws://wings');
+        const socket = FakeSocket.instances[0];
+        socket.open();
+        socket.onmessage?.({ data: JSON.stringify({ event: 'auth success' }) });
+
+        vi.advanceTimersByTime(KEEPALIVE_INTERVAL + 5000);
+        expect(socket.sent.map((m) => JSON.parse(m).event)).toContain('send stats');
+
+        // Answers reset the idle timer, so no new socket is opened while the node responds.
+        socket.onmessage?.({ data: JSON.stringify({ event: 'stats', args: ['{}'] }) });
+        vi.advanceTimersByTime(DEAD_AFTER - 10_000);
+        expect(FakeSocket.instances).toHaveLength(1);
+
+        ws.close();
+    });
+
+    it('replaces a connection that silently died', () => {
+        const ws = new Websocket().setToken('token').connect('ws://wings');
+        FakeSocket.instances[0].open();
+        FakeSocket.instances[0].onmessage?.({ data: JSON.stringify({ event: 'auth success' }) });
+
+        // No answer at all, not even to the keepalive requests.
+        vi.advanceTimersByTime(DEAD_AFTER + 5000);
+        vi.advanceTimersByTime(30_000);
+        expect(FakeSocket.instances.length).toBeGreaterThan(1);
+
+        ws.close();
     });
 });
