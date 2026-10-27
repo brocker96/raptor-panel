@@ -31,6 +31,7 @@ Route::group(['prefix' => '/settings'], function () {
     Route::patch('/general', [Admin\SettingsController::class, 'updateGeneral']);
     Route::patch('/mail', [Admin\SettingsController::class, 'updateMail']);
     Route::post('/mail/test', [Admin\SettingsController::class, 'testMail']);
+    Route::put('/mail/driver', [Admin\SettingsController::class, 'updateMailDriver']);
     Route::patch('/advanced', [Admin\SettingsController::class, 'updateAdvanced']);
     Route::get('/cloudflare', [Admin\CloudflareController::class, 'index']);
     Route::patch('/cloudflare', [Admin\CloudflareController::class, 'update']);

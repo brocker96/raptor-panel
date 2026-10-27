@@ -2,6 +2,7 @@
 
 namespace Raptor\Http\Controllers\Api\Admin;
 
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Raptor\Facades\Activity;
@@ -34,7 +35,8 @@ class SystemController extends AdminApiController
                 'job' => class_basename($payload['displayName'] ?? 'Unknown'),
                 'exception' => Str::limit(strtok($job->exception, "\n") ?: '', 500),
                 'trace' => Str::limit($job->exception, 6000),
-                'failed_at' => $job->failed_at,
+                // Stored without a timezone, in the timezone of the Panel.
+                'failed_at' => CarbonImmutable::parse($job->failed_at, config('app.timezone'))->toAtomString(),
             ];
         });
     }

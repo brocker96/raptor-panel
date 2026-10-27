@@ -65,6 +65,7 @@ class SettingsController extends AdminApiController
                 'languages' => $this->getAvailableLanguages(true),
                 'mail_driver' => config('mail.default'),
                 'mail_editable' => config('mail.default') === 'smtp',
+                'mail_switchable' => in_array(config('mail.default'), SettingsServiceProvider::SWITCHABLE_MAIL_DRIVERS, true),
                 'mail_password_set' => !empty(config('mail.mailers.smtp.password')),
                 'recaptcha_shipped_keys' => $recaptchaShipped,
             ],
@@ -74,6 +75,23 @@ class SettingsController extends AdminApiController
     public function updateGeneral(BaseSettingsFormRequest $request): Response
     {
         $this->store($request->normalize());
+
+        return response('', 204);
+    }
+
+    /**
+     * Switches between sending e-mails over SMTP and only writing them to the log, which is the
+     * default after installation until a mail server has been configured.
+     */
+    public function updateMailDriver(Request $request): Response
+    {
+        $data = $request->validate(['driver' => 'required|in:' . implode(',', SettingsServiceProvider::SWITCHABLE_MAIL_DRIVERS)]);
+
+        if (!in_array(config('mail.default'), SettingsServiceProvider::SWITCHABLE_MAIL_DRIVERS, true)) {
+            throw new DisplayException('The mail driver is configured in the .env file (MAIL_MAILER) and cannot be changed here.');
+        }
+
+        $this->store(['mail:default' => $data['driver']]);
 
         return response('', 204);
     }

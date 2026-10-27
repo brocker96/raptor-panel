@@ -9,7 +9,7 @@ import {
     ShieldCheckIcon,
 } from '@heroicons/react/outline';
 import { useResource } from '@/api/query';
-import { getSettings, PanelSettings, sendTestMail, updateSettings } from '@/api/admin';
+import { getSettings, PanelSettings, sendTestMail, updateMailDriver, updateSettings } from '@/api/admin';
 import { Page, Segmented, Tabs } from '@/components/admin/ui/Page';
 import { Card } from '@/components/admin/ui/Card';
 import { Callout, Skeleton } from '@/components/admin/ui/Feedback';
@@ -88,8 +88,38 @@ const Mail = ({ settings }: { settings: PanelSettings }) => {
     const { values, set, save } = useSection(settings, 'mail');
     const [password, setPassword] = useState('');
     const test = useAction(sendTestMail, { success: (r) => `Test e-mail sent to ${r.email}` });
+    const driver = useAction((value: 'smtp' | 'log') => updateMailDriver(value), {
+        success: 'Mail delivery updated',
+        invalidate: [
+            ['admin', 'settings'],
+            ['admin', 'system'],
+        ],
+    });
+
+    const switcher = settings.meta.mail_switchable && (
+        <Card title={'Delivery'} icon={MailIcon} description={'Where e-mails sent by the Panel go.'}>
+            <div className={'flex flex-col sm:flex-row sm:items-center gap-3'}>
+                <Segmented
+                    id={'mail-driver'}
+                    value={settings.meta.mail_driver === 'smtp' ? 'smtp' : 'log'}
+                    onChange={(value) => driver.run(value as 'smtp' | 'log')}
+                    options={[
+                        { value: 'smtp', label: 'Send over SMTP' },
+                        { value: 'log', label: 'Off (log only)' },
+                    ]}
+                />
+                <p className={'text-xs text-gray-500'}>
+                    {settings.meta.mail_driver === 'smtp'
+                        ? 'E-mails are delivered through the SMTP server below.'
+                        : 'E-mails are written to storage/logs instead of being sent. Users cannot reset their passwords by e-mail.'}
+                </p>
+            </div>
+        </Card>
+    );
 
     if (!settings.meta.mail_editable) {
+        if (switcher) return switcher;
+
         return (
             <Card title={'Mail'} icon={MailIcon}>
                 <Callout tone={'yellow'} title={`The mail driver is "${settings.meta.mail_driver}"`}>
@@ -110,96 +140,99 @@ const Mail = ({ settings }: { settings: PanelSettings }) => {
     }
 
     return (
-        <Card
-            title={'SMTP'}
-            icon={MailIcon}
-            description={'Used for password resets, invitations and notifications.'}
-            footer={
-                <>
-                    <Button
-                        variant={'secondary'}
-                        icon={PaperAirplaneIcon}
-                        loading={test.loading}
-                        onClick={() => test.run()}
-                    >
-                        Send test e-mail
-                    </Button>
-                    <Button
-                        loading={save.loading}
-                        onClick={() => save.run({ ...values, 'mail:mailers:smtp:password': password || undefined })}
-                    >
-                        Save
-                    </Button>
-                </>
-            }
-        >
-            <div className={'space-y-4'}>
-                <FormGrid cols={3}>
-                    <TextInput
-                        label={'SMTP host'}
-                        required
-                        value={values['mail:mailers:smtp:host'] || ''}
-                        onChange={set('mail:mailers:smtp:host')}
-                        error={save.errors['mail:mailers:smtp:host']}
-                        placeholder={'smtp.example.com'}
-                    />
-                    <NumberInput
-                        label={'Port'}
-                        required
-                        value={values['mail:mailers:smtp:port']}
-                        onChange={set('mail:mailers:smtp:port')}
-                        error={save.errors['mail:mailers:smtp:port']}
-                    />
-                    <Select
-                        label={'Encryption'}
-                        value={values['mail:mailers:smtp:encryption'] || ''}
-                        onChange={(v) => set('mail:mailers:smtp:encryption')(v || null)}
-                        options={[
-                            { value: 'tls', label: 'TLS (STARTTLS, port 587)' },
-                            { value: 'ssl', label: 'SSL (port 465)' },
-                            { value: '', label: 'None' },
-                        ]}
-                    />
-                </FormGrid>
-                <FormGrid>
-                    <TextInput
-                        label={'Username'}
-                        value={values['mail:mailers:smtp:username'] || ''}
-                        onChange={set('mail:mailers:smtp:username')}
-                        error={save.errors['mail:mailers:smtp:username']}
-                        autoComplete={'off'}
-                    />
-                    <TextInput
-                        label={'Password'}
-                        type={'password'}
-                        value={password}
-                        onChange={setPassword}
-                        autoComplete={'new-password'}
-                        placeholder={settings.meta.mail_password_set ? '••••••••' : ''}
-                        description={
-                            settings.meta.mail_password_set
-                                ? 'Stored encrypted. Leave empty to keep it, enter !e to remove it.'
-                                : undefined
-                        }
-                    />
-                    <TextInput
-                        label={'From address'}
-                        required
-                        type={'email'}
-                        value={values['mail:from:address']}
-                        onChange={set('mail:from:address')}
-                        error={save.errors['mail:from:address']}
-                        placeholder={'no-reply@example.com'}
-                    />
-                    <TextInput
-                        label={'From name'}
-                        value={values['mail:from:name'] || ''}
-                        onChange={set('mail:from:name')}
-                        placeholder={'Raptor Panel'}
-                    />
-                </FormGrid>
-            </div>
-        </Card>
+        <div className={'space-y-6'}>
+            {switcher}
+            <Card
+                title={'SMTP'}
+                icon={MailIcon}
+                description={'Used for password resets, invitations and notifications.'}
+                footer={
+                    <>
+                        <Button
+                            variant={'secondary'}
+                            icon={PaperAirplaneIcon}
+                            loading={test.loading}
+                            onClick={() => test.run()}
+                        >
+                            Send test e-mail
+                        </Button>
+                        <Button
+                            loading={save.loading}
+                            onClick={() => save.run({ ...values, 'mail:mailers:smtp:password': password || undefined })}
+                        >
+                            Save
+                        </Button>
+                    </>
+                }
+            >
+                <div className={'space-y-4'}>
+                    <FormGrid cols={3}>
+                        <TextInput
+                            label={'SMTP host'}
+                            required
+                            value={values['mail:mailers:smtp:host'] || ''}
+                            onChange={set('mail:mailers:smtp:host')}
+                            error={save.errors['mail:mailers:smtp:host']}
+                            placeholder={'smtp.example.com'}
+                        />
+                        <NumberInput
+                            label={'Port'}
+                            required
+                            value={values['mail:mailers:smtp:port']}
+                            onChange={set('mail:mailers:smtp:port')}
+                            error={save.errors['mail:mailers:smtp:port']}
+                        />
+                        <Select
+                            label={'Encryption'}
+                            value={values['mail:mailers:smtp:encryption'] || ''}
+                            onChange={(v) => set('mail:mailers:smtp:encryption')(v || null)}
+                            options={[
+                                { value: 'tls', label: 'TLS (STARTTLS, port 587)' },
+                                { value: 'ssl', label: 'SSL (port 465)' },
+                                { value: '', label: 'None' },
+                            ]}
+                        />
+                    </FormGrid>
+                    <FormGrid>
+                        <TextInput
+                            label={'Username'}
+                            value={values['mail:mailers:smtp:username'] || ''}
+                            onChange={set('mail:mailers:smtp:username')}
+                            error={save.errors['mail:mailers:smtp:username']}
+                            autoComplete={'off'}
+                        />
+                        <TextInput
+                            label={'Password'}
+                            type={'password'}
+                            value={password}
+                            onChange={setPassword}
+                            autoComplete={'new-password'}
+                            placeholder={settings.meta.mail_password_set ? '••••••••' : ''}
+                            description={
+                                settings.meta.mail_password_set
+                                    ? 'Stored encrypted. Leave empty to keep it, enter !e to remove it.'
+                                    : undefined
+                            }
+                        />
+                        <TextInput
+                            label={'From address'}
+                            required
+                            type={'email'}
+                            value={values['mail:from:address']}
+                            onChange={set('mail:from:address')}
+                            error={save.errors['mail:from:address']}
+                            placeholder={'no-reply@example.com'}
+                        />
+                        <TextInput
+                            label={'From name'}
+                            value={values['mail:from:name'] || ''}
+                            onChange={set('mail:from:name')}
+                            placeholder={'Raptor Panel'}
+                        />
+                    </FormGrid>
+                </div>
+            </Card>
+        </div>
     );
 };
 

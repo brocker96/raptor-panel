@@ -54,6 +54,8 @@ class SettingsServiceProvider extends ServiceProvider
      * Keys that are encrypted and should be decrypted when set in the
      * configuration array.
      */
+    public const SWITCHABLE_MAIL_DRIVERS = ['smtp', 'log'];
+
     protected static array $encrypted = [
         'mail:mailers:smtp:password',
     ];
@@ -63,12 +65,6 @@ class SettingsServiceProvider extends ServiceProvider
      */
     public function boot(ConfigRepository $config, Encrypter $encrypter, Log $log, SettingsRepositoryInterface $settings): void
     {
-        // Only set the email driver settings from the database if we
-        // are configured using SMTP as the driver.
-        if ($config->get('mail.default') === 'smtp') {
-            $this->keys = array_merge($this->keys, $this->emailKeys);
-        }
-
         try {
             $values = $settings->all()->mapWithKeys(function ($setting) {
                 return [$setting->key => $setting->value];
@@ -77,6 +73,19 @@ class SettingsServiceProvider extends ServiceProvider
             $log->notice('A query exception was encountered while trying to load settings from the database: ' . $exception->getMessage());
 
             return;
+        }
+
+        // The admin area can switch between SMTP and "log only" delivery, other drivers (mailgun,
+        // ses, ...) are configured in the environment file and are never overridden.
+        $driver = array_get($values, 'settings::mail:default');
+        if (in_array($driver, self::SWITCHABLE_MAIL_DRIVERS, true) && in_array($config->get('mail.default'), self::SWITCHABLE_MAIL_DRIVERS, true)) {
+            $config->set('mail.default', $driver);
+        }
+
+        // Only set the email driver settings from the database if we
+        // are configured using SMTP as the driver.
+        if ($config->get('mail.default') === 'smtp') {
+            $this->keys = array_merge($this->keys, $this->emailKeys);
         }
 
         foreach ($this->keys as $key) {

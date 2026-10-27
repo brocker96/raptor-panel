@@ -1,3 +1,5 @@
+import { useStoreState } from '@/state/hooks';
+import { Link } from 'react-router-dom';
 import { store } from '@/state';
 import React, { useEffect, useRef, useState } from 'react';
 import { Websocket } from '@/plugins/Websocket';
@@ -14,10 +16,32 @@ const reconnectErrors = ['jwt: exp claim is invalid', 'jwt: created too far in p
 // we stop requesting new tokens, otherwise a misconfigured node would cause an endless loop.
 const MAX_JWT_FAILURES = 3;
 
+/**
+ * Turns repeated connection failures into an actionable message. The first few failures are
+ * usually a restarting node or a flaky network, so only keep the spinner for those.
+ */
+const diagnose = (url: string, failures: number): string => {
+    if (failures < 3 || !url) return 'connecting';
+
+    let host = url;
+    try {
+        const parsed = new URL(url);
+        host = parsed.host;
+    } catch {
+        // Keep the raw value.
+    }
+
+    return `Can't reach the node at ${host}. Wings may be offline, the port may be blocked by a firewall or proxy (Cloudflare only proxies HTTPS on 443/8443 and a few other ports), or its SSL certificate is invalid. Still retrying…`;
+};
+
 export default () => {
     // Kept in a ref, a plain variable would be reset on every render and allow duplicate token requests.
     const updatingToken = useRef(false);
     const jwtFailures = useRef(0);
+    const socketErrors = useRef(0);
+    const socketUrl = useRef('');
+    const rootAdmin = useStoreState((state) => state.user.data?.rootAdmin);
+    const serverId = ServerContext.useStoreState((state) => state.server.data?.internalId);
     const [error, setError] = useState<'connecting' | string>('');
     const { connected, instance } = ServerContext.useStoreState((state) => state.socket);
     const uuid = ServerContext.useStoreState((state) => state.server.data?.uuid);
@@ -45,6 +69,7 @@ export default () => {
 
         socket.on('auth success', () => {
             jwtFailures.current = 0;
+            socketErrors.current = 0;
             setConnectionState(true);
         });
         socket.on('SOCKET_CLOSE', () => setConnectionState(false));
@@ -52,8 +77,9 @@ export default () => {
             setError('Failed to connect to websocket instance after multiple attempts: try refreshing the page.');
         });
         socket.on('SOCKET_ERROR', () => {
-            setError('connecting');
             setConnectionState(false);
+            socketErrors.current++;
+            setError(diagnose(socketUrl.current, socketErrors.current));
         });
         socket.on('status', (status) => setServerStatus(status));
 
@@ -95,6 +121,12 @@ export default () => {
         getWebsocketToken(uuid)
             .then((data) => {
                 // Connect and then set the authentication token.
+                socketUrl.current = data.socket;
+                if (window.location.protocol === 'https:' && data.socket.startsWith('ws://')) {
+                    setError(
+                        'The Panel uses HTTPS but this node does not, browsers block the insecure connection. Enable SSL for the node.'
+                    );
+                }
                 socket.setToken(data.token).connect(data.socket);
 
                 // Once that is done, set the instance.
@@ -135,7 +167,14 @@ export default () => {
                             </p>
                         </>
                     ) : (
-                        <p css={tw`ml-2 text-sm text-white`}>{error}</p>
+                        <p css={tw`ml-2 text-sm text-white text-center`}>
+                            {error}
+                            {rootAdmin && serverId && (
+                                <Link to={`/admin/servers/${serverId}`} css={tw`ml-2 underline font-medium text-white`}>
+                                    Open in admin
+                                </Link>
+                            )}
+                        </p>
                     )}
                 </ContentContainer>
             </div>

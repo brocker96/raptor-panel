@@ -41,6 +41,7 @@ class AdminApiTest extends IntegrationTestCase
     private function cleanup(): void
     {
         \Raptor\Models\Setting::query()->where('key', 'like', 'settings::raptor:cloudflare:%')->delete();
+        \Raptor\Models\Setting::query()->where('key', 'settings::mail:default')->delete();
         ActivityLog::query()->delete();
         ApiKey::query()->delete();
         Mount::query()->delete();
@@ -290,5 +291,38 @@ class AdminApiTest extends IntegrationTestCase
             'www.cloudflare.com/ips-v6' => Http::response(implode("\n", array_slice(Cloudflare::DEFAULT_RANGES, 15))),
         ]);
         $this->actingAs($this->admin)->postJson('/api/admin/settings/cloudflare/ranges')->assertOk()->assertJsonCount(count(Cloudflare::DEFAULT_RANGES), 'list');
+    }
+
+    public function testMailDriverCanBeSwitchedBetweenSmtpAndLog(): void
+    {
+        config()->set('mail.default', 'smtp');
+
+        $this->actingAs($this->admin)->putJson('/api/admin/settings/mail/driver', ['driver' => 'log'])->assertNoContent();
+        $this->assertDatabaseHas('settings', ['key' => 'settings::mail:default', 'value' => 'log']);
+        $this->actingAs($this->admin)->putJson('/api/admin/settings/mail/driver', ['driver' => 'mailgun'])->assertUnprocessable();
+
+        config()->set('mail.default', 'mailgun');
+        $this->actingAs($this->admin)->putJson('/api/admin/settings/mail/driver', ['driver' => 'smtp'])->assertStatus(400);
+
+        config()->set('mail.default', 'smtp');
+        config()->set('mail.mailers.smtp.host', 'smtp.example.com');
+        $checks = collect($this->actingAs($this->admin)->getJson('/api/admin/system')->json('checks'))->keyBy('key');
+        $this->assertFalse($checks['mail']['ok']);
+    }
+
+    public function testFailedJobTimestampsIncludeThePanelTimezone(): void
+    {
+        config()->set('app.timezone', 'Europe/Moscow');
+        \Illuminate\Support\Facades\DB::table('failed_jobs')->insert([
+            'uuid' => 'b9b3d4f2-0000-4000-8000-000000000000', 'connection' => 'redis', 'queue' => 'standard',
+            'payload' => '{"displayName":"Raptor\\\\Notifications\\\\AccountCreated"}', 'exception' => "Boom\nTrace", 'failed_at' => '2026-10-27 12:00:00',
+        ]);
+
+        $this->actingAs($this->admin)->getJson('/api/admin/system/failed-jobs')
+            ->assertOk()
+            ->assertJsonPath('data.0.failed_at', '2026-10-27T12:00:00+03:00')
+            ->assertJsonPath('data.0.job', 'AccountCreated');
+
+        \Illuminate\Support\Facades\DB::table('failed_jobs')->delete();
     }
 }

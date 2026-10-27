@@ -300,6 +300,9 @@ set_env SESSION_DRIVER redis
 set_env QUEUE_CONNECTION redis
 set_env HASHIDS_SALT "$(random 20)"
 set_env MAIL_FROM_ADDRESS "no-reply@$RAPTOR_FQDN"
+# No mail server is known yet: write e-mails to the log instead of failing every notification.
+# SMTP can be configured (and switched on) later in the admin area, Settings → Mail.
+set_env MAIL_MAILER log
 set_env MAIL_EHLO_DOMAIN "$RAPTOR_FQDN"
 set_env RECAPTCHA_ENABLED false
 
