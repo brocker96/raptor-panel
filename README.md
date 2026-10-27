@@ -14,6 +14,28 @@
 
 ---
 
+## 🚀 Quick install
+
+One command on a **clean Ubuntu 24.04 LTS** server (run as root):
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/xvmandz/raptor-panel/0.x_beta/install.sh)
+```
+
+The installer asks a few questions (domain, email, admin password, whether to install Wings) and then sets up
+PHP 8.3, MariaDB, Redis, nginx, the queue worker, cron, a Let's Encrypt certificate and — optionally — Docker +
+Wings on the same machine, registered as the first node with ready-to-use allocations. Budget VPS with < 2 GB RAM
+get a swap file automatically for the front-end build. Credentials end up in `/root/raptor-credentials.txt`.
+
+Fully unattended:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/xvmandz/raptor-panel/0.x_beta/install.sh -o install.sh
+RAPTOR_FQDN=panel.example.com RAPTOR_EMAIL=me@example.com RAPTOR_WINGS=yes RAPTOR_YES=1 bash install.sh
+```
+
+All options are documented at the top of [`install.sh`](install.sh).
+
 ## ⚡ Raptor vs. upstream — measured, not promised
 
 | | Pterodactyl 1.x | Raptor Panel |
