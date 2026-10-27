@@ -24,7 +24,7 @@ jobs:
         id: docker_meta
         uses: docker/metadata-action@v5
         with:
-          images: ghcr.io/xvmandz/raptor-panel
+          images: ghcr.io/brocker96/raptor-panel
           flavor: |
             latest=false
           tags: |

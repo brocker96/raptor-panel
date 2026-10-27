@@ -2,7 +2,7 @@
 #
 # Raptor Panel installer for a clean Ubuntu 24.04 LTS server.
 #
-#   bash <(curl -fsSL https://raw.githubusercontent.com/xvmandz/raptor-panel/0.x_beta/install.sh)
+#   bash <(curl -fsSL https://raw.githubusercontent.com/brocker96/raptor-panel/0.x_beta/install.sh)
 #
 # Installs and configures everything the Panel needs: PHP 8.3, MariaDB, Redis, nginx, Composer,
 # Node.js (only when building from source), the queue worker, the scheduler cron job and an
@@ -34,7 +34,7 @@
 
 set -Eeuo pipefail
 
-REPO="xvmandz/raptor-panel"
+REPO="brocker96/raptor-panel"
 BRANCH="${RAPTOR_BRANCH:-0.x_beta}"
 RELEASE="${RAPTOR_RELEASE:-}"
 DIR="${RAPTOR_DIR:-/var/www/raptor}"

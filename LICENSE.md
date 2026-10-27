@@ -2,7 +2,7 @@
 
 ```
 Raptor Panel
-Copyright © xvmandz and contributors
+Copyright © brocker96 and contributors
 
 Based on Pterodactyl®
 Copyright © Dane Everitt <dane@daneeveritt.com> and contributors

@@ -22,7 +22,7 @@
                 <h3 class="box-title">System Information</h3>
             </div>
             <div class="box-body">
-                You are running Raptor Panel version <code>{{ config('app.version') }}</code>. Releases and upgrade notes are published on <a href="https://github.com/xvmandz/raptor-panel/releases" target="_blank">GitHub</a>.
+                You are running Raptor Panel version <code>{{ config('app.version') }}</code>. Releases and upgrade notes are published on <a href="https://github.com/brocker96/raptor-panel/releases" target="_blank">GitHub</a>.
             </div>
         </div>
     </div>
@@ -32,7 +32,7 @@
         <a href="{{ $version->getDiscord() }}"><button class="btn btn-warning" style="width:100%;"><i class="fa fa-fw fa-support"></i> Get Help <small>(via GitHub)</small></button></a>
     </div>
     <div class="col-xs-6 col-sm-3 text-center">
-        <a href="https://github.com/xvmandz/raptor-panel"><button class="btn btn-primary" style="width:100%;"><i class="fa fa-fw fa-link"></i> Documentation</button></a>
+        <a href="https://github.com/brocker96/raptor-panel"><button class="btn btn-primary" style="width:100%;"><i class="fa fa-fw fa-link"></i> Documentation</button></a>
     </div>
     <div class="clearfix visible-xs-block">&nbsp;</div>
     <div class="col-xs-6 col-sm-3 text-center">

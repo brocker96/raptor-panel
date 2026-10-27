@@ -33,7 +33,7 @@ const PageContentBlock: React.FC<React.PropsWithChildren<PageContentBlockProps>>
             <footer className={'mt-12 mb-2 text-center text-xs text-gray-600'}>
                 <a
                     rel={'noopener nofollow noreferrer'}
-                    href={'https://github.com/xvmandz/raptor-panel'}
+                    href={'https://github.com/brocker96/raptor-panel'}
                     target={'_blank'}
                     className={'text-gray-500 hover:text-gray-300'}
                 >

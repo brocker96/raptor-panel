@@ -154,7 +154,7 @@ class OverviewController extends AdminApiController
                 'free' => rescue(fn () => (int) disk_free_space(base_path()), 0, false),
                 'total' => rescue(fn () => (int) disk_total_space(base_path()), 0, false),
             ],
-            'releases_url' => 'https://github.com/xvmandz/raptor-panel/releases',
+            'releases_url' => 'https://github.com/brocker96/raptor-panel/releases',
         ]);
     }
 

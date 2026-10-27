@@ -46,7 +46,7 @@ class SoftwareVersionService
      */
     public function getDiscord(): string
     {
-        return 'https://github.com/xvmandz/raptor-panel/discussions';
+        return 'https://github.com/brocker96/raptor-panel/discussions';
     }
 
     /**

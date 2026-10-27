@@ -158,7 +158,7 @@
                     <strong><i class="fa fa-fw {{ $appIsGit ? 'fa-git-square' : 'fa-code-fork' }}"></i></strong> {{ $appVersion }}<br />
                     <strong><i class="fa fa-fw fa-clock-o"></i></strong> {{ round(microtime(true) - LARAVEL_START, 3) }}s
                 </div>
-                &copy; {{ date('Y') }} <a href="https://github.com/xvmandz/raptor-panel">Raptor Panel</a>, based on <a href="https://pterodactyl.io/">Pterodactyl&reg;</a>.
+                &copy; {{ date('Y') }} <a href="https://github.com/brocker96/raptor-panel">Raptor Panel</a>, based on <a href="https://pterodactyl.io/">Pterodactyl&reg;</a>.
             </footer>
         </div>
         @section('footer-scripts')

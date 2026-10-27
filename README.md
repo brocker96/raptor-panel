@@ -4,9 +4,9 @@
 
 **Modern game server management. Built for performance.**
 
-[![License](https://img.shields.io/github/license/xvmandz/raptor-panel?style=for-the-badge&color=52d321)](./LICENSE.md)
-[![GitHub Stars](https://img.shields.io/github/stars/xvmandz/raptor-panel?style=for-the-badge&logo=github&color=52d321)](https://github.com/xvmandz/raptor-panel/stargazers)
-[![GitHub Issues](https://img.shields.io/github/issues/xvmandz/raptor-panel?style=for-the-badge&color=52d321)](https://github.com/xvmandz/raptor-panel/issues)
+[![License](https://img.shields.io/github/license/brocker96/raptor-panel?style=for-the-badge&color=52d321)](./LICENSE.md)
+[![GitHub Stars](https://img.shields.io/github/stars/brocker96/raptor-panel?style=for-the-badge&logo=github&color=52d321)](https://github.com/brocker96/raptor-panel/stargazers)
+[![GitHub Issues](https://img.shields.io/github/issues/brocker96/raptor-panel?style=for-the-badge&color=52d321)](https://github.com/brocker96/raptor-panel/issues)
 
 <img src=".github/screenshots/desktop-03-console.png" alt="Raptor Panel console" width="900">
 
@@ -19,7 +19,7 @@
 One command on a **clean Ubuntu 24.04 LTS** server (run as root):
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/xvmandz/raptor-panel/0.x_beta/install.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/brocker96/raptor-panel/0.x_beta/install.sh)
 ```
 
 The installer asks a few questions (domain, email, admin password, whether to install Wings) and then sets up
@@ -30,7 +30,7 @@ get a swap file automatically for the front-end build. Credentials end up in `/r
 Fully unattended:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/xvmandz/raptor-panel/0.x_beta/install.sh -o install.sh
+curl -fsSL https://raw.githubusercontent.com/brocker96/raptor-panel/0.x_beta/install.sh -o install.sh
 RAPTOR_FQDN=panel.example.com RAPTOR_EMAIL=me@example.com RAPTOR_WINGS=yes RAPTOR_YES=1 bash install.sh
 ```
 
@@ -260,7 +260,7 @@ Please open an issue before starting major architectural changes to discuss the 
 
 Have an idea for Raptor Panel?
 
-Feel free to [open an issue](https://github.com/xvmandz/raptor-panel/issues) to share your feedback, report a problem, or suggest a new feature.
+Feel free to [open an issue](https://github.com/brocker96/raptor-panel/issues) to share your feedback, report a problem, or suggest a new feature.
 
 Community feedback is valuable in shaping the future of the project.
 
@@ -303,6 +303,6 @@ Original copyright notices and applicable license terms are retained in accordan
 
 Built on Pterodactyl. Driven by open source.
 
-[GitHub](https://github.com/xvmandz/raptor-panel) · [Report a Bug](https://github.com/xvmandz/raptor-panel/issues) · [Contribute](https://github.com/xvmandz/raptor-panel/pulls)
+[GitHub](https://github.com/brocker96/raptor-panel) · [Report a Bug](https://github.com/brocker96/raptor-panel/issues) · [Contribute](https://github.com/brocker96/raptor-panel/pulls)
 
 </div>
