@@ -10,16 +10,19 @@ interface Props {
 }
 
 export const DropdownButtonRow = styled.button<{ danger?: boolean }>`
-    ${tw`p-3 sm:p-2 flex items-center rounded w-full text-neutral-500`};
-    transition: 150ms all ease;
+    ${tw`px-3 py-3 sm:py-2 flex items-center rounded-md w-full text-sm text-gray-300`};
+    transition: 120ms background-color ease, color 120ms ease;
 
     &:hover {
-        ${(props) => (props.danger ? tw`text-red-700 bg-red-100` : tw`text-neutral-700 bg-neutral-100`)};
+        ${(props) => (props.danger ? tw`text-rose-300 bg-rose-500/10` : tw`text-white bg-white/5`)};
     }
 `;
 
 interface State {
     posX: number;
+    /** Bottom and top edge of the toggle that opened the menu, in viewport coordinates. */
+    anchorTop: number;
+    anchorBottom: number;
     visible: boolean;
     // On small screens the menu is rendered as a bottom sheet instead of a floating menu.
     sheet: boolean;
@@ -32,6 +35,8 @@ class DropdownMenu extends React.PureComponent<Props, State> {
 
     state: State = {
         posX: 0,
+        anchorTop: 0,
+        anchorBottom: 0,
         visible: false,
         sheet: false,
     };
@@ -52,11 +57,20 @@ class DropdownMenu extends React.PureComponent<Props, State> {
             this.listenerTimeout = setTimeout(() => {
                 document.addEventListener('click', this.windowListener);
                 document.addEventListener('contextmenu', this.contextMenuListener);
+                window.addEventListener('scroll', this.closeOnViewportChange, true);
+                window.addEventListener('resize', this.closeOnViewportChange);
             }, 0);
 
             if (!this.state.sheet) {
-                // Keep the menu within the viewport when it is opened close to the left edge.
-                menu.style.left = `${Math.max(8, Math.round(this.state.posX - menu.clientWidth))}px`;
+                // The menu is rendered in a portal with fixed positioning, so that it is never
+                // clipped or offset by the (transformed, overflow hidden) row it was opened from.
+                // Keep it inside the viewport and open it upwards when there is no room below.
+                const left = Math.round(this.state.posX - menu.offsetWidth);
+                menu.style.left = `${Math.max(8, Math.min(left, window.innerWidth - menu.offsetWidth - 8))}px`;
+
+                const below = this.state.anchorBottom + 4;
+                const fitsBelow = below + menu.offsetHeight <= window.innerHeight - 8;
+                menu.style.top = `${fitsBelow ? below : Math.max(8, this.state.anchorTop - menu.offsetHeight - 4)}px`;
             }
         }
 
@@ -69,12 +83,24 @@ class DropdownMenu extends React.PureComponent<Props, State> {
         clearTimeout(this.listenerTimeout);
         document.removeEventListener('click', this.windowListener);
         document.removeEventListener('contextmenu', this.contextMenuListener);
+        window.removeEventListener('scroll', this.closeOnViewportChange, true);
+        window.removeEventListener('resize', this.closeOnViewportChange);
     };
 
     onClickHandler = (e: React.MouseEvent<any, MouseEvent>) => {
         e.preventDefault();
-        this.triggerMenu(e.clientX);
+
+        const rect = (e.currentTarget as HTMLElement | null)?.getBoundingClientRect?.();
+        // Context menus open at the cursor, buttons below the button that was clicked.
+        const fromButton = e.type === 'click' && rect && rect.width > 0;
+        this.triggerMenu(fromButton ? rect.right : e.clientX, {
+            top: fromButton ? rect.top : e.clientY,
+            bottom: fromButton ? rect.bottom : e.clientY,
+        });
     };
+
+    // Close the floating menu when the page scrolls or resizes, its fixed position would be stale.
+    closeOnViewportChange = () => this.state.visible && !this.state.sheet && this.setState({ visible: false });
 
     contextMenuListener = () => this.setState({ visible: false });
 
@@ -94,9 +120,11 @@ class DropdownMenu extends React.PureComponent<Props, State> {
         }
     };
 
-    triggerMenu = (posX: number) =>
+    triggerMenu = (posX: number, anchor?: { top: number; bottom: number }) =>
         this.setState((s) => ({
             posX: !s.visible ? posX : s.posX,
+            anchorTop: !s.visible ? anchor?.top ?? 0 : s.anchorTop,
+            anchorBottom: !s.visible ? anchor?.bottom ?? 0 : s.anchorBottom,
             visible: !s.visible,
             sheet: !s.visible ? isSmallScreen() : s.sheet,
         }));
@@ -115,7 +143,7 @@ class DropdownMenu extends React.PureComponent<Props, State> {
                                         e.stopPropagation();
                                         this.setState({ visible: false });
                                     }}
-                                    css={tw`w-full m-2 bg-white p-2 rounded-lg shadow-lg text-neutral-500`}
+                                    css={tw`w-full m-2 bg-gray-900 p-2 rounded-xl ring-1 ring-gray-700 shadow-2xl text-gray-300`}
                                     style={{ marginBottom: 'max(0.5rem, env(safe-area-inset-bottom))' }}
                                 >
                                     {this.props.children}
@@ -130,19 +158,21 @@ class DropdownMenu extends React.PureComponent<Props, State> {
         return (
             <div>
                 {this.props.renderToggle(this.onClickHandler)}
-                <Fade timeout={150} in={this.state.visible} unmountOnExit>
-                    <div
-                        ref={this.menu}
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            this.setState({ visible: false });
-                        }}
-                        style={{ width: '12rem' }}
-                        css={tw`absolute bg-white p-2 rounded border border-neutral-700 shadow-lg text-neutral-500 z-50`}
-                    >
-                        {this.props.children}
-                    </div>
-                </Fade>
+                <Portal>
+                    <Fade timeout={150} in={this.state.visible} unmountOnExit>
+                        <div
+                            ref={this.menu}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                this.setState({ visible: false });
+                            }}
+                            style={{ width: '12rem', top: -9999, left: -9999 }}
+                            css={tw`fixed bg-gray-900 p-1.5 rounded-lg ring-1 ring-gray-700 shadow-2xl text-gray-300 z-50`}
+                        >
+                            {this.props.children}
+                        </div>
+                    </Fade>
+                </Portal>
             </div>
         );
     }
