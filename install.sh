@@ -522,6 +522,10 @@ if yes_no "$RAPTOR_WINGS"; then
     php artisan p:node:configuration "$NODE_ID" --format=yaml >/etc/pterodactyl/config.yml
     # Talk to the Panel over the loopback listener instead of the public URL.
     sed -i -E "s|^remote: .*|remote: 'http://127.0.0.1:8090'|" /etc/pterodactyl/config.yml
+    # Wings only accepts browser requests from its "remote", which is now the loopback address, so the
+    # public Panel URL has to be allowed explicitly or the console and file manager are blocked (CORS).
+    sed -i -E "s|^allowed_origins: .*|allowed_origins: ['$SCHEME://$RAPTOR_FQDN']|" /etc/pterodactyl/config.yml
+    grep -q '^allowed_origins:' /etc/pterodactyl/config.yml || echo "allowed_origins: ['$SCHEME://$RAPTOR_FQDN']" >>/etc/pterodactyl/config.yml
     # A single certificate covers both domains, it is stored under the Panel domain.
     sed -i "s|/etc/letsencrypt/live/$RAPTOR_NODE_FQDN/|/etc/letsencrypt/live/$RAPTOR_FQDN/|g" /etc/pterodactyl/config.yml
     chmod 600 /etc/pterodactyl/config.yml
