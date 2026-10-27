@@ -5,6 +5,7 @@ import { ServerContext } from '@/state/server';
 import { PowerAction } from '@/components/server/console/ServerConsoleContainer';
 import { Dialog } from '@/components/elements/dialog';
 import { PlayIcon, RefreshIcon, StopIcon } from '@heroicons/react/solid';
+import { t } from '@/i18n';
 
 interface PowerButtonProps {
     className?: string;
@@ -43,11 +44,11 @@ export default ({ className }: PowerButtonProps) => {
                 open={open}
                 hideCloseIcon
                 onClose={() => setOpen(false)}
-                title={'Forcibly Stop Process'}
-                confirm={'Continue'}
+                title={t('Forcibly Stop Process')}
+                confirm={t('Continue')}
                 onConfirmed={onButtonClick.bind(this, 'kill-confirmed')}
             >
-                Forcibly stopping a server can lead to data corruption.
+                {t('Forcibly stopping a server can lead to data corruption.')}
             </Dialog.Confirm>
             <Can action={'control.start'}>
                 <Button
@@ -56,13 +57,13 @@ export default ({ className }: PowerButtonProps) => {
                     onClick={onButtonClick.bind(this, 'start')}
                 >
                     <PlayIcon />
-                    Start
+                    {t('Start')}
                 </Button>
             </Can>
             <Can action={'control.restart'}>
                 <Button.Text className={'flex-1'} disabled={!status} onClick={onButtonClick.bind(this, 'restart')}>
                     <RefreshIcon />
-                    Restart
+                    {t('Restart')}
                 </Button.Text>
             </Can>
             <Can action={'control.stop'}>
@@ -72,7 +73,7 @@ export default ({ className }: PowerButtonProps) => {
                     onClick={onButtonClick.bind(this, killable ? 'kill' : 'stop')}
                 >
                     <StopIcon />
-                    {killable ? 'Kill' : 'Stop'}
+                    {killable ? t('Kill') : t('Stop')}
                 </Button.Danger>
             </Can>
         </div>

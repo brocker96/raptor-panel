@@ -106,7 +106,7 @@ class CloudflareController extends AdminApiController
         $issues = [];
 
         if (count($addresses) === 0) {
-            $issues[] = ['level' => 'error', 'message' => "{$node->fqdn} does not resolve to any address."];
+            $issues[] = ['level' => 'error', 'message' => __(':fqdn does not resolve to any address.', ['fqdn' => $node->fqdn])];
         }
 
         if ($proxied) {
@@ -114,27 +114,26 @@ class CloudflareController extends AdminApiController
             if (!in_array($port, $supported)) {
                 $issues[] = [
                     'level' => 'error',
-                    'message' => sprintf(
-                        'Cloudflare does not proxy %s on port %d. Use one of %s or set the record to "DNS only".',
-                        strtoupper($node->scheme),
-                        $port,
-                        implode(', ', $supported),
-                    ),
+                    'message' => __('Cloudflare does not proxy :scheme on port :port. Use one of :ports or set the record to "DNS only".', [
+                        'scheme' => strtoupper($node->scheme),
+                        'port' => $port,
+                        'ports' => implode(', ', $supported),
+                    ]),
                 ];
             }
 
             $issues[] = [
                 'level' => 'warning',
-                'message' => "SFTP (port {$node->daemonSFTP}) and game ports cannot pass through Cloudflare's proxy. Give players and SFTP users a \"DNS only\" hostname or the IP address.",
+                'message' => __('SFTP (port :port) and game ports cannot pass through Cloudflare\'s proxy. Give players and SFTP users a "DNS only" hostname or the IP address.', ['port' => $node->daemonSFTP]),
             ];
 
             if ($node->upload_size > 100) {
-                $issues[] = ['level' => 'warning', 'message' => "Upload size is {$node->upload_size} MiB, Cloudflare's free plan rejects requests above 100 MB."];
+                $issues[] = ['level' => 'warning', 'message' => __('Upload size is :size MiB, Cloudflare\'s free plan rejects requests above 100 MB.', ['size' => $node->upload_size])];
             }
         }
 
         if (str_starts_with(config('app.url'), 'https://') && $node->scheme !== 'https') {
-            $issues[] = ['level' => 'error', 'message' => 'The Panel uses HTTPS but this node does not, browsers will refuse to open the console websocket.'];
+            $issues[] = ['level' => 'error', 'message' => __('The Panel uses HTTPS but this node does not, browsers will refuse to open the console websocket.')];
         }
 
         return [

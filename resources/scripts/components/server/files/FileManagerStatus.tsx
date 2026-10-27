@@ -6,6 +6,7 @@ import { Dialog, DialogWrapperContext } from '@/components/elements/dialog';
 import { Button } from '@/components/elements/button/index';
 import Tooltip from '@/components/elements/tooltip/Tooltip';
 import Code from '@/components/elements/Code';
+import { t } from '@/i18n';
 
 const svgProps = {
     cx: 16,
@@ -57,17 +58,17 @@ const FileUploadList = () => {
             ))}
             <Dialog.Footer>
                 <Button.Danger variant={Button.Variants.Secondary} onClick={() => clearFileUploads()}>
-                    Cancel Uploads
+                    {t('Cancel Uploads')}
                 </Button.Danger>
-                <Button.Text onClick={close}>Close</Button.Text>
+                <Button.Text onClick={close}>{t('Close')}</Button.Text>
             </Dialog.Footer>
         </div>
     );
 };
 
 const FileUploadListDialog = asDialog({
-    title: 'File Uploads',
-    description: 'The following files are being uploaded to your server.',
+    title: t('File Uploads'),
+    description: t('The following files are being uploaded to your server.'),
 })(FileUploadList);
 
 export default () => {
@@ -90,7 +91,7 @@ export default () => {
     return (
         <>
             {count > 0 && (
-                <Tooltip content={`${count} files are uploading, click to view`}>
+                <Tooltip content={t('{{count}} files are uploading, click to view', { count: count })}>
                     <button className={'flex items-center justify-center w-10 h-10'} onClick={() => setOpen(true)}>
                         <Spinner progress={total > 0 ? (uploaded / total) * 100 : 0} className={'w-8 h-8'} />
                         <CloudUploadIcon className={'h-3 absolute mx-auto animate-pulse'} />

@@ -29,6 +29,7 @@ import { Pagination } from '@/components/admin/ui/DataTable';
 import { item } from '@/components/admin/ui/motion';
 import { toast } from '@/components/admin/ui/Toast';
 import { ago, formatBytes, useAction, useListParams } from '@/components/admin/ui/hooks';
+import { t } from '@/i18n';
 
 export default () => {
     const { data } = useResource(['admin', 'system'], getSystem);
@@ -42,25 +43,25 @@ export default () => {
     const [flushing, setFlushing] = useState(false);
 
     const cache = useAction(clearCache, {
-        success: 'Configuration, route and view caches cleared',
+        success: t('Configuration, route and view caches cleared'),
         invalidate: [['admin', 'system']],
     });
     const retry = useAction(retryFailedJob, {
-        success: 'Job pushed back onto the queue',
+        success: t('Job pushed back onto the queue'),
         invalidate: [
             ['admin', 'failed-jobs'],
             ['admin', 'system'],
         ],
     });
     const forget = useAction(forgetFailedJob, {
-        success: 'Failed job removed',
+        success: t('Failed job removed'),
         invalidate: [
             ['admin', 'failed-jobs'],
             ['admin', 'system'],
         ],
     });
     const flush = useAction(flushFailedJobs, {
-        success: 'All failed jobs removed',
+        success: t('All failed jobs removed'),
         invalidate: [
             ['admin', 'failed-jobs'],
             ['admin', 'system'],
@@ -89,9 +90,9 @@ export default () => {
 
     return (
         <Page
-            title={'System'}
+            title={t('System')}
             icon={TemplateIcon}
-            description={'Health of the Panel installation, background jobs and caches.'}
+            description={t('Health of the Panel installation, background jobs and caches.')}
             guide={'system'}
             actions={
                 <>
@@ -101,10 +102,10 @@ export default () => {
                         disabled={!data}
                         onClick={() => {
                             copy(report);
-                            toast.success('System report copied', 'Paste it when asking for help.');
+                            toast.success(t('System report copied'), t('Paste it when asking for help.'));
                         }}
                     >
-                        Copy report
+                        {t('Copy report')}
                     </Button>
                     <Button
                         variant={'secondary'}
@@ -112,7 +113,7 @@ export default () => {
                         loading={cache.loading}
                         onClick={() => cache.run()}
                     >
-                        Clear caches
+                        {t('Clear caches')}
                     </Button>
                 </>
             }
@@ -123,8 +124,11 @@ export default () => {
                 <>
                     <div className={'grid gap-6 lg:grid-cols-3'}>
                         <Card
-                            title={'Health checks'}
-                            description={`${passed} of ${data.checks.length} checks passed`}
+                            title={t('Health checks')}
+                            description={t('{{passed}} of {{count}} checks passed', {
+                                passed: passed,
+                                count: data.checks.length,
+                            })}
                             className={'lg:col-span-2'}
                             actions={
                                 <Badge tone={passed === data.checks.length ? 'green' : 'yellow'}>
@@ -164,13 +168,13 @@ export default () => {
                             </ul>
                         </Card>
                         <div className={'space-y-6'}>
-                            <Card title={'Panel'}>
+                            <Card title={t('Panel')}>
                                 <Details
                                     items={[
-                                        ['Version', data.panel.version],
-                                        ['Environment', data.panel.environment],
-                                        ['URL', data.panel.url],
-                                        ['Timezone', data.panel.timezone],
+                                        [t('Version'), data.panel.version],
+                                        [t('Environment'), data.panel.environment],
+                                        [t('URL'), data.panel.url],
+                                        [t('Timezone'), data.panel.timezone],
                                     ]}
                                 />
                                 <a
@@ -179,14 +183,14 @@ export default () => {
                                     rel={'noreferrer'}
                                     className={'mt-4 inline-block text-xs text-raptor-300 hover:text-raptor-200'}
                                 >
-                                    Release notes on GitHub →
+                                    {t('Release notes on GitHub →')}
                                 </a>
                             </Card>
-                            <Card title={'Disk'} description={'Free space on the Panel partition'}>
+                            <Card title={t('Disk')} description={t('Free space on the Panel partition')}>
                                 <p className={'text-lg font-semibold text-gray-50'}>
                                     {formatBytes(data.disk.free)}{' '}
                                     <span className={'text-xs font-normal text-gray-500'}>
-                                        free of {formatBytes(data.disk.total)}
+                                        {t('free of {{formatBytes}}', { formatBytes: formatBytes(data.disk.total) })}
                                     </span>
                                 </p>
                                 <Meter
@@ -198,16 +202,16 @@ export default () => {
                         </div>
                     </div>
                     <div className={'grid gap-6 lg:grid-cols-2'}>
-                        <Card title={'Software'}>
+                        <Card title={t('Software')}>
                             <Details
                                 items={[
-                                    ['PHP', data.software.php],
-                                    ['Laravel', data.software.laravel],
-                                    ['Database', data.software.database],
-                                    ['Operating system', data.software.os],
+                                    [t('PHP'), data.software.php],
+                                    [t('Laravel'), data.software.laravel],
+                                    [t('Database'), data.software.database],
+                                    [t('Operating system'), data.software.os],
                                     ...Object.entries(data.drivers).map(
                                         ([key, value]) =>
-                                            [`${key} driver`, <code key={key}>{value}</code>] as [
+                                            [t('{{key}} driver', { key: key }), <code key={key}>{value}</code>] as [
                                                 string,
                                                 React.ReactNode
                                             ]
@@ -215,7 +219,7 @@ export default () => {
                                 ]}
                             />
                         </Card>
-                        <Card title={'PHP extensions'}>
+                        <Card title={t('PHP extensions')}>
                             <motion.div
                                 className={'flex flex-wrap gap-2'}
                                 initial={'hidden'}
@@ -235,13 +239,13 @@ export default () => {
                 </>
             )}
             <Card
-                title={'Failed jobs'}
-                description={'Background jobs that kept failing after all retries.'}
+                title={t('Failed jobs')}
+                description={t('Background jobs that kept failing after all retries.')}
                 flush
                 actions={
                     jobs?.meta.total ? (
                         <Button size={'sm'} variant={'danger'} icon={TrashIcon} onClick={() => setFlushing(true)}>
-                            Flush all
+                            {t('Flush all')}
                         </Button>
                     ) : undefined
                 }
@@ -251,8 +255,8 @@ export default () => {
                 ) : jobs.data.length === 0 ? (
                     <EmptyState
                         icon={CheckCircleIcon}
-                        title={'No failed jobs'}
-                        description={'E-mails and background tasks are being processed normally.'}
+                        title={t('No failed jobs')}
+                        description={t('E-mails and background tasks are being processed normally.')}
                     />
                 ) : (
                     <ul className={'divide-y divide-gray-800 border-t border-gray-800'}>
@@ -273,10 +277,10 @@ export default () => {
                                         {job.exception}
                                     </p>
                                 </button>
-                                <IconButton icon={RefreshIcon} label={'Retry'} onClick={() => retry.run(job.uuid)} />
+                                <IconButton icon={RefreshIcon} label={t('Retry')} onClick={() => retry.run(job.uuid)} />
                                 <IconButton
                                     icon={TrashIcon}
-                                    label={'Forget'}
+                                    label={t('Forget')}
                                     tone={'danger'}
                                     onClick={() => forget.run(job.uuid)}
                                 />
@@ -298,19 +302,23 @@ export default () => {
                 onClose={() => setTrace(null)}
                 wide
                 title={trace?.job || ''}
-                description={trace ? `Failed ${ago(trace.failed_at)} on the ${trace.queue} queue` : undefined}
+                description={
+                    trace
+                        ? t('Failed {{ago}} on the {{queue}} queue', { ago: ago(trace.failed_at), queue: trace.queue })
+                        : undefined
+                }
             >
                 <pre className={'text-xs text-gray-300 font-mono whitespace-pre-wrap break-all'}>{trace?.trace}</pre>
             </Drawer>
             <Confirm
                 open={flushing}
-                title={'Remove all failed jobs?'}
-                confirm={'Flush'}
+                title={t('Remove all failed jobs?')}
+                confirm={t('Flush')}
                 loading={flush.loading}
                 onConfirm={() => flush.run()}
                 onClose={() => setFlushing(false)}
             >
-                The jobs are deleted and will not be retried.
+                {t('The jobs are deleted and will not be retried.')}
             </Confirm>
         </Page>
     );

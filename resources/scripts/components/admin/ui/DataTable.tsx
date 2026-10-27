@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { ChevronLeftIcon, ChevronRightIcon, SearchIcon, XIcon } from '@heroicons/react/outline';
 import { Skeleton } from '@/components/admin/ui/Feedback';
+import { t } from '@/i18n';
 
 export interface Column<T> {
     key: string;
@@ -105,7 +106,7 @@ export function DataTable<T>({
                                 <th className={'w-10 pl-5'}>
                                     <input
                                         type={'checkbox'}
-                                        aria-label={'Select all'}
+                                        aria-label={t('Select all')}
                                         className={
                                             'form-checkbox rounded bg-gray-800 border-gray-600 text-raptor-500 focus:ring-raptor-500'
                                         }
@@ -190,7 +191,7 @@ export const Pagination = ({
     if (lastPage <= 1) {
         return total > 0 ? (
             <p className={'px-5 py-3 text-xs text-gray-500 border-t border-gray-800'}>
-                {total.toLocaleString()} {total === 1 ? 'result' : 'results'}
+                {total.toLocaleString()} {total === 1 ? t('result') : t('results')}
             </p>
         ) : null;
     }
@@ -202,8 +203,8 @@ export const Pagination = ({
             }
         >
             <span>
-                Page <span className={'text-gray-200 font-medium'}>{page}</span> of {lastPage} ·{' '}
-                {total.toLocaleString()} results
+                {t('Page')} <span className={'text-gray-200 font-medium'}>{page}</span>{' '}
+                {t('of {{lastPage}} · {{value}} results', { lastPage: lastPage, value: total.toLocaleString() })}
             </span>
             <div className={'flex gap-1'}>
                 <button
@@ -213,7 +214,7 @@ export const Pagination = ({
                     className={
                         'grid place-items-center w-8 h-8 rounded-lg ring-1 ring-inset ring-gray-700 hover:bg-white/5 disabled:opacity-40'
                     }
-                    aria-label={'Previous page'}
+                    aria-label={t('Previous page')}
                 >
                     <ChevronLeftIcon className={'w-4 h-4'} />
                 </button>
@@ -224,7 +225,7 @@ export const Pagination = ({
                     className={
                         'grid place-items-center w-8 h-8 rounded-lg ring-1 ring-inset ring-gray-700 hover:bg-white/5 disabled:opacity-40'
                     }
-                    aria-label={'Next page'}
+                    aria-label={t('Next page')}
                 >
                     <ChevronRightIcon className={'w-4 h-4'} />
                 </button>
@@ -237,7 +238,7 @@ export const Pagination = ({
 export const SearchInput = ({
     value,
     onChange,
-    placeholder = 'Search…',
+    placeholder = t('Search…'),
     className,
 }: {
     value: string;
@@ -271,7 +272,7 @@ export const SearchInput = ({
             {text && (
                 <button
                     type={'button'}
-                    aria-label={'Clear search'}
+                    aria-label={t('Clear search')}
                     onClick={() => {
                         setText('');
                         onChange('');

@@ -11,6 +11,7 @@ import { useResource } from '@/api/query';
 import { PaginatedResult } from '@/api/http';
 import Pagination from '@/components/elements/Pagination';
 import { useLocation } from 'react-router-dom';
+import { t } from '@/i18n';
 
 export default () => {
     const { search } = useLocation();
@@ -52,19 +53,22 @@ export default () => {
     }, [error]);
 
     return (
-        <PageContentBlock title={'Dashboard'} showFlashKey={'dashboard'}>
+        <PageContentBlock title={t('Dashboard')} showFlashKey={'dashboard'}>
             <div className={'flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-6'}>
                 <div>
-                    <h1 className={'text-2xl sm:text-3xl'}>{showOnlyAdmin ? 'All servers' : 'Your servers'}</h1>
+                    <h1 className={'text-2xl sm:text-3xl'}>{showOnlyAdmin ? t('All servers') : t('Your servers')}</h1>
                     <p className={'mt-1 text-sm text-gray-400'}>
                         {servers
-                            ? `${servers.pagination.total} server${servers.pagination.total === 1 ? '' : 's'}`
-                            : 'Loading servers…'}
+                            ? t('{{total}} server{{value}}', {
+                                  total: servers.pagination.total,
+                                  value: servers.pagination.total === 1 ? '' : 's',
+                              })
+                            : t('Loading servers…')}
                     </p>
                 </div>
                 {rootAdmin && (
                     <label className={'flex items-center gap-3 text-sm text-gray-400 cursor-pointer'}>
-                        Show servers of other users
+                        {t('Show servers of other users')}
                         <Switch
                             name={'show_all_servers'}
                             defaultChecked={showOnlyAdmin}
@@ -93,11 +97,11 @@ export default () => {
                             </div>
                         ) : (
                             <div className={'rounded-xl border border-dashed border-gray-700 p-10 text-center'}>
-                                <p className={'text-gray-300 font-medium'}>No servers yet</p>
+                                <p className={'text-gray-300 font-medium'}>{t('No servers yet')}</p>
                                 <p className={'mt-1 text-sm text-gray-500'}>
                                     {showOnlyAdmin
-                                        ? 'There are no other servers to display.'
-                                        : 'There are no servers associated with your account.'}
+                                        ? t('There are no other servers to display.')
+                                        : t('There are no servers associated with your account.')}
                                 </p>
                             </div>
                         )

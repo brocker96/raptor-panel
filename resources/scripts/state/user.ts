@@ -5,7 +5,7 @@ export interface UserData {
     uuid: string;
     username: string;
     email: string;
-    language: string;
+    language: string | null;
     rootAdmin: boolean;
     useTotp: boolean;
     avatarUrl?: string | null;

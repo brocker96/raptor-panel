@@ -17,13 +17,14 @@ import { FormGrid, NumberInput, Select, TextInput, Toggle } from '@/components/a
 import Button from '@/components/admin/ui/Button';
 import { useAction } from '@/components/admin/ui/hooks';
 import CloudflareSettings from '@/components/admin/settings/CloudflareSettings';
+import { t } from '@/i18n';
 
 const useSection = <K extends 'general' | 'mail' | 'advanced'>(settings: PanelSettings, key: K) => {
     const [values, setValues] = useState<PanelSettings[K]>(settings[key]);
     useEffect(() => setValues(settings[key]), [settings]);
 
     const save = useAction((v: object) => updateSettings(key, v), {
-        success: 'Settings saved',
+        success: t('Settings saved'),
         invalidate: [['admin', 'settings']],
     });
     const set = (field: keyof PanelSettings[K]) => (value: unknown) => setValues({ ...values, [field]: value });
@@ -36,26 +37,26 @@ const General = ({ settings }: { settings: PanelSettings }) => {
 
     return (
         <Card
-            title={'General'}
+            title={t('General')}
             icon={CogIcon}
             footer={
                 <Button loading={save.loading} onClick={() => save.run(values)}>
-                    Save
+                    {t('Save')}
                 </Button>
             }
         >
             <div className={'space-y-4'}>
                 <FormGrid>
                     <TextInput
-                        label={'Company name'}
+                        label={t('Company name')}
                         required
                         value={values['app:name']}
                         onChange={set('app:name')}
                         error={save.errors['app:name']}
-                        description={'Shown in the browser tab, e-mails and on the login page.'}
+                        description={t('Shown in the browser tab, e-mails and on the login page.')}
                     />
                     <Select
-                        label={'Default language'}
+                        label={t('Default language')}
                         value={values['app:locale']}
                         onChange={set('app:locale')}
                         options={Object.entries(settings.meta.languages).map(([value, label]) => ({ value, label }))}
@@ -63,20 +64,21 @@ const General = ({ settings }: { settings: PanelSettings }) => {
                 </FormGrid>
                 <div>
                     <p className={'mb-2 flex items-center gap-2 text-xs font-medium text-gray-300'}>
-                        <ShieldCheckIcon className={'w-4 h-4 text-raptor-400'} /> Require two-factor authentication
+                        <ShieldCheckIcon className={'w-4 h-4 text-raptor-400'} />{' '}
+                        {t('Require two-factor authentication')}
                     </p>
                     <Segmented
                         id={'2fa'}
                         value={String(values['raptor:auth:2fa_required'])}
                         onChange={(value) => set('raptor:auth:2fa_required')(Number(value))}
                         options={[
-                            { value: '0', label: 'Not required' },
-                            { value: '1', label: 'Admins only' },
-                            { value: '2', label: 'All users' },
+                            { value: '0', label: t('Not required') },
+                            { value: '1', label: t('Admins only') },
+                            { value: '2', label: t('All users') },
                         ]}
                     />
                     <p className={'mt-2 text-xs text-gray-500'}>
-                        Affected users must set up 2FA before they can continue using the Panel.
+                        {t('Affected users must set up 2FA before they can continue using the Panel.')}
                     </p>
                 </div>
             </div>
@@ -87,9 +89,9 @@ const General = ({ settings }: { settings: PanelSettings }) => {
 const Mail = ({ settings }: { settings: PanelSettings }) => {
     const { values, set, save } = useSection(settings, 'mail');
     const [password, setPassword] = useState('');
-    const test = useAction(sendTestMail, { success: (r) => `Test e-mail sent to ${r.email}` });
+    const test = useAction(sendTestMail, { success: (r) => t('Test e-mail sent to {{email}}', { email: r.email }) });
     const driver = useAction((value: 'smtp' | 'log') => updateMailDriver(value), {
-        success: 'Mail delivery updated',
+        success: t('Mail delivery updated'),
         invalidate: [
             ['admin', 'settings'],
             ['admin', 'system'],
@@ -97,21 +99,23 @@ const Mail = ({ settings }: { settings: PanelSettings }) => {
     });
 
     const switcher = settings.meta.mail_switchable && (
-        <Card title={'Delivery'} icon={MailIcon} description={'Where e-mails sent by the Panel go.'}>
+        <Card title={t('Delivery')} icon={MailIcon} description={t('Where e-mails sent by the Panel go.')}>
             <div className={'flex flex-col sm:flex-row sm:items-center gap-3'}>
                 <Segmented
                     id={'mail-driver'}
                     value={settings.meta.mail_driver === 'smtp' ? 'smtp' : 'log'}
                     onChange={(value) => driver.run(value as 'smtp' | 'log')}
                     options={[
-                        { value: 'smtp', label: 'Send over SMTP' },
-                        { value: 'log', label: 'Off (log only)' },
+                        { value: 'smtp', label: t('Send over SMTP') },
+                        { value: 'log', label: t('Off (log only)') },
                     ]}
                 />
                 <p className={'text-xs text-gray-500'}>
                     {settings.meta.mail_driver === 'smtp'
-                        ? 'E-mails are delivered through the SMTP server below.'
-                        : 'E-mails are written to storage/logs instead of being sent. Users cannot reset their passwords by e-mail.'}
+                        ? t('E-mails are delivered through the SMTP server below.')
+                        : t(
+                              'E-mails are written to storage/logs instead of being sent. Users cannot reset their passwords by e-mail.'
+                          )}
                 </p>
             </div>
         </Card>
@@ -121,10 +125,13 @@ const Mail = ({ settings }: { settings: PanelSettings }) => {
         if (switcher) return switcher;
 
         return (
-            <Card title={'Mail'} icon={MailIcon}>
-                <Callout tone={'yellow'} title={`The mail driver is "${settings.meta.mail_driver}"`}>
-                    Mail settings can only be edited here when <code>MAIL_MAILER=smtp</code>. Configure other drivers in
-                    the <code>.env</code> file.
+            <Card title={t('Mail')} icon={MailIcon}>
+                <Callout
+                    tone={'yellow'}
+                    title={t('The mail driver is "{{mail_driver}}"', { mail_driver: settings.meta.mail_driver })}
+                >
+                    {t('Mail settings can only be edited here when')} <code>MAIL_MAILER=smtp</code>
+                    {t('. Configure other drivers in the')} <code>.env</code> {t('file.')}
                 </Callout>
                 <Button
                     className={'mt-4'}
@@ -133,7 +140,7 @@ const Mail = ({ settings }: { settings: PanelSettings }) => {
                     loading={test.loading}
                     onClick={() => test.run()}
                 >
-                    Send test e-mail
+                    {t('Send test e-mail')}
                 </Button>
             </Card>
         );
@@ -143,9 +150,9 @@ const Mail = ({ settings }: { settings: PanelSettings }) => {
         <div className={'space-y-6'}>
             {switcher}
             <Card
-                title={'SMTP'}
+                title={t('SMTP')}
                 icon={MailIcon}
-                description={'Used for password resets, invitations and notifications.'}
+                description={t('Used for password resets, invitations and notifications.')}
                 footer={
                     <>
                         <Button
@@ -154,13 +161,13 @@ const Mail = ({ settings }: { settings: PanelSettings }) => {
                             loading={test.loading}
                             onClick={() => test.run()}
                         >
-                            Send test e-mail
+                            {t('Send test e-mail')}
                         </Button>
                         <Button
                             loading={save.loading}
                             onClick={() => save.run({ ...values, 'mail:mailers:smtp:password': password || undefined })}
                         >
-                            Save
+                            {t('Save')}
                         </Button>
                     </>
                 }
@@ -168,7 +175,7 @@ const Mail = ({ settings }: { settings: PanelSettings }) => {
                 <div className={'space-y-4'}>
                     <FormGrid cols={3}>
                         <TextInput
-                            label={'SMTP host'}
+                            label={t('SMTP host')}
                             required
                             value={values['mail:mailers:smtp:host'] || ''}
                             onChange={set('mail:mailers:smtp:host')}
@@ -176,33 +183,33 @@ const Mail = ({ settings }: { settings: PanelSettings }) => {
                             placeholder={'smtp.example.com'}
                         />
                         <NumberInput
-                            label={'Port'}
+                            label={t('Port')}
                             required
                             value={values['mail:mailers:smtp:port']}
                             onChange={set('mail:mailers:smtp:port')}
                             error={save.errors['mail:mailers:smtp:port']}
                         />
                         <Select
-                            label={'Encryption'}
+                            label={t('Encryption')}
                             value={values['mail:mailers:smtp:encryption'] || ''}
                             onChange={(v) => set('mail:mailers:smtp:encryption')(v || null)}
                             options={[
-                                { value: 'tls', label: 'TLS (STARTTLS, port 587)' },
-                                { value: 'ssl', label: 'SSL (port 465)' },
-                                { value: '', label: 'None' },
+                                { value: 'tls', label: t('TLS (STARTTLS, port 587)') },
+                                { value: 'ssl', label: t('SSL (port 465)') },
+                                { value: '', label: t('None') },
                             ]}
                         />
                     </FormGrid>
                     <FormGrid>
                         <TextInput
-                            label={'Username'}
+                            label={t('Username')}
                             value={values['mail:mailers:smtp:username'] || ''}
                             onChange={set('mail:mailers:smtp:username')}
                             error={save.errors['mail:mailers:smtp:username']}
                             autoComplete={'off'}
                         />
                         <TextInput
-                            label={'Password'}
+                            label={t('Password')}
                             type={'password'}
                             value={password}
                             onChange={setPassword}
@@ -210,24 +217,24 @@ const Mail = ({ settings }: { settings: PanelSettings }) => {
                             placeholder={settings.meta.mail_password_set ? '••••••••' : ''}
                             description={
                                 settings.meta.mail_password_set
-                                    ? 'Stored encrypted. Leave empty to keep it, enter !e to remove it.'
+                                    ? t('Stored encrypted. Leave empty to keep it, enter !e to remove it.')
                                     : undefined
                             }
                         />
                         <TextInput
-                            label={'From address'}
+                            label={t('From address')}
                             required
                             type={'email'}
                             value={values['mail:from:address']}
                             onChange={set('mail:from:address')}
                             error={save.errors['mail:from:address']}
-                            placeholder={'no-reply@example.com'}
+                            placeholder={t('no-reply@example.com')}
                         />
                         <TextInput
-                            label={'From name'}
+                            label={t('From name')}
                             value={values['mail:from:name'] || ''}
                             onChange={set('mail:from:name')}
-                            placeholder={'Raptor Panel'}
+                            placeholder={t('Raptor Panel')}
                         />
                     </FormGrid>
                 </div>
@@ -244,31 +251,32 @@ const Advanced = ({ settings }: { settings: PanelSettings }) => {
     return (
         <div className={'space-y-6'}>
             <Card
-                title={'reCAPTCHA'}
+                title={t('reCAPTCHA')}
                 icon={ShieldCheckIcon}
-                description={'Invisible bot protection for the login and password reset forms.'}
+                description={t('Invisible bot protection for the login and password reset forms.')}
             >
                 <div className={'space-y-4'}>
                     <Toggle
-                        label={'Enable reCAPTCHA'}
+                        label={t('Enable reCAPTCHA')}
                         checked={recaptcha}
                         onChange={(v) => set('recaptcha:enabled')(v ? 'true' : 'false')}
                     />
                     {recaptcha && settings.meta.recaptcha_shipped_keys && (
-                        <Callout tone={'yellow'} title={'You are using the default keys'}>
-                            These keys are shared by every installation. Create your own reCAPTCHA v2 (invisible) keys
-                            for your domain.
+                        <Callout tone={'yellow'} title={t('You are using the default keys')}>
+                            {t(
+                                'These keys are shared by every installation. Create your own reCAPTCHA v2 (invisible) keys for your domain.'
+                            )}
                         </Callout>
                     )}
                     <FormGrid>
                         <TextInput
-                            label={'Site key'}
+                            label={t('Site key')}
                             value={values['recaptcha:website_key']}
                             onChange={set('recaptcha:website_key')}
                             error={save.errors['recaptcha:website_key']}
                         />
                         <TextInput
-                            label={'Secret key'}
+                            label={t('Secret key')}
                             value={values['recaptcha:secret_key']}
                             onChange={set('recaptcha:secret_key')}
                             error={save.errors['recaptcha:secret_key']}
@@ -276,17 +284,21 @@ const Advanced = ({ settings }: { settings: PanelSettings }) => {
                     </FormGrid>
                 </div>
             </Card>
-            <Card title={'Node connections'} icon={AdjustmentsIcon} description={'How long the Panel waits for Wings.'}>
+            <Card
+                title={t('Node connections')}
+                icon={AdjustmentsIcon}
+                description={t('How long the Panel waits for Wings.')}
+            >
                 <FormGrid>
                     <NumberInput
-                        label={'Connection timeout'}
+                        label={t('Connection timeout')}
                         suffix={'seconds'}
                         value={values['raptor:guzzle:connect_timeout']}
                         onChange={set('raptor:guzzle:connect_timeout')}
                         error={save.errors['raptor:guzzle:connect_timeout']}
                     />
                     <NumberInput
-                        label={'Request timeout'}
+                        label={t('Request timeout')}
                         suffix={'seconds'}
                         value={values['raptor:guzzle:timeout']}
                         onChange={set('raptor:guzzle:timeout')}
@@ -295,30 +307,30 @@ const Advanced = ({ settings }: { settings: PanelSettings }) => {
                 </FormGrid>
             </Card>
             <Card
-                title={'Automatic allocations'}
-                description={'Let server owners add ports themselves, up to the allocation limit of their server.'}
+                title={t('Automatic allocations')}
+                description={t('Let server owners add ports themselves, up to the allocation limit of their server.')}
                 footer={
                     <Button loading={save.loading} onClick={() => save.run(values)}>
-                        Save advanced settings
+                        {t('Save advanced settings')}
                     </Button>
                 }
             >
                 <div className={'space-y-4'}>
                     <Toggle
-                        label={'Allow users to create allocations'}
+                        label={t('Allow users to create allocations')}
                         checked={allocations}
                         onChange={(v) => set('raptor:client_features:allocations:enabled')(v ? 'true' : 'false')}
                     />
                     {allocations && (
                         <FormGrid>
                             <NumberInput
-                                label={'Starting port'}
+                                label={t('Starting port')}
                                 value={values['raptor:client_features:allocations:range_start']}
                                 onChange={set('raptor:client_features:allocations:range_start')}
                                 error={save.errors['raptor:client_features:allocations:range_start']}
                             />
                             <NumberInput
-                                label={'Ending port'}
+                                label={t('Ending port')}
                                 value={values['raptor:client_features:allocations:range_end']}
                                 onChange={set('raptor:client_features:allocations:range_end')}
                                 error={save.errors['raptor:client_features:allocations:range_end']}
@@ -337,18 +349,18 @@ export default () => {
 
     return (
         <Page
-            title={'Settings'}
+            title={t('Settings')}
             icon={CogIcon}
-            description={'Panel wide configuration. Changes apply immediately and restart the queue worker.'}
+            description={t('Panel wide configuration. Changes apply immediately and restart the queue worker.')}
             guide={section === 'cloudflare' ? 'cloudflare' : `settings-${section}`}
             tabs={
                 <Tabs
                     id={'settings'}
                     items={[
-                        { to: '/admin/settings/general', label: 'General', icon: CogIcon },
-                        { to: '/admin/settings/mail', label: 'Mail', icon: MailIcon },
-                        { to: '/admin/settings/advanced', label: 'Advanced', icon: AdjustmentsIcon },
-                        { to: '/admin/settings/cloudflare', label: 'Cloudflare', icon: CloudIcon },
+                        { to: '/admin/settings/general', label: t('General'), icon: CogIcon },
+                        { to: '/admin/settings/mail', label: t('Mail'), icon: MailIcon },
+                        { to: '/admin/settings/advanced', label: t('Advanced'), icon: AdjustmentsIcon },
+                        { to: '/admin/settings/cloudflare', label: t('Cloudflare'), icon: CloudIcon },
                     ]}
                 />
             }

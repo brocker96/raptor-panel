@@ -9,6 +9,7 @@ import Input, { Textarea } from '@/components/elements/Input';
 import styled from 'styled-components/macro';
 import { useFlashKey } from '@/plugins/useFlash';
 import { createSSHKey, useSSHKeys } from '@/api/account/ssh-keys';
+import { t } from '@/i18n';
 
 interface Values {
     name: string;
@@ -48,18 +49,18 @@ export default () => {
                 {({ isSubmitting }) => (
                     <Form>
                         <SpinnerOverlay visible={isSubmitting} />
-                        <FormikFieldWrapper label={'SSH Key Name'} name={'name'} css={tw`mb-6`}>
+                        <FormikFieldWrapper label={t('SSH Key Name')} name={'name'} css={tw`mb-6`}>
                             <Field name={'name'} as={Input} />
                         </FormikFieldWrapper>
                         <FormikFieldWrapper
-                            label={'Public Key'}
+                            label={t('Public Key')}
                             name={'publicKey'}
-                            description={'Enter your public SSH key.'}
+                            description={t('Enter your public SSH key.')}
                         >
                             <Field name={'publicKey'} as={CustomTextarea} />
                         </FormikFieldWrapper>
                         <div css={tw`flex justify-end mt-6`}>
-                            <Button>Save</Button>
+                            <Button>{t('Save')}</Button>
                         </div>
                     </Form>
                 )}

@@ -15,6 +15,7 @@ import {
     UsersIcon,
 } from '@heroicons/react/outline';
 import { lazyWithPreload, PreloadableComponent } from '@/lib/lazy';
+import { t } from '@/i18n';
 // Every screen is lazy loaded so that each page only downloads the code it needs. This is
 // especially important as this file is shared by both the dashboard and server routers, a
 // static import here would make the dashboard download the console, charts and editor.
@@ -73,26 +74,26 @@ export default {
     account: [
         {
             path: '/',
-            name: 'Account',
+            name: t('Account'),
             icon: UserCircleIcon,
             component: AccountOverviewContainer,
             exact: true,
         },
         {
             path: '/api',
-            name: 'API Keys',
+            name: t('API Keys'),
             icon: KeyIcon,
             component: AccountApiContainer,
         },
         {
             path: '/ssh',
-            name: 'SSH Keys',
+            name: t('SSH Keys'),
             icon: FingerPrintIcon,
             component: AccountSSHContainer,
         },
         {
             path: '/activity',
-            name: 'Activity',
+            name: t('Activity'),
             icon: ClipboardListIcon,
             component: ActivityLogContainer,
         },
@@ -101,7 +102,7 @@ export default {
         {
             path: '/',
             permission: null,
-            name: 'Console',
+            name: t('Console'),
             icon: TerminalIcon,
             component: ServerConsole,
             exact: true,
@@ -109,7 +110,7 @@ export default {
         {
             path: '/files',
             permission: 'file.*',
-            name: 'Files',
+            name: t('Files'),
             icon: FolderIcon,
             component: FileManagerContainer,
         },
@@ -122,14 +123,14 @@ export default {
         {
             path: '/databases',
             permission: 'database.*',
-            name: 'Databases',
+            name: t('Databases'),
             icon: DatabaseIcon,
             component: DatabasesContainer,
         },
         {
             path: '/schedules',
             permission: 'schedule.*',
-            name: 'Schedules',
+            name: t('Schedules'),
             icon: ClockIcon,
             component: ScheduleContainer,
         },
@@ -142,42 +143,42 @@ export default {
         {
             path: '/users',
             permission: 'user.*',
-            name: 'Users',
+            name: t('Users'),
             icon: UsersIcon,
             component: UsersContainer,
         },
         {
             path: '/backups',
             permission: 'backup.*',
-            name: 'Backups',
+            name: t('Backups'),
             icon: ArchiveIcon,
             component: BackupContainer,
         },
         {
             path: '/network',
             permission: 'allocation.*',
-            name: 'Network',
+            name: t('Network'),
             icon: GlobeAltIcon,
             component: NetworkContainer,
         },
         {
             path: '/startup',
             permission: 'startup.*',
-            name: 'Startup',
+            name: t('Startup'),
             icon: PlayIcon,
             component: StartupContainer,
         },
         {
             path: '/settings',
             permission: ['settings.*', 'file.sftp'],
-            name: 'Settings',
+            name: t('Settings'),
             icon: CogIcon,
             component: SettingsContainer,
         },
         {
             path: '/activity',
             permission: 'activity.*',
-            name: 'Activity',
+            name: t('Activity'),
             icon: ClipboardListIcon,
             component: ServerActivityLogContainer,
         },

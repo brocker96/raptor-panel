@@ -5,6 +5,7 @@ import Button from '@/components/admin/ui/Button';
 import GuideArticle from '@/components/admin/guides/GuideArticle';
 import { useGuide } from '@/components/admin/guides/GuideContext';
 import { findGuide } from '@/components/admin/guides';
+import { t } from '@/i18n';
 
 /** Shows the guide of the current page next to it, without leaving the page. */
 export default () => {
@@ -18,15 +19,19 @@ export default () => {
             wide
             icon={BookOpenIcon}
             title={guide?.title || ''}
-            description={guide ? `${guide.category} · ${guide.minutes} min read` : undefined}
+            description={
+                guide
+                    ? t('{{category}} · {{minutes}} min read', { category: guide.category, minutes: guide.minutes })
+                    : undefined
+            }
             footer={
                 <>
                     <Button variant={'ghost'} to={'/admin/guides'} icon={BookOpenIcon}>
-                        All guides
+                        {t('All guides')}
                     </Button>
                     {guide && (
                         <Button variant={'secondary'} to={`/admin/guides/${guide.key}`} icon={ExternalLinkIcon}>
-                            Open full page
+                            {t('Open full page')}
                         </Button>
                     )}
                 </>

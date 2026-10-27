@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { BookOpenIcon, ChevronRightIcon } from '@heroicons/react/outline';
 import { useGuide } from '@/components/admin/guides/GuideContext';
 import { useStoreState } from '@/state/hooks';
+import { t } from '@/i18n';
 
 interface PageProps {
     title: string;
@@ -38,7 +39,7 @@ export const Page = ({ title, description, icon: Icon, crumbs, guide, actions, t
                 {crumbs && crumbs.length > 0 && (
                     <nav
                         className={'flex items-center gap-1 mb-3 text-xs text-gray-500 min-w-0'}
-                        aria-label={'Breadcrumb'}
+                        aria-label={t('Breadcrumb')}
                     >
                         {crumbs.map((crumb, index) => (
                             <React.Fragment key={index}>
@@ -90,7 +91,7 @@ export const Page = ({ title, description, icon: Icon, crumbs, guide, actions, t
                                         'w-4 h-4 transition-transform group-hover:-rotate-6 group-hover:scale-110'
                                     }
                                 />
-                                Guide
+                                {t('Guide')}
                             </button>
                         )}
                         {actions}

@@ -4,6 +4,7 @@ import { formatDistanceToNowStrict } from 'date-fns';
 import { queryClient } from '@/api/query';
 import { fieldErrors } from '@/api/admin';
 import { toast } from '@/components/admin/ui/Toast';
+import { t } from '@/i18n';
 
 /**
  * Keeps the page, search text and filters of a list in the URL so that reloading the page or
@@ -85,7 +86,7 @@ export const useAction = <A extends unknown[], T>(fn: (...args: A) => Promise<T>
             setErrors(fields);
             toast.fromError(
                 error,
-                Object.keys(fields).length ? 'Please check the highlighted fields' : 'Action failed'
+                Object.keys(fields).length ? t('Please check the highlighted fields') : t('Action failed')
             );
 
             return undefined;
@@ -119,7 +120,7 @@ export const formatBytes = (bytes: number): string => {
 };
 
 export const ago = (date: string | null | undefined): string => {
-    if (!date) return 'never';
+    if (!date) return t('never');
 
     return formatDistanceToNowStrict(new Date(date), { addSuffix: true });
 };

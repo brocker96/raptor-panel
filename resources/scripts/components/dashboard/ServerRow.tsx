@@ -8,6 +8,7 @@ import { bytesToString, ip, mbToBytes } from '@/lib/formatters';
 import { queryClient, useResource } from '@/api/query';
 import useInView from '@/plugins/useInView';
 import StatusDot, { statusLabel } from '@/components/server/StatusDot';
+import { t } from '@/i18n';
 
 interface UsageProps {
     label: string;
@@ -115,13 +116,13 @@ const ServerRow = ({ server, className }: { server: Server; className?: string }
             </div>
             <div className={'mt-4 grid grid-cols-3 gap-3'}>
                 <Usage
-                    label={'CPU'}
+                    label={t('CPU')}
                     value={stats ? `${stats.cpuUsagePercent.toFixed(0)}%` : '—'}
                     limit={server.limits.cpu !== 0 ? `${server.limits.cpu}%` : '∞'}
                     usage={stats && server.limits.cpu ? stats.cpuUsagePercent / server.limits.cpu : null}
                 />
                 <Usage
-                    label={'RAM'}
+                    label={t('RAM')}
                     value={stats ? bytesToString(stats.memoryUsageInBytes, 1) : '—'}
                     limit={limit(server.limits.memory)}
                     usage={
@@ -131,7 +132,7 @@ const ServerRow = ({ server, className }: { server: Server; className?: string }
                     }
                 />
                 <Usage
-                    label={'Disk'}
+                    label={t('Disk')}
                     value={stats ? bytesToString(stats.diskUsageInBytes, 1) : '—'}
                     limit={limit(server.limits.disk)}
                     usage={stats && server.limits.disk ? stats.diskUsageInBytes / mbToBytes(server.limits.disk) : null}

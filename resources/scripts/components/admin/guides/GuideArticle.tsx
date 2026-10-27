@@ -14,6 +14,7 @@ import classNames from 'classnames';
 import { Guide } from '@/components/admin/guides/types';
 import { findGuide } from '@/components/admin/guides';
 import { item } from '@/components/admin/ui/motion';
+import { t } from '@/i18n';
 
 /** Renders the tiny subset of markdown used in guides: **bold** and `code`. */
 export const Inline = ({ text }: { text: string }) => (
@@ -66,7 +67,7 @@ const CodeBlock = ({ label, content }: { label?: string; content: string }) => {
             <div
                 className={'flex items-center justify-between px-3 h-8 border-b border-gray-800 text-2xs text-gray-500'}
             >
-                <span className={'truncate'}>{label ? <Inline text={label} /> : 'Terminal'}</span>
+                <span className={'truncate'}>{label ? <Inline text={label} /> : t('Terminal')}</span>
                 <button
                     type={'button'}
                     onClick={() => {
@@ -81,7 +82,7 @@ const CodeBlock = ({ label, content }: { label?: string; content: string }) => {
                     ) : (
                         <ClipboardCopyIcon className={'w-3.5 h-3.5'} />
                     )}
-                    {copied ? 'Copied' : 'Copy'}
+                    {copied ? t('Copied') : t('Copy')}
                 </button>
             </div>
             <pre className={'p-3 overflow-x-auto text-xs leading-relaxed text-gray-200 font-mono'}>{content}</pre>
@@ -208,7 +209,7 @@ export default ({ guide, onNavigate }: { guide: Guide; onNavigate?: (key: string
         ))}
         {guide.faq && guide.faq.length > 0 && (
             <motion.section variants={item} className={'space-y-2'}>
-                <h3 className={'text-base font-semibold text-gray-50'}>Frequently asked</h3>
+                <h3 className={'text-base font-semibold text-gray-50'}>{t('Frequently asked')}</h3>
                 {guide.faq.map((faq, i) => (
                     <Faq key={i} {...faq} />
                 ))}
@@ -216,7 +217,9 @@ export default ({ guide, onNavigate }: { guide: Guide; onNavigate?: (key: string
         )}
         {guide.related && guide.related.length > 0 && (
             <motion.section variants={item}>
-                <h3 className={'text-xs font-semibold uppercase tracking-wider text-gray-500 mb-2'}>Related guides</h3>
+                <h3 className={'text-xs font-semibold uppercase tracking-wider text-gray-500 mb-2'}>
+                    {t('Related guides')}
+                </h3>
                 <div className={'flex flex-wrap gap-2'}>
                     {guide.related
                         .map((key) => findGuide(key))

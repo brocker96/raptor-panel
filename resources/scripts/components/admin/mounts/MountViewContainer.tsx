@@ -12,6 +12,7 @@ import CheckList from '@/components/admin/ui/CheckList';
 import { useAction } from '@/components/admin/ui/hooks';
 import MountForm from '@/components/admin/mounts/MountForm';
 import { NotFound } from '@/components/elements/ScreenBlock';
+import { t } from '@/i18n';
 
 export default () => {
     const id = Number(useParams<{ id: string }>().id);
@@ -39,15 +40,15 @@ export default () => {
     }, [mount]);
 
     const save = useAction((v: MountValues) => updateMount(id, v), {
-        success: 'Mount updated',
+        success: t('Mount updated'),
         invalidate: [['admin', 'mounts']],
     });
     const sync = useAction(() => syncMount(id, { eggs, nodes: nodeIds }), {
-        success: 'Eggs and nodes updated',
+        success: t('Eggs and nodes updated'),
         invalidate: [['admin', 'mounts']],
     });
     const remove = useAction(() => deleteMount(id), {
-        success: 'Mount deleted',
+        success: t('Mount deleted'),
         invalidate: [['admin', 'mounts']],
         onSuccess: () => navigate('/admin/mounts'),
     });
@@ -56,9 +57,9 @@ export default () => {
 
     return (
         <Page
-            title={mount?.name || 'Mount'}
+            title={mount?.name || t('Mount')}
             icon={FolderIcon}
-            crumbs={[{ label: 'Mounts', to: '/admin/mounts' }, { label: mount?.name || '…' }]}
+            crumbs={[{ label: t('Mounts'), to: '/admin/mounts' }, { label: mount?.name || '…' }]}
             description={
                 mount ? (
                     <code className={'text-xs'}>
@@ -69,7 +70,7 @@ export default () => {
             guide={'mounts'}
             actions={
                 <Button variant={'danger'} icon={TrashIcon} onClick={() => setDeleting(true)}>
-                    Delete
+                    {t('Delete')}
                 </Button>
             }
         >
@@ -78,10 +79,10 @@ export default () => {
             ) : (
                 <div className={'grid gap-6 lg:grid-cols-2'}>
                     <Card
-                        title={'Configuration'}
+                        title={t('Configuration')}
                         footer={
                             <Button loading={save.loading} onClick={() => save.run(values)}>
-                                Save
+                                {t('Save')}
                             </Button>
                         }
                     >
@@ -89,31 +90,31 @@ export default () => {
                     </Card>
                     <div className={'space-y-6'}>
                         <Card
-                            title={'Availability'}
+                            title={t('Availability')}
                             icon={LinkIcon}
-                            description={
+                            description={t(
                                 'The mount can only be attached to servers that use one of these eggs and run on one of these nodes.'
-                            }
+                            )}
                             footer={
                                 <Button loading={sync.loading} onClick={() => sync.run()}>
-                                    Save availability
+                                    {t('Save availability')}
                                 </Button>
                             }
                         >
                             <div className={'space-y-4'}>
                                 <div>
-                                    <p className={'mb-2 text-xs font-medium text-gray-300'}>Eggs</p>
+                                    <p className={'mb-2 text-xs font-medium text-gray-300'}>{t('Eggs')}</p>
                                     <CheckList
                                         options={(nests || []).flatMap((nest) =>
                                             nest.eggs.map((egg) => ({ id: egg.id, label: egg.name, group: nest.name }))
                                         )}
                                         selected={eggs}
                                         onChange={setEggs}
-                                        placeholder={'Filter eggs…'}
+                                        placeholder={t('Filter eggs…')}
                                     />
                                 </div>
                                 <div>
-                                    <p className={'mb-2 text-xs font-medium text-gray-300'}>Nodes</p>
+                                    <p className={'mb-2 text-xs font-medium text-gray-300'}>{t('Nodes')}</p>
                                     <CheckList
                                         options={(nodes?.data || []).map((node) => ({
                                             id: node.id,
@@ -122,12 +123,12 @@ export default () => {
                                         }))}
                                         selected={nodeIds}
                                         onChange={setNodeIds}
-                                        placeholder={'Filter nodes…'}
+                                        placeholder={t('Filter nodes…')}
                                     />
                                 </div>
                             </div>
                         </Card>
-                        <Card title={'Attached to servers'} flush>
+                        <Card title={t('Attached to servers')} flush>
                             {mount.servers.length ? (
                                 <ul className={'divide-y divide-gray-800'}>
                                     {mount.servers.map((server) => (
@@ -147,7 +148,7 @@ export default () => {
                             ) : (
                                 <div className={'px-5 pb-5'}>
                                     <Callout tone={'blue'}>
-                                        Attach the mount to a server on the Mounts tab of the server.
+                                        {t('Attach the mount to a server on the Mounts tab of the server.')}
                                     </Callout>
                                 </div>
                             )}
@@ -157,13 +158,13 @@ export default () => {
             )}
             <Confirm
                 open={deleting}
-                title={'Delete this mount?'}
-                confirm={'Delete'}
+                title={t('Delete this mount?')}
+                confirm={t('Delete')}
                 loading={remove.loading}
                 onConfirm={() => remove.run()}
                 onClose={() => setDeleting(false)}
             >
-                It is detached from every server the next time they restart. Files on the node are not deleted.
+                {t('It is detached from every server the next time they restart. Files on the node are not deleted.')}
             </Confirm>
         </Page>
     );

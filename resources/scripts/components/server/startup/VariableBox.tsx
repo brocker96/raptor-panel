@@ -13,6 +13,7 @@ import getServerStartup from '@/api/swr/getServerStartup';
 import Select from '@/components/elements/Select';
 import isEqual from 'react-fast-compare';
 import { ServerContext } from '@/state/server';
+import { t } from '@/i18n';
 
 interface Props {
     variable: ServerEggVariable;
@@ -63,7 +64,9 @@ const VariableBox = ({ variable }: Props) => {
             title={
                 <p className='text-sm uppercase'>
                     {!variable.isEditable && (
-                        <span className='bg-neutral-700 text-xs py-1 px-2 rounded-full mr-2 mb-1'>Read Only</span>
+                        <span className='bg-neutral-700 text-xs py-1 px-2 rounded-full mr-2 mb-1'>
+                            {t('Read Only')}
+                        </span>
                     )}
                     {variable.name}
                 </p>

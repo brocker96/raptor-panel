@@ -3,6 +3,7 @@ import { Dialog, DialogProps } from '@/components/elements/dialog';
 import { Button } from '@/components/elements/button/index';
 import CopyOnClick from '@/components/elements/CopyOnClick';
 import { Alert } from '@/components/elements/alert';
+import { t } from '@/i18n';
 
 interface RecoveryTokenDialogProps extends DialogProps {
     tokens: string[];
@@ -20,10 +21,10 @@ export default ({ tokens, open, onClose }: RecoveryTokenDialogProps) => {
         <Dialog
             open={open}
             onClose={onClose}
-            title={'Two-Step Authentication Enabled'}
-            description={
+            title={t('Two-Step Authentication Enabled')}
+            description={t(
                 'Store the codes below somewhere safe. If you lose access to your phone you can use these backup codes to sign in.'
-            }
+            )}
             hideCloseIcon
             preventExternalClose
         >
@@ -41,10 +42,10 @@ export default ({ tokens, open, onClose }: RecoveryTokenDialogProps) => {
                 </pre>
             </CopyOnClick>
             <Alert type={'danger'} className={'mt-3'}>
-                These codes will not be shown again.
+                {t('These codes will not be shown again.')}
             </Alert>
             <Dialog.Footer>
-                <Button.Text onClick={onClose}>Done</Button.Text>
+                <Button.Text onClick={onClose}>{t('Done')}</Button.Text>
             </Dialog.Footer>
         </Dialog>
     );

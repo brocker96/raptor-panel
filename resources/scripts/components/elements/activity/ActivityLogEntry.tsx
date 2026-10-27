@@ -11,6 +11,7 @@ import style from './style.module.css';
 import Avatar from '@/components/Avatar';
 import useLocationHash from '@/plugins/useLocationHash';
 import { getObjectKeys, isObject } from '@/lib/objects';
+import { t } from '@/i18n';
 
 interface Props {
     activity: ActivityLog;
@@ -55,10 +56,10 @@ export default ({ activity, children }: Props) => {
             <div className={'col-span-10 sm:col-span-9 flex'}>
                 <div className={'flex-1 px-4 sm:px-0'}>
                     <div className={'flex items-center text-gray-50'}>
-                        <Tooltip placement={'top'} content={actor?.email || 'System User'}>
-                            <span>{actor?.username || 'System'}</span>
+                        <Tooltip placement={'top'} content={actor?.email || t('System User')}>
+                            <span>{actor?.username || t('System')}</span>
                         </Tooltip>
-                        <span className={'text-gray-400'}>&nbsp;&mdash;&nbsp;</span>
+                        <span className={'text-gray-400'}>{t(' — ')}</span>
                         <Link
                             to={`#${pathTo({ event: activity.event })}`}
                             className={'transition-colors duration-75 active:text-raptor-400 hover:text-raptor-400'}
@@ -67,12 +68,12 @@ export default ({ activity, children }: Props) => {
                         </Link>
                         <div className={classNames(style.icons, 'group-hover:text-gray-300')}>
                             {activity.isApi && (
-                                <Tooltip placement={'top'} content={'Using API Key'}>
+                                <Tooltip placement={'top'} content={t('Using API Key')}>
                                     <TerminalIcon />
                                 </Tooltip>
                             )}
                             {activity.event.startsWith('server:sftp.') && (
-                                <Tooltip placement={'top'} content={'Using SFTP'}>
+                                <Tooltip placement={'top'} content={t('Using SFTP')}>
                                     <FolderOpenIcon />
                                 </Tooltip>
                             )}
@@ -86,7 +87,7 @@ export default ({ activity, children }: Props) => {
                         {activity.ip && (
                             <span>
                                 {activity.ip}
-                                <span className={'text-gray-400'}>&nbsp;|&nbsp;</span>
+                                <span className={'text-gray-400'}>{t(' | ')}</span>
                             </span>
                         )}
                         <Tooltip placement={'right'} content={format(activity.timestamp, 'MMM do, yyyy H:mm:ss')}>

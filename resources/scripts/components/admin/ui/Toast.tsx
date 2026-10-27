@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import { AnimatePresence, motion } from 'framer-motion';
 import { CheckCircleIcon, ExclamationCircleIcon, InformationCircleIcon, XIcon } from '@heroicons/react/outline';
 import { httpErrorToHuman } from '@/api/http';
+import { t } from '@/i18n';
 
 type Kind = 'success' | 'error' | 'info';
 
@@ -37,7 +38,7 @@ export const toast = {
     info: (title: string, body?: string) => push('info', title, body),
     error: (title: string, body?: string) => push('error', title, body),
     /** Shows the human readable message of a failed API request. */
-    fromError: (error: unknown, title = 'Something went wrong') => push('error', title, httpErrorToHuman(error)),
+    fromError: (error: unknown, title = t('Something went wrong')) => push('error', title, httpErrorToHuman(error)),
 };
 
 const icons = { success: CheckCircleIcon, error: ExclamationCircleIcon, info: InformationCircleIcon };
@@ -94,7 +95,7 @@ export const Toaster = () => {
                             </div>
                             <button
                                 type={'button'}
-                                aria-label={'Dismiss'}
+                                aria-label={t('Dismiss')}
                                 onClick={() => dismiss(item.id)}
                                 className={'self-start p-0.5 rounded text-gray-500 hover:text-white'}
                             >

@@ -9,6 +9,7 @@ import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
 import { useFileManagerMutate } from '@/plugins/useFileManagerSwr';
 import useFlash from '@/plugins/useFlash';
+import { t } from '@/i18n';
 
 interface FormikValues {
     name: string;
@@ -66,23 +67,27 @@ const RenameFileModal = ({ files, useMoveTerminology, ...props }: OwnProps) => {
                                     type={'string'}
                                     id={'file_name'}
                                     name={'name'}
-                                    label={'File Name'}
+                                    label={t('File Name')}
                                     description={
                                         useMoveTerminology
-                                            ? 'Enter the new name and directory of this file or folder, relative to the current directory.'
+                                            ? t(
+                                                  'Enter the new name and directory of this file or folder, relative to the current directory.'
+                                              )
                                             : undefined
                                     }
                                     autoFocus
                                 />
                             </div>
                             <div css={tw`w-full sm:w-auto mt-4 sm:mt-0`}>
-                                <Button css={tw`w-full`}>{useMoveTerminology ? 'Move' : 'Rename'}</Button>
+                                <Button css={tw`w-full`}>{useMoveTerminology ? t('Move') : t('Rename')}</Button>
                             </div>
                         </div>
                         {useMoveTerminology && (
                             <p css={tw`text-xs mt-2 text-neutral-400`}>
-                                <strong css={tw`text-neutral-200`}>New location:</strong>
-                                &nbsp;/home/container/{join(directory, values.name).replace(/^(\.\.\/|\/)+/, '')}
+                                <strong css={tw`text-neutral-200`}>{t('New location:')}</strong>
+                                {t(' /home/container/{{value}}', {
+                                    value: join(directory, values.name).replace(/^(\.\.\/|\/)+/, ''),
+                                })}
                             </p>
                         )}
                     </Form>

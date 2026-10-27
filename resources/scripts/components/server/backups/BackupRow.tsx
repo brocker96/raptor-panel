@@ -12,6 +12,7 @@ import GreyRowBox from '@/components/elements/GreyRowBox';
 import getServerBackups from '@/api/swr/getServerBackups';
 import { ServerBackup } from '@/api/server/types';
 import { SocketEvent } from '@/components/server/events';
+import { t } from '@/i18n';
 
 interface Props {
     backup: ServerBackup;
@@ -68,7 +69,7 @@ export default ({ backup, className }: Props) => {
                             <span
                                 css={tw`bg-red-500 py-px px-2 rounded-full text-white text-xs uppercase border border-red-600 mr-2`}
                             >
-                                Failed
+                                {t('Failed')}
                             </span>
                         )}
                         <p css={tw`break-words truncate`}>{backup.name}</p>
@@ -85,7 +86,7 @@ export default ({ backup, className }: Props) => {
                 <p title={format(backup.createdAt, 'ddd, MMMM do, yyyy HH:mm:ss')} css={tw`text-sm`}>
                     {formatDistanceToNow(backup.createdAt, { includeSeconds: true, addSuffix: true })}
                 </p>
-                <p css={tw`text-2xs text-neutral-500 uppercase mt-1`}>Created</p>
+                <p css={tw`text-2xs text-neutral-500 uppercase mt-1`}>{t('Created')}</p>
             </div>
             <Can action={['backup.download', 'backup.restore', 'backup.delete']} matchAny>
                 <div css={tw`mt-4 md:mt-0 ml-6`} style={{ marginRight: '-0.5rem' }}>

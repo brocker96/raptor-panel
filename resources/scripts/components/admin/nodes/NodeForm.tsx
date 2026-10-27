@@ -7,6 +7,7 @@ import { Callout } from '@/components/admin/ui/Feedback';
 import { FormGrid, NumberInput, Select, TextArea, TextInput, Toggle } from '@/components/admin/ui/Form';
 import { Segmented } from '@/components/admin/ui/Page';
 import { formatMb } from '@/components/admin/ui/hooks';
+import { t } from '@/i18n';
 
 export const emptyNode: NodeValues = {
     name: '',
@@ -47,11 +48,11 @@ export default ({ values, onChange, errors, editing }: Props) => {
 
     return (
         <div className={'space-y-6'}>
-            <Card title={'Details'}>
+            <Card title={t('Details')}>
                 <div className={'space-y-4'}>
                     <FormGrid>
                         <TextInput
-                            label={'Name'}
+                            label={t('Name')}
                             required
                             value={values.name}
                             onChange={set('name')}
@@ -59,29 +60,34 @@ export default ({ values, onChange, errors, editing }: Props) => {
                             placeholder={'node-1'}
                         />
                         <Select
-                            label={'Location'}
+                            label={t('Location')}
                             required
                             value={values.location_id || ''}
                             onChange={(v) => set('location_id')(Number(v))}
                             error={errors.location_id}
-                            placeholder={locations?.length ? 'Choose a location' : 'Create a location first'}
+                            placeholder={locations?.length ? t('Choose a location') : t('Create a location first')}
                             options={(locations || []).map((l) => ({
                                 value: l.id,
                                 label: `${l.short}${l.long ? ` — ${l.long}` : ''}`,
                             }))}
                         />
                     </FormGrid>
-                    <TextArea label={'Description'} value={values.description} onChange={set('description')} rows={2} />
+                    <TextArea
+                        label={t('Description')}
+                        value={values.description}
+                        onChange={set('description')}
+                        rows={2}
+                    />
                     <div className={'grid gap-3 sm:grid-cols-2'}>
                         <Toggle
-                            label={'Public'}
-                            description={'Used for automatic deployment.'}
+                            label={t('Public')}
+                            description={t('Used for automatic deployment.')}
                             checked={values.public}
                             onChange={set('public')}
                         />
                         <Toggle
-                            label={'Maintenance mode'}
-                            description={'Users cannot control servers on this node.'}
+                            label={t('Maintenance mode')}
+                            description={t('Users cannot control servers on this node.')}
                             checked={values.maintenance_mode}
                             onChange={set('maintenance_mode')}
                         />
@@ -89,19 +95,21 @@ export default ({ values, onChange, errors, editing }: Props) => {
                 </div>
             </Card>
             <Card
-                title={'Connection'}
+                title={t('Connection')}
                 icon={LockClosedIcon}
-                description={'How the Panel and browsers reach Wings on this machine.'}
+                description={t('How the Panel and browsers reach Wings on this machine.')}
             >
                 <div className={'space-y-4'}>
                     <TextInput
-                        label={'FQDN'}
+                        label={t('FQDN')}
                         required
                         value={values.fqdn}
                         onChange={set('fqdn')}
                         error={errors.fqdn}
                         placeholder={'node1.example.com'}
-                        description={'Domain name or IP address of the machine. Must be reachable from the internet.'}
+                        description={t(
+                            'Domain name or IP address of the machine. Must be reachable from the internet.'
+                        )}
                     />
                     <div className={'flex flex-col sm:flex-row sm:items-center gap-3'}>
                         <Segmented
@@ -109,45 +117,49 @@ export default ({ values, onChange, errors, editing }: Props) => {
                             value={values.scheme}
                             onChange={set('scheme')}
                             options={[
-                                { value: 'https', label: 'Use SSL (https)' },
-                                { value: 'http', label: 'No SSL (http)' },
+                                { value: 'https', label: t('Use SSL (https)') },
+                                { value: 'http', label: t('No SSL (http)') },
                             ]}
                         />
-                        <span className={'text-xs text-gray-500'}>An IP address can only be used without SSL.</span>
+                        <span className={'text-xs text-gray-500'}>
+                            {t('An IP address can only be used without SSL.')}
+                        </span>
                     </div>
                     {values.scheme === 'http' && panelHttps && (
                         <Callout tone={'red'}>
-                            The Panel runs on HTTPS, browsers will block the console of a node without SSL.
+                            {t('The Panel runs on HTTPS, browsers will block the console of a node without SSL.')}
                         </Callout>
                     )}
                     {values.scheme === 'https' && isIp && (
                         <Callout tone={'yellow'}>
-                            Certificates are issued for domain names, use a domain for SSL.
+                            {t('Certificates are issued for domain names, use a domain for SSL.')}
                         </Callout>
                     )}
                     <Toggle
-                        label={'Behind a proxy'}
-                        description={'Wings runs on plain HTTP behind a proxy (nginx, Cloudflare) that terminates SSL.'}
+                        label={t('Behind a proxy')}
+                        description={t(
+                            'Wings runs on plain HTTP behind a proxy (nginx, Cloudflare) that terminates SSL.'
+                        )}
                         checked={values.behind_proxy}
                         onChange={set('behind_proxy')}
                     />
                     <FormGrid cols={3}>
                         <NumberInput
-                            label={'Daemon port'}
+                            label={t('Daemon port')}
                             required
                             value={values.daemonListen}
                             onChange={set('daemonListen')}
                             error={errors.daemonListen}
                         />
                         <NumberInput
-                            label={'SFTP port'}
+                            label={t('SFTP port')}
                             required
                             value={values.daemonSFTP}
                             onChange={set('daemonSFTP')}
                             error={errors.daemonSFTP}
                         />
                         <NumberInput
-                            label={'Upload limit'}
+                            label={t('Upload limit')}
                             suffix={'MiB'}
                             value={values.upload_size}
                             onChange={set('upload_size')}
@@ -156,33 +168,35 @@ export default ({ values, onChange, errors, editing }: Props) => {
                     </FormGrid>
                     {values.scheme === 'https' && !CF_HTTPS_PORTS.includes(values.daemonListen) && (
                         <Callout tone={'blue'} icon={CloudIcon}>
-                            Port {values.daemonListen} cannot be proxied by Cloudflare. If the FQDN is orange-clouded
-                            use 8443, otherwise keep it &quot;DNS only&quot;.
+                            {t(
+                                'Port {{daemonListen}} cannot be proxied by Cloudflare. If the FQDN is orange-clouded use 8443, otherwise keep it "DNS only".',
+                                { daemonListen: values.daemonListen }
+                            )}
                         </Callout>
                     )}
                     <TextInput
-                        label={'Daemon base directory'}
+                        label={t('Daemon base directory')}
                         value={values.daemonBase}
                         onChange={set('daemonBase')}
                         error={errors.daemonBase}
                         disabled={editing}
                         description={
                             editing
-                                ? 'Cannot be changed here, move the data and edit config.yml on the node instead.'
-                                : 'Where server files are stored on the node.'
+                                ? t('Cannot be changed here, move the data and edit config.yml on the node instead.')
+                                : t('Where server files are stored on the node.')
                         }
                     />
                 </div>
             </Card>
             <Card
-                title={'Resources'}
-                description={
+                title={t('Resources')}
+                description={t(
                     'The budget servers on this node are carved out of. Overallocation is in percent, -1 disables the check.'
-                }
+                )}
             >
                 <FormGrid cols={4}>
                     <NumberInput
-                        label={'Memory'}
+                        label={t('Memory')}
                         suffix={'MiB'}
                         required
                         value={values.memory}
@@ -191,14 +205,14 @@ export default ({ values, onChange, errors, editing }: Props) => {
                         description={formatMb(values.memory)}
                     />
                     <NumberInput
-                        label={'Memory overallocate'}
+                        label={t('Memory overallocate')}
                         suffix={'%'}
                         value={values.memory_overallocate}
                         onChange={set('memory_overallocate')}
                         error={errors.memory_overallocate}
                     />
                     <NumberInput
-                        label={'Disk'}
+                        label={t('Disk')}
                         suffix={'MiB'}
                         required
                         value={values.disk}
@@ -207,7 +221,7 @@ export default ({ values, onChange, errors, editing }: Props) => {
                         description={formatMb(values.disk)}
                     />
                     <NumberInput
-                        label={'Disk overallocate'}
+                        label={t('Disk overallocate')}
                         suffix={'%'}
                         value={values.disk_overallocate}
                         onChange={set('disk_overallocate')}

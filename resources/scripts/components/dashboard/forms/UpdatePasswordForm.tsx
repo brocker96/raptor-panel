@@ -9,6 +9,7 @@ import { httpErrorToHuman } from '@/api/http';
 import { ApplicationStore } from '@/state';
 import tw from 'twin.macro';
 import { Button } from '@/components/elements/button/index';
+import { t } from '@/i18n';
 
 interface Values {
     current: string;
@@ -17,11 +18,11 @@ interface Values {
 }
 
 const schema = Yup.object().shape({
-    current: Yup.string().min(1).required('You must provide your current password.'),
+    current: Yup.string().min(1).required(t('You must provide your current password.')),
     password: Yup.string().min(8).required(),
     confirmPassword: Yup.string().test(
         'password',
-        'Password confirmation does not match the password you entered.',
+        t('Password confirmation does not match the password you entered.'),
         function (value) {
             return value === this.parent.password;
         }
@@ -47,7 +48,7 @@ export default () => {
                 addFlash({
                     key: 'account:password',
                     type: 'error',
-                    title: 'Error',
+                    title: t('Error'),
                     message: httpErrorToHuman(error),
                 })
             )
@@ -69,17 +70,17 @@ export default () => {
                                 id={'current_password'}
                                 type={'password'}
                                 name={'current'}
-                                label={'Current Password'}
+                                label={t('Current Password')}
                             />
                             <div css={tw`mt-6`}>
                                 <Field
                                     id={'new_password'}
                                     type={'password'}
                                     name={'password'}
-                                    label={'New Password'}
-                                    description={
+                                    label={t('New Password')}
+                                    description={t(
                                         'Your new password should be at least 8 characters in length and unique to this website.'
-                                    }
+                                    )}
                                 />
                             </div>
                             <div css={tw`mt-6`}>
@@ -87,11 +88,11 @@ export default () => {
                                     id={'confirm_new_password'}
                                     type={'password'}
                                     name={'confirmPassword'}
-                                    label={'Confirm New Password'}
+                                    label={t('Confirm New Password')}
                                 />
                             </div>
                             <div css={tw`mt-6`}>
-                                <Button disabled={isSubmitting || !isValid}>Update Password</Button>
+                                <Button disabled={isSubmitting || !isValid}>{t('Update Password')}</Button>
                             </div>
                         </Form>
                     </React.Fragment>

@@ -7,6 +7,7 @@ import TransitionRouter from '@/TransitionRouter';
 import Spinner from '@/components/elements/Spinner';
 import Shell, { NavEntry } from '@/components/layout/Shell';
 import routes, { preload } from '@/routers/routes';
+import { t } from '@/i18n';
 
 const accountPath = (path: string) => `/account/${path}`.replace(/\/+/g, '/').replace(/(.)\/$/, '$1');
 
@@ -15,7 +16,7 @@ export default () => {
 
     const nav = useMemo<NavEntry[]>(
         () => [
-            { to: '/', label: 'Servers', icon: ServerIcon, end: true },
+            { to: '/', label: t('Servers'), icon: ServerIcon, end: true },
             ...routes.account
                 .filter((route) => !!route.name)
                 .map((route) => ({

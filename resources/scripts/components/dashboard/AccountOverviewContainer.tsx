@@ -9,7 +9,9 @@ import { breakpoint } from '@/theme';
 import styled from 'styled-components/macro';
 import MessageBox from '@/components/MessageBox';
 import AvatarForm from '@/components/dashboard/forms/AvatarForm';
+import LanguageForm from '@/components/dashboard/forms/LanguageForm';
 import { useLocation } from 'react-router-dom';
+import { t } from '@/i18n';
 
 const Container = styled.div`
     ${tw`flex flex-wrap`};
@@ -31,28 +33,33 @@ export default () => {
     const state = useLocation().state as { twoFactorRedirect?: boolean } | null;
 
     return (
-        <PageContentBlock title={'Account Overview'}>
+        <PageContentBlock title={t('Account Overview')}>
             {state?.twoFactorRedirect && (
-                <MessageBox title={'2-Factor Required'} type={'error'}>
-                    Your account must have two-factor authentication enabled in order to continue.
+                <MessageBox title={t('2-Factor Required')} type={'error'}>
+                    {t('Your account must have two-factor authentication enabled in order to continue.')}
                 </MessageBox>
             )}
 
-            <ContentBox
-                css={state?.twoFactorRedirect ? tw`mt-4` : tw`mt-10`}
-                title={'Profile Picture'}
-                showFlashes={'account:avatar'}
-            >
-                <AvatarForm />
-            </ContentBox>
+            <div css={[tw`grid gap-8 lg:grid-cols-3`, state?.twoFactorRedirect ? tw`mt-4` : tw`mt-10`]}>
+                <ContentBox css={tw`lg:col-span-2`} title={t('Profile Picture')} showFlashes={'account:avatar'}>
+                    <AvatarForm />
+                </ContentBox>
+                <ContentBox title={t('Language')} showFlashes={'account:language'}>
+                    <LanguageForm />
+                </ContentBox>
+            </div>
             <Container css={tw`lg:grid lg:grid-cols-3 mb-10 mt-8`}>
-                <ContentBox title={'Update Password'} showFlashes={'account:password'}>
+                <ContentBox title={t('Update Password')} showFlashes={'account:password'}>
                     <UpdatePasswordForm />
                 </ContentBox>
-                <ContentBox css={tw`mt-8 sm:mt-0 sm:ml-8`} title={'Update Email Address'} showFlashes={'account:email'}>
+                <ContentBox
+                    css={tw`mt-8 sm:mt-0 sm:ml-8`}
+                    title={t('Update Email Address')}
+                    showFlashes={'account:email'}
+                >
                     <UpdateEmailAddressForm />
                 </ContentBox>
-                <ContentBox css={tw`md:ml-8 mt-8 md:mt-0`} title={'Two-Step Verification'}>
+                <ContentBox css={tw`md:ml-8 mt-8 md:mt-0`} title={t('Two-Step Verification')}>
                     <ConfigureTwoFactorForm />
                 </ContentBox>
             </Container>

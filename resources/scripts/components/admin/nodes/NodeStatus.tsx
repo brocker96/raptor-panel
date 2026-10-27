@@ -2,6 +2,7 @@ import React from 'react';
 import { useResource } from '@/api/query';
 import { getNodeSystem } from '@/api/admin';
 import { Badge } from '@/components/admin/ui/Feedback';
+import { t } from '@/i18n';
 
 /** Live status of a node, asked from Wings and refreshed in the background. */
 export const useNodeStatus = (id: number, enabled = true) =>
@@ -15,17 +16,18 @@ export default ({ id }: { id: number }) => {
     const { data } = useNodeStatus(id);
 
     if (!data) {
-        return <Badge>Checking…</Badge>;
+        return <Badge>{t('Checking…')}</Badge>;
     }
 
     return data.online ? (
         <Badge tone={'green'} dot>
-            Online{data.latency !== undefined ? ` · ${data.latency} ms` : ''}
+            {t('Online')}
+            {data.latency !== undefined ? t(' · {{latency}} ms', { latency: data.latency }) : ''}
         </Badge>
     ) : (
         <span title={data.error}>
             <Badge tone={'red'} dot>
-                Offline
+                {t('Offline')}
             </Badge>
         </span>
     );

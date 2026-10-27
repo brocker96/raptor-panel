@@ -25,6 +25,7 @@ import { useStoreState } from '@/state/hooks';
 import { GuideProvider } from '@/components/admin/guides/GuideContext';
 import GuideDrawer from '@/components/admin/guides/GuideDrawer';
 import { Toaster } from '@/components/admin/ui/Toast';
+import { t } from '@/i18n';
 
 const Overview = lazy(() => import('@/components/admin/overview/OverviewContainer'));
 const Servers = lazy(() => import('@/components/admin/servers/ServersContainer'));
@@ -53,20 +54,20 @@ const GuideView = lazy(() =>
 );
 
 const nav: NavEntry[] = [
-    { to: '/admin', label: 'Overview', icon: ViewGridIcon, end: true, group: 'General' },
-    { to: '/admin/guides', label: 'Guides', icon: BookOpenIcon, group: 'General' },
-    { to: '/admin/servers', label: 'Servers', icon: ServerIcon, group: 'Management' },
-    { to: '/admin/users', label: 'Users', icon: UsersIcon, group: 'Management' },
-    { to: '/admin/nodes', label: 'Nodes', icon: ChipIcon, group: 'Infrastructure' },
-    { to: '/admin/locations', label: 'Locations', icon: GlobeIcon, group: 'Infrastructure' },
-    { to: '/admin/databases', label: 'Databases', icon: DatabaseIcon, group: 'Infrastructure' },
-    { to: '/admin/mounts', label: 'Mounts', icon: FolderIcon, group: 'Infrastructure' },
-    { to: '/admin/nests', label: 'Nests & eggs', icon: CollectionIcon, group: 'Services' },
-    { to: '/admin/settings', label: 'Settings', icon: CogIcon, group: 'Panel' },
-    { to: '/admin/api', label: 'API keys', icon: KeyIcon, group: 'Panel' },
-    { to: '/admin/activity', label: 'Audit log', icon: ClipboardListIcon, group: 'Panel' },
-    { to: '/admin/system', label: 'System', icon: TemplateIcon, group: 'Panel' },
-    { to: '/admin/updates', label: 'Updates', icon: ArrowCircleUpIcon, group: 'Panel' },
+    { to: '/admin', label: t('Overview'), icon: ViewGridIcon, end: true, group: 'General' },
+    { to: '/admin/guides', label: t('Guides'), icon: BookOpenIcon, group: 'General' },
+    { to: '/admin/servers', label: t('Servers'), icon: ServerIcon, group: 'Management' },
+    { to: '/admin/users', label: t('Users'), icon: UsersIcon, group: 'Management' },
+    { to: '/admin/nodes', label: t('Nodes'), icon: ChipIcon, group: 'Infrastructure' },
+    { to: '/admin/locations', label: t('Locations'), icon: GlobeIcon, group: 'Infrastructure' },
+    { to: '/admin/databases', label: t('Databases'), icon: DatabaseIcon, group: 'Infrastructure' },
+    { to: '/admin/mounts', label: t('Mounts'), icon: FolderIcon, group: 'Infrastructure' },
+    { to: '/admin/nests', label: t('Nests & eggs'), icon: CollectionIcon, group: 'Services' },
+    { to: '/admin/settings', label: t('Settings'), icon: CogIcon, group: 'Panel' },
+    { to: '/admin/api', label: t('API keys'), icon: KeyIcon, group: 'Panel' },
+    { to: '/admin/activity', label: t('Audit log'), icon: ClipboardListIcon, group: 'Panel' },
+    { to: '/admin/system', label: t('System'), icon: TemplateIcon, group: 'Panel' },
+    { to: '/admin/updates', label: t('Updates'), icon: ArrowCircleUpIcon, group: 'Panel' },
 ];
 
 const AdminContextCard = () => (
@@ -81,9 +82,9 @@ const AdminContextCard = () => (
                 'relative flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-raptor-300'
             }
         >
-            <CloudIcon className={'w-4 h-4'} /> Admin area
+            <CloudIcon className={'w-4 h-4'} /> {t('Admin area')}
         </p>
-        <p className={'relative mt-1 text-xs text-gray-400'}>Changes here affect the whole Panel.</p>
+        <p className={'relative mt-1 text-xs text-gray-400'}>{t('Changes here affect the whole Panel.')}</p>
     </div>
 );
 
@@ -116,9 +117,9 @@ export default () => {
                 context={<AdminContextCard />}
                 title={
                     <span className={'flex items-center gap-2 min-w-0'}>
-                        <span className={'text-gray-400 font-medium hidden sm:inline'}>Admin</span>
+                        <span className={'text-gray-400 font-medium hidden sm:inline'}>{t('Admin')}</span>
                         <span className={'text-gray-600 hidden sm:inline'}>/</span>
-                        <span className={'truncate'}>{current?.label || 'Admin'}</span>
+                        <span className={'truncate'}>{current?.label || t('Admin')}</span>
                     </span>
                 }
             >

@@ -116,13 +116,13 @@ class OverviewController extends AdminApiController
         $database = rescue(fn () => DB::selectOne('SELECT VERSION() as version')->version, 'unknown', false);
 
         $checks = [
-            ['key' => 'debug', 'ok' => !config('app.debug'), 'label' => 'Debug mode is disabled', 'hint' => 'APP_DEBUG=true leaks stack traces and secrets to visitors. Set APP_DEBUG=false in your .env file.'],
-            ['key' => 'https', 'ok' => str_starts_with(config('app.url'), 'https://'), 'label' => 'Panel URL uses HTTPS', 'hint' => 'Set APP_URL to an https:// address and configure a TLS certificate in your webserver.'],
-            ['key' => 'cache', 'ok' => config('cache.default') === 'redis', 'label' => 'Redis is used for cache', 'hint' => 'CACHE_DRIVER=redis is strongly recommended for performance.'],
-            ['key' => 'queue', 'ok' => config('queue.default') !== 'sync', 'label' => 'A queue worker is configured', 'hint' => 'QUEUE_CONNECTION=sync runs jobs inside web requests. Use redis and run the raptorq systemd service (created by install.sh).'],
-            ['key' => 'session', 'ok' => in_array(config('session.driver'), ['redis', 'database']), 'label' => 'Sessions are stored in Redis or the database', 'hint' => 'File based sessions do not scale and are slower. Use SESSION_DRIVER=redis.'],
+            ['key' => 'debug', 'ok' => !config('app.debug'), 'label' => __('Debug mode is disabled'), 'hint' => __('APP_DEBUG=true leaks stack traces and secrets to visitors. Set APP_DEBUG=false in your .env file.')],
+            ['key' => 'https', 'ok' => str_starts_with(config('app.url'), 'https://'), 'label' => __('Panel URL uses HTTPS'), 'hint' => __('Set APP_URL to an https:// address and configure a TLS certificate in your webserver.')],
+            ['key' => 'cache', 'ok' => config('cache.default') === 'redis', 'label' => __('Redis is used for cache'), 'hint' => __('CACHE_DRIVER=redis is strongly recommended for performance.')],
+            ['key' => 'queue', 'ok' => config('queue.default') !== 'sync', 'label' => __('A queue worker is configured'), 'hint' => __('QUEUE_CONNECTION=sync runs jobs inside web requests. Use redis and run the raptorq systemd service (created by install.sh).')],
+            ['key' => 'session', 'ok' => in_array(config('session.driver'), ['redis', 'database']), 'label' => __('Sessions are stored in Redis or the database'), 'hint' => __('File based sessions do not scale and are slower. Use SESSION_DRIVER=redis.')],
             $this->mailCheck(),
-            ['key' => 'failed_jobs', 'ok' => DB::table('failed_jobs')->count() === 0, 'label' => 'No failed queue jobs', 'hint' => 'Failed jobs usually mean a node was unreachable or the mail configuration is broken. Review them on the System page.'],
+            ['key' => 'failed_jobs', 'ok' => DB::table('failed_jobs')->count() === 0, 'label' => __('No failed queue jobs'), 'hint' => __('Failed jobs usually mean a node was unreachable or the mail configuration is broken. Review them on the System page.')],
         ];
 
         return new JsonResponse([
@@ -166,10 +166,10 @@ class OverviewController extends AdminApiController
         return [
             'key' => 'mail',
             'ok' => !in_array($driver, ['log', 'array'], true) && !$placeholder,
-            'label' => 'E-mail delivery is configured',
+            'label' => __('E-mail delivery is configured'),
             'hint' => $placeholder
-                ? 'The mail settings still point to smtp.example.com, every e-mail fails. Configure your SMTP server in Settings → Mail.'
-                : 'E-mails are only written to the log file. Configure an SMTP server in Settings → Mail so users receive password resets.',
+                ? __('The mail settings still point to smtp.example.com, every e-mail fails. Configure your SMTP server in Settings → Mail.')
+                : __('E-mails are only written to the log file. Configure an SMTP server in Settings → Mail so users receive password resets.'),
         ];
     }
 }

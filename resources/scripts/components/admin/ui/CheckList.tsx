@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import classNames from 'classnames';
 import { CheckIcon } from '@heroicons/react/outline';
+import { t } from '@/i18n';
 
 interface Option {
     id: number;
@@ -14,7 +15,7 @@ export default ({
     options,
     selected,
     onChange,
-    placeholder = 'Filter…',
+    placeholder = t('Filter…'),
 }: {
     options: Option[];
     selected: number[];
@@ -39,7 +40,9 @@ export default ({
                         'flex-1 h-8 px-2 rounded-md bg-transparent border-0 text-sm text-gray-100 placeholder:text-gray-600 focus:outline-none focus:ring-1 focus:ring-raptor-500'
                     }
                 />
-                <span className={'text-2xs text-gray-500 pr-1'}>{selected.length} selected</span>
+                <span className={'text-2xs text-gray-500 pr-1'}>
+                    {t('{{count}} selected', { count: selected.length })}
+                </span>
             </div>
             <ul className={'max-h-72 overflow-y-auto divide-y divide-gray-800/60'}>
                 {visible.map((option, index) => (
@@ -77,7 +80,7 @@ export default ({
                         </li>
                     </React.Fragment>
                 ))}
-                {!visible.length && <li className={'px-3 py-4 text-sm text-gray-500'}>Nothing matches.</li>}
+                {!visible.length && <li className={'px-3 py-4 text-sm text-gray-500'}>{t('Nothing matches.')}</li>}
             </ul>
         </div>
     );

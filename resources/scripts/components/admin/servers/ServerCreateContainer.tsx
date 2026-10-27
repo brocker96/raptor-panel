@@ -13,14 +13,15 @@ import Button from '@/components/admin/ui/Button';
 import UserPicker from '@/components/admin/ui/UserPicker';
 import CheckList from '@/components/admin/ui/CheckList';
 import { formatMb, useAction } from '@/components/admin/ui/hooks';
+import { t } from '@/i18n';
 
-const STEPS = ['Details', 'Egg', 'Node', 'Resources', 'Review'];
+const STEPS = [t('Details'), t('Egg'), t('Node'), t('Resources'), t('Review')];
 
 const PRESETS = [
-    { label: 'Small', memory: 1024, disk: 5120, cpu: 100 },
-    { label: 'Medium', memory: 4096, disk: 10240, cpu: 200 },
-    { label: 'Large', memory: 8192, disk: 25600, cpu: 400 },
-    { label: 'Huge', memory: 16384, disk: 51200, cpu: 800 },
+    { label: t('Small'), memory: 1024, disk: 5120, cpu: 100 },
+    { label: t('Medium'), memory: 4096, disk: 10240, cpu: 200 },
+    { label: t('Large'), memory: 8192, disk: 25600, cpu: 400 },
+    { label: t('Huge'), memory: 16384, disk: 51200, cpu: 800 },
 ];
 
 export default () => {
@@ -98,7 +99,7 @@ export default () => {
     };
 
     const create = useAction(createServer, {
-        success: 'Server created, installation started',
+        success: t('Server created, installation started'),
         invalidate: [
             ['admin', 'servers'],
             ['admin', 'nodes'],
@@ -143,10 +144,10 @@ export default () => {
 
     return (
         <Page
-            title={'New server'}
+            title={t('New server')}
             icon={ServerIcon}
-            crumbs={[{ label: 'Servers', to: '/admin/servers' }, { label: 'New' }]}
-            description={'Five short steps. The server is installed by its egg as soon as it is created.'}
+            crumbs={[{ label: t('Servers'), to: '/admin/servers' }, { label: t('New') }]}
+            description={t('Five short steps. The server is installed by its egg as soon as it is created.')}
             guide={'server-create'}
         >
             <div className={'flex items-center gap-1 sm:gap-2 overflow-x-auto pb-1'}>
@@ -203,46 +204,46 @@ export default () => {
                         transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
                     >
                         {step === 0 && (
-                            <Card title={'Details'} description={'Who owns the server and how it is called.'}>
+                            <Card title={t('Details')} description={t('Who owns the server and how it is called.')}>
                                 <div className={'space-y-4'}>
                                     <FormGrid>
                                         <TextInput
-                                            label={'Server name'}
+                                            label={t('Server name')}
                                             required
                                             value={name}
                                             onChange={setName}
                                             error={err('name')}
-                                            placeholder={'Survival SMP'}
+                                            placeholder={t('Survival SMP')}
                                             autoFocus
                                         />
                                         <UserPicker value={owner} onChange={setOwner} error={err('user')} />
                                     </FormGrid>
                                     <TextArea
-                                        label={'Description'}
+                                        label={t('Description')}
                                         value={description}
                                         onChange={setDescription}
                                         rows={2}
                                     />
                                     <TextInput
-                                        label={'External ID'}
+                                        label={t('External ID')}
                                         value={externalId}
                                         onChange={setExternalId}
                                         error={err('external_id')}
-                                        description={'Optional identifier from a billing system.'}
+                                        description={t('Optional identifier from a billing system.')}
                                     />
                                 </div>
                             </Card>
                         )}
                         {step === 1 && (
-                            <Card title={'Egg'} description={'What kind of server to install.'}>
+                            <Card title={t('Egg')} description={t('What kind of server to install.')}>
                                 <div className={'space-y-4'}>
                                     <Select
-                                        label={'Egg'}
+                                        label={t('Egg')}
                                         required
                                         value={eggId || ''}
                                         onChange={(v) => setEggId(Number(v))}
                                         error={err('egg')}
-                                        placeholder={'Choose an egg'}
+                                        placeholder={t('Choose an egg')}
                                         options={(nests || []).flatMap((nest) =>
                                             nest.eggs.map((e) => ({ value: e.id, label: `${nest.name} → ${e.name}` }))
                                         )}
@@ -251,7 +252,7 @@ export default () => {
                                         <>
                                             <FormGrid>
                                                 <Select
-                                                    label={'Docker image'}
+                                                    label={t('Docker image')}
                                                     value={
                                                         Object.values(egg.docker_images).includes(image)
                                                             ? image
@@ -263,11 +264,11 @@ export default () => {
                                                             value,
                                                             label,
                                                         })),
-                                                        { value: '__custom', label: 'Custom image…' },
+                                                        { value: '__custom', label: t('Custom image…') },
                                                     ]}
                                                 />
                                                 <TextInput
-                                                    label={'Image'}
+                                                    label={t('Image')}
                                                     value={image}
                                                     onChange={setImage}
                                                     error={err('docker_image')}
@@ -275,7 +276,7 @@ export default () => {
                                                 />
                                             </FormGrid>
                                             <TextArea
-                                                label={'Startup command'}
+                                                label={t('Startup command')}
                                                 mono
                                                 rows={3}
                                                 value={startup}
@@ -289,7 +290,7 @@ export default () => {
                                                             'mb-2 text-xs font-semibold uppercase tracking-wider text-gray-500'
                                                         }
                                                     >
-                                                        Variables
+                                                        {t('Variables')}
                                                     </p>
                                                     <FormGrid>
                                                         {egg.variables.map((variable) => (
@@ -313,13 +314,13 @@ export default () => {
                                             )}
                                             <div className={'grid gap-3 sm:grid-cols-2'}>
                                                 <Toggle
-                                                    label={'Skip egg install script'}
-                                                    description={'You will upload the files yourself.'}
+                                                    label={t('Skip egg install script')}
+                                                    description={t('You will upload the files yourself.')}
                                                     checked={skipScripts}
                                                     onChange={setSkipScripts}
                                                 />
                                                 <Toggle
-                                                    label={'Start when installed'}
+                                                    label={t('Start when installed')}
                                                     checked={startOnCompletion}
                                                     onChange={setStartOnCompletion}
                                                 />
@@ -331,8 +332,8 @@ export default () => {
                         )}
                         {step === 2 && (
                             <Card
-                                title={'Node & network'}
-                                description={'Where the server runs and which ports it gets.'}
+                                title={t('Node & network')}
+                                description={t('Where the server runs and which ports it gets.')}
                             >
                                 <div className={'space-y-4'}>
                                     <div className={'grid gap-3 sm:grid-cols-2'}>
@@ -353,8 +354,10 @@ export default () => {
                                                 >
                                                     <p className={'text-sm font-medium text-gray-100'}>{n.name}</p>
                                                     <p className={'text-xs text-gray-500'}>
-                                                        {n.location?.short} ·{' '}
-                                                        {formatMb(Math.max(0, max - n.usage.memory))} memory free
+                                                        {t('{{short}} · {{formatMb}} memory free', {
+                                                            short: n.location?.short,
+                                                            formatMb: formatMb(Math.max(0, max - n.usage.memory)),
+                                                        })}
                                                     </p>
                                                     <Meter
                                                         value={n.usage.memory + (nodeId === n.id ? limits.memory : 0)}
@@ -369,13 +372,14 @@ export default () => {
                                         allocations &&
                                         (allocations.data.length === 0 ? (
                                             <Callout tone={'yellow'}>
-                                                This node has no free allocations. Add ports on the Allocations tab of
-                                                the node first.
+                                                {t(
+                                                    'This node has no free allocations. Add ports on the Allocations tab of the node first.'
+                                                )}
                                             </Callout>
                                         ) : (
                                             <>
                                                 <Select
-                                                    label={'Primary allocation'}
+                                                    label={t('Primary allocation')}
                                                     required
                                                     value={allocation}
                                                     onChange={(v) => setAllocation(Number(v))}
@@ -387,7 +391,7 @@ export default () => {
                                                 />
                                                 <div>
                                                     <p className={'mb-1.5 text-xs font-medium text-gray-300'}>
-                                                        Additional allocations
+                                                        {t('Additional allocations')}
                                                     </p>
                                                     <CheckList
                                                         options={allocations.data
@@ -398,7 +402,7 @@ export default () => {
                                                             }))}
                                                         selected={additional}
                                                         onChange={setAdditional}
-                                                        placeholder={'Filter ports…'}
+                                                        placeholder={t('Filter ports…')}
                                                     />
                                                 </div>
                                             </>
@@ -408,8 +412,8 @@ export default () => {
                         )}
                         {step === 3 && (
                             <Card
-                                title={'Resources & limits'}
-                                description={'0 means unlimited for memory, disk and CPU.'}
+                                title={t('Resources & limits')}
+                                description={t('0 means unlimited for memory, disk and CPU.')}
                             >
                                 <div className={'space-y-5'}>
                                     <div className={'flex flex-wrap gap-2'}>
@@ -445,7 +449,7 @@ export default () => {
                                     </div>
                                     <FormGrid cols={3}>
                                         <NumberInput
-                                            label={'Memory'}
+                                            label={t('Memory')}
                                             suffix={'MiB'}
                                             value={limits.memory}
                                             onChange={(memory) => setLimits({ ...limits, memory })}
@@ -453,15 +457,15 @@ export default () => {
                                             description={formatMb(limits.memory)}
                                         />
                                         <NumberInput
-                                            label={'Swap'}
+                                            label={t('Swap')}
                                             suffix={'MiB'}
                                             value={limits.swap}
                                             onChange={(swap) => setLimits({ ...limits, swap })}
                                             error={err('limits.swap')}
-                                            description={'0 disables, -1 unlimited'}
+                                            description={t('0 disables, -1 unlimited')}
                                         />
                                         <NumberInput
-                                            label={'Disk'}
+                                            label={t('Disk')}
                                             suffix={'MiB'}
                                             value={limits.disk}
                                             onChange={(disk) => setLimits({ ...limits, disk })}
@@ -469,54 +473,54 @@ export default () => {
                                             description={formatMb(limits.disk)}
                                         />
                                         <NumberInput
-                                            label={'CPU'}
+                                            label={t('CPU')}
                                             suffix={'%'}
                                             value={limits.cpu}
                                             onChange={(cpu) => setLimits({ ...limits, cpu })}
                                             error={err('limits.cpu')}
-                                            description={'100% = one thread'}
+                                            description={t('100% = one thread')}
                                         />
                                         <NumberInput
-                                            label={'Block IO weight'}
+                                            label={t('Block IO weight')}
                                             value={limits.io}
                                             onChange={(io) => setLimits({ ...limits, io })}
                                             error={err('limits.io')}
-                                            description={'10 – 1000, default 500'}
+                                            description={t('10 – 1000, default 500')}
                                         />
                                         <TextInput
-                                            label={'CPU pinning'}
+                                            label={t('CPU pinning')}
                                             value={limits.threads || ''}
                                             onChange={(threads) => setLimits({ ...limits, threads: threads || null })}
                                             error={err('limits.threads')}
                                             placeholder={'0-3'}
-                                            description={'Optional, e.g. 0,1 or 0-3'}
+                                            description={t('Optional, e.g. 0,1 or 0-3')}
                                         />
                                     </FormGrid>
                                     <FormGrid cols={3}>
                                         <NumberInput
-                                            label={'Databases'}
+                                            label={t('Databases')}
                                             value={features.databases}
                                             onChange={(databases) => setFeatures({ ...features, databases })}
                                             error={err('feature_limits.databases')}
                                         />
                                         <NumberInput
-                                            label={'Extra allocations'}
+                                            label={t('Extra allocations')}
                                             value={features.allocations}
                                             onChange={(a) => setFeatures({ ...features, allocations: a })}
                                             error={err('feature_limits.allocations')}
                                         />
                                         <NumberInput
-                                            label={'Backups'}
+                                            label={t('Backups')}
                                             value={features.backups}
                                             onChange={(backups) => setFeatures({ ...features, backups })}
                                             error={err('feature_limits.backups')}
                                         />
                                     </FormGrid>
                                     <Toggle
-                                        label={'Disable OOM killer'}
-                                        description={
+                                        label={t('Disable OOM killer')}
+                                        description={t(
                                             'The process is frozen instead of killed when it hits the memory limit.'
-                                        }
+                                        )}
                                         checked={oomDisabled}
                                         onChange={setOomDisabled}
                                     />
@@ -524,33 +528,40 @@ export default () => {
                             </Card>
                         )}
                         {step === 4 && (
-                            <Card title={'Review'} description={'Check everything before creating the server.'}>
+                            <Card title={t('Review')} description={t('Check everything before creating the server.')}>
                                 <Details
                                     items={[
-                                        ['Name', name],
-                                        ['Owner', owner ? `${owner.username} (${owner.email})` : null],
-                                        ['Egg', egg ? `${egg.nest.name} → ${egg.name}` : null],
+                                        [t('Name'), name],
+                                        [t('Owner'), owner ? `${owner.username} (${owner.email})` : null],
+                                        [t('Egg'), egg ? `${egg.nest.name} → ${egg.name}` : null],
                                         [
-                                            'Image',
+                                            t('Image'),
                                             <code key={'i'} className={'text-xs break-all'}>
                                                 {image}
                                             </code>,
                                         ],
-                                        ['Node', node?.name],
+                                        [t('Node'), node?.name],
                                         [
-                                            'Allocation',
+                                            t('Allocation'),
                                             allocations?.data.find((a) => a.id === allocation)
                                                 ? `${allocations.data.find((a) => a.id === allocation)!.ip}:${
                                                       allocations.data.find((a) => a.id === allocation)!.port
                                                   }`
                                                 : null,
                                         ],
-                                        ['Extra ports', additional.length || 'None'],
-                                        ['Memory / disk', `${formatMb(limits.memory)} / ${formatMb(limits.disk)}`],
-                                        ['CPU', limits.cpu ? `${limits.cpu}%` : 'Unlimited'],
+                                        [t('Extra ports'), additional.length || t('None')],
+                                        [t('Memory / disk'), `${formatMb(limits.memory)} / ${formatMb(limits.disk)}`],
+                                        [t('CPU'), limits.cpu ? `${limits.cpu}%` : t('Unlimited')],
                                         [
-                                            'Limits',
-                                            `${features.databases} databases · ${features.allocations} allocations · ${features.backups} backups`,
+                                            t('Limits'),
+                                            t(
+                                                '{{databases}} databases · {{allocations}} allocations · {{backups}} backups',
+                                                {
+                                                    databases: features.databases,
+                                                    allocations: features.allocations,
+                                                    backups: features.backups,
+                                                }
+                                            ),
                                         ],
                                     ]}
                                 />
@@ -562,15 +573,15 @@ export default () => {
 
             <div className={'flex justify-between gap-2'}>
                 <Button variant={'ghost'} icon={ChevronLeftIcon} disabled={step === 0} onClick={() => go(step - 1)}>
-                    Back
+                    {t('Back')}
                 </Button>
                 {step < STEPS.length - 1 ? (
                     <Button disabled={!canContinue} onClick={() => go(step + 1)}>
-                        Continue <ChevronRightIcon className={'w-4 h-4'} />
+                        {t('Continue')} <ChevronRightIcon className={'w-4 h-4'} />
                     </Button>
                 ) : (
                     <Button icon={ServerIcon} loading={create.loading} onClick={() => create.run(values)}>
-                        Create server
+                        {t('Create server')}
                     </Button>
                 )}
             </div>

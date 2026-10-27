@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import classNames from 'classnames';
 import FlashMessageRender from '@/components/FlashMessageRender';
+import { t } from '@/i18n';
 
 export interface PageContentBlockProps {
     title?: string;
@@ -37,16 +38,16 @@ const PageContentBlock: React.FC<React.PropsWithChildren<PageContentBlockProps>>
                     target={'_blank'}
                     className={'text-gray-500 hover:text-gray-300'}
                 >
-                    Raptor Panel
+                    {t('Raptor Panel')}
                 </a>
-                {' · based on '}
+                {t(' · based on ')}
                 <a
                     rel={'noopener nofollow noreferrer'}
                     href={'https://pterodactyl.io'}
                     target={'_blank'}
                     className={'text-gray-500 hover:text-gray-300'}
                 >
-                    Pterodactyl&reg;
+                    {t('Pterodactyl®')}
                 </a>
             </footer>
         </div>

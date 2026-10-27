@@ -12,6 +12,7 @@ import { ServerContext } from '@/state/server';
 import { WithClassname } from '@/components/types';
 import Portal from '@/components/elements/Portal';
 import { CloudUploadIcon } from '@heroicons/react/outline';
+import { t } from '@/i18n';
 
 function isFileOrDirectory(event: DragEvent): boolean {
     if (!event.dataTransfer?.types) {
@@ -76,7 +77,7 @@ export default ({ className }: WithClassname) => {
         clearAndAddHttpError();
         const list = Array.from(files);
         if (list.some((file) => !file.type && (!file.size || file.size === 4096))) {
-            return addError('Folder uploads are not supported.', 'Error');
+            return addError(t('Folder uploads are not supported.'), t('Error'));
         }
 
         const uploads = list.map((file) => {
@@ -136,7 +137,7 @@ export default ({ className }: WithClassname) => {
                             >
                                 <CloudUploadIcon className={'w-10 h-10 flex-shrink-0'} />
                                 <p className={'font-header flex-1 text-lg text-neutral-100 text-center'}>
-                                    Drag and drop files to upload.
+                                    {t('Drag and drop files to upload.')}
                                 </p>
                             </div>
                         </div>
@@ -157,7 +158,7 @@ export default ({ className }: WithClassname) => {
                 multiple
             />
             <Button className={className} onClick={() => fileUploadInput.current && fileUploadInput.current.click()}>
-                Upload
+                {t('Upload')}
             </Button>
         </>
     );

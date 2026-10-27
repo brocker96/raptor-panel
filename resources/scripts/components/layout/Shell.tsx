@@ -16,6 +16,7 @@ import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import { useStoreState } from '@/state/hooks';
 import http from '@/api/http';
 import styles from './style.module.css';
+import { t } from '@/i18n';
 
 export interface NavEntry {
     to: string;
@@ -86,23 +87,26 @@ const UserLinks = ({ onNavigate }: { onNavigate?: () => void }) => {
     return (
         <>
             <SpinnerOverlay visible={loggingOut} fixed />
-            <NavItem entry={{ to: '/', label: 'All servers', icon: ServerIcon, end: true }} onNavigate={onNavigate} />
-            <NavItem entry={{ to: '/account', label: 'Account', icon: UserCircleIcon }} onNavigate={onNavigate} />
+            <NavItem
+                entry={{ to: '/', label: t('All servers'), icon: ServerIcon, end: true }}
+                onNavigate={onNavigate}
+            />
+            <NavItem entry={{ to: '/account', label: t('Account'), icon: UserCircleIcon }} onNavigate={onNavigate} />
             {rootAdmin &&
                 (inAdmin ? (
                     <Link to={'/'} onClick={onNavigate} className={styles.nav_item}>
                         <ServerIcon className={styles.nav_icon} aria-hidden />
-                        <span>Exit admin</span>
+                        <span>{t('Exit admin')}</span>
                     </Link>
                 ) : (
                     <Link to={'/admin'} onClick={onNavigate} className={styles.nav_item}>
                         <ShieldCheckIcon className={styles.nav_icon} aria-hidden />
-                        <span>Admin area</span>
+                        <span>{t('Admin area')}</span>
                     </Link>
                 ))}
             <button type={'button'} onClick={logout} className={classNames(styles.nav_item, 'w-full')}>
                 <LogoutIcon className={styles.nav_icon} aria-hidden />
-                <span>Sign out</span>
+                <span>{t('Sign out')}</span>
             </button>
         </>
     );
@@ -121,8 +125,8 @@ const FooterActions = () => {
                 <Link
                     to={inAdmin ? '/' : '/admin'}
                     className={styles.footer_action}
-                    title={inAdmin ? 'Exit admin' : 'Admin area'}
-                    aria-label={inAdmin ? 'Exit admin' : 'Admin area'}
+                    title={inAdmin ? t('Exit admin') : t('Admin area')}
+                    aria-label={inAdmin ? t('Exit admin') : t('Admin area')}
                 >
                     {inAdmin ? <ServerIcon className={'w-5 h-5'} /> : <ShieldCheckIcon className={'w-5 h-5'} />}
                 </Link>
@@ -131,8 +135,8 @@ const FooterActions = () => {
                 type={'button'}
                 onClick={logout}
                 className={styles.footer_action}
-                title={'Sign out'}
-                aria-label={'Sign out'}
+                title={t('Sign out')}
+                aria-label={t('Sign out')}
             >
                 <LogoutIcon className={'w-5 h-5'} />
             </button>
@@ -182,11 +186,11 @@ export default ({ nav, primary, context, title, banner, fullscreen, children }: 
                     <Logo />
                 </Link>
                 {context && <div className={'px-3 pb-3'}>{context}</div>}
-                <nav ref={navRef} className={styles.nav} aria-label={'Main navigation'}>
+                <nav ref={navRef} className={styles.nav} aria-label={t('Main navigation')}>
                     {nav.map((entry, index) => (
                         <React.Fragment key={entry.to}>
                             {entry.group && entry.group !== nav[index - 1]?.group && (
-                                <p className={styles.nav_group}>{entry.group}</p>
+                                <p className={styles.nav_group}>{t(entry.group)}</p>
                             )}
                             <NavItem entry={entry} />
                         </React.Fragment>
@@ -199,7 +203,7 @@ export default ({ nav, primary, context, title, banner, fullscreen, children }: 
             </aside>
             <div className={styles.main}>
                 <header className={styles.topbar}>
-                    <Link to={'/'} className={'lg:hidden no-underline'} aria-label={'All servers'}>
+                    <Link to={'/'} className={'lg:hidden no-underline'} aria-label={t('All servers')}>
                         <Logo iconOnly size={'sm'} />
                     </Link>
                     <div className={'flex-1 min-w-0 text-sm font-semibold text-gray-100 truncate'}>{title}</div>
@@ -217,7 +221,7 @@ export default ({ nav, primary, context, title, banner, fullscreen, children }: 
                     {children}
                 </main>
             </div>
-            <nav className={classNames(styles.bottom_bar, { hidden: fullscreen })} aria-label={'Navigation'}>
+            <nav className={classNames(styles.bottom_bar, { hidden: fullscreen })} aria-label={t('Navigation')}>
                 {bottomItems.map((entry) => (
                     <NavItem key={entry.to} entry={entry} compact />
                 ))}
@@ -229,7 +233,7 @@ export default ({ nav, primary, context, title, banner, fullscreen, children }: 
                         aria-expanded={moreOpen}
                     >
                         <DotsHorizontalIcon className={styles.nav_icon} aria-hidden />
-                        <span className={styles.tab_label}>More</span>
+                        <span className={styles.tab_label}>{t('More')}</span>
                     </button>
                 )}
             </nav>
@@ -240,7 +244,7 @@ export default ({ nav, primary, context, title, banner, fullscreen, children }: 
                             <UserBadge />
                             <button
                                 type={'button'}
-                                aria-label={'Close'}
+                                aria-label={t('Close')}
                                 className={'p-2 rounded-md text-gray-400 hover:text-white'}
                                 onClick={() => setMoreOpen(false)}
                             >

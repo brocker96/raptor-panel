@@ -12,6 +12,7 @@ import { Alert } from '@/components/elements/alert';
 import StatusDot, { statusLabel } from '@/components/server/StatusDot';
 import CopyOnClick from '@/components/elements/CopyOnClick';
 import { ip } from '@/lib/formatters';
+import { t } from '@/i18n';
 
 // The terminal and the charts are the heaviest parts of the panel (xterm and chart.js), they are
 // loaded separately so that the rest of the page renders immediately.
@@ -35,14 +36,18 @@ const ServerConsoleContainer = () => {
     });
 
     return (
-        <ServerContentBlock title={'Console'} hideHeading>
+        <ServerContentBlock title={t('Console')} hideHeading>
             {(isNodeUnderMaintenance || isInstalling || isTransferring) && (
                 <Alert type={'warning'} className={'mb-4'}>
                     {isNodeUnderMaintenance
-                        ? 'The node of this server is currently under maintenance and all actions are unavailable.'
+                        ? t('The node of this server is currently under maintenance and all actions are unavailable.')
                         : isInstalling
-                        ? 'This server is currently running its installation process and most actions are unavailable.'
-                        : 'This server is currently being transferred to another node and all actions are unavailable.'}
+                        ? t(
+                              'This server is currently running its installation process and most actions are unavailable.'
+                          )
+                        : t(
+                              'This server is currently being transferred to another node and all actions are unavailable.'
+                          )}
                 </Alert>
             )}
             <div className={'flex flex-col sm:flex-row sm:items-end gap-4 mb-5'}>

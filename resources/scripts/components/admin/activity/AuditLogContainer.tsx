@@ -11,6 +11,7 @@ import { Card } from '@/components/admin/ui/Card';
 import { Pagination, SearchInput, Toolbar } from '@/components/admin/ui/DataTable';
 import { Badge, EmptyState, Skeleton } from '@/components/admin/ui/Feedback';
 import { ago, useListParams } from '@/components/admin/ui/hooks';
+import { t } from '@/i18n';
 
 const scopeTone = (event: string) =>
     event.startsWith('admin:')
@@ -65,7 +66,7 @@ const Entry = ({ entry }: { entry: AuditEntry }) => {
                                 {entry.actor.username}
                             </Link>
                         ) : (
-                            <span>{entry.actor ? entry.actor.type : 'System'}</span>
+                            <span>{entry.actor ? entry.actor.type : t('System')}</span>
                         )}
                         {entry.ip && <span className={'font-mono'}> · {entry.ip}</span>} ·{' '}
                         <span title={entry.timestamp}>{ago(entry.timestamp)}</span>
@@ -110,7 +111,7 @@ const Entry = ({ entry }: { entry: AuditEntry }) => {
                                         to={link}
                                         className={'mt-2 mr-3 inline-block text-raptor-300 hover:text-raptor-200'}
                                     >
-                                        Open {subject.type} →
+                                        {t('Open {{type}} →', { type: subject.type })}
                                     </Link>
                                 ) : null;
                             })}
@@ -135,9 +136,9 @@ export default () => {
 
     return (
         <Page
-            title={'Audit log'}
+            title={t('Audit log')}
             icon={ClipboardListIcon}
-            description={'Everything that happened on the Panel: logins, server actions and admin changes.'}
+            description={t('Everything that happened on the Panel: logins, server actions and admin changes.')}
             guide={'audit-log'}
         >
             <Card flush>
@@ -145,7 +146,7 @@ export default () => {
                     <SearchInput
                         value={list.search}
                         onChange={list.setSearch}
-                        placeholder={'Search events, IPs, users or properties…'}
+                        placeholder={t('Search events, IPs, users or properties…')}
                         className={'flex-1'}
                     />
                     <Segmented
@@ -153,11 +154,11 @@ export default () => {
                         value={list.filters.scope || 'all'}
                         onChange={(value) => list.setFilter('scope', value === 'all' ? '' : value)}
                         options={[
-                            { value: 'all', label: 'All' },
-                            { value: 'auth', label: 'Auth' },
-                            { value: 'user', label: 'Account' },
-                            { value: 'server', label: 'Server' },
-                            { value: 'admin', label: 'Admin' },
+                            { value: 'all', label: t('All') },
+                            { value: 'auth', label: t('Auth') },
+                            { value: 'user', label: t('Account') },
+                            { value: 'server', label: t('Server') },
+                            { value: 'admin', label: t('Admin') },
                         ]}
                     />
                 </Toolbar>
@@ -165,12 +166,14 @@ export default () => {
                     <div className={'px-5 pb-3 flex gap-2'}>
                         {list.filters.actor && (
                             <button type={'button'} onClick={() => list.setFilter('actor', '')}>
-                                <Badge tone={'blue'}>User #{list.filters.actor} ✕</Badge>
+                                <Badge tone={'blue'}>{t('User #{{actor}} ✕', { actor: list.filters.actor })}</Badge>
                             </button>
                         )}
                         {list.filters.server && (
                             <button type={'button'} onClick={() => list.setFilter('server', '')}>
-                                <Badge tone={'green'}>Server #{list.filters.server} ✕</Badge>
+                                <Badge tone={'green'}>
+                                    {t('Server #{{server}} ✕', { server: list.filters.server })}
+                                </Badge>
                             </button>
                         )}
                     </div>
@@ -184,8 +187,8 @@ export default () => {
                 ) : data.data.length === 0 ? (
                     <EmptyState
                         icon={ClipboardListIcon}
-                        title={'No activity found'}
-                        description={'Nothing matches these filters.'}
+                        title={t('No activity found')}
+                        description={t('Nothing matches these filters.')}
                     />
                 ) : (
                     <ul

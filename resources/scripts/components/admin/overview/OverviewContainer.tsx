@@ -30,6 +30,7 @@ import {
 import Button from '@/components/admin/ui/Button';
 import { ago, formatMb } from '@/components/admin/ui/hooks';
 import { useStoreState } from '@/state/hooks';
+import { t } from '@/i18n';
 
 const ActivityChart = ({ data }: { data: Overview['activity'] }) => {
     const width = 560;
@@ -45,7 +46,7 @@ const ActivityChart = ({ data }: { data: Overview['activity'] }) => {
         <div>
             <p className={'text-2xl font-semibold text-gray-50'}>
                 <CountUp value={total} />
-                <span className={'ml-2 text-xs font-normal text-gray-500'}>events in 14 days</span>
+                <span className={'ml-2 text-xs font-normal text-gray-500'}>{t('events in 14 days')}</span>
             </p>
             <svg viewBox={`0 0 ${width} ${height}`} className={'mt-3 w-full h-28'} preserveAspectRatio={'none'}>
                 <defs>
@@ -75,7 +76,7 @@ const ActivityChart = ({ data }: { data: Overview['activity'] }) => {
             </svg>
             <div className={'flex justify-between text-2xs text-gray-600'}>
                 <span>{data[0]?.day}</span>
-                <span>today</span>
+                <span>{t('today')}</span>
             </div>
         </div>
     );
@@ -83,15 +84,15 @@ const ActivityChart = ({ data }: { data: Overview['activity'] }) => {
 
 const ServerHealth = ({ servers }: { servers: Overview['servers'] }) => {
     const segments = [
-        { key: 'installed', label: 'Installed', value: servers.installed, color: 'bg-raptor-500' },
+        { key: 'installed', label: t('Installed'), value: servers.installed, color: 'bg-raptor-500' },
         {
             key: 'installing',
-            label: 'Installing',
+            label: t('Installing'),
             value: servers.installing + servers.restoring_backup,
             color: 'bg-sky-500',
         },
-        { key: 'suspended', label: 'Suspended', value: servers.suspended, color: 'bg-amber-400' },
-        { key: 'failed', label: 'Install failed', value: servers.install_failed, color: 'bg-rose-500' },
+        { key: 'suspended', label: t('Suspended'), value: servers.suspended, color: 'bg-amber-400' },
+        { key: 'failed', label: t('Install failed'), value: servers.install_failed, color: 'bg-rose-500' },
     ];
     const total = Math.max(
         1,
@@ -140,11 +141,17 @@ const UpdateNotice = () => {
 
     return (
         <div>
-            <Callout tone={'green'} icon={ArrowCircleUpIcon} title={`Raptor Panel ${data.latest.version} is available`}>
-                You are running {data.current}. The update makes a backup first and rolls back automatically if anything
-                fails.{' '}
+            <Callout
+                tone={'green'}
+                icon={ArrowCircleUpIcon}
+                title={t('Raptor Panel {{version}} is available', { version: data.latest.version })}
+            >
+                {t(
+                    'You are running {{current}}. The update makes a backup first and rolls back automatically if anything fails.',
+                    { current: data.current }
+                )}{' '}
                 <Link to={'/admin/updates'} className={'font-medium underline'}>
-                    Review and update
+                    {t('Review and update')}
                 </Link>
             </Callout>
         </div>
@@ -162,11 +169,14 @@ const SystemWarnings = () => {
             <Callout
                 tone={'yellow'}
                 icon={ExclamationIcon}
-                title={`${failing.length} health ${failing.length === 1 ? 'check needs' : 'checks need'} attention`}
+                title={t('{{count}} health {{value}} attention', {
+                    count: failing.length,
+                    value: failing.length === 1 ? 'check needs' : 'checks need',
+                })}
             >
-                Not passing: {failing.map((check) => check.label).join(' · ')}.{' '}
+                {t('Not passing: {{value}}.', { value: failing.map((check) => check.label).join(' · ') })}{' '}
                 <Link to={'/admin/system'} className={'font-medium underline'}>
-                    Open system health
+                    {t('Open system health')}
                 </Link>
             </Callout>
         </div>
@@ -184,15 +194,15 @@ export default () => {
         <Page
             title={`${greeting}, ${username}`}
             icon={ViewGridIcon}
-            description={'A live overview of everything running on this Panel.'}
+            description={t('A live overview of everything running on this Panel.')}
             guide={'overview'}
             actions={
                 <>
                     <Button variant={'secondary'} icon={PlusIcon} to={'/admin/users'}>
-                        New user
+                        {t('New user')}
                     </Button>
                     <Button icon={PlusIcon} to={'/admin/servers/new'}>
-                        New server
+                        {t('New server')}
                     </Button>
                 </>
             }
@@ -209,35 +219,41 @@ export default () => {
                 <>
                     <div className={'grid gap-4 grid-cols-2 lg:grid-cols-4'}>
                         <StatCard
-                            label={'Servers'}
+                            label={t('Servers')}
                             value={data.counts.servers}
                             icon={ServerIcon}
                             href={'/admin/servers'}
-                            hint={`${data.servers.suspended} suspended · ${data.servers.install_failed} failed`}
+                            hint={t('{{suspended}} suspended · {{install_failed}} failed', {
+                                suspended: data.servers.suspended,
+                                install_failed: data.servers.install_failed,
+                            })}
                         />
                         <StatCard
-                            label={'Users'}
+                            label={t('Users')}
                             value={data.counts.users}
                             icon={UsersIcon}
                             tone={'blue'}
                             href={'/admin/users'}
-                            hint={`${data.counts.admins} administrators`}
+                            hint={t('{{admins}} administrators', { admins: data.counts.admins })}
                         />
                         <StatCard
-                            label={'Nodes'}
+                            label={t('Nodes')}
                             value={data.counts.nodes}
                             icon={ChipIcon}
                             tone={'yellow'}
                             href={'/admin/nodes'}
-                            hint={`${data.counts.locations} locations`}
+                            hint={t('{{locations}} locations', { locations: data.counts.locations })}
                         />
                         <StatCard
-                            label={'Eggs'}
+                            label={t('Eggs')}
                             value={data.counts.eggs}
                             icon={CollectionIcon}
                             tone={'gray'}
                             href={'/admin/nests'}
-                            hint={`${data.counts.nests} nests · ${data.counts.databases} databases`}
+                            hint={t('{{nests}} nests · {{databases}} databases', {
+                                nests: data.counts.nests,
+                                databases: data.counts.databases,
+                            })}
                         />
                     </div>
 
@@ -245,17 +261,17 @@ export default () => {
                         <Card>
                             <EmptyState
                                 icon={LightningBoltIcon}
-                                title={"Let's get your first server running"}
-                                description={
+                                title={t("Let's get your first server running")}
+                                description={t(
                                     'Create a location and a node, add some ports and you are ready to deploy servers. The quick start guide walks you through it.'
-                                }
+                                )}
                                 action={
                                     <div className={'flex flex-wrap justify-center gap-2'}>
                                         <Button variant={'secondary'} to={'/admin/guides/getting-started'}>
-                                            Read the quick start
+                                            {t('Read the quick start')}
                                         </Button>
                                         <Button to={'/admin/nodes/new'} icon={PlusIcon}>
-                                            Create a node
+                                            {t('Create a node')}
                                         </Button>
                                     </div>
                                 }
@@ -265,31 +281,31 @@ export default () => {
 
                     <div className={'grid gap-6 lg:grid-cols-3'}>
                         <Card
-                            title={'Activity'}
-                            description={'Audit log events per day'}
+                            title={t('Activity')}
+                            description={t('Audit log events per day')}
                             className={'lg:col-span-2'}
                             actions={
                                 <Button size={'sm'} variant={'ghost'} to={'/admin/activity'}>
-                                    View log
+                                    {t('View log')}
                                 </Button>
                             }
                         >
                             <ActivityChart data={data.activity} />
                         </Card>
-                        <Card title={'Server health'} description={'Installation and suspension state'}>
+                        <Card title={t('Server health')} description={t('Installation and suspension state')}>
                             <ServerHealth servers={data.servers} />
                         </Card>
                     </div>
 
                     {data.nodes.length > 0 && (
                         <Card
-                            title={'Node capacity'}
-                            description={
+                            title={t('Node capacity')}
+                            description={t(
                                 "Memory and disk assigned to servers, compared to each node's budget including overallocation."
-                            }
+                            )}
                             actions={
                                 <Button size={'sm'} variant={'ghost'} to={'/admin/nodes'}>
-                                    All nodes
+                                    {t('All nodes')}
                                 </Button>
                             }
                         >
@@ -312,13 +328,17 @@ export default () => {
                                                 <span className={'flex-1 text-sm font-medium text-gray-100 truncate'}>
                                                     {node.name}
                                                 </span>
-                                                {node.maintenance_mode && <Badge tone={'yellow'}>Maintenance</Badge>}
-                                                <span className={'text-xs text-gray-500'}>{node.servers} servers</span>
+                                                {node.maintenance_mode && (
+                                                    <Badge tone={'yellow'}>{t('Maintenance')}</Badge>
+                                                )}
+                                                <span className={'text-xs text-gray-500'}>
+                                                    {t('{{servers}} servers', { servers: node.servers })}
+                                                </span>
                                             </div>
                                             <div className={'mt-3 space-y-2.5'}>
                                                 <div>
                                                     <div className={'flex justify-between text-2xs text-gray-500 mb-1'}>
-                                                        <span>Memory</span>
+                                                        <span>{t('Memory')}</span>
                                                         <span className={'tabular-nums'}>
                                                             {formatMb(node.memory.used)} / {formatMb(memoryMax)}
                                                         </span>
@@ -327,7 +347,7 @@ export default () => {
                                                 </div>
                                                 <div>
                                                     <div className={'flex justify-between text-2xs text-gray-500 mb-1'}>
-                                                        <span>Disk</span>
+                                                        <span>{t('Disk')}</span>
                                                         <span className={'tabular-nums'}>
                                                             {formatMb(node.disk.used)} / {formatMb(diskMax)}
                                                         </span>
@@ -343,7 +363,7 @@ export default () => {
                     )}
 
                     <div className={'grid gap-6 lg:grid-cols-2'}>
-                        <Card title={'Newest servers'} flush>
+                        <Card title={t('Newest servers')} flush>
                             <ul className={'divide-y divide-gray-800'}>
                                 {data.recent_servers.map((server) => (
                                     <li key={server.id}>
@@ -367,11 +387,11 @@ export default () => {
                                     </li>
                                 ))}
                                 {!data.recent_servers.length && (
-                                    <li className={'px-5 py-6 text-sm text-gray-500'}>No servers yet.</li>
+                                    <li className={'px-5 py-6 text-sm text-gray-500'}>{t('No servers yet.')}</li>
                                 )}
                             </ul>
                         </Card>
-                        <Card title={'Newest users'} flush>
+                        <Card title={t('Newest users')} flush>
                             <ul className={'divide-y divide-gray-800'}>
                                 {data.recent_users.map((user) => (
                                     <li key={user.id}>
@@ -392,7 +412,7 @@ export default () => {
                                                     {user.email} · {ago(user.created_at)}
                                                 </span>
                                             </span>
-                                            {user.root_admin && <Badge tone={'green'}>Admin</Badge>}
+                                            {user.root_admin && <Badge tone={'green'}>{t('Admin')}</Badge>}
                                         </Link>
                                     </li>
                                 ))}

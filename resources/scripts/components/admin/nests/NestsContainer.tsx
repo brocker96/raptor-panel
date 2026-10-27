@@ -12,6 +12,7 @@ import Button, { IconButton } from '@/components/admin/ui/Button';
 import { SearchInput } from '@/components/admin/ui/DataTable';
 import { item } from '@/components/admin/ui/motion';
 import { useAction } from '@/components/admin/ui/hooks';
+import { t } from '@/i18n';
 
 export default () => {
     const navigate = useNavigate();
@@ -26,18 +27,18 @@ export default () => {
     const save = useAction(
         () => (editing === 'new' ? createNest(values) : updateNest((editing as AdminNest).id, values)),
         {
-            success: 'Nest saved',
+            success: t('Nest saved'),
             invalidate: [['admin', 'nests']],
             onSuccess: () => setEditing(null),
         }
     );
     const remove = useAction((id: number) => deleteNest(id), {
-        success: 'Nest deleted',
+        success: t('Nest deleted'),
         invalidate: [['admin', 'nests']],
         onSuccess: () => setDeleting(null),
     });
     const upload = useAction((nest: number, file: File) => importEgg(nest, file), {
-        success: (egg) => `Imported ${egg.name}`,
+        success: (egg) => t('Imported {{name}}', { name: egg.name }),
         invalidate: [['admin', 'nests']],
         onSuccess: (egg) => navigate(`/admin/nests/eggs/${egg.id}`),
     });
@@ -61,13 +62,13 @@ export default () => {
 
     return (
         <Page
-            title={'Nests & eggs'}
+            title={t('Nests & eggs')}
             icon={CollectionIcon}
-            description={'Eggs describe how a type of server is installed and started. Nests group them.'}
+            description={t('Eggs describe how a type of server is installed and started. Nests group them.')}
             guide={'nests-eggs'}
             actions={
                 <Button icon={PlusIcon} onClick={() => open('new')}>
-                    New nest
+                    {t('New nest')}
                 </Button>
             }
         >
@@ -83,20 +84,31 @@ export default () => {
                 }}
             />
             <div>
-                <SearchInput value={search} onChange={setSearch} placeholder={'Search eggs…'} className={'max-w-md'} />
+                <SearchInput
+                    value={search}
+                    onChange={setSearch}
+                    placeholder={t('Search eggs…')}
+                    className={'max-w-md'}
+                />
             </div>
             {!data ? (
                 <Skeleton className={'h-64 rounded-xl'} />
             ) : nests.length === 0 ? (
                 <Card>
-                    <EmptyState icon={CollectionIcon} title={'Nothing found'} />
+                    <EmptyState icon={CollectionIcon} title={t('Nothing found')} />
                 </Card>
             ) : (
                 nests.map((nest) => (
                     <Card
                         key={nest.id}
                         title={nest.name}
-                        description={nest.description || `${nest.eggs.length} eggs · ${nest.servers} servers`}
+                        description={
+                            nest.description ||
+                            t('{{count}} eggs · {{servers}} servers', {
+                                count: nest.eggs.length,
+                                servers: nest.servers,
+                            })
+                        }
                         icon={CollectionIcon}
                         flush
                         actions={
@@ -111,7 +123,7 @@ export default () => {
                                         fileInput.current?.click();
                                     }}
                                 >
-                                    <span className={'hidden sm:inline'}>Import egg</span>
+                                    <span className={'hidden sm:inline'}>{t('Import egg')}</span>
                                 </Button>
                                 <Button
                                     size={'sm'}
@@ -119,12 +131,12 @@ export default () => {
                                     icon={PlusIcon}
                                     to={`/admin/nests/eggs/new?nest=${nest.id}`}
                                 >
-                                    <span className={'hidden sm:inline'}>New egg</span>
+                                    <span className={'hidden sm:inline'}>{t('New egg')}</span>
                                 </Button>
-                                <IconButton icon={PencilIcon} label={'Edit nest'} onClick={() => open(nest)} />
+                                <IconButton icon={PencilIcon} label={t('Edit nest')} onClick={() => open(nest)} />
                                 <IconButton
                                     icon={TrashIcon}
-                                    label={'Delete nest'}
+                                    label={t('Delete nest')}
                                     tone={'danger'}
                                     disabled={nest.servers > 0}
                                     onClick={() => setDeleting(nest)}
@@ -154,7 +166,7 @@ export default () => {
                                         <Badge tone={egg.servers ? 'green' : 'gray'}>{egg.servers}</Badge>
                                     </div>
                                     <p className={'mt-1 text-xs text-gray-500 line-clamp-2'}>
-                                        {egg.description || 'No description'}
+                                        {egg.description || t('No description')}
                                     </p>
                                     <p className={'mt-2 text-2xs text-gray-600 truncate'}>
                                         {Object.keys(egg.docker_images).join(' · ')}
@@ -163,7 +175,7 @@ export default () => {
                             ))}
                             {nest.eggs.length === 0 && (
                                 <p className={'p-4 bg-gray-900 text-sm text-gray-500 sm:col-span-2 xl:col-span-3'}>
-                                    No eggs in this nest yet.
+                                    {t('No eggs in this nest yet.')}
                                 </p>
                             )}
                         </div>
@@ -174,29 +186,29 @@ export default () => {
                 open={editing !== null}
                 onClose={() => setEditing(null)}
                 icon={CollectionIcon}
-                title={editing === 'new' ? 'New nest' : 'Edit nest'}
+                title={editing === 'new' ? t('New nest') : t('Edit nest')}
                 footer={
                     <>
                         <Button variant={'ghost'} onClick={() => setEditing(null)}>
-                            Cancel
+                            {t('Cancel')}
                         </Button>
                         <Button loading={save.loading} onClick={() => save.run()}>
-                            Save
+                            {t('Save')}
                         </Button>
                     </>
                 }
             >
                 <div className={'space-y-4'}>
                     <TextInput
-                        label={'Name'}
+                        label={t('Name')}
                         required
                         value={values.name}
                         onChange={(name) => setValues({ ...values, name })}
                         error={save.errors.name}
-                        placeholder={'Minecraft'}
+                        placeholder={t('Minecraft')}
                     />
                     <TextArea
-                        label={'Description'}
+                        label={t('Description')}
                         value={values.description}
                         onChange={(description) => setValues({ ...values, description })}
                         rows={3}
@@ -205,13 +217,13 @@ export default () => {
             </Drawer>
             <Confirm
                 open={!!deleting}
-                title={`Delete ${deleting?.name}?`}
-                confirm={'Delete'}
+                title={t('Delete {{name}}?', { name: deleting?.name })}
+                confirm={t('Delete')}
                 loading={remove.loading}
                 onConfirm={() => deleting && remove.run(deleting.id)}
                 onClose={() => setDeleting(null)}
             >
-                The nest and all {deleting?.eggs.length} eggs in it are deleted.
+                {t('The nest and all {{count}} eggs in it are deleted.', { count: deleting?.eggs.length })}
             </Confirm>
         </Page>
     );

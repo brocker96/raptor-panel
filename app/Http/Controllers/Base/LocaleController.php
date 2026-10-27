@@ -24,7 +24,9 @@ class LocaleController extends Controller
     {
         $locale = $request->input('locale');
         $namespace = $request->input('namespace');
-        $response[$locale][$namespace] = $this->i18n($this->loader->load($locale, $namespace));
+        $response[$locale][$namespace] = $namespace === 'ui'
+            ? $this->interface($locale)
+            : $this->i18n($this->loader->load($locale, $namespace));
 
         return new JsonResponse($response, 200, [
             // Cache this in the browser for an hour, and allow the browser to use a stale
@@ -33,6 +35,17 @@ class LocaleController extends Controller
             'Cache-Control' => 'public, max-age=3600, stale-while-revalidate=86400',
             'ETag' => md5(json_encode($response, JSON_THROW_ON_ERROR)),
         ]);
+    }
+
+    /**
+     * Translations of the React interface. They are keyed by the English text, so English needs
+     * no file and missing translations fall back to it.
+     */
+    protected function interface(string $locale): array
+    {
+        $path = resource_path("lang/$locale.json");
+
+        return is_file($path) ? json_decode(file_get_contents($path), true, 512, JSON_THROW_ON_ERROR) : [];
     }
 
     /**

@@ -4,6 +4,7 @@ import ScreenBlock from '@/components/elements/ScreenBlock';
 import ServerInstallSvg from '@/assets/images/server_installing.svg';
 import ServerErrorSvg from '@/assets/images/server_error.svg';
 import ServerRestoreSvg from '@/assets/images/server_restore.svg';
+import { t } from '@/i18n';
 
 export default () => {
     const status = ServerContext.useStoreState((state) => state.server.data?.status || null);
@@ -14,30 +15,30 @@ export default () => {
 
     return status === 'installing' || status === 'install_failed' || status === 'reinstall_failed' ? (
         <ScreenBlock
-            title={'Running Installer'}
+            title={t('Running Installer')}
             image={ServerInstallSvg}
-            message={'Your server should be ready soon, please try again in a few minutes.'}
+            message={t('Your server should be ready soon, please try again in a few minutes.')}
         />
     ) : status === 'suspended' ? (
         <ScreenBlock
-            title={'Server Suspended'}
+            title={t('Server Suspended')}
             image={ServerErrorSvg}
-            message={'This server is suspended and cannot be accessed.'}
+            message={t('This server is suspended and cannot be accessed.')}
         />
     ) : isNodeUnderMaintenance ? (
         <ScreenBlock
-            title={'Node under Maintenance'}
+            title={t('Node under Maintenance')}
             image={ServerErrorSvg}
-            message={'The node of this server is currently under maintenance.'}
+            message={t('The node of this server is currently under maintenance.')}
         />
     ) : (
         <ScreenBlock
-            title={isTransferring ? 'Transferring' : 'Restoring from Backup'}
+            title={isTransferring ? t('Transferring') : t('Restoring from Backup')}
             image={ServerRestoreSvg}
             message={
                 isTransferring
-                    ? 'Your server is being transferred to a new node, please check back later.'
-                    : 'Your server is currently being restored from a backup, please check back in a few minutes.'
+                    ? t('Your server is being transferred to a new node, please check back later.')
+                    : t('Your server is currently being restored from a backup, please check back in a few minutes.')
             }
         />
     );

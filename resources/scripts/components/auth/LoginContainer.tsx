@@ -11,6 +11,7 @@ import Button from '@/components/elements/Button';
 import Reaptcha from 'reaptcha';
 import useRecaptcha from '@/plugins/useRecaptcha';
 import useFlash from '@/plugins/useFlash';
+import { t } from '@/i18n';
 
 interface Values {
     username: string;
@@ -71,19 +72,31 @@ const LoginContainer = () => {
             onSubmit={onSubmit}
             initialValues={{ username: '', password: '' }}
             validationSchema={object().shape({
-                username: string().required('A username or email must be provided.'),
-                password: string().required('Please enter your account password.'),
+                username: string().required(t('A username or email must be provided.')),
+                password: string().required(t('Please enter your account password.')),
             })}
         >
             {({ isSubmitting, setSubmitting, submitForm }) => (
-                <LoginFormContainer title={'Welcome back'} subtitle={'Sign in to manage your servers.'}>
-                    <Field light type={'text'} label={'Username or Email'} name={'username'} disabled={isSubmitting} />
+                <LoginFormContainer title={t('Welcome back')} subtitle={t('Sign in to manage your servers.')}>
+                    <Field
+                        light
+                        type={'text'}
+                        label={t('Username or Email')}
+                        name={'username'}
+                        disabled={isSubmitting}
+                    />
                     <div css={tw`mt-6`}>
-                        <Field light type={'password'} label={'Password'} name={'password'} disabled={isSubmitting} />
+                        <Field
+                            light
+                            type={'password'}
+                            label={t('Password')}
+                            name={'password'}
+                            disabled={isSubmitting}
+                        />
                     </div>
                     <div css={tw`mt-6`}>
                         <Button type={'submit'} size={'xlarge'} isLoading={isSubmitting} disabled={isSubmitting}>
-                            Login
+                            {t('Login')}
                         </Button>
                     </div>
                     {recaptchaEnabled && (
@@ -107,7 +120,7 @@ const LoginContainer = () => {
                             to={'/auth/password'}
                             className={'text-sm text-gray-400 hover:text-raptor-400 no-underline'}
                         >
-                            Forgot password?
+                            {t('Forgot password?')}
                         </Link>
                     </div>
                 </LoginFormContainer>

@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import { animate, useInView } from 'framer-motion';
+import { t } from '@/i18n';
 
 type Tone = 'green' | 'yellow' | 'red' | 'gray' | 'blue';
 
@@ -42,32 +43,32 @@ export const ServerStatusBadge = ({ status }: { status: string | null }) => {
         case null:
             return (
                 <Badge tone={'green'} dot>
-                    Installed
+                    {t('Installed')}
                 </Badge>
             );
         case 'installing':
             return (
                 <Badge tone={'blue'} dot>
-                    Installing
+                    {t('Installing')}
                 </Badge>
             );
         case 'install_failed':
         case 'reinstall_failed':
             return (
                 <Badge tone={'red'} dot>
-                    Install failed
+                    {t('Install failed')}
                 </Badge>
             );
         case 'suspended':
             return (
                 <Badge tone={'yellow'} dot>
-                    Suspended
+                    {t('Suspended')}
                 </Badge>
             );
         case 'restoring_backup':
             return (
                 <Badge tone={'blue'} dot>
-                    Restoring backup
+                    {t('Restoring backup')}
                 </Badge>
             );
         default:

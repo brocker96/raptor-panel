@@ -13,6 +13,7 @@ import Button from '@/components/elements/Button';
 import Reaptcha from 'reaptcha';
 import useRecaptcha from '@/plugins/useRecaptcha';
 import useFlash from '@/plugins/useFlash';
+import { t } from '@/i18n';
 
 interface Values {
     email: string;
@@ -39,7 +40,7 @@ export default () => {
                 console.error(error);
 
                 setSubmitting(false);
-                addFlash({ type: 'error', title: 'Error', message: httpErrorToHuman(error) });
+                addFlash({ type: 'error', title: t('Error'), message: httpErrorToHuman(error) });
             });
 
             return;
@@ -48,11 +49,11 @@ export default () => {
         requestPasswordResetEmail(email, token)
             .then((response) => {
                 resetForm();
-                addFlash({ type: 'success', title: 'Success', message: response });
+                addFlash({ type: 'success', title: t('Success'), message: response });
             })
             .catch((error) => {
                 console.error(error);
-                addFlash({ type: 'error', title: 'Error', message: httpErrorToHuman(error) });
+                addFlash({ type: 'error', title: t('Error'), message: httpErrorToHuman(error) });
             })
             .then(() => {
                 setToken('');
@@ -68,24 +69,24 @@ export default () => {
             initialValues={{ email: '' }}
             validationSchema={object().shape({
                 email: string()
-                    .email('A valid email address must be provided to continue.')
-                    .required('A valid email address must be provided to continue.'),
+                    .email(t('A valid email address must be provided to continue.'))
+                    .required(t('A valid email address must be provided to continue.')),
             })}
         >
             {({ isSubmitting, setSubmitting, submitForm }) => (
-                <LoginFormContainer title={'Request Password Reset'}>
+                <LoginFormContainer title={t('Request Password Reset')}>
                     <Field
                         light
-                        label={'Email'}
-                        description={
+                        label={t('Email')}
+                        description={t(
                             'Enter your account email address to receive instructions on resetting your password.'
-                        }
+                        )}
                         name={'email'}
                         type={'email'}
                     />
                     <div css={tw`mt-6`}>
                         <Button type={'submit'} size={'xlarge'} disabled={isSubmitting} isLoading={isSubmitting}>
-                            Send Email
+                            {t('Send Email')}
                         </Button>
                     </div>
                     {recaptchaEnabled && (
@@ -106,7 +107,7 @@ export default () => {
                     )}
                     <div css={tw`mt-6 text-center`}>
                         <Link to={'/auth/login'} className={'text-sm text-gray-400 hover:text-raptor-400 no-underline'}>
-                            Return to Login
+                            {t('Return to Login')}
                         </Link>
                     </div>
                 </LoginFormContainer>

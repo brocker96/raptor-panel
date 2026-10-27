@@ -3,6 +3,7 @@ import Fade from '@/components/elements/Fade';
 import Portal from '@/components/elements/Portal';
 import copy from 'copy-to-clipboard';
 import classNames from 'classnames';
+import { t } from '@/i18n';
 
 interface CopyOnClickProps {
     text: string | number | null | undefined;
@@ -51,8 +52,8 @@ const CopyOnClick = ({ text, showInNotification = true, children }: CopyOnClickP
                             <div className={'rounded-md py-3 px-4 text-gray-200 bg-neutral-600/95 shadow'}>
                                 <p>
                                     {showInNotification
-                                        ? `Copied "${String(text)}" to clipboard.`
-                                        : 'Copied text to clipboard.'}
+                                        ? t('Copied "{{String}}" to clipboard.', { String: String(text) })
+                                        : t('Copied text to clipboard.')}
                                 </p>
                             </div>
                         </div>

@@ -12,13 +12,14 @@ import { Drawer } from '@/components/admin/ui/Overlay';
 import Button from '@/components/admin/ui/Button';
 import { ago, useAction, useListParams } from '@/components/admin/ui/hooks';
 import UserForm from '@/components/admin/users/UserForm';
+import { t } from '@/i18n';
 
 const empty: UserValues = { email: '', username: '', name_first: '', name_last: '', password: '', root_admin: false };
 
 const columns: Column<AdminUser>[] = [
     {
         key: 'user',
-        header: 'User',
+        header: t('User'),
         cell: (user) => (
             <div className={'flex items-center gap-3 min-w-0'}>
                 <span className={'w-8 h-8 rounded-full overflow-hidden flex-shrink-0'}>
@@ -31,26 +32,26 @@ const columns: Column<AdminUser>[] = [
             </div>
         ),
     },
-    { key: 'name', header: 'Name', cell: (user) => user.name || '—', hideBelow: 'lg' },
+    { key: 'name', header: t('Name'), cell: (user) => user.name || '—', hideBelow: 'lg' },
     {
         key: 'flags',
-        header: 'Access',
+        header: t('Access'),
         cell: (user) => (
             <div className={'flex gap-1.5'}>
-                {user.root_admin && <Badge tone={'green'}>Admin</Badge>}
-                {user['2fa'] ? <Badge tone={'blue'}>2FA</Badge> : <Badge tone={'gray'}>No 2FA</Badge>}
+                {user.root_admin && <Badge tone={'green'}>{t('Admin')}</Badge>}
+                {user['2fa'] ? <Badge tone={'blue'}>{t('2FA')}</Badge> : <Badge tone={'gray'}>{t('No 2FA')}</Badge>}
             </div>
         ),
     },
     {
         key: 'servers',
-        header: 'Servers',
+        header: t('Servers'),
         cell: (user) => <span className={'tabular-nums'}>{user.servers_count}</span>,
         hideBelow: 'md',
     },
     {
         key: 'created',
-        header: 'Joined',
+        header: t('Joined'),
         cell: (user) => <span className={'text-gray-500'}>{ago(user.created_at)}</span>,
         hideBelow: 'xl',
     },
@@ -70,20 +71,20 @@ export default () => {
     );
 
     const create = useAction(createUser, {
-        success: (user) => `${user.username} was created`,
+        success: (user) => t('{{username}} was created', { username: user.username }),
         invalidate: [['admin', 'users']],
         onSuccess: (user) => navigate(`/admin/users/${user.id}`),
     });
 
     return (
         <Page
-            title={'Users'}
+            title={t('Users')}
             icon={UsersIcon}
-            description={'Every account on the Panel. Administrators have access to this area.'}
+            description={t('Every account on the Panel. Administrators have access to this area.')}
             guide={'users'}
             actions={
                 <Button icon={UserAddIcon} onClick={() => setCreating(true)}>
-                    New user
+                    {t('New user')}
                 </Button>
             }
         >
@@ -92,7 +93,7 @@ export default () => {
                     <SearchInput
                         value={list.search}
                         onChange={list.setSearch}
-                        placeholder={'Search by username, e-mail, name or UUID…'}
+                        placeholder={t('Search by username, e-mail, name or UUID…')}
                         className={'flex-1'}
                     />
                     <Segmented
@@ -100,10 +101,10 @@ export default () => {
                         value={list.filters.filter || 'all'}
                         onChange={(value) => list.setFilter('filter', value === 'all' ? '' : value)}
                         options={[
-                            { value: 'all', label: 'All' },
-                            { value: 'admins', label: 'Admins' },
-                            { value: '2fa', label: '2FA' },
-                            { value: 'no-2fa', label: 'No 2FA' },
+                            { value: 'all', label: t('All') },
+                            { value: 'admins', label: t('Admins') },
+                            { value: '2fa', label: t('2FA') },
+                            { value: 'no-2fa', label: t('No 2FA') },
                         ]}
                     />
                 </Toolbar>
@@ -121,7 +122,10 @@ export default () => {
                             <div className={'flex-1 min-w-0'}>
                                 <p className={'text-sm font-medium text-gray-100 truncate'}>{user.username}</p>
                                 <p className={'text-xs text-gray-500 truncate'}>
-                                    {user.email} · {user.servers_count} servers
+                                    {t('{{email}} · {{servers_count}} servers', {
+                                        email: user.email,
+                                        servers_count: user.servers_count,
+                                    })}
                                 </p>
                             </div>
                             {user.root_admin && <ShieldCheckIcon className={'w-5 h-5 text-raptor-400'} />}
@@ -130,8 +134,8 @@ export default () => {
                     empty={
                         <EmptyState
                             icon={UsersIcon}
-                            title={'No users found'}
-                            description={'Try another search or filter.'}
+                            title={t('No users found')}
+                            description={t('Try another search or filter.')}
                         />
                     }
                 />
@@ -148,15 +152,15 @@ export default () => {
                 open={creating}
                 onClose={() => setCreating(false)}
                 icon={UserAddIcon}
-                title={'New user'}
-                description={'Create an account. The user can change their details later.'}
+                title={t('New user')}
+                description={t('Create an account. The user can change their details later.')}
                 footer={
                     <>
                         <Button variant={'ghost'} onClick={() => setCreating(false)}>
-                            Cancel
+                            {t('Cancel')}
                         </Button>
                         <Button loading={create.loading} onClick={() => create.run(values)}>
-                            Create user
+                            {t('Create user')}
                         </Button>
                     </>
                 }

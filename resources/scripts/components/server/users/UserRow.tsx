@@ -9,6 +9,7 @@ import { useStoreState } from 'easy-peasy';
 import tw from 'twin.macro';
 import GreyRowBox from '@/components/elements/GreyRowBox';
 import Avatar from '@/components/Avatar';
+import { t } from '@/i18n';
 
 interface Props {
     subuser: Subuser;
@@ -31,28 +32,28 @@ export default ({ subuser }: Props) => {
             </div>
             <div css={tw`ml-4`}>
                 <p css={tw`font-medium text-center`}>
-                    &nbsp;
+                    {t(' ')}
                     <FontAwesomeIcon
                         icon={subuser.twoFactorEnabled ? faUserLock : faUnlockAlt}
                         fixedWidth
                         css={!subuser.twoFactorEnabled ? tw`text-red-400` : undefined}
                     />
-                    &nbsp;
+                    {t(' ')}
                 </p>
-                <p css={tw`text-2xs text-neutral-500 uppercase hidden md:block`}>2FA Enabled</p>
+                <p css={tw`text-2xs text-neutral-500 uppercase hidden md:block`}>{t('2FA Enabled')}</p>
             </div>
             <div css={tw`ml-4 hidden md:block`}>
                 <p css={tw`font-medium text-center`}>
                     {subuser.permissions.filter((permission) => permission !== 'websocket.connect').length}
                 </p>
-                <p css={tw`text-2xs text-neutral-500 uppercase`}>Permissions</p>
+                <p css={tw`text-2xs text-neutral-500 uppercase`}>{t('Permissions')}</p>
             </div>
             {subuser.uuid !== uuid && (
                 <>
                     <Can action={'user.update'}>
                         <button
                             type={'button'}
-                            aria-label={'Edit subuser'}
+                            aria-label={t('Edit subuser')}
                             css={tw`block text-sm p-1 md:p-2 text-neutral-500 hover:text-neutral-100 transition-colors duration-150 mx-4`}
                             onClick={() => setVisible(true)}
                         >

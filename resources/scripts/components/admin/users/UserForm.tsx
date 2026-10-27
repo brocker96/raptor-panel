@@ -1,6 +1,7 @@
 import React from 'react';
 import { UserValues } from '@/api/admin';
-import { FormGrid, TextInput, Toggle } from '@/components/admin/ui/Form';
+import { FormGrid, Select, TextInput, Toggle } from '@/components/admin/ui/Form';
+import { languages, t } from '@/i18n';
 
 interface Props {
     values: UserValues;
@@ -19,7 +20,7 @@ export default ({ values, onChange, errors, creating }: Props) => {
         <div className={'space-y-4'}>
             <FormGrid>
                 <TextInput
-                    label={'E-mail'}
+                    label={t('E-mail')}
                     type={'email'}
                     required
                     value={values.email}
@@ -28,7 +29,7 @@ export default ({ values, onChange, errors, creating }: Props) => {
                     autoComplete={'off'}
                 />
                 <TextInput
-                    label={'Username'}
+                    label={t('Username')}
                     required
                     value={values.username}
                     onChange={set('username')}
@@ -36,14 +37,14 @@ export default ({ values, onChange, errors, creating }: Props) => {
                     autoComplete={'off'}
                 />
                 <TextInput
-                    label={'First name'}
+                    label={t('First name')}
                     required
                     value={values.name_first}
                     onChange={set('name_first')}
                     error={errors.name_first}
                 />
                 <TextInput
-                    label={'Last name'}
+                    label={t('Last name')}
                     required
                     value={values.name_last}
                     onChange={set('name_last')}
@@ -51,7 +52,7 @@ export default ({ values, onChange, errors, creating }: Props) => {
                 />
             </FormGrid>
             <TextInput
-                label={'Password'}
+                label={t('Password')}
                 type={'password'}
                 value={values.password || ''}
                 onChange={set('password')}
@@ -59,13 +60,23 @@ export default ({ values, onChange, errors, creating }: Props) => {
                 autoComplete={'new-password'}
                 description={
                     creating
-                        ? 'Leave empty to e-mail the user a link to choose their own password.'
-                        : 'Leave empty to keep the current password.'
+                        ? t('Leave empty to e-mail the user a link to choose their own password.')
+                        : t('Leave empty to keep the current password.')
                 }
             />
+            <Select
+                label={t('Language')}
+                value={values.language || ''}
+                onChange={(value) => onChange({ ...values, language: value || null })}
+                error={errors.language}
+                options={[
+                    { value: '', label: t('Panel default') },
+                    ...Object.entries(languages).map(([value, label]) => ({ value, label })),
+                ]}
+            />
             <Toggle
-                label={'Administrator'}
-                description={'Grants full access to the admin area, including every server, node and setting.'}
+                label={t('Administrator')}
+                description={t('Grants full access to the admin area, including every server, node and setting.')}
                 checked={values.root_admin}
                 onChange={set('root_admin')}
             />

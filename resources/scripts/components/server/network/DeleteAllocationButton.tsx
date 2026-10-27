@@ -8,6 +8,7 @@ import getServerAllocations from '@/api/swr/getServerAllocations';
 import { useFlashKey } from '@/plugins/useFlash';
 import { Dialog } from '@/components/elements/dialog';
 import { Button } from '@/components/elements/button/index';
+import { t } from '@/i18n';
 
 interface Props {
     allocation: number;
@@ -39,11 +40,11 @@ const DeleteAllocationButton = ({ allocation }: Props) => {
             <Dialog.Confirm
                 open={confirm}
                 onClose={() => setConfirm(false)}
-                title={'Remove Allocation'}
-                confirm={'Delete'}
+                title={t('Remove Allocation')}
+                confirm={t('Delete')}
                 onConfirmed={deleteAllocation}
             >
-                This allocation will be immediately removed from your server.
+                {t('This allocation will be immediately removed from your server.')}
             </Dialog.Confirm>
             <Button.Danger
                 variant={Button.Variants.Secondary}

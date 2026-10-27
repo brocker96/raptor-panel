@@ -11,6 +11,7 @@ import { Select } from '@/components/admin/ui/Form';
 import Button from '@/components/admin/ui/Button';
 import { useListParams } from '@/components/admin/ui/hooks';
 import { serverColumns, ServerMobileRow } from '@/components/admin/servers/ServerTable';
+import { t } from '@/i18n';
 
 export default () => {
     const navigate = useNavigate();
@@ -24,13 +25,13 @@ export default () => {
 
     return (
         <Page
-            title={'Servers'}
+            title={t('Servers')}
             icon={ServerIcon}
-            description={'Every server on the Panel. Search matches names, owners, UUIDs and addresses.'}
+            description={t('Every server on the Panel. Search matches names, owners, UUIDs and addresses.')}
             guide={'servers'}
             actions={
                 <Button icon={PlusIcon} to={'/admin/servers/new'}>
-                    New server
+                    {t('New server')}
                 </Button>
             }
         >
@@ -39,13 +40,13 @@ export default () => {
                     <SearchInput
                         value={list.search}
                         onChange={list.setSearch}
-                        placeholder={'Search name, owner, UUID, IP or port…'}
+                        placeholder={t('Search name, owner, UUID, IP or port…')}
                         className={'flex-1'}
                     />
                     <Select
                         value={list.filters.node}
                         onChange={(v) => list.setFilter('node', v)}
-                        placeholder={'All nodes'}
+                        placeholder={t('All nodes')}
                         options={(nodes?.data || []).map((n) => ({ value: n.id, label: n.name }))}
                         className={'sm:w-44'}
                     />
@@ -56,11 +57,11 @@ export default () => {
                         value={list.filters.status || 'all'}
                         onChange={(value) => list.setFilter('status', value === 'all' ? '' : value)}
                         options={[
-                            { value: 'all', label: 'All' },
-                            { value: 'installed', label: 'Installed' },
-                            { value: 'installing', label: 'Installing' },
-                            { value: 'failed', label: 'Failed' },
-                            { value: 'suspended', label: 'Suspended' },
+                            { value: 'all', label: t('All') },
+                            { value: 'installed', label: t('Installed') },
+                            { value: 'installing', label: t('Installing') },
+                            { value: 'failed', label: t('Failed') },
+                            { value: 'suspended', label: t('Suspended') },
                         ]}
                     />
                 </div>
@@ -76,12 +77,12 @@ export default () => {
                             icon={ServerIcon}
                             title={
                                 list.search || list.filters.status || list.filters.node
-                                    ? 'No servers match'
-                                    : 'No servers yet'
+                                    ? t('No servers match')
+                                    : t('No servers yet')
                             }
                             action={
                                 <Button icon={PlusIcon} to={'/admin/servers/new'}>
-                                    Create server
+                                    {t('Create server')}
                                 </Button>
                             }
                         />

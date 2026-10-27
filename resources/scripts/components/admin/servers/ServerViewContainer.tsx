@@ -52,6 +52,7 @@ import CheckList from '@/components/admin/ui/CheckList';
 import { toast } from '@/components/admin/ui/Toast';
 import { formatMb, useAction } from '@/components/admin/ui/hooks';
 import { NotFound } from '@/components/elements/ScreenBlock';
+import { t } from '@/i18n';
 
 type Props = { server: AdminServerDetails };
 
@@ -74,45 +75,51 @@ const About = ({ server }: Props) => {
                 description,
                 external_id: externalId || null,
             }),
-        { success: 'Server details saved', invalidate: invalidate(server.id) }
+        { success: t('Server details saved'), invalidate: invalidate(server.id) }
     );
 
     return (
         <div className={'grid gap-6 lg:grid-cols-3'}>
             <Card
-                title={'Details'}
+                title={t('Details')}
                 className={'lg:col-span-2'}
                 footer={
                     <Button loading={save.loading} onClick={() => save.run()}>
-                        Save
+                        {t('Save')}
                     </Button>
                 }
             >
                 <div className={'space-y-4'}>
                     <FormGrid>
-                        <TextInput label={'Name'} required value={name} onChange={setName} error={save.errors.name} />
+                        <TextInput
+                            label={t('Name')}
+                            required
+                            value={name}
+                            onChange={setName}
+                            error={save.errors.name}
+                        />
                         <UserPicker
                             value={owner}
                             onChange={setOwner}
                             error={save.errors.user}
-                            description={'Changing the owner moves the server to their dashboard.'}
+                            description={t('Changing the owner moves the server to their dashboard.')}
                         />
                     </FormGrid>
-                    <TextArea label={'Description'} value={description} onChange={setDescription} rows={3} />
+                    <TextArea label={t('Description')} value={description} onChange={setDescription} rows={3} />
                     <TextInput
-                        label={'External ID'}
+                        label={t('External ID')}
                         value={externalId}
                         onChange={setExternalId}
                         error={save.errors.external_id}
                     />
                 </div>
             </Card>
-            <Card title={'Summary'}>
+            <Card title={t('Summary')}>
                 <Details
                     items={[
-                        ['Status', <ServerStatusBadge key={'s'} status={server.status} />],
+                        [t('Status'), <ServerStatusBadge key={'s'} status={server.status} />],
                         [
-                            'Node',
+                            t('Node'),
                             server.node && (
                                 <Link key={'n'} to={`/admin/nodes/${server.node.id}`}>
                                     {server.node.name}
@@ -120,7 +127,7 @@ const About = ({ server }: Props) => {
                             ),
                         ],
                         [
-                            'Egg',
+                            t('Egg'),
                             server.egg && (
                                 <Link key={'e'} to={`/admin/nests/eggs/${server.egg.id}`}>
                                     {server.egg.name}
@@ -128,17 +135,17 @@ const About = ({ server }: Props) => {
                             ),
                         ],
                         [
-                            'Address',
+                            t('Address'),
                             server.allocation && (
                                 <code key={'a'}>{`${server.allocation.alias || server.allocation.ip}:${
                                     server.allocation.port
                                 }`}</code>
                             ),
                         ],
-                        ['Memory / disk', `${formatMb(server.limits.memory)} / ${formatMb(server.limits.disk)}`],
-                        ['CPU', server.limits.cpu ? `${server.limits.cpu}%` : 'Unlimited'],
+                        [t('Memory / disk'), `${formatMb(server.limits.memory)} / ${formatMb(server.limits.disk)}`],
+                        [t('CPU'), server.limits.cpu ? `${server.limits.cpu}%` : t('Unlimited')],
                         [
-                            'UUID',
+                            t('UUID'),
                             <code key={'u'} className={'text-xs break-all'}>
                                 {server.uuid}
                             </code>,
@@ -182,7 +189,7 @@ const Build = ({ server }: Props) => {
                 remove_allocations: remove,
             }),
         {
-            success: 'Build configuration saved',
+            success: t('Build configuration saved'),
             invalidate: [...invalidate(server.id), ['admin', 'nodes']],
             onSuccess: () => {
                 setAdd([]);
@@ -195,14 +202,14 @@ const Build = ({ server }: Props) => {
     return (
         <div className={'space-y-6'}>
             <Card
-                title={'Resources'}
+                title={t('Resources')}
                 icon={AdjustmentsIcon}
-                description={'Memory, CPU and IO changes apply to the running container immediately.'}
+                description={t('Memory, CPU and IO changes apply to the running container immediately.')}
             >
                 <div className={'space-y-4'}>
                     <FormGrid cols={3}>
                         <NumberInput
-                            label={'Memory'}
+                            label={t('Memory')}
                             suffix={'MiB'}
                             value={limits.memory}
                             onChange={(memory) => setLimits({ ...limits, memory })}
@@ -210,15 +217,15 @@ const Build = ({ server }: Props) => {
                             description={formatMb(limits.memory)}
                         />
                         <NumberInput
-                            label={'Swap'}
+                            label={t('Swap')}
                             suffix={'MiB'}
                             value={limits.swap}
                             onChange={(swap) => setLimits({ ...limits, swap })}
                             error={err('limits.swap')}
-                            description={'0 disables, -1 unlimited'}
+                            description={t('0 disables, -1 unlimited')}
                         />
                         <NumberInput
-                            label={'Disk'}
+                            label={t('Disk')}
                             suffix={'MiB'}
                             value={limits.disk}
                             onChange={(disk) => setLimits({ ...limits, disk })}
@@ -226,21 +233,21 @@ const Build = ({ server }: Props) => {
                             description={formatMb(limits.disk)}
                         />
                         <NumberInput
-                            label={'CPU'}
+                            label={t('CPU')}
                             suffix={'%'}
                             value={limits.cpu}
                             onChange={(cpu) => setLimits({ ...limits, cpu })}
                             error={err('limits.cpu')}
-                            description={'100% = one thread, 0 unlimited'}
+                            description={t('100% = one thread, 0 unlimited')}
                         />
                         <NumberInput
-                            label={'Block IO weight'}
+                            label={t('Block IO weight')}
                             value={limits.io}
                             onChange={(io) => setLimits({ ...limits, io })}
                             error={err('limits.io')}
                         />
                         <TextInput
-                            label={'CPU pinning'}
+                            label={t('CPU pinning')}
                             value={limits.threads || ''}
                             onChange={(threads) => setLimits({ ...limits, threads })}
                             error={err('limits.threads')}
@@ -248,28 +255,28 @@ const Build = ({ server }: Props) => {
                         />
                     </FormGrid>
                     <Toggle
-                        label={'Disable OOM killer'}
+                        label={t('Disable OOM killer')}
                         checked={limits.oom_disabled}
                         onChange={(oom_disabled) => setLimits({ ...limits, oom_disabled })}
                     />
                 </div>
             </Card>
-            <Card title={'Feature limits'} description={'What the owner can create on their own.'}>
+            <Card title={t('Feature limits')} description={t('What the owner can create on their own.')}>
                 <FormGrid cols={3}>
                     <NumberInput
-                        label={'Databases'}
+                        label={t('Databases')}
                         value={features.databases}
                         onChange={(databases) => setFeatures({ ...features, databases })}
                         error={err('feature_limits.databases')}
                     />
                     <NumberInput
-                        label={'Allocations'}
+                        label={t('Allocations')}
                         value={features.allocations}
                         onChange={(allocations) => setFeatures({ ...features, allocations })}
                         error={err('feature_limits.allocations')}
                     />
                     <NumberInput
-                        label={'Backups'}
+                        label={t('Backups')}
                         value={features.backups}
                         onChange={(backups) => setFeatures({ ...features, backups })}
                         error={err('feature_limits.backups')}
@@ -277,13 +284,13 @@ const Build = ({ server }: Props) => {
                 </FormGrid>
             </Card>
             <Card
-                title={'Allocations'}
+                title={t('Allocations')}
                 icon={SwitchHorizontalIcon}
-                description={'Port changes need a restart of the server.'}
+                description={t('Port changes need a restart of the server.')}
             >
                 <div className={'space-y-4'}>
                     <Select
-                        label={'Primary allocation'}
+                        label={t('Primary allocation')}
                         value={primary}
                         onChange={(v) => setPrimary(Number(v))}
                         error={err('allocation')}
@@ -293,7 +300,9 @@ const Build = ({ server }: Props) => {
                     />
                     <FormGrid>
                         <div>
-                            <p className={'mb-1.5 text-xs font-medium text-gray-300'}>Remove additional allocations</p>
+                            <p className={'mb-1.5 text-xs font-medium text-gray-300'}>
+                                {t('Remove additional allocations')}
+                            </p>
                             <CheckList
                                 options={server.allocations
                                     .filter((a) => a.id !== primary)
@@ -304,7 +313,7 @@ const Build = ({ server }: Props) => {
                         </div>
                         <div>
                             <p className={'mb-1.5 text-xs font-medium text-gray-300'}>
-                                Add free allocations of {server.node?.name}
+                                {t('Add free allocations of {{name}}', { name: server.node?.name })}
                             </p>
                             <CheckList
                                 options={(free?.data || []).map((a) => ({
@@ -313,7 +322,7 @@ const Build = ({ server }: Props) => {
                                 }))}
                                 selected={add}
                                 onChange={setAdd}
-                                placeholder={'Filter ports…'}
+                                placeholder={t('Filter ports…')}
                             />
                         </div>
                     </FormGrid>
@@ -321,7 +330,7 @@ const Build = ({ server }: Props) => {
             </Card>
             <div className={'flex justify-end'}>
                 <Button loading={save.loading} onClick={() => save.run()}>
-                    Save build configuration
+                    {t('Save build configuration')}
                 </Button>
             </div>
         </div>
@@ -341,7 +350,7 @@ const Startup = ({ server }: Props) => {
     const save = useAction(
         () => updateServerStartup(server.id, { startup, image, skip_scripts: skip, egg, environment }),
         {
-            success: 'Startup configuration saved',
+            success: t('Startup configuration saved'),
             invalidate: invalidate(server.id),
         }
     );
@@ -349,7 +358,7 @@ const Startup = ({ server }: Props) => {
 
     return (
         <div className={'space-y-6'}>
-            <Card title={'Startup command'}>
+            <Card title={t('Startup command')}>
                 <div className={'space-y-3'}>
                     <TextArea mono rows={3} value={startup} onChange={setStartup} error={save.errors.startup} />
                     {server.container.default_startup && startup !== server.container.default_startup && (
@@ -359,16 +368,16 @@ const Startup = ({ server }: Props) => {
                             icon={RefreshIcon}
                             onClick={() => setStartup(server.container.default_startup!)}
                         >
-                            Reset to egg default
+                            {t('Reset to egg default')}
                         </Button>
                     )}
                 </div>
             </Card>
-            <Card title={'Egg and image'}>
+            <Card title={t('Egg and image')}>
                 <div className={'space-y-4'}>
                     <FormGrid>
                         <Select
-                            label={'Egg'}
+                            label={t('Egg')}
                             value={egg}
                             onChange={(v) => setEgg(Number(v))}
                             error={save.errors.egg}
@@ -377,7 +386,7 @@ const Startup = ({ server }: Props) => {
                             )}
                         />
                         <TextInput
-                            label={'Docker image'}
+                            label={t('Docker image')}
                             value={image}
                             onChange={setImage}
                             error={save.errors.image}
@@ -404,13 +413,14 @@ const Startup = ({ server }: Props) => {
                     )}
                     {changingEgg && (
                         <Callout tone={'yellow'}>
-                            Changing the egg keeps the files of the server. Save, then check the variables and reinstall
-                            the server from the Manage tab if needed.
+                            {t(
+                                'Changing the egg keeps the files of the server. Save, then check the variables and reinstall the server from the Manage tab if needed.'
+                            )}
                         </Callout>
                     )}
                     <Toggle
-                        label={'Skip egg install script'}
-                        description={'Reinstalling will not run the install script.'}
+                        label={t('Skip egg install script')}
+                        description={t('Reinstalling will not run the install script.')}
                         checked={skip}
                         onChange={setSkip}
                     />
@@ -418,8 +428,8 @@ const Startup = ({ server }: Props) => {
             </Card>
             {!changingEgg && (
                 <Card
-                    title={'Variables'}
-                    description={'As an administrator you can edit every variable, including hidden ones.'}
+                    title={t('Variables')}
+                    description={t('As an administrator you can edit every variable, including hidden ones.')}
                 >
                     <FormGrid>
                         {server.variables.map((variable) => (
@@ -428,7 +438,7 @@ const Startup = ({ server }: Props) => {
                                 label={
                                     <>
                                         {variable.name}
-                                        {!variable.user_viewable && <Badge className={'ml-1'}>Hidden</Badge>}
+                                        {!variable.user_viewable && <Badge className={'ml-1'}>{t('Hidden')}</Badge>}
                                     </>
                                 }
                                 value={environment[variable.env_variable] ?? ''}
@@ -442,7 +452,7 @@ const Startup = ({ server }: Props) => {
             )}
             <div className={'flex justify-end'}>
                 <Button loading={save.loading} onClick={() => save.run()}>
-                    Save startup
+                    {t('Save startup')}
                 </Button>
             </div>
         </div>
@@ -458,43 +468,45 @@ const Databases = ({ server }: Props) => {
     const create = useAction(
         () => createServerDatabase(server.id, { ...values, host: values.host || hosts?.[0]?.id || 0 }),
         {
-            success: 'Database created',
+            success: t('Database created'),
             invalidate: invalidate(server.id),
             onSuccess: () => setCreating(false),
         }
     );
     const rotate = useAction((database: number) => resetServerDatabasePassword(server.id, database), {
-        success: 'Password rotated',
+        success: t('Password rotated'),
     });
     const remove = useAction((database: number) => deleteServerDatabase(server.id, database), {
-        success: 'Database deleted',
+        success: t('Database deleted'),
         invalidate: invalidate(server.id),
         onSuccess: () => setDeleting(null),
     });
 
     return (
         <Card
-            title={'Databases'}
+            title={t('Databases')}
             icon={DatabaseIcon}
-            description={`${server.databases.length} of ${
-                server.feature_limits.databases ?? '∞'
-            } databases the owner may create.`}
+            description={t('{{count}} of {{value}} databases the owner may create.', {
+                count: server.databases.length,
+                value: server.feature_limits.databases ?? '∞',
+            })}
             flush
             actions={
                 <Button size={'sm'} icon={PlusIcon} disabled={!hosts?.length} onClick={() => setCreating(true)}>
-                    New database
+                    {t('New database')}
                 </Button>
             }
         >
             {hosts && !hosts.length && (
                 <div className={'px-5 pb-5'}>
                     <Callout tone={'yellow'}>
-                        No database hosts are configured. <Link to={'/admin/databases'}>Add one</Link> first.
+                        {t('No database hosts are configured.')} <Link to={'/admin/databases'}>{t('Add one')}</Link>{' '}
+                        {t('first.')}
                     </Callout>
                 </div>
             )}
             {server.databases.length === 0 ? (
-                <EmptyState icon={DatabaseIcon} title={'No databases'} />
+                <EmptyState icon={DatabaseIcon} title={t('No databases')} />
             ) : (
                 <ul className={'divide-y divide-gray-800 border-t border-gray-800'}>
                     {server.databases.map((db) => (
@@ -502,13 +514,17 @@ const Databases = ({ server }: Props) => {
                             <div className={'flex-1 min-w-0'}>
                                 <p className={'text-sm font-mono text-gray-100 truncate'}>{db.database}</p>
                                 <p className={'text-xs text-gray-500 truncate'}>
-                                    {db.username} · {db.host?.address} · from {db.remote}
+                                    {t('{{username}} · {{address}} · from {{remote}}', {
+                                        username: db.username,
+                                        address: db.host?.address,
+                                        remote: db.remote,
+                                    })}
                                 </p>
                             </div>
-                            <IconButton icon={KeyIcon} label={'Rotate password'} onClick={() => rotate.run(db.id)} />
+                            <IconButton icon={KeyIcon} label={t('Rotate password')} onClick={() => rotate.run(db.id)} />
                             <IconButton
                                 icon={TrashIcon}
-                                label={'Delete'}
+                                label={t('Delete')}
                                 tone={'danger'}
                                 onClick={() => setDeleting(db.id)}
                             />
@@ -520,51 +536,51 @@ const Databases = ({ server }: Props) => {
                 open={creating}
                 onClose={() => setCreating(false)}
                 icon={DatabaseIcon}
-                title={'New database'}
+                title={t('New database')}
                 footer={
                     <>
                         <Button variant={'ghost'} onClick={() => setCreating(false)}>
-                            Cancel
+                            {t('Cancel')}
                         </Button>
                         <Button loading={create.loading} onClick={() => create.run()}>
-                            Create
+                            {t('Create')}
                         </Button>
                     </>
                 }
             >
                 <div className={'space-y-4'}>
                     <Select
-                        label={'Host'}
+                        label={t('Host')}
                         value={values.host || hosts?.[0]?.id || ''}
                         onChange={(v) => setValues({ ...values, host: Number(v) })}
                         options={(hosts || []).map((h) => ({ value: h.id, label: `${h.name} (${h.host})` }))}
                     />
                     <TextInput
-                        label={'Name'}
+                        label={t('Name')}
                         required
                         value={values.database}
                         onChange={(database) => setValues({ ...values, database })}
                         error={create.errors.database}
-                        description={`Created as s${server.id}_<name>.`}
+                        description={t('Created as s{{id}}_<name>.', { id: server.id })}
                     />
                     <TextInput
-                        label={'Connections from'}
+                        label={t('Connections from')}
                         value={values.remote}
                         onChange={(remote) => setValues({ ...values, remote })}
                         error={create.errors.remote}
-                        description={'% allows every address. Use the node IP to only allow the server itself.'}
+                        description={t('% allows every address. Use the node IP to only allow the server itself.')}
                     />
                 </div>
             </Drawer>
             <Confirm
                 open={deleting !== null}
-                title={'Delete this database?'}
-                confirm={'Delete'}
+                title={t('Delete this database?')}
+                confirm={t('Delete')}
                 loading={remove.loading}
                 onConfirm={() => deleting && remove.run(deleting)}
                 onClose={() => setDeleting(null)}
             >
-                All tables and data are deleted from the database host.
+                {t('All tables and data are deleted from the database host.')}
             </Confirm>
         </Card>
     );
@@ -575,26 +591,26 @@ const Mounts = ({ server }: Props) => {
         (mount: number, attached: boolean) =>
             attached ? detachServerMount(server.id, mount) : attachServerMount(server.id, mount),
         {
-            success: 'Mounts updated, restart the server to apply',
+            success: t('Mounts updated, restart the server to apply'),
             invalidate: invalidate(server.id),
         }
     );
 
     return (
         <Card
-            title={'Mounts'}
+            title={t('Mounts')}
             icon={FolderIcon}
-            description={'Mounts linked to both the egg and the node of this server.'}
+            description={t('Mounts linked to both the egg and the node of this server.')}
             flush
         >
             {server.mounts.length === 0 ? (
                 <EmptyState
                     icon={FolderIcon}
-                    title={'No mounts available'}
-                    description={'Link a mount to this egg and node on the Mounts page to make it available here.'}
+                    title={t('No mounts available')}
+                    description={t('Link a mount to this egg and node on the Mounts page to make it available here.')}
                     action={
                         <Button variant={'secondary'} to={'/admin/mounts'}>
-                            Manage mounts
+                            {t('Manage mounts')}
                         </Button>
                     }
                 />
@@ -604,7 +620,7 @@ const Mounts = ({ server }: Props) => {
                         <li key={mount.id} className={'flex items-center gap-3 px-5 py-3'}>
                             <div className={'flex-1 min-w-0'}>
                                 <p className={'text-sm text-gray-100'}>
-                                    {mount.name} {mount.read_only && <Badge className={'ml-1'}>Read only</Badge>}
+                                    {mount.name} {mount.read_only && <Badge className={'ml-1'}>{t('Read only')}</Badge>}
                                 </p>
                                 <p className={'text-xs text-gray-500 font-mono truncate'}>
                                     {mount.source} → {mount.target}
@@ -615,7 +631,7 @@ const Mounts = ({ server }: Props) => {
                                 variant={mount.attached ? 'danger' : 'secondary'}
                                 onClick={() => toggle.run(mount.id, mount.attached)}
                             >
-                                {mount.attached ? 'Detach' : 'Attach'}
+                                {mount.attached ? t('Detach') : t('Attach')}
                             </Button>
                         </li>
                     ))}
@@ -638,13 +654,13 @@ const Manage = ({ server }: Props) => {
     );
 
     const done = { invalidate: invalidate(server.id), onSuccess: () => setConfirm(null) };
-    const reinstall = useAction(() => reinstallServer(server.id), { success: 'Reinstall started', ...done });
+    const reinstall = useAction(() => reinstallServer(server.id), { success: t('Reinstall started'), ...done });
     const suspend = useAction(() => suspendServer(server.id, !server.suspended), {
-        success: server.suspended ? 'Server unsuspended' : 'Server suspended',
+        success: server.suspended ? t('Server unsuspended') : t('Server suspended'),
         ...done,
     });
     const toggleInstall = useAction(() => toggleServerInstall(server.id), {
-        success: 'Install status toggled',
+        success: t('Install status toggled'),
         invalidate: invalidate(server.id),
     });
     const transfer = useAction(
@@ -655,13 +671,13 @@ const Manage = ({ server }: Props) => {
                 allocation_additional: target.additional,
             }),
         {
-            success: 'Transfer started',
+            success: t('Transfer started'),
             invalidate: invalidate(server.id),
             onSuccess: () => setTransferring(false),
         }
     );
     const remove = useAction((force: boolean) => deleteServer(server.id, force), {
-        success: 'Server deleted',
+        success: t('Server deleted'),
         invalidate: [
             ['admin', 'servers'],
             ['admin', 'overview'],
@@ -672,32 +688,33 @@ const Manage = ({ server }: Props) => {
     const actions = [
         {
             icon: RefreshIcon,
-            title: 'Reinstall',
-            text: 'Runs the install script of the egg again. Most eggs keep worlds and configs.',
+            title: t('Reinstall'),
+            text: t('Runs the install script of the egg again. Most eggs keep worlds and configs.'),
             button: (
                 <Button variant={'secondary'} onClick={() => setConfirm('reinstall')}>
-                    Reinstall
+                    {t('Reinstall')}
                 </Button>
             ),
         },
         {
             icon: server.suspended ? LockOpenIcon : LockClosedIcon,
-            title: server.suspended ? 'Unsuspend' : 'Suspend',
+            title: server.suspended ? t('Unsuspend') : t('Suspend'),
             text: server.suspended
-                ? 'Gives the owner access to the server again.'
-                : 'Stops the server and locks the owner and subusers out. Nothing is deleted.',
+                ? t('Gives the owner access to the server again.')
+                : t('Stops the server and locks the owner and subusers out. Nothing is deleted.'),
             button: (
                 <Button variant={server.suspended ? 'primary' : 'secondary'} onClick={() => setConfirm('suspend')}>
-                    {server.suspended ? 'Unsuspend' : 'Suspend'}
+                    {server.suspended ? t('Unsuspend') : t('Suspend')}
                 </Button>
             ),
         },
         {
             icon: CogIcon,
-            title: 'Toggle install status',
-            text: `Marks the server as ${
-                server.status === 'installing' ? 'installed' : 'installing'
-            } without running anything. Fixes servers stuck after an interrupted install.`,
+            title: t('Toggle install status'),
+            text: t(
+                'Marks the server as {{value}} without running anything. Fixes servers stuck after an interrupted install.',
+                { value: server.status === 'installing' ? 'installed' : 'installing' }
+            ),
             button: (
                 <Button
                     variant={'secondary'}
@@ -705,19 +722,19 @@ const Manage = ({ server }: Props) => {
                     disabled={server.status === 'install_failed'}
                     onClick={() => toggleInstall.run()}
                 >
-                    Toggle
+                    {t('Toggle')}
                 </Button>
             ),
         },
         {
             icon: SwitchHorizontalIcon,
-            title: 'Transfer',
+            title: t('Transfer'),
             text: server.transfer
-                ? 'A transfer is already in progress.'
-                : 'Moves the server and its files to another node.',
+                ? t('A transfer is already in progress.')
+                : t('Moves the server and its files to another node.'),
             button: (
                 <Button variant={'secondary'} disabled={!!server.transfer} onClick={() => setTransferring(true)}>
-                    Transfer
+                    {t('Transfer')}
                 </Button>
             ),
         },
@@ -726,9 +743,11 @@ const Manage = ({ server }: Props) => {
     return (
         <div className={'space-y-6'}>
             {server.transfer && (
-                <Callout tone={'blue'} icon={SwitchHorizontalIcon} title={'Transfer in progress'}>
-                    The server is being moved to node #{server.transfer.new_node}. It cannot be started until the
-                    transfer finished.
+                <Callout tone={'blue'} icon={SwitchHorizontalIcon} title={t('Transfer in progress')}>
+                    {t(
+                        'The server is being moved to node #{{new_node}}. It cannot be started until the transfer finished.',
+                        { new_node: server.transfer.new_node }
+                    )}
                 </Callout>
             )}
             <div className={'grid gap-4 md:grid-cols-2'}>
@@ -739,89 +758,94 @@ const Manage = ({ server }: Props) => {
                 ))}
             </div>
             <Card
-                title={'Delete server'}
+                title={t('Delete server')}
                 danger
                 icon={TrashIcon}
-                description={
+                description={t(
                     'Removes the server, its files and backups from the node and its databases from their host. This cannot be undone.'
-                }
+                )}
             >
                 <div className={'flex flex-wrap gap-2'}>
                     <Button variant={'danger'} onClick={() => setConfirm('delete')}>
-                        Delete server
+                        {t('Delete server')}
                     </Button>
                     <Button variant={'ghost'} onClick={() => setConfirm('force')}>
-                        Force delete
+                        {t('Force delete')}
                     </Button>
                 </div>
             </Card>
 
             <Confirm
                 open={confirm === 'reinstall'}
-                title={'Reinstall this server?'}
-                confirm={'Reinstall'}
+                title={t('Reinstall this server?')}
+                confirm={t('Reinstall')}
                 loading={reinstall.loading}
                 onConfirm={() => reinstall.run()}
                 onClose={() => setConfirm(null)}
             >
-                The server is stopped and the install script runs again. Some install scripts delete existing files,
-                create a backup if in doubt.
+                {t(
+                    'The server is stopped and the install script runs again. Some install scripts delete existing files, create a backup if in doubt.'
+                )}
             </Confirm>
             <Confirm
                 open={confirm === 'suspend'}
                 danger={!server.suspended}
-                title={server.suspended ? 'Unsuspend this server?' : 'Suspend this server?'}
-                confirm={server.suspended ? 'Unsuspend' : 'Suspend'}
+                title={server.suspended ? t('Unsuspend this server?') : t('Suspend this server?')}
+                confirm={server.suspended ? t('Unsuspend') : t('Suspend')}
                 loading={suspend.loading}
                 onConfirm={() => suspend.run()}
                 onClose={() => setConfirm(null)}
             >
                 {server.suspended
-                    ? 'The owner can start and manage the server again.'
-                    : 'The server is stopped and the owner cannot access it until you unsuspend it.'}
+                    ? t('The owner can start and manage the server again.')
+                    : t('The server is stopped and the owner cannot access it until you unsuspend it.')}
             </Confirm>
             <Confirm
                 open={confirm === 'delete' || confirm === 'force'}
-                title={confirm === 'force' ? 'Force delete this server?' : 'Delete this server?'}
+                title={confirm === 'force' ? t('Force delete this server?') : t('Delete this server?')}
                 challenge={server.name}
-                confirm={'Delete forever'}
+                confirm={t('Delete forever')}
                 loading={remove.loading}
                 onConfirm={() => remove.run(confirm === 'force')}
                 onClose={() => setConfirm(null)}
             >
                 {confirm === 'force'
-                    ? 'The server is removed from the Panel even if Wings cannot be reached. Files may remain on the node.'
-                    : 'All files, backups and databases of the server are deleted.'}
+                    ? t(
+                          'The server is removed from the Panel even if Wings cannot be reached. Files may remain on the node.'
+                      )
+                    : t('All files, backups and databases of the server are deleted.')}
             </Confirm>
             <Drawer
                 open={transferring}
                 onClose={() => setTransferring(false)}
                 icon={SwitchHorizontalIcon}
-                title={'Transfer server'}
-                description={`Currently on ${server.node?.name}. Needs ${formatMb(
-                    server.limits.memory
-                )} memory and ${formatMb(server.limits.disk)} disk.`}
+                title={t('Transfer server')}
+                description={t('Currently on {{name}}. Needs {{formatMb}} memory and {{formatMb2}} disk.', {
+                    name: server.node?.name,
+                    formatMb: formatMb(server.limits.memory),
+                    formatMb2: formatMb(server.limits.disk),
+                })}
                 footer={
                     <>
                         <Button variant={'ghost'} onClick={() => setTransferring(false)}>
-                            Cancel
+                            {t('Cancel')}
                         </Button>
                         <Button
                             loading={transfer.loading}
                             disabled={!target.node || !target.allocation}
                             onClick={() => transfer.run()}
                         >
-                            Start transfer
+                            {t('Start transfer')}
                         </Button>
                     </>
                 }
             >
                 <div className={'space-y-4'}>
                     <Select
-                        label={'Target node'}
+                        label={t('Target node')}
                         value={target.node || ''}
                         onChange={(v) => setTarget({ node: Number(v), allocation: 0, additional: [] })}
-                        placeholder={'Choose a node'}
+                        placeholder={t('Choose a node')}
                         options={(nodes?.data || [])
                             .filter((n) => n.id !== server.node?.id)
                             .map((n) => ({ value: n.id, label: n.name }))}
@@ -829,10 +853,10 @@ const Manage = ({ server }: Props) => {
                     {target.node > 0 && targetAllocations && (
                         <>
                             <Select
-                                label={'Primary allocation'}
+                                label={t('Primary allocation')}
                                 value={target.allocation || ''}
                                 onChange={(v) => setTarget({ ...target, allocation: Number(v) })}
-                                placeholder={'Choose a port'}
+                                placeholder={t('Choose a port')}
                                 error={transfer.errors.allocation_id}
                                 options={targetAllocations.data.map((a) => ({
                                     value: a.id,
@@ -840,7 +864,9 @@ const Manage = ({ server }: Props) => {
                                 }))}
                             />
                             <div>
-                                <p className={'mb-1.5 text-xs font-medium text-gray-300'}>Additional allocations</p>
+                                <p className={'mb-1.5 text-xs font-medium text-gray-300'}>
+                                    {t('Additional allocations')}
+                                </p>
                                 <CheckList
                                     options={targetAllocations.data
                                         .filter((a) => a.id !== target.allocation)
@@ -852,7 +878,7 @@ const Manage = ({ server }: Props) => {
                         </>
                     )}
                     <Callout tone={'blue'}>
-                        Both nodes must be online and able to reach each other on the Wings port.
+                        {t('Both nodes must be online and able to reach each other on the Wings port.')}
                     </Callout>
                 </div>
             </Drawer>
@@ -869,16 +895,17 @@ export default () => {
 
     return (
         <Page
-            title={server?.name || 'Server'}
+            title={server?.name || t('Server')}
             icon={ServerIcon}
-            crumbs={[{ label: 'Servers', to: '/admin/servers' }, { label: server?.identifier || '…' }]}
+            crumbs={[{ label: t('Servers'), to: '/admin/servers' }, { label: server?.identifier || '…' }]}
             description={
                 server && (
                     <span className={'inline-flex flex-wrap items-center gap-2'}>
                         <ServerStatusBadge status={server.status} />
                         <span>
-                            owned by <Link to={`/admin/users/${server.owner?.id}`}>{server.owner?.username}</Link> on{' '}
-                            {server.node?.name}
+                            {t('owned by')}{' '}
+                            <Link to={`/admin/users/${server.owner?.id}`}>{server.owner?.username}</Link>{' '}
+                            {t('on {{name}}', { name: server.node?.name })}
                         </span>
                     </span>
                 )
@@ -892,20 +919,20 @@ export default () => {
                             icon={ClipboardListIcon}
                             to={`/admin/activity?server=${server.id}`}
                         >
-                            Activity
+                            {t('Activity')}
                         </Button>
                         <Button
                             variant={'secondary'}
                             icon={ClipboardCopyIcon}
                             onClick={() => {
                                 copy(server.uuid);
-                                toast.info('UUID copied');
+                                toast.info(t('UUID copied'));
                             }}
                         >
-                            UUID
+                            {t('UUID')}
                         </Button>
                         <Button icon={PlayIcon} to={`/server/${server.identifier}`}>
-                            Open as user
+                            {t('Open as user')}
                         </Button>
                     </>
                 )
@@ -914,12 +941,12 @@ export default () => {
                 <Tabs
                     id={'server'}
                     items={[
-                        { to: base, label: 'About', icon: InformationCircleIcon, end: true },
-                        { to: `${base}/build`, label: 'Build', icon: AdjustmentsIcon },
-                        { to: `${base}/startup`, label: 'Startup', icon: PlayIcon },
-                        { to: `${base}/databases`, label: 'Databases', icon: DatabaseIcon },
-                        { to: `${base}/mounts`, label: 'Mounts', icon: FolderIcon },
-                        { to: `${base}/manage`, label: 'Manage', icon: CogIcon },
+                        { to: base, label: t('About'), icon: InformationCircleIcon, end: true },
+                        { to: `${base}/build`, label: t('Build'), icon: AdjustmentsIcon },
+                        { to: `${base}/startup`, label: t('Startup'), icon: PlayIcon },
+                        { to: `${base}/databases`, label: t('Databases'), icon: DatabaseIcon },
+                        { to: `${base}/mounts`, label: t('Mounts'), icon: FolderIcon },
+                        { to: `${base}/manage`, label: t('Manage'), icon: CogIcon },
                     ]}
                 />
             }

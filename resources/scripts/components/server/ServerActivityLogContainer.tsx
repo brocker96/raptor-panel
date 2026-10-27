@@ -12,6 +12,7 @@ import classNames from 'classnames';
 import { styles as btnStyles } from '@/components/elements/button/index';
 import { XCircleIcon } from '@heroicons/react/solid';
 import useLocationHash from '@/plugins/useLocationHash';
+import { t } from '@/i18n';
 
 export default () => {
     const { hash } = useLocationHash();
@@ -29,7 +30,10 @@ export default () => {
     }, [error]);
 
     return (
-        <ServerContentBlock title={'Activity'} description={'Everything that happened on this server, and who did it.'}>
+        <ServerContentBlock
+            title={t('Activity')}
+            description={t('Everything that happened on this server, and who did it.')}
+        >
             <FlashMessageRender byKey={'server:activity'} />
             {(filters.filters?.event || filters.filters?.ip) && (
                 <div className={'flex justify-end mb-2'}>
@@ -38,14 +42,16 @@ export default () => {
                         className={classNames(btnStyles.button, btnStyles.text, 'w-full sm:w-auto')}
                         onClick={() => setFilters((value) => ({ ...value, filters: {} }))}
                     >
-                        Clear Filters <XCircleIcon className={'w-4 h-4 ml-2'} />
+                        {t('Clear Filters')} <XCircleIcon className={'w-4 h-4 ml-2'} />
                     </Link>
                 </div>
             )}
             {!data && isValidating ? (
                 <Spinner centered />
             ) : !data?.items.length ? (
-                <p className={'text-sm text-center text-gray-400'}>No activity logs available for this server.</p>
+                <p className={'text-sm text-center text-gray-400'}>
+                    {t('No activity logs available for this server.')}
+                </p>
             ) : (
                 <div className={'rounded-xl border border-gray-800 bg-gray-900/80 shadow-card overflow-hidden'}>
                     {data?.items.map((activity) => (

@@ -11,6 +11,7 @@ import deleteFiles from '@/api/server/files/deleteFiles';
 import RenameFileModal from '@/components/server/files/RenameFileModal';
 import Portal from '@/components/elements/Portal';
 import { Dialog } from '@/components/elements/dialog';
+import { t } from '@/i18n';
 
 const MassActionsBar = () => {
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
@@ -67,21 +68,27 @@ const MassActionsBar = () => {
                     {loadingMessage}
                 </SpinnerOverlay>
                 <Dialog.Confirm
-                    title={'Delete Files'}
+                    title={t('Delete Files')}
                     open={showConfirm}
-                    confirm={'Delete'}
+                    confirm={t('Delete')}
                     onClose={() => setShowConfirm(false)}
                     onConfirmed={onClickConfirmDeletion}
                 >
                     <p className={'mb-2'}>
-                        Are you sure you want to delete&nbsp;
-                        <span className={'font-semibold text-gray-50'}>{selectedFiles.length} files</span>? This is a
-                        permanent action and the files cannot be recovered.
+                        {t('Are you sure you want to delete ')}
+                        <span className={'font-semibold text-gray-50'}>
+                            {t('{{count}} files', { count: selectedFiles.length })}
+                        </span>
+                        {t('? This is a permanent action and the files cannot be recovered.')}
                     </p>
                     {selectedFiles.slice(0, 15).map((file) => (
                         <li key={file}>{file}</li>
                     ))}
-                    {selectedFiles.length > 15 && <li>and {selectedFiles.length - 15} others</li>}
+                    {selectedFiles.length > 15 && (
+                        <li>
+                            {t('and')} {selectedFiles.length - 15} {t('others')}
+                        </li>
+                    )}
                 </Dialog.Confirm>
                 {showMove && (
                     <RenameFileModal
@@ -101,10 +108,10 @@ const MassActionsBar = () => {
                             <div
                                 css={tw`flex items-center space-x-2 sm:space-x-4 pointer-events-auto rounded p-3 sm:p-4 bg-black/75 backdrop-blur-sm shadow-lg`}
                             >
-                                <Button onClick={() => setShowMove(true)}>Move</Button>
-                                <Button onClick={onClickCompress}>Archive</Button>
+                                <Button onClick={() => setShowMove(true)}>{t('Move')}</Button>
+                                <Button onClick={onClickCompress}>{t('Archive')}</Button>
                                 <Button.Danger variant={Button.Variants.Secondary} onClick={() => setShowConfirm(true)}>
-                                    Delete
+                                    {t('Delete')}
                                 </Button.Danger>
                             </div>
                         </Fade>

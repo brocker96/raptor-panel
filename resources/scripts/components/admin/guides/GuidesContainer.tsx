@@ -8,6 +8,7 @@ import { item } from '@/components/admin/ui/motion';
 import GuideArticle from '@/components/admin/guides/GuideArticle';
 import { categories, findGuide, guides, searchableText } from '@/components/admin/guides';
 import { NotFound } from '@/components/elements/ScreenBlock';
+import { t } from '@/i18n';
 
 const index = guides.map((guide) => ({ guide, text: searchableText(guide) }));
 
@@ -23,9 +24,12 @@ export const GuideHub = () => {
 
     return (
         <Page
-            title={'Guides'}
+            title={t('Guides')}
             icon={BookOpenIcon}
-            description={`${guides.length} step by step guides covering every part of the admin area, from installing Wings to troubleshooting.`}
+            description={t(
+                '{{count}} step by step guides covering every part of the admin area, from installing Wings to troubleshooting.',
+                { count: guides.length }
+            )}
         >
             <div className={'relative max-w-xl'}>
                 <SearchIcon className={'absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500'} />
@@ -33,14 +37,18 @@ export const GuideHub = () => {
                     autoFocus
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
-                    placeholder={'Search guides, e.g. "cloudflare", "allocation", "smtp"…'}
+                    placeholder={t('Search guides, e.g. "cloudflare", "allocation", "smtp"…')}
                     className={
                         'block w-full h-12 pl-12 pr-4 rounded-xl bg-gray-900/80 border-0 ring-1 ring-inset ring-gray-700 text-base text-gray-100 placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-raptor-500 shadow-card'
                     }
                 />
             </div>
             {results.length === 0 ? (
-                <EmptyState icon={SearchIcon} title={'No guides found'} description={'Try a different search term.'} />
+                <EmptyState
+                    icon={SearchIcon}
+                    title={t('No guides found')}
+                    description={t('Try a different search term.')}
+                />
             ) : (
                 categories
                     .filter((category) => results.some((guide) => guide.category === category))
@@ -74,9 +82,14 @@ export const GuideHub = () => {
                                                     {guide.summary}
                                                 </p>
                                                 <p className={'mt-3 flex items-center gap-1 text-2xs text-gray-500'}>
-                                                    <ClockIcon className={'w-3.5 h-3.5'} /> {guide.minutes} min ·{' '}
-                                                    {guide.sections.length} sections
-                                                    {guide.faq?.length ? ` · ${guide.faq.length} FAQ` : ''}
+                                                    <ClockIcon className={'w-3.5 h-3.5'} />{' '}
+                                                    {t('{{minutes}} min · {{count}} sections', {
+                                                        minutes: guide.minutes,
+                                                        count: guide.sections.length,
+                                                    })}
+                                                    {guide.faq?.length
+                                                        ? t(' · {{count}} FAQ', { count: guide.faq.length })
+                                                        : ''}
                                                 </p>
                                             </Link>
                                         </div>
@@ -100,8 +113,8 @@ export const GuideView = () => {
             key={guide.key}
             title={guide.title}
             icon={BookOpenIcon}
-            crumbs={[{ label: 'Guides', to: '/admin/guides' }, { label: guide.category }]}
-            description={`${guide.minutes} min read`}
+            crumbs={[{ label: t('Guides'), to: '/admin/guides' }, { label: guide.category }]}
+            description={t('{{minutes}} min read', { minutes: guide.minutes })}
         >
             <Card className={'max-w-3xl'}>
                 <GuideArticle guide={guide} />

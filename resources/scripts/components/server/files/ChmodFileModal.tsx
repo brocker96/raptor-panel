@@ -9,6 +9,7 @@ import { ServerContext } from '@/state/server';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
 import useFlash from '@/plugins/useFlash';
+import { t } from '@/i18n';
 
 interface FormikValues {
     mode: string;
@@ -59,10 +60,16 @@ const ChmodFileModal = ({ files, ...props }: OwnProps) => {
                     <Form css={tw`m-0`}>
                         <div css={tw`flex flex-wrap items-end`}>
                             <div css={tw`w-full sm:flex-1 sm:mr-4`}>
-                                <Field type={'string'} id={'file_mode'} name={'mode'} label={'File Mode'} autoFocus />
+                                <Field
+                                    type={'string'}
+                                    id={'file_mode'}
+                                    name={'mode'}
+                                    label={t('File Mode')}
+                                    autoFocus
+                                />
                             </div>
                             <div css={tw`w-full sm:w-auto mt-4 sm:mt-0`}>
-                                <Button css={tw`w-full`}>Update</Button>
+                                <Button css={tw`w-full`}>{t('Update')}</Button>
                             </div>
                         </div>
                     </Form>

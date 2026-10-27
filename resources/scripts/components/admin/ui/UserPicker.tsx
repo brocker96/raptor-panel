@@ -6,6 +6,7 @@ import { SelectorIcon } from '@heroicons/react/outline';
 import { useResource } from '@/api/query';
 import { getUsers } from '@/api/admin';
 import { Field } from '@/components/admin/ui/Form';
+import { t } from '@/i18n';
 
 interface Picked {
     id: number;
@@ -15,7 +16,7 @@ interface Picked {
 
 /** Searchable owner picker that queries users as the admin types. */
 export default ({
-    label = 'Owner',
+    label = t('Owner'),
     value,
     onChange,
     error,
@@ -75,7 +76,7 @@ export default ({
                                     <span className={'text-gray-500'}>{value.email}</span>
                                 </>
                             ) : (
-                                <span className={'text-gray-600'}>Choose a user…</span>
+                                <span className={'text-gray-600'}>{t('Choose a user…')}</span>
                             )}
                         </span>
                         <SelectorIcon className={'w-4 h-4 text-gray-500'} />
@@ -95,7 +96,7 @@ export default ({
                                     autoFocus
                                     value={query}
                                     onChange={(e) => setQuery(e.target.value)}
-                                    placeholder={'Search username or e-mail…'}
+                                    placeholder={t('Search username or e-mail…')}
                                     className={
                                         'block w-full h-10 px-3 bg-transparent border-0 border-b border-gray-800 text-base sm:text-sm text-gray-100 placeholder:text-gray-600 focus:outline-none focus:ring-0'
                                     }
@@ -133,7 +134,7 @@ export default ({
                                         </li>
                                     ))}
                                     {data && !data.data.length && (
-                                        <li className={'px-3 py-3 text-sm text-gray-500'}>No users found.</li>
+                                        <li className={'px-3 py-3 text-sm text-gray-500'}>{t('No users found.')}</li>
                                     )}
                                 </ul>
                             </motion.div>

@@ -18,6 +18,7 @@ import StatusDot from '@/components/server/StatusDot';
 import routes, { preload } from '@/routers/routes';
 import { checkPermissions } from '@/plugins/usePermissions';
 import { whenIdle } from '@/lib/lazy';
+import { t } from '@/i18n';
 
 const ServerContextCard = () => {
     const name = ServerContext.useStoreState((state) => state.server.data!.name);
@@ -33,7 +34,7 @@ const ServerContextCard = () => {
                 className={'flex items-center gap-1 text-xs font-medium text-gray-400 hover:text-gray-200 no-underline'}
             >
                 <ChevronLeftIcon className={'w-3.5 h-3.5'} />
-                All servers
+                {t('All servers')}
             </Link>
             <div className={'mt-2 flex items-center gap-2 min-w-0'}>
                 <StatusDot status={status} />
@@ -44,7 +45,7 @@ const ServerContextCard = () => {
                     <Link
                         to={`/admin/servers/${serverId}`}
                         className={'text-gray-500 hover:text-gray-200'}
-                        title={'View in admin area'}
+                        title={t('View in admin area')}
                     >
                         <ExternalLinkIcon className={'w-4 h-4'} />
                     </Link>

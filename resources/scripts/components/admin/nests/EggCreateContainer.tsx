@@ -7,23 +7,24 @@ import { Page } from '@/components/admin/ui/Page';
 import { Skeleton } from '@/components/admin/ui/Feedback';
 import { useAction } from '@/components/admin/ui/hooks';
 import EggForm from '@/components/admin/nests/EggForm';
+import { t } from '@/i18n';
 
 export default () => {
     const navigate = useNavigate();
     const [params] = useSearchParams();
     const { data: nests } = useResource(['admin', 'nests'], getNests);
     const create = useAction(createEgg, {
-        success: (egg) => `${egg.name} created, now add its variables`,
+        success: (egg) => t('{{name}} created, now add its variables', { name: egg.name }),
         invalidate: [['admin', 'nests']],
         onSuccess: (egg) => navigate(`/admin/nests/eggs/${egg.id}/variables`),
     });
 
     return (
         <Page
-            title={'New egg'}
+            title={t('New egg')}
             icon={CollectionIcon}
-            crumbs={[{ label: 'Nests & eggs', to: '/admin/nests' }, { label: 'New egg' }]}
-            description={'Prefer importing a community egg when one exists, they are tested and maintained.'}
+            crumbs={[{ label: t('Nests & eggs'), to: '/admin/nests' }, { label: t('New egg') }]}
+            description={t('Prefer importing a community egg when one exists, they are tested and maintained.')}
             guide={'egg-configuration'}
         >
             {!nests ? (
@@ -34,7 +35,7 @@ export default () => {
                     nestId={Number(params.get('nest')) || undefined}
                     errors={create.errors}
                     loading={create.loading}
-                    submitLabel={'Create egg'}
+                    submitLabel={t('Create egg')}
                     onSubmit={create.run}
                 />
             )}

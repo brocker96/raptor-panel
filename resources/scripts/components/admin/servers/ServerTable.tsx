@@ -6,11 +6,12 @@ import { AdminServer, getServers, ListParams } from '@/api/admin';
 import { Column, DataTable, Pagination } from '@/components/admin/ui/DataTable';
 import { EmptyState, ServerStatusBadge } from '@/components/admin/ui/Feedback';
 import { formatMb } from '@/components/admin/ui/hooks';
+import { t } from '@/i18n';
 
 export const serverColumns: Column<AdminServer>[] = [
     {
         key: 'name',
-        header: 'Server',
+        header: t('Server'),
         cell: (server) => (
             <div className={'min-w-0'}>
                 <p className={'font-medium text-gray-100 truncate'}>{server.name}</p>
@@ -20,13 +21,13 @@ export const serverColumns: Column<AdminServer>[] = [
     },
     {
         key: 'owner',
-        header: 'Owner',
+        header: t('Owner'),
         cell: (server) => <span className={'truncate'}>{server.owner?.username}</span>,
         hideBelow: 'md',
     },
     {
         key: 'address',
-        header: 'Address',
+        header: t('Address'),
         cell: (server) =>
             server.allocation ? (
                 <code className={'text-xs text-gray-400'}>
@@ -37,10 +38,10 @@ export const serverColumns: Column<AdminServer>[] = [
             ),
         hideBelow: 'lg',
     },
-    { key: 'node', header: 'Node', cell: (server) => server.node?.name, hideBelow: 'xl' },
+    { key: 'node', header: t('Node'), cell: (server) => server.node?.name, hideBelow: 'xl' },
     {
         key: 'resources',
-        header: 'Resources',
+        header: t('Resources'),
         cell: (server) => (
             <span className={'text-xs text-gray-400 tabular-nums whitespace-nowrap'}>
                 {formatMb(server.memory)} · {formatMb(server.disk)} · {server.cpu ? `${server.cpu}%` : '∞'}
@@ -48,7 +49,7 @@ export const serverColumns: Column<AdminServer>[] = [
         ),
         hideBelow: 'lg',
     },
-    { key: 'status', header: 'Status', cell: (server) => <ServerStatusBadge status={server.status} /> },
+    { key: 'status', header: t('Status'), cell: (server) => <ServerStatusBadge status={server.status} /> },
 ];
 
 export const ServerMobileRow = ({ server }: { server: AdminServer }) => (
@@ -80,7 +81,7 @@ export default ({ params, page, onPage }: { params: ListParams; page: number; on
                 rowKey={(server) => server.id}
                 onRowClick={(server) => navigate(`/admin/servers/${server.id}`)}
                 mobile={(server) => <ServerMobileRow server={server} />}
-                empty={<EmptyState icon={ServerIcon} title={'No servers'} />}
+                empty={<EmptyState icon={ServerIcon} title={t('No servers')} />}
             />
             {data && (
                 <Pagination

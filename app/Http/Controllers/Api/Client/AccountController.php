@@ -2,7 +2,9 @@
 
 namespace Raptor\Http\Controllers\Api\Client;
 
+use Raptor\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\Http\Response;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Http\JsonResponse;
@@ -34,6 +36,27 @@ class AccountController extends ClientApiController
         return $this->fractal->item($request->user())
             ->transformWith($this->getTransformer(AccountTransformer::class))
             ->toArray();
+    }
+
+    /**
+     * Update the interface language of the authenticated user, null follows the Panel default.
+     */
+    public function updateLanguage(Request $request): Response
+    {
+        $data = $request->validate([
+            'language' => ['present', 'nullable', 'string', Rule::in(array_keys(User::LANGUAGES))],
+        ]);
+
+        $original = $request->user()->language;
+        $request->user()->forceFill(['language' => $data['language']])->saveOrFail();
+
+        if ($original !== $data['language']) {
+            Activity::event('user:account.language-changed')
+                ->property(['old' => $original, 'new' => $data['language']])
+                ->log();
+        }
+
+        return new Response('', Response::HTTP_NO_CONTENT);
     }
 
     /**

@@ -21,6 +21,7 @@ import Button from '@/components/admin/ui/Button';
 import { item } from '@/components/admin/ui/motion';
 import { ago, useAction } from '@/components/admin/ui/hooks';
 import { useGuide } from '@/components/admin/guides/GuideContext';
+import { t } from '@/i18n';
 
 export default () => {
     const { data } = useResource(['admin', 'cloudflare'], getCloudflare);
@@ -33,11 +34,11 @@ export default () => {
     }, [data]);
 
     const save = useAction(() => updateCloudflare(settings), {
-        success: 'Cloudflare settings saved',
+        success: t('Cloudflare settings saved'),
         invalidate: [['admin', 'cloudflare']],
     });
     const refresh = useAction(refreshCloudflareRanges, {
-        success: (r) => `Loaded ${r.list.length} IP ranges from Cloudflare`,
+        success: (r) => t('Loaded {{count}} IP ranges from Cloudflare', { count: r.list.length }),
         invalidate: [['admin', 'cloudflare']],
     });
 
@@ -72,103 +73,109 @@ export default () => {
                     <div className={'flex-1 min-w-0'}>
                         <p className={'text-base font-semibold text-gray-50'}>
                             {request.via_cloudflare
-                                ? 'You are connected through Cloudflare'
-                                : 'This request did not come through Cloudflare'}
+                                ? t('You are connected through Cloudflare')
+                                : t('This request did not come through Cloudflare')}
                         </p>
                         <p className={'mt-0.5 text-sm text-gray-400'}>
                             {request.via_cloudflare
-                                ? `Ray ${request.cf_ray || 'n/a'}${
-                                      request.country ? ` · ${request.country}` : ''
-                                  } · the Panel sees your address as ${request.detected_address}.`
-                                : `Your address as seen by the Panel is ${request.detected_address}. Nothing to configure if you do not use Cloudflare.`}
+                                ? t('Ray {{value}}{{value2}} · the Panel sees your address as {{detected_address}}.', {
+                                      value: request.cf_ray || 'n/a',
+                                      value2: request.country ? ` · ${request.country}` : '',
+                                      detected_address: request.detected_address,
+                                  })
+                                : t(
+                                      'Your address as seen by the Panel is {{detected_address}}. Nothing to configure if you do not use Cloudflare.',
+                                      { detected_address: request.detected_address }
+                                  )}
                         </p>
                     </div>
                     <Button variant={'secondary'} icon={BookOpenIcon} onClick={() => open('cloudflare')}>
-                        Cloudflare guide
+                        {t('Cloudflare guide')}
                     </Button>
                 </div>
             </div>
 
             {request.via_cloudflare && !data.settings.trust_proxies && (
-                <Callout tone={'red'} icon={ExclamationIcon} title={'Cloudflare is not trusted'}>
-                    Every visitor appears to come from a Cloudflare address ({request.connecting_address}). Audit logs,
-                    rate limits and API key IP restrictions will not work correctly until you enable &quot;Trust
-                    Cloudflare&quot; below.
+                <Callout tone={'red'} icon={ExclamationIcon} title={t('Cloudflare is not trusted')}>
+                    {t(
+                        'Every visitor appears to come from a Cloudflare address ({{connecting_address}}). Audit logs, rate limits and API key IP restrictions will not work correctly until you enable "Trust Cloudflare" below.',
+                        { connecting_address: request.connecting_address }
+                    )}
                 </Callout>
             )}
 
             <div className={'grid gap-6 lg:grid-cols-2'}>
                 <Card
-                    title={'Behaviour'}
+                    title={t('Behaviour')}
                     icon={CloudIcon}
                     footer={
                         <Button loading={save.loading} onClick={() => save.run()}>
-                            Save
+                            {t('Save')}
                         </Button>
                     }
                 >
                     <div className={'space-y-3'}>
                         <Toggle
-                            label={'Trust Cloudflare'}
-                            description={
+                            label={t('Trust Cloudflare')}
+                            description={t(
                                 "Read the real visitor IP and HTTPS scheme from requests arriving from Cloudflare's network. Safe to leave on: the headers are only trusted from Cloudflare addresses."
-                            }
+                            )}
                             checked={settings.trust_proxies}
                             onChange={(trust_proxies) => setSettings({ ...settings, trust_proxies })}
                         />
                         <Toggle
-                            label={'Console keepalive'}
-                            description={
+                            label={t('Console keepalive')}
+                            description={t(
                                 'Ping the Wings websocket every 25 seconds so Cloudflare (and other proxies) never close an idle console, and replace connections that silently died.'
-                            }
+                            )}
                             checked={settings.websocket_keepalive}
                             onChange={(websocket_keepalive) => setSettings({ ...settings, websocket_keepalive })}
                         />
                     </div>
                 </Card>
                 <Card
-                    title={'This request'}
+                    title={t('This request')}
                     icon={StatusOnlineIcon}
-                    description={'What the Panel received for the page you are looking at.'}
+                    description={t('What the Panel received for the page you are looking at.')}
                 >
                     <Details
                         items={[
-                            ['Connected from', <code key={'c'}>{request.connecting_address}</code>],
-                            ['Detected visitor IP', <code key={'d'}>{request.detected_address}</code>],
+                            [t('Connected from'), <code key={'c'}>{request.connecting_address}</code>],
+                            [t('Detected visitor IP'), <code key={'d'}>{request.detected_address}</code>],
                             [
-                                'CF-Connecting-IP',
+                                t('CF-Connecting-IP'),
                                 request.cf_connecting_ip ? <code key={'cf'}>{request.cf_connecting_ip}</code> : '—',
                             ],
                             [
-                                'Scheme',
+                                t('Scheme'),
                                 request.secure ? (
                                     <Badge key={'s'} tone={'green'}>
-                                        HTTPS
+                                        {t('HTTPS')}
                                     </Badge>
                                 ) : (
                                     <Badge key={'s'} tone={'yellow'}>
-                                        HTTP
+                                        {t('HTTP')}
                                     </Badge>
                                 ),
                             ],
-                            ['Country', request.country],
-                            ['Ray ID', request.cf_ray],
+                            [t('Country'), request.country],
+                            [t('Ray ID'), request.cf_ray],
                         ]}
                     />
                 </Card>
             </div>
 
             <Card
-                title={'Nodes'}
+                title={t('Nodes')}
                 icon={ChipIcon}
-                description={
+                description={t(
                     'DNS of every node checked against Cloudflare. Browsers connect to nodes directly for the console, uploads and downloads.'
-                }
+                )}
                 actions={
                     problems > 0 ? (
-                        <Badge tone={'red'}>{problems} problems</Badge>
+                        <Badge tone={'red'}>{t('{{problems}} problems', { problems: problems })}</Badge>
                     ) : (
-                        <Badge tone={'green'}>All good</Badge>
+                        <Badge tone={'green'}>{t('All good')}</Badge>
                     )
                 }
                 flush
@@ -193,9 +200,9 @@ export default () => {
                                     {node.scheme}://{node.fqdn}:{node.port}
                                 </code>
                                 {node.proxied ? (
-                                    <Badge tone={'yellow'}>Proxied by Cloudflare</Badge>
+                                    <Badge tone={'yellow'}>{t('Proxied by Cloudflare')}</Badge>
                                 ) : node.addresses.length ? (
-                                    <Badge>DNS only</Badge>
+                                    <Badge>{t('DNS only')}</Badge>
                                 ) : null}
                                 {node.addresses.length > 0 && (
                                     <span className={'text-2xs text-gray-600 font-mono'}>
@@ -205,7 +212,7 @@ export default () => {
                             </div>
                             {node.issues.length === 0 ? (
                                 <p className={'mt-2 flex items-center gap-1.5 text-xs text-raptor-300'}>
-                                    <CheckCircleIcon className={'w-4 h-4'} /> Works with this setup.
+                                    <CheckCircleIcon className={'w-4 h-4'} /> {t('Works with this setup.')}
                                 </p>
                             ) : (
                                 <ul className={'mt-2 space-y-1.5'}>
@@ -229,21 +236,26 @@ export default () => {
                             )}
                         </motion.li>
                     ))}
-                    {!data.nodes.length && <li className={'px-5 py-6 text-sm text-gray-500'}>No nodes yet.</li>}
+                    {!data.nodes.length && <li className={'px-5 py-6 text-sm text-gray-500'}>{t('No nodes yet.')}</li>}
                 </ul>
             </Card>
 
             <Card
-                title={'Cloudflare IP ranges'}
+                title={t('Cloudflare IP ranges')}
                 description={
                     data.ranges.custom
-                        ? `${data.ranges.list.length} ranges, refreshed ${ago(data.ranges.updated_at)}.`
-                        : `${data.ranges.list.length} built-in ranges. Refresh to load the current list from cloudflare.com.`
+                        ? t('{{count}} ranges, refreshed {{ago}}.', {
+                              count: data.ranges.list.length,
+                              ago: ago(data.ranges.updated_at),
+                          })
+                        : t('{{count}} built-in ranges. Refresh to load the current list from cloudflare.com.', {
+                              count: data.ranges.list.length,
+                          })
                 }
                 actions={
                     <>
                         <Button size={'sm'} variant={'ghost'} onClick={() => setShowRanges(!showRanges)}>
-                            {showRanges ? 'Hide' : 'Show'}
+                            {showRanges ? t('Hide') : t('Show')}
                         </Button>
                         <Button
                             size={'sm'}
@@ -252,7 +264,7 @@ export default () => {
                             loading={refresh.loading}
                             onClick={() => refresh.run()}
                         >
-                            Refresh
+                            {t('Refresh')}
                         </Button>
                     </>
                 }
@@ -267,7 +279,7 @@ export default () => {
                     </div>
                 ) : (
                     <p className={'text-xs text-gray-500'}>
-                        Requests from these networks may set the visitor address. Cloudflare rarely changes them.
+                        {t('Requests from these networks may set the visitor address. Cloudflare rarely changes them.')}
                     </p>
                 )}
             </Card>

@@ -11,11 +11,12 @@ import { Drawer } from '@/components/admin/ui/Overlay';
 import Button from '@/components/admin/ui/Button';
 import { useAction } from '@/components/admin/ui/hooks';
 import MountForm, { emptyMount } from '@/components/admin/mounts/MountForm';
+import { t } from '@/i18n';
 
 const columns: Column<AdminMount>[] = [
     {
         key: 'name',
-        header: 'Mount',
+        header: t('Mount'),
         cell: (mount) => (
             <div className={'min-w-0'}>
                 <p className={'font-medium text-gray-100 truncate'}>{mount.name}</p>
@@ -27,21 +28,25 @@ const columns: Column<AdminMount>[] = [
     },
     {
         key: 'flags',
-        header: 'Options',
+        header: t('Options'),
         cell: (mount) => (
             <div className={'flex gap-1.5'}>
-                {mount.read_only ? <Badge>Read only</Badge> : <Badge tone={'yellow'}>Writable</Badge>}
-                {mount.user_mountable && <Badge tone={'blue'}>User mountable</Badge>}
+                {mount.read_only ? <Badge>{t('Read only')}</Badge> : <Badge tone={'yellow'}>{t('Writable')}</Badge>}
+                {mount.user_mountable && <Badge tone={'blue'}>{t('User mountable')}</Badge>}
             </div>
         ),
         hideBelow: 'md',
     },
     {
         key: 'counts',
-        header: 'Used by',
+        header: t('Used by'),
         cell: (mount) => (
             <span className={'text-xs text-gray-400'}>
-                {mount.counts.eggs} eggs · {mount.counts.nodes} nodes · {mount.counts.servers} servers
+                {t('{{eggs}} eggs · {{nodes}} nodes · {{servers}} servers', {
+                    eggs: mount.counts.eggs,
+                    nodes: mount.counts.nodes,
+                    servers: mount.counts.servers,
+                })}
             </span>
         ),
     },
@@ -54,20 +59,20 @@ export default () => {
     const [values, setValues] = useState<MountValues>(emptyMount);
 
     const create = useAction(createMount, {
-        success: 'Mount created, now link it to eggs and nodes',
+        success: t('Mount created, now link it to eggs and nodes'),
         invalidate: [['admin', 'mounts']],
         onSuccess: (mount) => navigate(`/admin/mounts/${mount.id}`),
     });
 
     return (
         <Page
-            title={'Mounts'}
+            title={t('Mounts')}
             icon={FolderIcon}
-            description={'Share directories of a node with the servers running on it.'}
+            description={t('Share directories of a node with the servers running on it.')}
             guide={'mounts'}
             actions={
                 <Button icon={PlusIcon} onClick={() => setCreating(true)}>
-                    New mount
+                    {t('New mount')}
                 </Button>
             }
         >
@@ -80,13 +85,13 @@ export default () => {
                     empty={
                         <EmptyState
                             icon={FolderIcon}
-                            title={'No mounts'}
-                            description={
+                            title={t('No mounts')}
+                            description={t(
                                 'Mounts make a folder of the node, e.g. a shared map or mod cache, available inside servers.'
-                            }
+                            )}
                             action={
                                 <Button icon={PlusIcon} onClick={() => setCreating(true)}>
-                                    Create mount
+                                    {t('Create mount')}
                                 </Button>
                             }
                         />
@@ -97,14 +102,14 @@ export default () => {
                 open={creating}
                 onClose={() => setCreating(false)}
                 icon={FolderIcon}
-                title={'New mount'}
+                title={t('New mount')}
                 footer={
                     <>
                         <Button variant={'ghost'} onClick={() => setCreating(false)}>
-                            Cancel
+                            {t('Cancel')}
                         </Button>
                         <Button loading={create.loading} onClick={() => create.run(values)}>
-                            Create mount
+                            {t('Create mount')}
                         </Button>
                     </>
                 }

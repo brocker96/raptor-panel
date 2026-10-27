@@ -8,6 +8,7 @@ import UptimeDuration from '@/components/server/UptimeDuration';
 import useWebsocketEvent from '@/plugins/useWebsocketEvent';
 import parseStats from '@/plugins/parseStats';
 import styles from './style.module.css';
+import { t } from '@/i18n';
 
 type Stats = Record<'memory' | 'cpu' | 'disk' | 'uptime' | 'rx' | 'tx', number>;
 
@@ -38,7 +39,7 @@ const Metric = ({ icon: Icon, label, value, limit, usage, offline, children }: M
                         'text-gray-50': !offline,
                     })}
                 >
-                    {offline ? 'Offline' : value}
+                    {offline ? t('Offline') : value}
                 </span>
                 {limit !== undefined && !offline && (
                     <span className={'text-xs text-gray-500 whitespace-nowrap'}>/ {limit || '∞'}</span>
@@ -106,7 +107,7 @@ const ServerDetailsBlock = ({ className }: { className?: string }) => {
         <div className={classNames('grid grid-cols-2 lg:grid-cols-5 gap-3', className)}>
             <Metric
                 icon={ChipIcon}
-                label={'CPU'}
+                label={t('CPU')}
                 value={`${stats.cpu.toFixed(1)}%`}
                 limit={textLimits.cpu}
                 usage={limits.cpu ? stats.cpu / limits.cpu : null}
@@ -114,7 +115,7 @@ const ServerDetailsBlock = ({ className }: { className?: string }) => {
             />
             <Metric
                 icon={ServerIcon}
-                label={'Memory'}
+                label={t('Memory')}
                 value={bytesToString(stats.memory)}
                 limit={textLimits.memory}
                 usage={limits.memory ? stats.memory / mbToBytes(limits.memory) : null}
@@ -122,22 +123,23 @@ const ServerDetailsBlock = ({ className }: { className?: string }) => {
             />
             <Metric
                 icon={DatabaseIcon}
-                label={'Disk'}
+                label={t('Disk')}
                 value={bytesToString(stats.disk)}
                 limit={textLimits.disk}
                 usage={limits.disk ? stats.disk / mbToBytes(limits.disk) : null}
             />
-            <Metric icon={ArrowDownIcon} label={'Network'} value={bytesToString(stats.rx)} offline={offline}>
+            <Metric icon={ArrowDownIcon} label={t('Network')} value={bytesToString(stats.rx)} offline={offline}>
                 {!offline && (
                     <p className={'mt-1 flex items-center gap-1 text-xs text-gray-500'}>
-                        <ArrowUpIcon className={'w-3 h-3'} /> {bytesToString(stats.tx)} sent
+                        <ArrowUpIcon className={'w-3 h-3'} />{' '}
+                        {t('{{bytesToString}} sent', { bytesToString: bytesToString(stats.tx) })}
                     </p>
                 )}
             </Metric>
             <div className={'col-span-2 lg:col-span-1'}>
                 <Metric
                     icon={ClockIcon}
-                    label={'Uptime'}
+                    label={t('Uptime')}
                     value={stats.uptime > 0 ? <UptimeDuration uptime={stats.uptime / 1000} /> : '—'}
                     offline={offline}
                 />

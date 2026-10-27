@@ -1,6 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 import { useStoreState } from '@/state/hooks';
+import { t } from '@/i18n';
 
 interface Props {
     className?: string;
@@ -39,8 +40,8 @@ export default ({ className, iconOnly, size = 'md' }: Props) => {
                 <span className={classNames(sizes[size].text, 'font-header leading-none tracking-tight truncate')}>
                     {isDefault ? (
                         <>
-                            <span className={'font-extrabold text-white'}>RAPTOR</span>
-                            <span className={'font-light text-gray-300 ml-1'}>PANEL</span>
+                            <span className={'font-extrabold text-white'}>{t('RAPTOR')}</span>
+                            <span className={'font-light text-gray-300 ml-1'}>{t('PANEL')}</span>
                         </>
                     ) : (
                         <span className={'font-bold text-white'}>{name}</span>

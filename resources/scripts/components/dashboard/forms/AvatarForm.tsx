@@ -6,6 +6,7 @@ import Avatar from '@/components/Avatar';
 import { Button } from '@/components/elements/button/index';
 import { useStoreActions, useStoreState } from '@/state/hooks';
 import useFlash from '@/plugins/useFlash';
+import { t } from '@/i18n';
 
 const MAX_SIZE = 5 * 1024 * 1024;
 
@@ -19,7 +20,7 @@ export default () => {
     const [dragging, setDragging] = useState(false);
     const [preview, setPreview] = useState<string | null>(null);
 
-    const fail = (message: string) => addFlash({ key: 'account:avatar', type: 'error', title: 'Error', message });
+    const fail = (message: string) => addFlash({ key: 'account:avatar', type: 'error', title: t('Error'), message });
 
     const upload = (file: File) => {
         clearFlashes('account:avatar');
@@ -37,7 +38,7 @@ export default () => {
         })
             .then(({ data }) => {
                 updateUserData({ avatarUrl: data.avatar_url });
-                addFlash({ key: 'account:avatar', type: 'success', message: 'Your profile picture was updated.' });
+                addFlash({ key: 'account:avatar', type: 'success', message: t('Your profile picture was updated.') });
             })
             .catch((error) => fail(httpErrorToHuman(error)))
             .finally(() => {
@@ -79,7 +80,7 @@ export default () => {
                 className={
                     'group relative w-24 h-24 flex-shrink-0 rounded-full overflow-hidden ring-2 ring-white/10 hover:ring-raptor-500/60 transition'
                 }
-                aria-label={'Change profile picture'}
+                aria-label={t('Change profile picture')}
             >
                 {preview ? (
                     <img src={preview} alt={''} className={'w-full h-full object-cover'} />
@@ -102,19 +103,21 @@ export default () => {
             <div className={'min-w-0'}>
                 <p className={'text-sm text-gray-300'}>
                     {user.avatarUrl
-                        ? 'This picture is shown to you and to everyone you share servers with.'
-                        : 'You are using a generated avatar. Upload a photo or drop an image here.'}
+                        ? t('This picture is shown to you and to everyone you share servers with.')
+                        : t('You are using a generated avatar. Upload a photo or drop an image here.')}
                 </p>
-                <p className={'mt-1 text-xs text-gray-500'}>PNG, JPG, WebP or GIF up to 5 MB, cropped to a square.</p>
+                <p className={'mt-1 text-xs text-gray-500'}>
+                    {t('PNG, JPG, WebP or GIF up to 5 MB, cropped to a square.')}
+                </p>
                 <div className={'mt-3 flex flex-wrap gap-2'}>
                     <Button size={Button.Sizes.Small} disabled={busy} onClick={() => input.current?.click()}>
                         <UploadIcon className={'w-4 h-4 mr-1.5'} />
-                        Upload photo
+                        {t('Upload photo')}
                     </Button>
                     {user.avatarUrl && (
                         <Button.Text size={Button.Sizes.Small} disabled={busy} onClick={remove}>
                             <TrashIcon className={'w-4 h-4 mr-1.5'} />
-                            Use generated avatar
+                            {t('Use generated avatar')}
                         </Button.Text>
                     )}
                 </div>

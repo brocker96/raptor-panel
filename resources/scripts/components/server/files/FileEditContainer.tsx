@@ -21,6 +21,7 @@ import { usePersistedState } from '@/plugins/usePersistedState';
 import { ServerContext } from '@/state/server';
 import { encodePathSegments, hashToPath } from '@/helpers';
 import styles from './editor.module.css';
+import { t } from '@/i18n';
 
 const getNewFileDraftKey = (uuid: string, directory: string) => `pterodactyl:new-file:${uuid}:${directory}`;
 
@@ -220,7 +221,7 @@ export default () => {
                 <button
                     type={'button'}
                     className={styles.back}
-                    aria-label={'Back to file manager'}
+                    aria-label={t('Back to file manager')}
                     onClick={() => navigate(`/server/${id}/files#${encodePathSegments(directory)}`)}
                 >
                     <ArrowLeftIcon className={'w-5 h-5'} />
@@ -232,24 +233,28 @@ export default () => {
                 </div>
                 <span
                     className={classNames(styles.status, { [styles.status_dirty]: dirty })}
-                    title={dirty ? 'Unsaved changes' : 'All changes saved'}
+                    title={dirty ? t('Unsaved changes') : t('All changes saved')}
                     aria-live={'polite'}
                 >
                     {justSaved ? (
                         <>
                             <CheckIcon className={'w-4 h-4'} />
-                            <span className={'hidden sm:inline'}>Saved</span>
+                            <span className={'hidden sm:inline'}>{t('Saved')}</span>
                         </>
                     ) : dirty ? (
-                        <span className={'hidden sm:inline'}>Unsaved changes</span>
+                        <span className={'hidden sm:inline'}>{t('Unsaved changes')}</span>
                     ) : null}
                 </span>
             </div>
             {filename.endsWith('.pteroignore') && (
                 <div className={styles.notice}>
-                    You&apos;re editing a <code>.pteroignore</code> file. Any files or directories listed in here will
-                    be excluded from backups. Wildcards are supported by using an asterisk (<code>*</code>). You can
-                    negate a prior rule by prepending an exclamation point (<code>!</code>).
+                    {t("You're editing a")} <code>.pteroignore</code>{' '}
+                    {t(
+                        'file. Any files or directories listed in here will be excluded from backups. Wildcards are supported by using an asterisk ('
+                    )}
+                    <code>*</code>
+                    {t('). You can negate a prior rule by prepending an exclamation point (')}
+                    <code>!</code>).
                 </div>
             )}
             <FileNameModal
@@ -263,12 +268,13 @@ export default () => {
             <Dialog.Confirm
                 open={blocker.state === 'blocked'}
                 onClose={() => blocker.reset?.()}
-                title={'Discard unsaved changes?'}
-                confirm={'Discard changes'}
+                title={t('Discard unsaved changes?')}
+                confirm={t('Discard changes')}
                 onConfirmed={() => blocker.proceed?.()}
             >
-                You have made changes to this file that have not been saved. If you leave this page those changes will
-                be lost.
+                {t(
+                    'You have made changes to this file that have not been saved. If you leave this page those changes will be lost.'
+                )}
             </Dialog.Confirm>
             <div className={styles.editor_wrapper}>
                 <SpinnerOverlay visible={loading} />
@@ -286,17 +292,17 @@ export default () => {
             </div>
             <div className={styles.toolbar}>
                 <div className={styles.tools}>
-                    <ToolbarButton label={'Undo'} onClick={() => editor.current?.undo()}>
+                    <ToolbarButton label={t('Undo')} onClick={() => editor.current?.undo()}>
                         <ReplyIcon className={'w-5 h-5'} />
                     </ToolbarButton>
-                    <ToolbarButton label={'Redo'} onClick={() => editor.current?.redo()}>
+                    <ToolbarButton label={t('Redo')} onClick={() => editor.current?.redo()}>
                         <ReplyIcon className={'w-5 h-5 -scale-x-100'} />
                     </ToolbarButton>
-                    <ToolbarButton label={'Find & replace'} onClick={() => editor.current?.toggleSearch()}>
+                    <ToolbarButton label={t('Find & replace')} onClick={() => editor.current?.toggleSearch()}>
                         <SearchIcon className={'w-5 h-5'} />
                     </ToolbarButton>
                     <ToolbarButton
-                        label={'Toggle line wrapping'}
+                        label={t('Toggle line wrapping')}
                         active={lineWrapping ?? true}
                         onClick={() => setLineWrapping((value) => !(value ?? true))}
                     >
@@ -306,7 +312,7 @@ export default () => {
                 <select
                     className={styles.language}
                     value={language}
-                    aria-label={'Syntax highlighting language'}
+                    aria-label={t('Syntax highlighting language')}
                     onChange={(e) => setLanguage(e.currentTarget.value)}
                 >
                     <option value={PLAIN_TEXT}>{PLAIN_TEXT}</option>
@@ -319,7 +325,7 @@ export default () => {
                 {canSave && (
                     <button type={'button'} className={styles.save} onClick={onSave} disabled={loading}>
                         <SaveIcon className={'w-5 h-5 sm:hidden'} />
-                        <span>{isNewFile ? 'Create File' : 'Save'}</span>
+                        <span>{isNewFile ? t('Create File') : t('Save')}</span>
                         <kbd className={styles.shortcut}>Ctrl S</kbd>
                     </button>
                 )}

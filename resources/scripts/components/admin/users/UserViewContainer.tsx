@@ -13,6 +13,7 @@ import UserForm from '@/components/admin/users/UserForm';
 import { NotFound } from '@/components/elements/ScreenBlock';
 import Avatar from '@/components/Avatar';
 import { useStoreState } from '@/state/hooks';
+import { t } from '@/i18n';
 
 export default () => {
     const id = Number(useParams<{ id: string }>().id);
@@ -30,26 +31,27 @@ export default () => {
                 name_first: user.name_first,
                 name_last: user.name_last,
                 password: '',
+                language: user.language,
                 root_admin: user.root_admin,
             });
         }
     }, [user]);
 
     const save = useAction((v: UserValues) => updateUser(id, v), {
-        success: 'User updated',
+        success: t('User updated'),
         invalidate: [['admin', 'users']],
     });
     const twoFactor = useAction(() => disableUserTwoFactor(id), {
-        success: 'Two-factor authentication disabled',
+        success: t('Two-factor authentication disabled'),
         invalidate: [['admin', 'users', id]],
         onSuccess: () => setConfirm(null),
     });
     const avatar = useAction(() => deleteUserAvatar(id), {
-        success: 'Profile picture removed',
+        success: t('Profile picture removed'),
         invalidate: [['admin', 'users']],
     });
     const remove = useAction(() => deleteUser(id), {
-        success: 'User deleted',
+        success: t('User deleted'),
         invalidate: [['admin', 'users']],
         onSuccess: () => navigate('/admin/users'),
     });
@@ -58,14 +60,21 @@ export default () => {
 
     return (
         <Page
-            title={user?.username || 'User'}
+            title={user?.username || t('User')}
             icon={UserIcon}
-            crumbs={[{ label: 'Users', to: '/admin/users' }, { label: user?.email || '…' }]}
-            description={user ? `Joined ${ago(user.created_at)} · last active ${ago(user.last_activity)}` : undefined}
+            crumbs={[{ label: t('Users'), to: '/admin/users' }, { label: user?.email || '…' }]}
+            description={
+                user
+                    ? t('Joined {{ago}} · last active {{ago2}}', {
+                          ago: ago(user.created_at),
+                          ago2: ago(user.last_activity),
+                      })
+                    : undefined
+            }
             guide={'users'}
             actions={
                 <Button variant={'secondary'} icon={ClipboardListIcon} to={`/admin/activity?actor=${id}`}>
-                    Activity
+                    {t('Activity')}
                 </Button>
             }
         >
@@ -75,18 +84,18 @@ export default () => {
                 <div className={'grid gap-6 lg:grid-cols-3'}>
                     <div className={'lg:col-span-2 space-y-6'}>
                         <Card
-                            title={'Account details'}
+                            title={t('Account details')}
                             footer={
                                 <Button loading={save.loading} onClick={() => save.run(values)}>
-                                    Save changes
+                                    {t('Save changes')}
                                 </Button>
                             }
                         >
                             <UserForm values={values} onChange={setValues} errors={save.errors} />
                         </Card>
                         <Card
-                            title={'Owned servers'}
-                            description={`${user.servers.length} servers owned by this user.`}
+                            title={t('Owned servers')}
+                            description={t('{{count}} servers owned by this user.', { count: user.servers.length })}
                             flush
                             icon={ServerIcon}
                         >
@@ -116,13 +125,13 @@ export default () => {
                                 ))}
                                 {!user.servers.length && (
                                     <li className={'px-5 pb-5 text-sm text-gray-500'}>
-                                        This user does not own any servers.
+                                        {t('This user does not own any servers.')}
                                     </li>
                                 )}
                             </ul>
                         </Card>
                         {user.subuser_of.length > 0 && (
-                            <Card title={'Subuser on'} flush>
+                            <Card title={t('Subuser on')} flush>
                                 <ul className={'divide-y divide-gray-800'}>
                                     {user.subuser_of.map((server) => (
                                         <li key={server.id}>
@@ -142,7 +151,7 @@ export default () => {
                         )}
                     </div>
                     <div className={'space-y-6'}>
-                        <Card title={'Summary'}>
+                        <Card title={t('Summary')}>
                             <div className={'flex items-center gap-4 mb-5'}>
                                 <span
                                     className={
@@ -156,7 +165,7 @@ export default () => {
                                         {user.name || user.username}
                                     </p>
                                     <p className={'text-xs text-gray-500'}>
-                                        {user.avatar ? 'Uploaded profile picture' : 'Generated avatar'}
+                                        {user.avatar ? t('Uploaded profile picture') : t('Generated avatar')}
                                     </p>
                                     {user.avatar && (
                                         <Button
@@ -166,49 +175,49 @@ export default () => {
                                             loading={avatar.loading}
                                             onClick={() => avatar.run()}
                                         >
-                                            Remove picture
+                                            {t('Remove picture')}
                                         </Button>
                                     )}
                                 </div>
                             </div>
                             <Details
                                 items={[
-                                    ['ID', user.id],
+                                    [t('ID'), user.id],
                                     [
-                                        'UUID',
+                                        t('UUID'),
                                         <code key={'uuid'} className={'text-xs break-all'}>
                                             {user.uuid}
                                         </code>,
                                     ],
-                                    ['External ID', user.external_id],
-                                    ['Language', user.language],
+                                    [t('External ID'), user.external_id],
+                                    [t('Language'), user.language],
                                     [
-                                        'Role',
+                                        t('Role'),
                                         user.root_admin ? (
                                             <Badge key={'r'} tone={'green'}>
-                                                Administrator
+                                                {t('Administrator')}
                                             </Badge>
                                         ) : (
-                                            'User'
+                                            t('User')
                                         ),
                                     ],
                                     [
-                                        'Two-factor',
+                                        t('Two-factor'),
                                         user['2fa'] ? (
                                             <Badge key={'t'} tone={'blue'}>
-                                                Enabled
+                                                {t('Enabled')}
                                             </Badge>
                                         ) : (
-                                            'Disabled'
+                                            t('Disabled')
                                         ),
                                     ],
                                 ]}
                             />
                         </Card>
                         <Card
-                            title={'Two-factor authentication'}
+                            title={t('Two-factor authentication')}
                             icon={LockOpenIcon}
-                            description={'Disable 2FA when the user lost access to their authenticator app.'}
+                            description={t('Disable 2FA when the user lost access to their authenticator app.')}
                         >
                             <Button
                                 variant={'secondary'}
@@ -216,14 +225,14 @@ export default () => {
                                 onClick={() => setConfirm('2fa')}
                                 className={'w-full'}
                             >
-                                {user['2fa'] ? 'Disable 2FA' : '2FA is not enabled'}
+                                {user['2fa'] ? t('Disable 2FA') : t('2FA is not enabled')}
                             </Button>
                         </Card>
                         <Card
-                            title={'Delete user'}
+                            title={t('Delete user')}
                             danger
                             icon={TrashIcon}
-                            description={'Users that own servers cannot be deleted.'}
+                            description={t('Users that own servers cannot be deleted.')}
                         >
                             <Button
                                 variant={'danger'}
@@ -231,7 +240,7 @@ export default () => {
                                 disabled={user.servers.length > 0 || user.uuid === self}
                                 onClick={() => setConfirm('delete')}
                             >
-                                Delete user
+                                {t('Delete user')}
                             </Button>
                         </Card>
                     </div>
@@ -239,25 +248,28 @@ export default () => {
             )}
             <Confirm
                 open={confirm === '2fa'}
-                title={'Disable two-factor authentication?'}
-                confirm={'Disable 2FA'}
+                title={t('Disable two-factor authentication?')}
+                confirm={t('Disable 2FA')}
                 loading={twoFactor.loading}
                 onConfirm={() => twoFactor.run()}
                 onClose={() => setConfirm(null)}
             >
-                {user?.username} will be able to log in with only their password until they set up 2FA again.
+                {t('{{username}} will be able to log in with only their password until they set up 2FA again.', {
+                    username: user?.username,
+                })}
             </Confirm>
             <Confirm
                 open={confirm === 'delete'}
-                title={'Delete this user?'}
-                confirm={'Delete user'}
+                title={t('Delete this user?')}
+                confirm={t('Delete user')}
                 challenge={user?.username}
                 loading={remove.loading}
                 onConfirm={() => remove.run()}
                 onClose={() => setConfirm(null)}
             >
-                The account, its API keys and SSH keys are removed permanently. Subuser access to other servers is
-                revoked.
+                {t(
+                    'The account, its API keys and SSH keys are removed permanently. Subuser access to other servers is revoked.'
+                )}
             </Confirm>
         </Page>
     );

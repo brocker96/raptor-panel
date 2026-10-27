@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { ExclamationIcon, XIcon } from '@heroicons/react/outline';
 import Button from '@/components/admin/ui/Button';
 import { spring } from '@/components/admin/ui/motion';
+import { t } from '@/i18n';
 
 /** Closes the overlay with the escape key and stops the page behind it from scrolling. */
 const useOverlay = (open: boolean, onClose: () => void) => {
@@ -93,7 +94,7 @@ export const Drawer = ({ open, onClose, title, description, icon: Icon, footer, 
                             <button
                                 type={'button'}
                                 onClick={onClose}
-                                aria-label={'Close'}
+                                aria-label={t('Close')}
                                 className={'p-1.5 -mr-1.5 rounded-md text-gray-400 hover:text-white hover:bg-white/5'}
                             >
                                 <XIcon className={'w-5 h-5'} />
@@ -135,7 +136,7 @@ export const Confirm = ({
     open,
     title,
     children,
-    confirm = 'Confirm',
+    confirm = t('Confirm'),
     danger = true,
     loading,
     challenge,
@@ -188,9 +189,9 @@ export const Confirm = ({
                         {challenge && (
                             <div className={'mt-4'}>
                                 <p className={'text-xs text-gray-400 mb-1.5'}>
-                                    Type{' '}
+                                    {t('Type')}{' '}
                                     <code className={'px-1 py-0.5 rounded bg-gray-800 text-gray-100'}>{challenge}</code>{' '}
-                                    to confirm.
+                                    {t('to confirm.')}
                                 </p>
                                 <input
                                     autoFocus
@@ -204,7 +205,7 @@ export const Confirm = ({
                         )}
                         <div className={'mt-5 flex justify-end gap-2'}>
                             <Button variant={'ghost'} onClick={onClose}>
-                                Cancel
+                                {t('Cancel')}
                             </Button>
                             <Button
                                 variant={danger ? 'danger' : 'primary'}

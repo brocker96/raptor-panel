@@ -3,6 +3,7 @@ import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
 import asModal from '@/hoc/asModal';
 import ModalContext from '@/context/ModalContext';
+import { t } from '@/i18n';
 
 type Props = {
     title: string;
@@ -20,7 +21,7 @@ const ConfirmationModal: React.FC<React.PropsWithChildren<Props>> = ({ title, ch
             <div css={tw`text-neutral-300`}>{children}</div>
             <div css={tw`flex flex-wrap items-center justify-end mt-8`}>
                 <Button isSecondary onClick={() => dismiss()} css={tw`w-full sm:w-auto border-transparent`}>
-                    Cancel
+                    {t('Cancel')}
                 </Button>
                 <Button color={'red'} css={tw`w-full sm:w-auto mt-4 sm:mt-0 sm:ml-4`} onClick={() => onConfirmed()}>
                     {buttonText}

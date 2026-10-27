@@ -7,6 +7,7 @@ import { ServerDatabase } from '@/api/server/databases/getServerDatabases';
 import { httpErrorToHuman } from '@/api/http';
 import Button from '@/components/elements/Button';
 import tw from 'twin.macro';
+import { t } from '@/i18n';
 
 export default ({ databaseId, onUpdate }: { databaseId: string; onUpdate: (database: ServerDatabase) => void }) => {
     const [loading, setLoading] = useState(false);
@@ -27,7 +28,7 @@ export default ({ databaseId, onUpdate }: { databaseId: string; onUpdate: (datab
                 console.error(error);
                 addFlash({
                     type: 'error',
-                    title: 'Error',
+                    title: t('Error'),
                     message: httpErrorToHuman(error),
                     key: 'database-connection-modal',
                 });
@@ -37,7 +38,7 @@ export default ({ databaseId, onUpdate }: { databaseId: string; onUpdate: (datab
 
     return (
         <Button isSecondary color={'primary'} css={tw`mr-2`} onClick={rotate} isLoading={loading}>
-            Rotate Password
+            {t('Rotate Password')}
         </Button>
     );
 };

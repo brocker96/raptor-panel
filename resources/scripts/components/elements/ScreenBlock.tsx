@@ -7,6 +7,7 @@ import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
 import NotFoundSvg from '@/assets/images/not_found.svg';
 import ServerErrorSvg from '@/assets/images/server_error.svg';
+import { t } from '@/i18n';
 
 interface BaseProps {
     title: string;
@@ -69,14 +70,14 @@ type ServerErrorProps = (Omit<PropsWithBack, 'image' | 'title'> | Omit<PropsWith
 };
 
 const ServerError = ({ title, ...props }: ServerErrorProps) => (
-    <ScreenBlock title={title || 'Something went wrong'} image={ServerErrorSvg} {...props} />
+    <ScreenBlock title={title || t('Something went wrong')} image={ServerErrorSvg} {...props} />
 );
 
 const NotFound = ({ title, message, onBack }: Partial<Pick<ScreenBlockProps, 'title' | 'message' | 'onBack'>>) => (
     <ScreenBlock
         title={title || '404'}
         image={NotFoundSvg}
-        message={message || 'The requested resource was not found.'}
+        message={message || t('The requested resource was not found.')}
         onBack={onBack}
     />
 );

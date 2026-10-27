@@ -20,6 +20,7 @@ import setPrimaryServerAllocation from '@/api/server/network/setPrimaryServerAll
 import getServerAllocations from '@/api/swr/getServerAllocations';
 import { ip } from '@/lib/formatters';
 import Code from '@/components/elements/Code';
+import { t } from '@/i18n';
 
 const Label = styled.label`
     ${tw`uppercase text-xs mt-1 text-neutral-400 block px-1 select-none transition-colors duration-150`}
@@ -77,18 +78,18 @@ const AllocationRow = ({ allocation }: Props) => {
                             <Code dark>{ip(allocation.ip)}</Code>
                         </CopyOnClick>
                     )}
-                    <Label>{allocation.alias ? 'Hostname' : 'IP Address'}</Label>
+                    <Label>{allocation.alias ? t('Hostname') : t('IP Address')}</Label>
                 </div>
                 <div className={'w-16 md:w-24 overflow-hidden'}>
                     <Code dark>{allocation.port}</Code>
-                    <Label>Port</Label>
+                    <Label>{t('Port')}</Label>
                 </div>
             </div>
             <div className={'mt-4 w-full md:mt-0 md:flex-1 md:w-auto'}>
                 <InputSpinner visible={loading}>
                     <Textarea
                         className={'bg-neutral-800 hover:border-neutral-600 border-transparent'}
-                        placeholder={'Notes'}
+                        placeholder={t('Notes')}
                         defaultValue={allocation.notes || undefined}
                         onChange={(e) => setAllocationNotes(e.currentTarget.value)}
                     />
@@ -97,7 +98,7 @@ const AllocationRow = ({ allocation }: Props) => {
             <div className={'flex justify-end space-x-4 mt-4 w-full md:mt-0 md:w-48'}>
                 {allocation.isDefault ? (
                     <Button size={Button.Sizes.Small} className={'!text-gray-50 !bg-blue-600'} disabled>
-                        Primary
+                        {t('Primary')}
                     </Button>
                 ) : (
                     <>
@@ -106,7 +107,7 @@ const AllocationRow = ({ allocation }: Props) => {
                         </Can>
                         <Can action={'allocation.update'}>
                             <Button.Text size={Button.Sizes.Small} onClick={setPrimaryAllocation}>
-                                Make Primary
+                                {t('Make Primary')}
                             </Button.Text>
                         </Can>
                     </>

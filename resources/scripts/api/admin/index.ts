@@ -216,7 +216,7 @@ export interface AdminUser {
 export interface AdminUserDetails extends AdminUser {
     name_first: string;
     name_last: string;
-    language: string;
+    language: string | null;
     servers: { id: number; identifier: string; name: string; status: string | null; node: string | null }[];
     subuser_of: { id: number; identifier: string; name: string }[];
     last_activity: string | null;
@@ -228,7 +228,7 @@ export interface UserValues {
     name_first: string;
     name_last: string;
     password?: string;
-    language?: string;
+    language?: string | null;
     root_admin: boolean;
 }
 

@@ -3,6 +3,7 @@ import { SearchIcon } from '@heroicons/react/outline';
 import classNames from 'classnames';
 import useEventListener from '@/plugins/useEventListener';
 import { lazyWithPreload } from '@/lib/lazy';
+import { t } from '@/i18n';
 
 // The search modal is available on every page, but only downloaded once needed.
 const SearchModal = lazyWithPreload(() => import('@/components/dashboard/search/SearchModal'));
@@ -43,7 +44,7 @@ export default ({ compact, className }: Props) => {
             )}
             <button
                 type={'button'}
-                aria-label={'Search servers'}
+                aria-label={t('Search servers')}
                 onClick={() => setVisible(true)}
                 onMouseEnter={preload}
                 onTouchStart={preload}
@@ -57,7 +58,7 @@ export default ({ compact, className }: Props) => {
                 <SearchIcon className={compact ? 'w-5 h-5' : 'w-4 h-4'} />
                 {!compact && (
                     <>
-                        <span className={'flex-1 text-left'}>Search servers…</span>
+                        <span className={'flex-1 text-left'}>{t('Search servers…')}</span>
                         <kbd
                             className={
                                 'hidden sm:inline-flex items-center px-1.5 h-5 rounded text-[0.65rem] font-sans font-medium text-gray-400 bg-gray-800 ring-1 ring-inset ring-gray-700'

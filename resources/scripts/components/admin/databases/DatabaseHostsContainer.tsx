@@ -20,13 +20,14 @@ import { Confirm, Drawer } from '@/components/admin/ui/Overlay';
 import { FormGrid, NumberInput, Select, TextInput } from '@/components/admin/ui/Form';
 import Button from '@/components/admin/ui/Button';
 import { useAction } from '@/components/admin/ui/hooks';
+import { t } from '@/i18n';
 
 const empty: DatabaseHostValues = { name: '', host: '', port: 3306, username: '', password: '', node_id: null };
 
 const columns: Column<DatabaseHost>[] = [
     {
         key: 'name',
-        header: 'Name',
+        header: t('Name'),
         cell: (host) => (
             <div>
                 <p className={'font-medium text-gray-100'}>{host.name}</p>
@@ -38,13 +39,13 @@ const columns: Column<DatabaseHost>[] = [
     },
     {
         key: 'node',
-        header: 'Linked node',
-        cell: (host) => host.node?.name || <span className={'text-gray-600'}>None</span>,
+        header: t('Linked node'),
+        cell: (host) => host.node?.name || <span className={'text-gray-600'}>{t('None')}</span>,
         hideBelow: 'md',
     },
     {
         key: 'databases',
-        header: 'Databases',
+        header: t('Databases'),
         cell: (host) => <Badge tone={host.databases ? 'green' : 'gray'}>{host.databases}</Badge>,
     },
 ];
@@ -54,7 +55,7 @@ const HostDatabases = ({ id }: { id: number }) => {
 
     if (!data) return null;
     if (!data.databases.length)
-        return <p className={'text-sm text-gray-500'}>No databases have been created on this host yet.</p>;
+        return <p className={'text-sm text-gray-500'}>{t('No databases have been created on this host yet.')}</p>;
 
     return (
         <ul className={'divide-y divide-gray-800 rounded-lg ring-1 ring-inset ring-gray-800'}>
@@ -111,13 +112,13 @@ export default () => {
         () =>
             editing === 'new' ? createDatabaseHost(values) : updateDatabaseHost((editing as DatabaseHost).id, values),
         {
-            success: 'Connection verified and host saved',
+            success: t('Connection verified and host saved'),
             invalidate: [['admin', 'database-hosts']],
             onSuccess: () => setEditing(null),
         }
     );
     const remove = useAction(() => deleteDatabaseHost((editing as DatabaseHost).id), {
-        success: 'Database host deleted',
+        success: t('Database host deleted'),
         invalidate: [['admin', 'database-hosts']],
         onSuccess: () => {
             setDeleting(false);
@@ -127,13 +128,13 @@ export default () => {
 
     return (
         <Page
-            title={'Database hosts'}
+            title={t('Database hosts')}
             icon={DatabaseIcon}
-            description={'MySQL / MariaDB servers the Panel creates databases on for game servers.'}
+            description={t('MySQL / MariaDB servers the Panel creates databases on for game servers.')}
             guide={'database-hosts'}
             actions={
                 <Button icon={PlusIcon} onClick={() => open('new')}>
-                    New host
+                    {t('New host')}
                 </Button>
             }
         >
@@ -146,11 +147,13 @@ export default () => {
                     empty={
                         <EmptyState
                             icon={DatabaseIcon}
-                            title={'No database hosts'}
-                            description={'Add a MySQL or MariaDB server so that servers can get their own databases.'}
+                            title={t('No database hosts')}
+                            description={t(
+                                'Add a MySQL or MariaDB server so that servers can get their own databases.'
+                            )}
                             action={
                                 <Button icon={PlusIcon} onClick={() => open('new')}>
-                                    Add database host
+                                    {t('Add database host')}
                                 </Button>
                             }
                         />
@@ -161,8 +164,8 @@ export default () => {
                 open={editing !== null}
                 onClose={() => setEditing(null)}
                 icon={DatabaseIcon}
-                title={editing === 'new' ? 'New database host' : 'Edit database host'}
-                description={'The connection is tested when saving.'}
+                title={editing === 'new' ? t('New database host') : t('Edit database host')}
+                description={t('The connection is tested when saving.')}
                 footer={
                     <>
                         {editing !== 'new' && (
@@ -173,30 +176,30 @@ export default () => {
                                 disabled={!!(editing as DatabaseHost)?.databases}
                                 onClick={() => setDeleting(true)}
                             >
-                                Delete
+                                {t('Delete')}
                             </Button>
                         )}
                         <Button variant={'ghost'} onClick={() => setEditing(null)}>
-                            Cancel
+                            {t('Cancel')}
                         </Button>
                         <Button loading={save.loading} onClick={() => save.run()}>
-                            Save
+                            {t('Save')}
                         </Button>
                     </>
                 }
             >
                 <div className={'space-y-4'}>
                     <TextInput
-                        label={'Name'}
+                        label={t('Name')}
                         required
                         value={values.name}
                         onChange={set('name')}
                         error={save.errors.name}
-                        placeholder={'EU database'}
+                        placeholder={t('EU database')}
                     />
                     <FormGrid>
                         <TextInput
-                            label={'Host'}
+                            label={t('Host')}
                             required
                             value={values.host}
                             onChange={set('host')}
@@ -204,14 +207,14 @@ export default () => {
                             placeholder={'203.0.113.10'}
                         />
                         <NumberInput
-                            label={'Port'}
+                            label={t('Port')}
                             required
                             value={values.port}
                             onChange={set('port')}
                             error={save.errors.port}
                         />
                         <TextInput
-                            label={'Username'}
+                            label={t('Username')}
                             required
                             value={values.username}
                             onChange={set('username')}
@@ -219,32 +222,32 @@ export default () => {
                             autoComplete={'off'}
                         />
                         <TextInput
-                            label={'Password'}
+                            label={t('Password')}
                             type={'password'}
                             value={values.password}
                             onChange={set('password')}
                             error={save.errors.password}
                             autoComplete={'new-password'}
-                            description={editing !== 'new' ? 'Leave empty to keep the current password.' : undefined}
+                            description={editing !== 'new' ? t('Leave empty to keep the current password.') : undefined}
                         />
                     </FormGrid>
                     <Select
-                        label={'Linked node'}
+                        label={t('Linked node')}
                         value={values.node_id ?? ''}
                         onChange={(v) => set('node_id')(v ? Number(v) : null)}
-                        placeholder={'None'}
+                        placeholder={t('None')}
                         options={(nodes?.data || []).map((node) => ({ value: node.id, label: node.name }))}
-                        description={'Databases for servers on this node are preferably created on this host.'}
+                        description={t('Databases for servers on this node are preferably created on this host.')}
                     />
-                    <Callout tone={'blue'} title={'The user needs to be able to create users'}>
-                        Run{' '}
-                        <code>GRANT ALL PRIVILEGES ON *.* TO &apos;user&apos;@&apos;%&apos; WITH GRANT OPTION;</code> on
-                        the database server. The guide explains the full setup.
+                    <Callout tone={'blue'} title={t('The user needs to be able to create users')}>
+                        {t('Run')}{' '}
+                        <code>GRANT ALL PRIVILEGES ON *.* TO &apos;user&apos;@&apos;%&apos; WITH GRANT OPTION;</code>{' '}
+                        {t('on the database server. The guide explains the full setup.')}
                     </Callout>
                     {editing && editing !== 'new' && (
                         <div>
                             <p className={'mb-2 text-xs font-semibold uppercase tracking-wider text-gray-500'}>
-                                Databases on this host
+                                {t('Databases on this host')}
                             </p>
                             <HostDatabases id={editing.id} />
                         </div>
@@ -253,13 +256,13 @@ export default () => {
             </Drawer>
             <Confirm
                 open={deleting}
-                title={'Delete this database host?'}
-                confirm={'Delete'}
+                title={t('Delete this database host?')}
+                confirm={t('Delete')}
                 loading={remove.loading}
                 onConfirm={() => remove.run()}
                 onClose={() => setDeleting(false)}
             >
-                The Panel forgets the host. Databases on the server itself are not touched.
+                {t('The Panel forgets the host. Databases on the server itself are not touched.')}
             </Confirm>
         </Page>
     );

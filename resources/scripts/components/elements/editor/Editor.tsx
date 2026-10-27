@@ -26,6 +26,7 @@ import {
 import { closeBrackets, closeBracketsKeymap } from '@codemirror/autocomplete';
 import { editorHighlighting, editorTheme } from '@/components/elements/editor/theme';
 import { findLanguageByName } from '@/components/elements/editor/languages';
+import { t } from '@/i18n';
 
 export interface EditorHandle {
     getValue: () => string;
@@ -75,7 +76,7 @@ const baseExtensions: Extension[] = [
         autocapitalize: 'off',
         autocorrect: 'off',
         spellcheck: 'false',
-        'aria-label': 'File contents',
+        'aria-label': t('File contents'),
     }),
 ];
 

@@ -14,11 +14,12 @@ import { TextArea, TextInput } from '@/components/admin/ui/Form';
 import Button, { IconButton } from '@/components/admin/ui/Button';
 import { toast } from '@/components/admin/ui/Toast';
 import { ago, useAction } from '@/components/admin/ui/hooks';
+import { t } from '@/i18n';
 
 const LEVELS = [
-    { value: 0, label: 'None' },
-    { value: 1, label: 'Read' },
-    { value: 3, label: 'Read & write' },
+    { value: 0, label: t('None') },
+    { value: 1, label: t('Read') },
+    { value: 3, label: t('Read & write') },
 ];
 
 const label = (resource: string) => resource.replace(/_/g, ' ').replace(/^\w/, (c) => c.toUpperCase());
@@ -29,9 +30,9 @@ const Summary = ({ permissions }: { permissions: Record<string, number> }) => {
 
     return (
         <div className={'flex flex-wrap gap-1.5'}>
-            {write > 0 && <Badge tone={'yellow'}>{write} read & write</Badge>}
-            {read > 0 && <Badge tone={'blue'}>{read} read</Badge>}
-            {!write && !read && <Badge>No access</Badge>}
+            {write > 0 && <Badge tone={'yellow'}>{t('{{write}} read & write', { write: write })}</Badge>}
+            {read > 0 && <Badge tone={'blue'}>{t('{{read}} read', { read: read })}</Badge>}
+            {!write && !read && <Badge>{t('No access')}</Badge>}
         </div>
     );
 };
@@ -64,7 +65,7 @@ export default () => {
         }
     );
     const revoke = useAction((identifier: string) => deleteApiKey(identifier), {
-        success: 'API key revoked',
+        success: t('API key revoked'),
         invalidate: [['admin', 'api-keys']],
         onSuccess: () => setRevoking(null),
     });
@@ -72,35 +73,35 @@ export default () => {
     const columns: Column<ApplicationKey>[] = [
         {
             key: 'key',
-            header: 'Key',
+            header: t('Key'),
             cell: (key) => (
                 <div className={'min-w-0'}>
-                    <p className={'font-medium text-gray-100 truncate'}>{key.memo || 'No description'}</p>
+                    <p className={'font-medium text-gray-100 truncate'}>{key.memo || t('No description')}</p>
                     <p className={'text-xs font-mono text-gray-500'}>{key.identifier}••••</p>
                 </div>
             ),
         },
         {
             key: 'permissions',
-            header: 'Permissions',
+            header: t('Permissions'),
             cell: (key) => <Summary permissions={key.permissions} />,
             hideBelow: 'md',
         },
         {
             key: 'ips',
-            header: 'Allowed IPs',
+            header: t('Allowed IPs'),
             cell: (key) =>
                 key.allowed_ips.length ? (
                     <span className={'text-xs font-mono'}>{key.allowed_ips.join(', ')}</span>
                 ) : (
-                    <span className={'text-gray-600'}>Any</span>
+                    <span className={'text-gray-600'}>{t('Any')}</span>
                 ),
             hideBelow: 'lg',
         },
-        { key: 'owner', header: 'Created by', cell: (key) => key.user?.username || '—', hideBelow: 'xl' },
+        { key: 'owner', header: t('Created by'), cell: (key) => key.user?.username || '—', hideBelow: 'xl' },
         {
             key: 'used',
-            header: 'Last used',
+            header: t('Last used'),
             cell: (key) => <span className={'text-gray-500'}>{ago(key.last_used_at)}</span>,
             hideBelow: 'md',
         },
@@ -109,7 +110,7 @@ export default () => {
             header: '',
             align: 'right',
             cell: (key) => (
-                <IconButton icon={TrashIcon} label={'Revoke'} tone={'danger'} onClick={() => setRevoking(key)} />
+                <IconButton icon={TrashIcon} label={t('Revoke')} tone={'danger'} onClick={() => setRevoking(key)} />
             ),
         },
     ];
@@ -119,13 +120,15 @@ export default () => {
 
     return (
         <Page
-            title={'Application API'}
+            title={t('Application API')}
             icon={KeyIcon}
-            description={'Keys for billing systems and automation. They can manage the whole Panel, keep them secret.'}
+            description={t(
+                'Keys for billing systems and automation. They can manage the whole Panel, keep them secret.'
+            )}
             guide={'api-keys'}
             actions={
                 <Button icon={PlusIcon} onClick={() => setCreating(true)}>
-                    Create key
+                    {t('Create key')}
                 </Button>
             }
         >
@@ -134,7 +137,7 @@ export default () => {
                     <Callout
                         tone={'green'}
                         icon={KeyIcon}
-                        title={'Your new API key — copy it now, it will not be shown again'}
+                        title={t('Your new API key — copy it now, it will not be shown again')}
                     >
                         <div className={'mt-2 flex items-center gap-2'}>
                             <code
@@ -149,13 +152,13 @@ export default () => {
                                 icon={ClipboardCopyIcon}
                                 onClick={() => {
                                     copy(token);
-                                    toast.success('Copied to clipboard');
+                                    toast.success(t('Copied to clipboard'));
                                 }}
                             >
-                                Copy
+                                {t('Copy')}
                             </Button>
                             <Button size={'sm'} variant={'ghost'} onClick={() => setToken(null)}>
-                                Done
+                                {t('Done')}
                             </Button>
                         </div>
                     </Callout>
@@ -169,10 +172,10 @@ export default () => {
                     empty={
                         <EmptyState
                             icon={KeyIcon}
-                            title={'No application keys'}
-                            description={
+                            title={t('No application keys')}
+                            description={t(
                                 'Create a key to connect a billing system or to automate the Panel through the API.'
-                            }
+                            )}
                         />
                     }
                 />
@@ -182,41 +185,43 @@ export default () => {
                 onClose={() => setCreating(false)}
                 wide
                 icon={KeyIcon}
-                title={'Create application key'}
-                description={'Grant only what the integration needs.'}
+                title={t('Create application key')}
+                description={t('Grant only what the integration needs.')}
                 footer={
                     <>
                         <Button variant={'ghost'} onClick={() => setCreating(false)}>
-                            Cancel
+                            {t('Cancel')}
                         </Button>
                         <Button loading={create.loading} onClick={() => create.run()}>
-                            Create key
+                            {t('Create key')}
                         </Button>
                     </>
                 }
             >
                 <div className={'space-y-5'}>
                     <TextInput
-                        label={'Description'}
+                        label={t('Description')}
                         required
                         value={memo}
                         onChange={setMemo}
                         error={create.errors.memo}
-                        placeholder={'Paymenter billing'}
+                        placeholder={t('Paymenter billing')}
                     />
                     <TextArea
-                        label={'Allowed IPs'}
+                        label={t('Allowed IPs')}
                         value={ips}
                         onChange={setIps}
                         mono
                         rows={2}
                         error={Object.entries(create.errors).find(([k]) => k.startsWith('allowed_ips'))?.[1]}
                         placeholder={'203.0.113.10\n10.0.0.0/8'}
-                        description={'One address or CIDR range per line. Leave empty to allow requests from anywhere.'}
+                        description={t(
+                            'One address or CIDR range per line. Leave empty to allow requests from anywhere.'
+                        )}
                     />
                     <div>
                         <div className={'flex items-center justify-between mb-2'}>
-                            <p className={'text-xs font-medium text-gray-300'}>Permissions</p>
+                            <p className={'text-xs font-medium text-gray-300'}>{t('Permissions')}</p>
                             <div className={'flex gap-1'}>
                                 {LEVELS.map((level) => (
                                     <button
@@ -227,7 +232,7 @@ export default () => {
                                             'h-7 px-2 rounded-md text-2xs text-gray-400 hover:text-white hover:bg-white/5'
                                         }
                                     >
-                                        All {level.label.toLowerCase()}
+                                        {t('All {{value}}', { value: level.label.toLowerCase() })}
                                     </button>
                                 ))}
                             </div>
@@ -274,13 +279,14 @@ export default () => {
             </Drawer>
             <Confirm
                 open={!!revoking}
-                title={'Revoke this API key?'}
-                confirm={'Revoke'}
+                title={t('Revoke this API key?')}
+                confirm={t('Revoke')}
                 loading={revoke.loading}
                 onConfirm={() => revoking && revoke.run(revoking.identifier)}
                 onClose={() => setRevoking(null)}
             >
-                Requests using <code>{revoking?.identifier}</code> ({revoking?.memo}) will fail immediately.
+                {t('Requests using')} <code>{revoking?.identifier}</code>{' '}
+                {t('({{memo}}) will fail immediately.', { memo: revoking?.memo })}
             </Confirm>
         </Page>
     );

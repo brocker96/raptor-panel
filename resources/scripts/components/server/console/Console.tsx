@@ -19,6 +19,7 @@ import { PaperAirplaneIcon } from '@heroicons/react/outline';
 
 import '@xterm/xterm/css/xterm.css';
 import styles from './style.module.css';
+import { t } from '@/i18n';
 
 const theme = {
     background: th`colors.black`.toString(),
@@ -301,8 +302,8 @@ export default () => {
                             ref={searchInput}
                             type={'search'}
                             value={searchTerm}
-                            placeholder={'Search console...'}
-                            aria-label={'Search console output'}
+                            placeholder={t('Search console...')}
+                            aria-label={t('Search console output')}
                             enterKeyHint={'search'}
                             autoCapitalize={'none'}
                             autoCorrect={'off'}
@@ -320,13 +321,13 @@ export default () => {
                                 }
                             }}
                         />
-                        <button type={'button'} aria-label={'Previous match'} onClick={() => find('previous')}>
+                        <button type={'button'} aria-label={t('Previous match')} onClick={() => find('previous')}>
                             <ChevronUpIcon className={'w-4 h-4'} />
                         </button>
-                        <button type={'button'} aria-label={'Next match'} onClick={() => find('next')}>
+                        <button type={'button'} aria-label={t('Next match')} onClick={() => find('next')}>
                             <ChevronDownIcon className={'w-4 h-4'} />
                         </button>
-                        <button type={'button'} aria-label={'Close search'} onClick={closeSearch}>
+                        <button type={'button'} aria-label={t('Close search')} onClick={closeSearch}>
                             <XIcon className={'w-4 h-4'} />
                         </button>
                     </div>
@@ -335,7 +336,7 @@ export default () => {
                         <button
                             type={'button'}
                             className={styles.search_toggle}
-                            aria-label={'Search console output'}
+                            aria-label={t('Search console output')}
                             onClick={() => setSearchVisible(true)}
                         >
                             <SearchIcon className={'w-4 h-4'} />
@@ -352,8 +353,8 @@ export default () => {
                         ref={commandInput}
                         className={classNames('peer', styles.command_input)}
                         type={'text'}
-                        placeholder={'Type a command...'}
-                        aria-label={'Console command input.'}
+                        placeholder={t('Type a command...')}
+                        aria-label={t('Console command input.')}
                         disabled={!instance || !connected}
                         onKeyDown={handleCommandKeyDown}
                         enterKeyHint={'send'}
@@ -374,7 +375,7 @@ export default () => {
                     <div className={styles.command_actions}>
                         <button
                             type={'button'}
-                            aria-label={'Previous command'}
+                            aria-label={t('Previous command')}
                             disabled={!history?.length}
                             onClick={() => setCommandFromHistory(Math.min(historyIndex + 1, history!.length - 1))}
                         >
@@ -382,7 +383,7 @@ export default () => {
                         </button>
                         <button
                             type={'button'}
-                            aria-label={'Send command'}
+                            aria-label={t('Send command')}
                             disabled={!instance || !connected}
                             onClick={sendCommand}
                         >

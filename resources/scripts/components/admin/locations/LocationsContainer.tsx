@@ -11,6 +11,7 @@ import { TextInput } from '@/components/admin/ui/Form';
 import Button, { IconButton } from '@/components/admin/ui/Button';
 import { item } from '@/components/admin/ui/motion';
 import { useAction } from '@/components/admin/ui/hooks';
+import { t } from '@/i18n';
 
 export default () => {
     const { data } = useResource(['admin', 'locations'], getLocations);
@@ -25,23 +26,23 @@ export default () => {
 
     const save = useAction(
         () => (editing === 'new' ? createLocation(values) : updateLocation((editing as AdminLocation).id, values)),
-        { success: 'Location saved', invalidate: [['admin', 'locations']], onSuccess: () => setEditing(null) }
+        { success: t('Location saved'), invalidate: [['admin', 'locations']], onSuccess: () => setEditing(null) }
     );
     const remove = useAction((id: number) => deleteLocation(id), {
-        success: 'Location deleted',
+        success: t('Location deleted'),
         invalidate: [['admin', 'locations']],
         onSuccess: () => setDeleting(null),
     });
 
     return (
         <Page
-            title={'Locations'}
+            title={t('Locations')}
             icon={GlobeIcon}
-            description={'Group nodes by data center or region. Automatic deployment can target a location.'}
+            description={t('Group nodes by data center or region. Automatic deployment can target a location.')}
             guide={'locations'}
             actions={
                 <Button icon={PlusIcon} onClick={() => open('new')}>
-                    New location
+                    {t('New location')}
                 </Button>
             }
         >
@@ -55,11 +56,11 @@ export default () => {
                 <Card>
                     <EmptyState
                         icon={GlobeIcon}
-                        title={'No locations yet'}
-                        description={'Every node belongs to a location, create one before adding your first node.'}
+                        title={t('No locations yet')}
+                        description={t('Every node belongs to a location, create one before adding your first node.')}
                         action={
                             <Button icon={PlusIcon} onClick={() => open('new')}>
-                                Create location
+                                {t('Create location')}
                             </Button>
                         }
                     />
@@ -82,13 +83,13 @@ export default () => {
                                 <div className={'flex-1 min-w-0'}>
                                     <p className={'font-semibold text-gray-50 truncate'}>{location.short}</p>
                                     <p className={'text-xs text-gray-400 truncate'}>
-                                        {location.long || 'No description'}
+                                        {location.long || t('No description')}
                                     </p>
                                 </div>
-                                <IconButton icon={PencilIcon} label={'Edit'} onClick={() => open(location)} />
+                                <IconButton icon={PencilIcon} label={t('Edit')} onClick={() => open(location)} />
                                 <IconButton
                                     icon={TrashIcon}
-                                    label={location.nodes_count ? 'Remove the nodes first' : 'Delete'}
+                                    label={location.nodes_count ? t('Remove the nodes first') : t('Delete')}
                                     tone={'danger'}
                                     disabled={location.nodes_count > 0}
                                     onClick={() => setDeleting(location)}
@@ -96,11 +97,12 @@ export default () => {
                             </div>
                             <div className={'mt-4 flex gap-4 text-xs text-gray-400'}>
                                 <span>
-                                    <span className={'text-gray-100 font-semibold'}>{location.nodes_count}</span> nodes
+                                    <span className={'text-gray-100 font-semibold'}>{location.nodes_count}</span>{' '}
+                                    {t('nodes')}
                                 </span>
                                 <span>
                                     <span className={'text-gray-100 font-semibold'}>{location.servers_count}</span>{' '}
-                                    servers
+                                    {t('servers')}
                                 </span>
                             </div>
                             {location.nodes.length > 0 && (
@@ -126,31 +128,31 @@ export default () => {
                 open={editing !== null}
                 onClose={() => setEditing(null)}
                 icon={GlobeIcon}
-                title={editing === 'new' ? 'New location' : 'Edit location'}
+                title={editing === 'new' ? t('New location') : t('Edit location')}
                 footer={
                     <>
                         <Button variant={'ghost'} onClick={() => setEditing(null)}>
-                            Cancel
+                            {t('Cancel')}
                         </Button>
                         <Button loading={save.loading} onClick={() => save.run()}>
-                            Save
+                            {t('Save')}
                         </Button>
                     </>
                 }
             >
                 <div className={'space-y-4'}>
                     <TextInput
-                        label={'Short code'}
+                        label={t('Short code')}
                         required
                         placeholder={'de-fra'}
                         value={values.short}
                         onChange={(short) => setValues({ ...values, short })}
                         error={save.errors.short}
-                        description={'A unique identifier, used by integrations and automatic deployment.'}
+                        description={t('A unique identifier, used by integrations and automatic deployment.')}
                     />
                     <TextInput
-                        label={'Description'}
-                        placeholder={'Frankfurt, Germany'}
+                        label={t('Description')}
+                        placeholder={t('Frankfurt, Germany')}
                         value={values.long}
                         onChange={(long) => setValues({ ...values, long })}
                         error={save.errors.long}
@@ -159,13 +161,13 @@ export default () => {
             </Drawer>
             <Confirm
                 open={!!deleting}
-                title={`Delete ${deleting?.short}?`}
-                confirm={'Delete'}
+                title={t('Delete {{short}}?', { short: deleting?.short })}
+                confirm={t('Delete')}
                 loading={remove.loading}
                 onConfirm={() => deleting && remove.run(deleting.id)}
                 onClose={() => setDeleting(null)}
             >
-                The location is removed. This does not affect any servers.
+                {t('The location is removed. This does not affect any servers.')}
             </Confirm>
         </Page>
     );

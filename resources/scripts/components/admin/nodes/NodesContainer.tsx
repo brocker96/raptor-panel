@@ -11,6 +11,7 @@ import Button from '@/components/admin/ui/Button';
 import { item } from '@/components/admin/ui/motion';
 import { formatMb, useListParams } from '@/components/admin/ui/hooks';
 import NodeStatus from '@/components/admin/nodes/NodeStatus';
+import { t } from '@/i18n';
 
 export default () => {
     const list = useListParams();
@@ -20,13 +21,13 @@ export default () => {
 
     return (
         <Page
-            title={'Nodes'}
+            title={t('Nodes')}
             icon={ChipIcon}
-            description={'Machines running Wings. Status is checked live every 15 seconds.'}
+            description={t('Machines running Wings. Status is checked live every 15 seconds.')}
             guide={'nodes'}
             actions={
                 <Button icon={PlusIcon} to={'/admin/nodes/new'}>
-                    New node
+                    {t('New node')}
                 </Button>
             }
         >
@@ -34,7 +35,7 @@ export default () => {
                 <SearchInput
                     value={list.search}
                     onChange={list.setSearch}
-                    placeholder={'Search by name or FQDN…'}
+                    placeholder={t('Search by name or FQDN…')}
                     className={'max-w-md'}
                 />
             </div>
@@ -48,15 +49,15 @@ export default () => {
                 <Card>
                     <EmptyState
                         icon={ChipIcon}
-                        title={list.search ? 'No nodes match' : 'No nodes yet'}
-                        description={'A node is a machine running Wings, where servers are created.'}
+                        title={list.search ? t('No nodes match') : t('No nodes yet')}
+                        description={t('A node is a machine running Wings, where servers are created.')}
                         action={
                             <div className={'flex gap-2 justify-center'}>
                                 <Button variant={'secondary'} to={'/admin/guides/node-configuration'}>
-                                    How to install Wings
+                                    {t('How to install Wings')}
                                 </Button>
                                 <Button icon={PlusIcon} to={'/admin/nodes/new'}>
-                                    Create node
+                                    {t('Create node')}
                                 </Button>
                             </div>
                         }
@@ -100,14 +101,16 @@ export default () => {
                                         </div>
                                         <div className={'mt-3 flex flex-wrap gap-1.5'}>
                                             {node.location && <Badge>{node.location.short}</Badge>}
-                                            {node.maintenance_mode && <Badge tone={'yellow'}>Maintenance</Badge>}
-                                            {!node.public && <Badge>Private</Badge>}
-                                            <Badge tone={'blue'}>{node.usage.servers} servers</Badge>
+                                            {node.maintenance_mode && <Badge tone={'yellow'}>{t('Maintenance')}</Badge>}
+                                            {!node.public && <Badge>{t('Private')}</Badge>}
+                                            <Badge tone={'blue'}>
+                                                {t('{{servers}} servers', { servers: node.usage.servers })}
+                                            </Badge>
                                         </div>
                                         <div className={'mt-4 space-y-3'}>
                                             <div>
                                                 <div className={'flex justify-between text-2xs text-gray-500 mb-1'}>
-                                                    <span>Memory</span>
+                                                    <span>{t('Memory')}</span>
                                                     <span className={'tabular-nums'}>
                                                         {formatMb(node.usage.memory)} / {formatMb(memoryMax)}
                                                     </span>
@@ -116,7 +119,7 @@ export default () => {
                                             </div>
                                             <div>
                                                 <div className={'flex justify-between text-2xs text-gray-500 mb-1'}>
-                                                    <span>Disk</span>
+                                                    <span>{t('Disk')}</span>
                                                     <span className={'tabular-nums'}>
                                                         {formatMb(node.usage.disk)} / {formatMb(diskMax)}
                                                     </span>

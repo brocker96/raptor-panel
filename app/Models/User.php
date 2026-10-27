@@ -35,7 +35,7 @@ use Raptor\Notifications\SendPasswordReset as ResetPasswordNotification;
  * @property string|null $name_last
  * @property string $password
  * @property string|null $remember_token
- * @property string $language
+ * @property string|null $language
  * @property bool $root_admin
  * @property bool $use_totp
  * @property string|null $totp_secret
@@ -164,7 +164,7 @@ class User extends Model implements
     protected $attributes = [
         'external_id' => null,
         'root_admin' => false,
-        'language' => 'en',
+        'language' => null,
         'use_totp' => false,
         'totp_secret' => null,
     ];
@@ -181,7 +181,7 @@ class User extends Model implements
         'name_last' => 'required|string|between:1,191',
         'password' => 'sometimes|nullable|string',
         'root_admin' => 'boolean',
-        'language' => 'string',
+        'language' => 'nullable|string',
         'use_totp' => 'boolean',
         'totp_secret' => 'nullable|string',
     ];
