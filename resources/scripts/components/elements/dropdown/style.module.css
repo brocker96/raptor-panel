@@ -35,10 +35,10 @@
   }
 
   &:hover, &:focus {
-    @apply bg-blue-500 text-blue-50;
+    @apply bg-raptor-500/15 text-white;
 
     & svg {
-      @apply text-blue-50;
+      @apply text-raptor-400;
     }
   }
 
