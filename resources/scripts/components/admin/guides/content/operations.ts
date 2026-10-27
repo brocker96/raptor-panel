@@ -121,25 +121,24 @@ export default [
     },
     {
         key: 'upgrading',
-        title: 'Updating Raptor Panel',
+        title: 'Updating Wings and manual Panel updates',
         category: 'Operations',
-        summary: 'Updating the Panel and Wings safely, with backups.',
+        summary:
+            'Updating Wings on your nodes, and updating the Panel by hand when the built-in updater cannot be used.',
         minutes: 4,
         sections: [
             {
-                heading: 'Before updating',
-                steps: [
-                    'Back up the database: `mysqldump -u root panel > ~/panel-$(date +%F).sql`.',
-                    'Back up `/var/www/raptor/.env` — it contains the `APP_KEY` that encrypts secrets in the database. Losing it means losing node tokens, database host passwords and mail passwords.',
-                ],
+                heading: 'Updating the Panel',
+                body: 'The easiest way is the **Updates** page of the admin area: it makes a backup, installs the release and rolls back automatically if anything fails. See the guide "Updating Raptor Panel".',
             },
             {
-                heading: 'Updating the Panel',
+                heading: 'Manual update',
+                body: 'Without the scheduler or on a server without internet access to GitHub, download `panel.tar.gz` of a release yourself. Back up the database and `.env` first, `.env` contains the `APP_KEY` that encrypts node tokens, database host passwords and mail passwords.',
                 code: [
                     {
                         language: 'Shell',
                         content:
-                            'cd /var/www/raptor\nphp artisan down\nphp artisan p:upgrade          # downloads the latest release and migrates\nchown -R www-data:www-data .\nphp artisan queue:restart\nphp artisan up',
+                            'cd /var/www/raptor\nmysqldump -u root panel | gzip > ~/panel-$(date +%F).sql.gz\ncp .env ~/raptor-env-$(date +%F)\nphp artisan down\ncurl -fsSL https://github.com/brocker96/raptor-panel/releases/latest/download/panel.tar.gz | tar -xz\ncomposer install --no-dev --optimize-autoloader\nphp artisan migrate --force\nphp artisan optimize:clear\nchown -R www-data:www-data .\nphp artisan queue:restart\nphp artisan up',
                     },
                 ],
             },

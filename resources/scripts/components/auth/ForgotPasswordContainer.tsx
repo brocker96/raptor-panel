@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import requestPasswordResetEmail from '@/api/auth/requestPasswordResetEmail';
 import { httpErrorToHuman } from '@/api/http';
@@ -11,6 +11,7 @@ import { object, string } from 'yup';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
 import Reaptcha from 'reaptcha';
+import useRecaptcha from '@/plugins/useRecaptcha';
 import useFlash from '@/plugins/useFlash';
 
 interface Values {
@@ -18,7 +19,7 @@ interface Values {
 }
 
 export default () => {
-    const ref = useRef<Reaptcha>(null);
+    const recaptcha = useRecaptcha();
     const [token, setToken] = useState('');
 
     const { clearFlashes, addFlash } = useFlash();
@@ -34,7 +35,7 @@ export default () => {
         // If there is no token in the state yet, request the token and then abort this submit request
         // since it will be re-submitted when the recaptcha data is returned by the component.
         if (recaptchaEnabled && !token) {
-            ref.current!.execute().catch((error) => {
+            recaptcha.execute((error) => {
                 console.error(error);
 
                 setSubmitting(false);
@@ -55,7 +56,7 @@ export default () => {
             })
             .then(() => {
                 setToken('');
-                if (ref.current) ref.current.reset();
+                recaptcha.reset();
 
                 setSubmitting(false);
             });
@@ -89,7 +90,8 @@ export default () => {
                     </div>
                     {recaptchaEnabled && (
                         <Reaptcha
-                            ref={ref}
+                            ref={recaptcha.ref}
+                            onRender={recaptcha.onRender}
                             size={'invisible'}
                             sitekey={siteKey || '_invalid_key'}
                             onVerify={(response) => {

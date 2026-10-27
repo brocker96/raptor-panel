@@ -121,7 +121,15 @@ case "$(uname -m)" in
 esac
 
 if [[ -e "$DIR/.env" ]]; then
-    fail "$DIR already contains a Panel installation. Use 'php artisan p:upgrade' to update it instead."
+    fail "$DIR already contains a Panel installation. Update it from the admin area (Updates) or with 'php artisan raptor:update'."
+fi
+
+if [[ -f /var/www/pterodactyl/artisan && -f /var/www/pterodactyl/.env ]]; then
+    warn "A Pterodactyl Panel was found in /var/www/pterodactyl."
+    info "To keep its users, servers and nodes, migrate it instead of installing a new Panel:"
+    info "  bash <(curl -fsSL https://raw.githubusercontent.com/$REPO/$BRANCH/migrate.sh)"
+    ask INSTALL_ANYWAY "Install a separate, empty Raptor Panel anyway? (yes/no)" "no"
+    yes_no "$INSTALL_ANYWAY" || exit 0
 fi
 
 PUBLIC_IP="$(curl -4 -fsS --max-time 5 https://api.ipify.org 2>/dev/null || hostname -I | awk '{print $1}')"

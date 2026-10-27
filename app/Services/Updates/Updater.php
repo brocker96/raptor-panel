@@ -174,10 +174,11 @@ class Updater
             $this->artisan(['down', '--retry=15']);
 
             $this->step('Replacing Panel files');
+            $cached = $this->files->exists(base_path('bootstrap/cache/config.php'));
             $touched = true;
             $this->replaceCode($archive, keepVendor: true);
 
-            $this->finish();
+            $this->finish($cached);
             $this->files->delete($archive);
             $this->prune();
             $this->succeed("Raptor Panel was updated to $version.");
@@ -327,7 +328,7 @@ class Updater
      * Runs the usual post-update commands. These run in new processes as the code of this one
      * was replaced.
      */
-    private function finish(): void
+    private function finish(bool $cache): void
     {
         $this->step('Installing PHP dependencies');
         $composer = (new ExecutableFinder())->find('composer', null, ['/usr/local/bin', '/usr/bin']);
@@ -342,6 +343,12 @@ class Updater
         $this->step('Migrating the database');
         $this->artisan(['optimize:clear']);
         $this->artisan(['migrate', '--force', '--seed']);
+        if ($cache) {
+            // The installer caches the configuration, routes and views, keep it that way.
+            $this->artisan(['config:cache']);
+            $this->artisan(['route:cache']);
+            $this->artisan(['view:cache']);
+        }
 
         $this->step('Restarting the queue worker');
         $this->artisan(['queue:restart']);

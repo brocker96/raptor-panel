@@ -36,6 +36,36 @@ RAPTOR_FQDN=panel.example.com RAPTOR_EMAIL=me@example.com RAPTOR_WINGS=yes RAPTO
 
 All options are documented at the top of [`install.sh`](install.sh).
 
+## 🔁 Coming from Pterodactyl?
+
+Switch an existing Pterodactyl 1.x Panel to Raptor Panel **without losing anything**: users, servers, nodes,
+eggs, API keys, schedules, backups and settings stay, Wings and game servers keep running.
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/brocker96/raptor-panel/0.x_beta/migrate.sh)
+```
+
+Raptor Panel is installed next to the old Panel (`/var/www/raptor`), a full backup of the database, the old
+directory, the web server, queue worker and cron configuration is written to `/var/backups/raptor-migration`,
+and only then nginx/Apache, `pteroq` → `raptorq` and cron are switched over. If the Panel does not come up, the
+script rolls everything back on its own. Changed your mind later?
+
+```bash
+bash /var/www/raptor/migrate.sh --rollback
+```
+
+## 🔄 Updates
+
+New releases show up in the admin area under **Updates** and install with one click: the Panel backs up its
+files and database, installs the release in a short maintenance window and restores the backup automatically if
+any step fails. Older backups can be restored from the same page. Over SSH:
+
+```bash
+cd /var/www/raptor
+sudo -u www-data php artisan raptor:update            # newest release on your channel (stable or beta)
+sudo -u www-data php artisan raptor:update --rollback=latest
+```
+
 ## ⚡ Raptor vs. upstream — measured, not promised
 
 | | Pterodactyl 1.x | Raptor Panel |

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import login from '@/api/auth/login';
 import LoginFormContainer from '@/components/auth/LoginFormContainer';
@@ -9,6 +9,7 @@ import Field from '@/components/elements/Field';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
 import Reaptcha from 'reaptcha';
+import useRecaptcha from '@/plugins/useRecaptcha';
 import useFlash from '@/plugins/useFlash';
 
 interface Values {
@@ -18,7 +19,7 @@ interface Values {
 
 const LoginContainer = () => {
     const navigate = useNavigate();
-    const ref = useRef<Reaptcha>(null);
+    const recaptcha = useRecaptcha();
     const [token, setToken] = useState('');
 
     const { clearFlashes, clearAndAddHttpError } = useFlash();
@@ -34,7 +35,7 @@ const LoginContainer = () => {
         // If there is no token in the state yet, request the token and then abort this submit request
         // since it will be re-submitted when the recaptcha data is returned by the component.
         if (recaptchaEnabled && !token) {
-            ref.current!.execute().catch((error) => {
+            recaptcha.execute((error) => {
                 console.error(error);
 
                 setSubmitting(false);
@@ -58,7 +59,7 @@ const LoginContainer = () => {
                 console.error(error);
 
                 setToken('');
-                if (ref.current) ref.current.reset();
+                recaptcha.reset();
 
                 setSubmitting(false);
                 clearAndAddHttpError({ error });
@@ -87,7 +88,8 @@ const LoginContainer = () => {
                     </div>
                     {recaptchaEnabled && (
                         <Reaptcha
-                            ref={ref}
+                            ref={recaptcha.ref}
+                            onRender={recaptcha.onRender}
                             size={'invisible'}
                             sitekey={siteKey || '_invalid_key'}
                             onVerify={(response) => {

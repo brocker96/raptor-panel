@@ -2,6 +2,77 @@ import { Guide } from '@/components/admin/guides/types';
 
 export default [
     {
+        key: 'migrating',
+        title: 'Moving from Pterodactyl',
+        category: 'Getting started',
+        summary: 'Switch an existing Pterodactyl Panel to Raptor Panel without losing data, and how to go back.',
+        minutes: 5,
+        sections: [
+            {
+                heading: 'What is kept',
+                body: 'Raptor Panel uses the same database as Pterodactyl 1.x. The migration keeps the database and the `.env` file, including the `APP_KEY` that every stored secret is encrypted with, so everything stays as it was.',
+                points: [
+                    'Users, passwords, two-factor authentication, API keys and SSH keys.',
+                    'Servers, nodes, allocations, locations, nests and eggs (custom eggs too), databases and mounts.',
+                    'Schedules, backups, subusers, activity logs and all Panel settings.',
+                    'Wings and game servers keep running, nodes do not need a new configuration.',
+                ],
+                tips: ['Everybody is signed out once and signs in again with their existing password.'],
+            },
+            {
+                heading: 'Running the migration',
+                steps: [
+                    'Make sure PHP 8.2 or newer is installed (`php -v`). Pterodactyl installs made with older guides may still use PHP 8.1.',
+                    'Run the migration script below as root on the Panel server.',
+                    'The script installs Raptor Panel next to Pterodactyl in `/var/www/raptor`, the old files are not changed.',
+                    'It backs up the database, the old Panel directory, the web server and queue worker configuration and the cron job to `/var/backups/raptor-migration/<id>`.',
+                    'During a short maintenance window the database is migrated and nginx (or Apache), the queue worker (`pteroq` becomes `raptorq`) and the cron job are switched over.',
+                    'The Panel is checked over HTTP, if it does not answer everything is rolled back automatically.',
+                ],
+                code: [
+                    {
+                        language: 'Shell',
+                        content:
+                            'bash <(curl -fsSL https://raw.githubusercontent.com/brocker96/raptor-panel/0.x_beta/migrate.sh)',
+                    },
+                ],
+            },
+            {
+                heading: 'Going back to Pterodactyl',
+                body: 'The rollback restores the database from the migration backup, switches the web server, queue worker and cron job back and takes Pterodactyl out of maintenance mode. Raptor Panel is moved aside, not deleted.',
+                code: [
+                    {
+                        language: 'Shell',
+                        content:
+                            'bash /var/www/raptor/migrate.sh --list\nbash /var/www/raptor/migrate.sh --rollback            # newest backup\nbash /var/www/raptor/migrate.sh --rollback <id>',
+                    },
+                ],
+                warning:
+                    'Changes made in Raptor Panel after the migration (new users, servers, settings) are lost by a rollback, because the database of the moment of migration is restored.',
+            },
+            {
+                heading: 'Options',
+                points: [
+                    'PTERODACTYL_DIR — directory of the old Panel, default `/var/www/pterodactyl`.',
+                    'RAPTOR_DIR — where Raptor Panel is installed, default `/var/www/raptor`.',
+                    'RAPTOR_RELEASE — install a release (`latest` or a tag) instead of the git branch.',
+                    'RAPTOR_YES=1 — run without questions.',
+                ],
+            },
+        ],
+        faq: [
+            {
+                q: 'Do I have to do anything on my nodes?',
+                a: 'No. Wings talks to the same Panel URL with the same tokens. You can update Wings later as usual.',
+            },
+            {
+                q: 'Can I delete /var/www/pterodactyl afterwards?',
+                a: 'Yes, once everything works. A copy of it is part of the migration backup, which a rollback restores if the directory is missing.',
+            },
+        ],
+        related: ['getting-started', 'updates'],
+    },
+    {
         key: 'getting-started',
         title: 'Quick start: from a fresh install to the first server',
         category: 'Getting started',
