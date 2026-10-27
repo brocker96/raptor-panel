@@ -31,9 +31,9 @@ const Metric = ({ icon: Icon, label, value, limit, usage, offline, children }: M
                 <Icon className={'w-4 h-4'} />
                 {label}
             </div>
-            <div className={'mt-2 flex items-baseline gap-1 min-w-0'}>
+            <div className={'mt-2 flex flex-wrap items-baseline gap-x-1 min-w-0'}>
                 <span
-                    className={classNames('text-xl font-semibold tracking-tight truncate tabular-nums', {
+                    className={classNames('text-xl font-semibold tracking-tight whitespace-nowrap tabular-nums', {
                         'text-gray-500': offline,
                         'text-gray-50': !offline,
                     })}
@@ -41,7 +41,7 @@ const Metric = ({ icon: Icon, label, value, limit, usage, offline, children }: M
                     {offline ? 'Offline' : value}
                 </span>
                 {limit !== undefined && !offline && (
-                    <span className={'text-xs text-gray-500 truncate'}>/ {limit || '∞'}</span>
+                    <span className={'text-xs text-gray-500 whitespace-nowrap'}>/ {limit || '∞'}</span>
                 )}
             </div>
             {usage !== undefined && (

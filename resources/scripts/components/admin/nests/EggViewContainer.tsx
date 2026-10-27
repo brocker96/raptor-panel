@@ -148,10 +148,10 @@ const Variables = ({ egg }: { egg: AdminEgg }) => {
                                                 <Badge tone={'blue'}>Read only</Badge>
                                             )}
                                         </div>
-                                        <p className={'mt-0.5 text-xs text-gray-500 truncate'}>
+                                        <p className={'mt-0.5 text-xs text-gray-500 break-words'}>
                                             {variable.description || 'No description'}
                                         </p>
-                                        <p className={'mt-1 text-2xs text-gray-600 font-mono truncate'}>
+                                        <p className={'mt-1 text-2xs text-gray-600 font-mono break-all'}>
                                             default: {variable.default_value || '""'} · {variable.rules}
                                         </p>
                                     </div>

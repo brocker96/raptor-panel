@@ -95,7 +95,9 @@ const ServerRow = ({ server, className }: { server: Server; className?: string }
                     <StatusDot status={label ? null : stats?.status} />
                 </div>
                 <div className={'flex-1 min-w-0'}>
-                    <p className={'font-semibold text-gray-50 truncate group-hover:text-white'}>{server.name}</p>
+                    <p className={'font-semibold text-gray-50 truncate group-hover:text-white'} title={server.name}>
+                        {server.name}
+                    </p>
                     <p className={'text-xs text-gray-500 truncate'}>{server.description || server.node}</p>
                 </div>
                 <span

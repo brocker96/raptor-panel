@@ -25,7 +25,9 @@ export default ({ subuser }: Props) => {
                 <Avatar name={subuser.username} seed={subuser.uuid} src={subuser.avatarUrl} />
             </div>
             <div css={tw`ml-4 flex-1 overflow-hidden`}>
-                <p css={tw`text-sm truncate`}>{subuser.email}</p>
+                <p css={tw`text-sm truncate`} title={subuser.email}>
+                    {subuser.email}
+                </p>
             </div>
             <div css={tw`ml-4`}>
                 <p css={tw`font-medium text-center`}>

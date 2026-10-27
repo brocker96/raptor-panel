@@ -32,6 +32,12 @@ export default createGlobalStyle`
         ${tw`text-gray-300 leading-relaxed font-sans`};
     }
 
+    /* Implicit grid tracks grow to fit their content, long names without spaces would otherwise
+       widen the whole page on phones instead of being truncated or wrapped. */
+    .grid > * {
+        min-width: 0;
+    }
+
     /* Respect the operating system setting for people who get motion sick from animations. */
     @media (prefers-reduced-motion: reduce) {
         *, *::before, *::after {

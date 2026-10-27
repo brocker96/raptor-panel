@@ -99,7 +99,7 @@ export default [
                 heading: 'Add the configuration',
                 body: 'Wings reads its configuration from `/etc/pterodactyl/config.yml`. There are two ways to create it:',
                 steps: [
-                    'Auto deploy: press **Generate auto-deploy command** on the Configuration tab of the node and run the command on the machine. It downloads the configuration using a read-only API key.',
+                    'Auto deploy: press **Auto-deploy command** on the Configuration tab of the node and run the command on the machine. It downloads the configuration using a read-only API key.',
                     'Manual: copy the configuration shown on the Configuration tab into `/etc/pterodactyl/config.yml`.',
                 ],
                 warning:

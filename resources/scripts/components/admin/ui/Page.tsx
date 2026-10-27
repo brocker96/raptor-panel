@@ -65,14 +65,18 @@ export const Page = ({ title, description, icon: Icon, crumbs, guide, actions, t
                         </span>
                     )}
                     <div className={'flex-1 min-w-0'}>
-                        <h1 className={'text-2xl sm:text-[1.75rem] font-semibold tracking-tight text-gray-50 truncate'}>
+                        <h1
+                            className={
+                                'text-2xl sm:text-[1.75rem] font-semibold tracking-tight text-gray-50 break-words'
+                            }
+                        >
                             {title}
                         </h1>
                         {description && (
                             <p className={'mt-1 text-sm text-gray-400 max-w-3xl leading-relaxed'}>{description}</p>
                         )}
                     </div>
-                    <div className={'flex flex-wrap items-center gap-2'}>
+                    <div className={'flex flex-wrap items-center gap-2 sm:justify-end sm:max-w-[55%]'}>
                         {guide && (
                             <button
                                 type={'button'}

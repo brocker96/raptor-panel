@@ -89,7 +89,9 @@ export default () => {
                                                 <ChipIcon className={'w-5 h-5'} />
                                             </span>
                                             <div className={'flex-1 min-w-0'}>
-                                                <p className={'font-semibold text-gray-50 truncate'}>{node.name}</p>
+                                                <p className={'font-semibold text-gray-50 truncate'} title={node.name}>
+                                                    {node.name}
+                                                </p>
                                                 <p className={'text-xs text-gray-500 font-mono truncate'}>
                                                     {node.scheme}://{node.fqdn}:{node.daemon_listen}
                                                 </p>

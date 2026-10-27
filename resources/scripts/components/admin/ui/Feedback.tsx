@@ -152,7 +152,7 @@ export const StatCard = ({
             <p className={'mt-2 text-2xl font-semibold text-gray-50'}>
                 <CountUp value={value} />
             </p>
-            {hint && <p className={'mt-1 text-xs text-gray-500 truncate'}>{hint}</p>}
+            {hint && <p className={'mt-1 text-xs text-gray-500 leading-snug'}>{hint}</p>}
         </>
     );
 

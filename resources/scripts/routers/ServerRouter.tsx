@@ -142,9 +142,11 @@ export default () => {
             context={<ServerContextCard />}
             title={
                 <span className={'flex items-center gap-2 min-w-0'}>
-                    <span className={'truncate text-gray-400 font-medium hidden sm:inline'}>{name}</span>
+                    <span className={'truncate text-gray-400 font-medium hidden sm:inline'} title={name}>
+                        {name}
+                    </span>
                     <span className={'text-gray-600 hidden sm:inline'}>/</span>
-                    <span className={'truncate'}>{current?.label || name}</span>
+                    <span className={'flex-shrink-0 max-w-full truncate'}>{current?.label || name}</span>
                 </span>
             }
             banner={<WebsocketHandler />}

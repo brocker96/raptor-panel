@@ -48,7 +48,7 @@ const ServerConsoleContainer = () => {
             <div className={'flex flex-col sm:flex-row sm:items-end gap-4 mb-5'}>
                 <div className={'flex-1 min-w-0'}>
                     <div className={'flex items-center gap-3 flex-wrap'}>
-                        <h1 className={'text-2xl sm:text-3xl truncate'}>{name}</h1>
+                        <h1 className={'text-2xl sm:text-3xl break-words'}>{name}</h1>
                         <span
                             className={
                                 'inline-flex items-center gap-2 h-6 px-2.5 rounded-full text-xs font-medium bg-gray-900 ring-1 ring-inset ring-gray-800 text-gray-200'

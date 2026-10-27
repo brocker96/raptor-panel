@@ -100,10 +100,13 @@ export default () => {
                                             }
                                         >
                                             <span className={'flex-1 min-w-0'}>
-                                                <span className={'block text-sm text-gray-100 truncate'}>
+                                                <span
+                                                    className={'block text-sm text-gray-100 truncate'}
+                                                    title={server.name}
+                                                >
                                                     {server.name}
                                                 </span>
-                                                <span className={'block text-xs text-gray-500'}>
+                                                <span className={'block text-xs text-gray-500 truncate'}>
                                                     {server.identifier} · {server.node}
                                                 </span>
                                             </span>

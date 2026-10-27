@@ -288,7 +288,7 @@ const Configuration = ({ node }: { node: AdminNode }) => {
                         </div>
                     ) : (
                         <Button className={'w-full'} icon={LightningBoltIcon} onClick={() => setDeploy(true)}>
-                            Generate auto-deploy command
+                            Auto-deploy command
                         </Button>
                     )}
                 </Card>
