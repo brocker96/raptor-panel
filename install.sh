@@ -453,6 +453,11 @@ if yes_no "$RAPTOR_SSL"; then
     else
         warn "Could not get a certificate. Make sure the domain points to $PUBLIC_IP and port 80 is open."
         warn "The Panel will run over plain HTTP for now, run 'certbot --nginx -d $RAPTOR_FQDN' later."
+        if yes_no "${RAPTOR_CLOUDFLARE:-no}"; then
+            warn "Behind Cloudflare: set SSL/TLS to \"Flexible\" and turn off \"Always Use HTTPS\" while requesting"
+            warn "the certificate, then switch back to \"Full (strict)\". On Google Cloud / AWS / Oracle also open"
+            warn "ports 80 and 443 in the provider firewall."
+        fi
         SCHEME="http"
         RAPTOR_SSL="no"
         cd "$DIR"
