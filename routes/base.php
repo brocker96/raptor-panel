@@ -9,6 +9,10 @@ Route::get('/account', [Base\IndexController::class, 'index'])
     ->withoutMiddleware(RequireTwoFactorAuthentication::class)
     ->name('account');
 
+Route::get('/avatars/{file}', Base\AvatarController::class)
+    ->withoutMiddleware(['auth', 'auth.session', RequireTwoFactorAuthentication::class])
+    ->name('avatars.show');
+
 Route::get('/locales/locale.json', Base\LocaleController::class)
     ->withoutMiddleware(['auth', RequireTwoFactorAuthentication::class])
     ->where('namespace', '.*');

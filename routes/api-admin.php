@@ -50,6 +50,7 @@ Route::group(['prefix' => '/users'], function () {
     Route::patch('/{user:id}', [Admin\UserController::class, 'update']);
     Route::delete('/{user:id}', [Admin\UserController::class, 'delete']);
     Route::post('/{user:id}/2fa/disable', [Admin\UserController::class, 'disableTwoFactor']);
+    Route::delete('/{user:id}/avatar', [Admin\UserController::class, 'deleteAvatar']);
 });
 
 Route::group(['prefix' => '/servers'], function () {

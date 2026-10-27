@@ -35,6 +35,7 @@ export interface Subuser {
     username: string;
     email: string;
     image: string;
+    avatarUrl: string | null;
     twoFactorEnabled: boolean;
     createdAt: Date;
     permissions: SubuserPermission[];

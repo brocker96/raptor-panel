@@ -75,8 +75,9 @@ export interface Overview {
         id: number;
         username: string;
         email: string;
+        uuid: string;
         root_admin: boolean;
-        avatar: string;
+        avatar: string | null;
         created_at: string;
     }[];
     recent_servers: {
@@ -205,7 +206,7 @@ export interface AdminUser {
     name: string;
     root_admin: boolean;
     '2fa': boolean;
-    avatar: string;
+    avatar: string | null;
     servers_count: number;
     created_at: string;
 }
@@ -237,6 +238,7 @@ export const createUser = (values: UserValues) => http.post<AdminUser>('/api/adm
 export const updateUser = (id: number, values: UserValues) =>
     http.patch<AdminUser>(`/api/admin/users/${id}`, values).then((r) => r.data);
 export const deleteUser = (id: number) => http.delete(`/api/admin/users/${id}`);
+export const deleteUserAvatar = (id: number) => http.delete(`/api/admin/users/${id}/avatar`);
 export const disableUserTwoFactor = (id: number) => http.post(`/api/admin/users/${id}/2fa/disable`);
 
 // ---------------------------------------------------------------------------------------------

@@ -8,6 +8,7 @@ import tw from 'twin.macro';
 import { breakpoint } from '@/theme';
 import styled from 'styled-components/macro';
 import MessageBox from '@/components/MessageBox';
+import AvatarForm from '@/components/dashboard/forms/AvatarForm';
 import { useLocation } from 'react-router-dom';
 
 const Container = styled.div`
@@ -37,7 +38,14 @@ export default () => {
                 </MessageBox>
             )}
 
-            <Container css={[tw`lg:grid lg:grid-cols-3 mb-10`, state?.twoFactorRedirect ? tw`mt-4` : tw`mt-10`]}>
+            <ContentBox
+                css={state?.twoFactorRedirect ? tw`mt-4` : tw`mt-10`}
+                title={'Profile Picture'}
+                showFlashes={'account:avatar'}
+            >
+                <AvatarForm />
+            </ContentBox>
+            <Container css={tw`lg:grid lg:grid-cols-3 mb-10 mt-8`}>
                 <ContentBox title={'Update Password'} showFlashes={'account:password'}>
                     <UpdatePasswordForm />
                 </ContentBox>

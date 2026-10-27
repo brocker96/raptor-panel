@@ -29,6 +29,7 @@ interface ExtendedWindow extends Window {
 
         root_admin: boolean;
         use_totp: boolean;
+        avatar_url?: string | null;
         language: string;
         updated_at: string;
         created_at: string;
@@ -104,6 +105,7 @@ const App = () => {
             language: RaptorUser.language,
             rootAdmin: RaptorUser.root_admin,
             useTotp: RaptorUser.use_totp,
+            avatarUrl: RaptorUser.avatar_url ?? null,
             createdAt: new Date(RaptorUser.created_at),
             updatedAt: new Date(RaptorUser.updated_at),
         });

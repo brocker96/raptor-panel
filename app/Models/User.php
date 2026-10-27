@@ -41,6 +41,8 @@ use Raptor\Notifications\SendPasswordReset as ResetPasswordNotification;
  * @property string|null $totp_secret
  * @property \Illuminate\Support\Carbon|null $totp_authenticated_at
  * @property bool $gravatar
+ * @property string|null $avatar
+ * @property string|null $avatar_url
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Database\Eloquent\Collection|\Raptor\Models\ApiKey[] $apiKeys
@@ -152,6 +154,11 @@ class User extends Model implements
     protected $hidden = ['password', 'remember_token', 'totp_secret', 'totp_authenticated_at'];
 
     /**
+     * Computed attributes included when the model is serialized.
+     */
+    protected $appends = ['avatar_url'];
+
+    /**
      * Default values for specific fields in the database.
      */
     protected $attributes = [
@@ -196,6 +203,15 @@ class User extends Model implements
     /**
      * Return the user model in a format that can be passed over to Vue templates.
      */
+    /**
+     * Returns the URL of the uploaded avatar of the user, or null when the generated avatar
+     * should be shown instead.
+     */
+    public function getAvatarUrlAttribute(): ?string
+    {
+        return empty($this->avatar) ? null : route('avatars.show', ['file' => $this->avatar], false);
+    }
+
     public function toVueObject(): array
     {
         return Collection::make($this->toArray())->except(['id', 'external_id'])

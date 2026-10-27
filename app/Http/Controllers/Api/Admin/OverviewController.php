@@ -85,13 +85,14 @@ class OverviewController extends AdminApiController
             ],
             'nodes' => $nodes,
             'activity' => $days,
-            'recent_users' => User::query()->latest('id')->limit(5)->get(['id', 'uuid', 'username', 'email', 'root_admin', 'created_at'])
+            'recent_users' => User::query()->latest('id')->limit(5)->get(['id', 'uuid', 'username', 'email', 'root_admin', 'avatar', 'created_at'])
                 ->map(fn (User $user) => [
                     'id' => $user->id,
                     'username' => $user->username,
                     'email' => $user->email,
                     'root_admin' => $user->root_admin,
-                    'avatar' => 'https://www.gravatar.com/avatar/' . md5(strtolower($user->email)) . '?s=80&d=identicon',
+                    'uuid' => $user->uuid,
+                    'avatar' => $user->avatar_url,
                     'created_at' => $user->created_at?->toAtomString(),
                 ]),
             'recent_servers' => Server::query()->with('node:id,name')->latest('id')->limit(5)->get(['id', 'uuid', 'name', 'node_id', 'status', 'created_at'])

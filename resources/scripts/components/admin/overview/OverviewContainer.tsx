@@ -1,3 +1,4 @@
+import Avatar from '@/components/Avatar';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -358,12 +359,9 @@ export default () => {
                                                 'flex items-center gap-3 px-5 py-3 hover:bg-white/[0.03] no-underline'
                                             }
                                         >
-                                            <img
-                                                src={user.avatar}
-                                                alt={''}
-                                                className={'w-8 h-8 rounded-full bg-gray-800'}
-                                                loading={'lazy'}
-                                            />
+                                            <span className={'w-8 h-8 rounded-full overflow-hidden flex-shrink-0'}>
+                                                <Avatar name={user.username} seed={user.uuid} src={user.avatar} />
+                                            </span>
                                             <span className={'flex-1 min-w-0'}>
                                                 <span className={'block text-sm text-gray-100 truncate'}>
                                                     {user.username}

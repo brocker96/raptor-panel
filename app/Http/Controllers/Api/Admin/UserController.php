@@ -10,6 +10,7 @@ use Illuminate\Http\Response;
 use Raptor\Models\ActivityLog;
 use Illuminate\Http\JsonResponse;
 use Raptor\Exceptions\DisplayException;
+use Raptor\Services\Users\AvatarService;
 use Illuminate\Database\Eloquent\Builder;
 use Raptor\Services\Users\UserUpdateService;
 use Raptor\Services\Users\UserCreationService;
@@ -131,6 +132,15 @@ class UserController extends AdminApiController
         return response('', 204);
     }
 
+    public function deleteAvatar(User $user, AvatarService $avatarService): Response
+    {
+        $avatarService->delete($user);
+
+        Activity::event('admin:user.avatar-remove')->subject($user)->property('email', $user->email)->log();
+
+        return response('', 204);
+    }
+
     private function format(User $user): array
     {
         return [
@@ -142,7 +152,7 @@ class UserController extends AdminApiController
             'name' => trim($user->name_first . ' ' . $user->name_last),
             'root_admin' => $user->root_admin,
             '2fa' => $user->use_totp,
-            'avatar' => 'https://www.gravatar.com/avatar/' . md5(strtolower($user->email)) . '?s=160&d=identicon',
+            'avatar' => $user->avatar_url,
             'servers_count' => (int) ($user->servers_count ?? 0),
             'created_at' => $user->created_at?->toAtomString(),
         ];

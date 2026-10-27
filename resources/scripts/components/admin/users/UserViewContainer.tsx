@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { ClipboardListIcon, LockOpenIcon, ServerIcon, TrashIcon, UserIcon } from '@heroicons/react/outline';
 import { useResource } from '@/api/query';
-import { deleteUser, disableUserTwoFactor, getUser, updateUser, UserValues } from '@/api/admin';
+import { deleteUser, deleteUserAvatar, disableUserTwoFactor, getUser, updateUser, UserValues } from '@/api/admin';
 import { Page } from '@/components/admin/ui/Page';
 import { Card, Details } from '@/components/admin/ui/Card';
 import { Badge, ServerStatusBadge, Skeleton } from '@/components/admin/ui/Feedback';
@@ -11,6 +11,7 @@ import Button from '@/components/admin/ui/Button';
 import { ago, useAction } from '@/components/admin/ui/hooks';
 import UserForm from '@/components/admin/users/UserForm';
 import { NotFound } from '@/components/elements/ScreenBlock';
+import Avatar from '@/components/Avatar';
 import { useStoreState } from '@/state/hooks';
 
 export default () => {
@@ -42,6 +43,10 @@ export default () => {
         success: 'Two-factor authentication disabled',
         invalidate: [['admin', 'users', id]],
         onSuccess: () => setConfirm(null),
+    });
+    const avatar = useAction(() => deleteUserAvatar(id), {
+        success: 'Profile picture removed',
+        invalidate: [['admin', 'users']],
     });
     const remove = useAction(() => deleteUser(id), {
         success: 'User deleted',
@@ -135,6 +140,34 @@ export default () => {
                     </div>
                     <div className={'space-y-6'}>
                         <Card title={'Summary'}>
+                            <div className={'flex items-center gap-4 mb-5'}>
+                                <span
+                                    className={
+                                        'w-16 h-16 rounded-full overflow-hidden ring-2 ring-white/10 flex-shrink-0'
+                                    }
+                                >
+                                    <Avatar name={user.username} seed={user.uuid} src={user.avatar} />
+                                </span>
+                                <div className={'min-w-0'}>
+                                    <p className={'text-sm font-medium text-gray-100 truncate'}>
+                                        {user.name || user.username}
+                                    </p>
+                                    <p className={'text-xs text-gray-500'}>
+                                        {user.avatar ? 'Uploaded profile picture' : 'Generated avatar'}
+                                    </p>
+                                    {user.avatar && (
+                                        <Button
+                                            size={'sm'}
+                                            variant={'ghost'}
+                                            className={'mt-1 -ml-3'}
+                                            loading={avatar.loading}
+                                            onClick={() => avatar.run()}
+                                        >
+                                            Remove picture
+                                        </Button>
+                                    )}
+                                </div>
+                            </div>
                             <Details
                                 items={[
                                     ['ID', user.id],

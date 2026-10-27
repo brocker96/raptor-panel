@@ -27,7 +27,6 @@
         "@xterm/addon-web-links": "^0.11.0",
         "@xterm/xterm": "^5.5.0",
         "axios": "^1.13.2",
-        "boring-avatars": "^2.0.4",
         "chart.js": "^3.8.0",
         "classnames": "^2.3.1",
         "codemirror": "^6.0.2",

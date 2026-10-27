@@ -1,3 +1,4 @@
+import Avatar from '@/components/Avatar';
 import React, { useEffect, useRef, useState } from 'react';
 import classNames from 'classnames';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -117,11 +118,9 @@ export default ({
                                                     value?.id === user.id && 'bg-raptor-500/10'
                                                 )}
                                             >
-                                                <img
-                                                    src={user.avatar}
-                                                    alt={''}
-                                                    className={'w-7 h-7 rounded-full bg-gray-800'}
-                                                />
+                                                <span className={'w-7 h-7 rounded-full overflow-hidden flex-shrink-0'}>
+                                                    <Avatar name={user.username} seed={user.uuid} src={user.avatar} />
+                                                </span>
                                                 <span className={'min-w-0'}>
                                                     <span className={'block text-sm text-gray-100 truncate'}>
                                                         {user.username}

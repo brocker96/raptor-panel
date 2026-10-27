@@ -1,3 +1,4 @@
+import Avatar from '@/components/Avatar';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ShieldCheckIcon, UserAddIcon, UsersIcon } from '@heroicons/react/outline';
@@ -20,12 +21,9 @@ const columns: Column<AdminUser>[] = [
         header: 'User',
         cell: (user) => (
             <div className={'flex items-center gap-3 min-w-0'}>
-                <img
-                    src={user.avatar}
-                    alt={''}
-                    loading={'lazy'}
-                    className={'w-8 h-8 rounded-full bg-gray-800 flex-shrink-0'}
-                />
+                <span className={'w-8 h-8 rounded-full overflow-hidden flex-shrink-0'}>
+                    <Avatar name={user.username} seed={user.uuid} src={user.avatar} />
+                </span>
                 <div className={'min-w-0'}>
                     <p className={'font-medium text-gray-100 truncate'}>{user.username}</p>
                     <p className={'text-xs text-gray-500 truncate'}>{user.email}</p>
@@ -117,7 +115,9 @@ export default () => {
                     onRowClick={(user) => navigate(`/admin/users/${user.id}`)}
                     mobile={(user) => (
                         <div className={'flex items-center gap-3'}>
-                            <img src={user.avatar} alt={''} className={'w-9 h-9 rounded-full bg-gray-800'} />
+                            <span className={'w-9 h-9 rounded-full overflow-hidden flex-shrink-0'}>
+                                <Avatar name={user.username} seed={user.uuid} src={user.avatar} />
+                            </span>
                             <div className={'flex-1 min-w-0'}>
                                 <p className={'text-sm font-medium text-gray-100 truncate'}>{user.username}</p>
                                 <p className={'text-xs text-gray-500 truncate'}>

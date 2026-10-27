@@ -8,6 +8,7 @@ import Can from '@/components/elements/Can';
 import { useStoreState } from 'easy-peasy';
 import tw from 'twin.macro';
 import GreyRowBox from '@/components/elements/GreyRowBox';
+import Avatar from '@/components/Avatar';
 
 interface Props {
     subuser: Subuser;
@@ -20,8 +21,8 @@ export default ({ subuser }: Props) => {
     return (
         <GreyRowBox css={tw`mb-2`}>
             <EditSubuserModal subuser={subuser} visible={visible} onModalDismissed={() => setVisible(false)} />
-            <div css={tw`w-10 h-10 rounded-full bg-white border-2 border-neutral-800 overflow-hidden hidden md:block`}>
-                <img css={tw`w-full h-full`} src={`${subuser.image}?s=400`} />
+            <div css={tw`w-10 h-10 rounded-full ring-1 ring-white/10 overflow-hidden hidden md:block flex-shrink-0`}>
+                <Avatar name={subuser.username} seed={subuser.uuid} src={subuser.avatarUrl} />
             </div>
             <div css={tw`ml-4 flex-1 overflow-hidden`}>
                 <p css={tw`text-sm truncate`}>{subuser.email}</p>

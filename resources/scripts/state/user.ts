@@ -8,6 +8,7 @@ export interface UserData {
     language: string;
     rootAdmin: boolean;
     useTotp: boolean;
+    avatarUrl?: string | null;
     createdAt: Date;
     updatedAt: Date;
 }

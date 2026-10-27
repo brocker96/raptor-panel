@@ -22,6 +22,10 @@ class UserDeletionService
             throw new DisplayException(trans('admin/user.exceptions.user_has_servers'));
         }
 
+        if (!empty($user->avatar)) {
+            app(AvatarService::class)->delete($user);
+        }
+
         return $user->delete();
     }
 }

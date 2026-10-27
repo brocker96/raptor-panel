@@ -49,7 +49,7 @@ export default ({ activity, children }: Props) => {
                 <div
                     className={'flex items-center w-9 h-9 rounded-full bg-gray-800 ring-1 ring-white/5 overflow-hidden'}
                 >
-                    <Avatar name={actor?.uuid || 'system'} />
+                    <Avatar name={actor?.username || 'System'} seed={actor?.uuid || 'system'} src={actor?.avatarUrl} />
                 </div>
             </div>
             <div className={'col-span-10 sm:col-span-9 flex'}>
