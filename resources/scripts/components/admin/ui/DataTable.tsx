@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { AnimatePresence, motion } from 'framer-motion';
 import { ChevronLeftIcon, ChevronRightIcon, SearchIcon, XIcon } from '@heroicons/react/outline';
 import { Skeleton } from '@/components/admin/ui/Feedback';
 
@@ -67,12 +66,9 @@ export function DataTable<T>({
         <div className={classNames('transition-opacity', { 'opacity-60': loading })}>
             {/* Phones get a list of cards instead of a horizontally scrolling table. */}
             <ul className={'sm:hidden divide-y divide-gray-800'}>
-                {rows.map((row, index) => (
-                    <motion.li
+                {rows.map((row) => (
+                    <li
                         key={rowKey(row)}
-                        initial={{ opacity: 0, y: 6 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: Math.min(index, 12) * 0.025 }}
                         onClick={() => onRowClick?.(row)}
                         className={classNames('flex items-start gap-3 px-4 py-3', {
                             'active:bg-white/5 cursor-pointer': onRowClick,
@@ -98,7 +94,7 @@ export function DataTable<T>({
                                       </div>
                                   ))}
                         </div>
-                    </motion.li>
+                    </li>
                 ))}
             </ul>
             <div className={'hidden sm:block overflow-x-auto'}>
@@ -137,52 +133,42 @@ export function DataTable<T>({
                         </tr>
                     </thead>
                     <tbody>
-                        <AnimatePresence initial={false}>
-                            {rows.map((row, index) => (
-                                <motion.tr
-                                    key={rowKey(row)}
-                                    layout={'position'}
-                                    initial={{ opacity: 0, y: 6 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0 }}
-                                    transition={{ delay: Math.min(index, 15) * 0.02, duration: 0.2 }}
-                                    onClick={() => onRowClick?.(row)}
-                                    className={classNames(
-                                        'border-b border-gray-800/70 last:border-0 transition-colors',
-                                        {
-                                            'hover:bg-white/[0.03] cursor-pointer': onRowClick,
-                                            'bg-raptor-500/5': selected?.has(rowKey(row)),
-                                        }
-                                    )}
-                                >
-                                    {selected && (
-                                        <td className={'w-10 pl-5'} onClick={(e) => e.stopPropagation()}>
-                                            <input
-                                                type={'checkbox'}
-                                                className={
-                                                    'form-checkbox rounded bg-gray-800 border-gray-600 text-raptor-500 focus:ring-raptor-500'
-                                                }
-                                                checked={selected.has(rowKey(row))}
-                                                onChange={() => toggle(rowKey(row))}
-                                            />
-                                        </td>
-                                    )}
-                                    {columns.map((column) => (
-                                        <td
-                                            key={column.key}
-                                            className={classNames(
-                                                'px-4 first:pl-5 last:pr-5 py-3 text-gray-300 align-middle',
-                                                column.hideBelow && hide[column.hideBelow],
-                                                column.align === 'right' && 'text-right',
-                                                column.className
-                                            )}
-                                        >
-                                            {column.cell(row)}
-                                        </td>
-                                    ))}
-                                </motion.tr>
-                            ))}
-                        </AnimatePresence>
+                        {rows.map((row) => (
+                            <tr
+                                key={rowKey(row)}
+                                onClick={() => onRowClick?.(row)}
+                                className={classNames('border-b border-gray-800/70 last:border-0 transition-colors', {
+                                    'hover:bg-white/[0.03] cursor-pointer': onRowClick,
+                                    'bg-raptor-500/5': selected?.has(rowKey(row)),
+                                })}
+                            >
+                                {selected && (
+                                    <td className={'w-10 pl-5'} onClick={(e) => e.stopPropagation()}>
+                                        <input
+                                            type={'checkbox'}
+                                            className={
+                                                'form-checkbox rounded bg-gray-800 border-gray-600 text-raptor-500 focus:ring-raptor-500'
+                                            }
+                                            checked={selected.has(rowKey(row))}
+                                            onChange={() => toggle(rowKey(row))}
+                                        />
+                                    </td>
+                                )}
+                                {columns.map((column) => (
+                                    <td
+                                        key={column.key}
+                                        className={classNames(
+                                            'px-4 first:pl-5 last:pr-5 py-3 text-gray-300 align-middle',
+                                            column.hideBelow && hide[column.hideBelow],
+                                            column.align === 'right' && 'text-right',
+                                            column.className
+                                        )}
+                                    >
+                                        {column.cell(row)}
+                                    </td>
+                                ))}
+                            </tr>
+                        ))}
                     </tbody>
                 </table>
             </div>

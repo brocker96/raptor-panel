@@ -1,6 +1,5 @@
 import React, { lazy, useMemo } from 'react';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
-import { AnimatePresence } from 'framer-motion';
 import {
     BookOpenIcon,
     ChipIcon,
@@ -121,35 +120,33 @@ export default () => {
                 }
             >
                 <ErrorBoundary>
-                    <AnimatePresence mode={'wait'} initial={false}>
-                        <Spinner.Suspense key={sectionKey}>
-                            <Routes location={location}>
-                                <Route index element={<Overview />} />
-                                <Route path={'guides'} element={<GuideHub />} />
-                                <Route path={'guides/:key'} element={<GuideView />} />
-                                <Route path={'servers'} element={<Servers />} />
-                                <Route path={'servers/new'} element={<ServerCreate />} />
-                                <Route path={'servers/:id/*'} element={<ServerView />} />
-                                <Route path={'users'} element={<Users />} />
-                                <Route path={'users/:id'} element={<UserView />} />
-                                <Route path={'nodes'} element={<Nodes />} />
-                                <Route path={'nodes/new'} element={<NodeCreate />} />
-                                <Route path={'nodes/:id/*'} element={<NodeView />} />
-                                <Route path={'locations'} element={<Locations />} />
-                                <Route path={'nests'} element={<Nests />} />
-                                <Route path={'nests/eggs/new'} element={<EggCreate />} />
-                                <Route path={'nests/eggs/:id/*'} element={<EggView />} />
-                                <Route path={'databases'} element={<DatabaseHosts />} />
-                                <Route path={'mounts'} element={<Mounts />} />
-                                <Route path={'mounts/:id'} element={<MountView />} />
-                                <Route path={'settings/*'} element={<Settings />} />
-                                <Route path={'api'} element={<ApiKeys />} />
-                                <Route path={'activity'} element={<AuditLog />} />
-                                <Route path={'system'} element={<System />} />
-                                <Route path={'*'} element={<NotFound />} />
-                            </Routes>
-                        </Spinner.Suspense>
-                    </AnimatePresence>
+                    <Spinner.Suspense key={sectionKey}>
+                        <Routes location={location}>
+                            <Route index element={<Overview />} />
+                            <Route path={'guides'} element={<GuideHub />} />
+                            <Route path={'guides/:key'} element={<GuideView />} />
+                            <Route path={'servers'} element={<Servers />} />
+                            <Route path={'servers/new'} element={<ServerCreate />} />
+                            <Route path={'servers/:id/*'} element={<ServerView />} />
+                            <Route path={'users'} element={<Users />} />
+                            <Route path={'users/:id'} element={<UserView />} />
+                            <Route path={'nodes'} element={<Nodes />} />
+                            <Route path={'nodes/new'} element={<NodeCreate />} />
+                            <Route path={'nodes/:id/*'} element={<NodeView />} />
+                            <Route path={'locations'} element={<Locations />} />
+                            <Route path={'nests'} element={<Nests />} />
+                            <Route path={'nests/eggs/new'} element={<EggCreate />} />
+                            <Route path={'nests/eggs/:id/*'} element={<EggView />} />
+                            <Route path={'databases'} element={<DatabaseHosts />} />
+                            <Route path={'mounts'} element={<Mounts />} />
+                            <Route path={'mounts/:id'} element={<MountView />} />
+                            <Route path={'settings/*'} element={<Settings />} />
+                            <Route path={'api'} element={<ApiKeys />} />
+                            <Route path={'activity'} element={<AuditLog />} />
+                            <Route path={'system'} element={<System />} />
+                            <Route path={'*'} element={<NotFound />} />
+                        </Routes>
+                    </Spinner.Suspense>
                 </ErrorBoundary>
             </Shell>
             <GuideDrawer />

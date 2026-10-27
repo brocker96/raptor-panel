@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import { ChipIcon, PlusIcon } from '@heroicons/react/outline';
 import { useResource } from '@/api/query';
 import { getNodes } from '@/api/admin';
@@ -31,14 +30,14 @@ export default () => {
                 </Button>
             }
         >
-            <motion.div variants={item}>
+            <div>
                 <SearchInput
                     value={list.search}
                     onChange={list.setSearch}
                     placeholder={'Search by name or FQDN…'}
                     className={'max-w-md'}
                 />
-            </motion.div>
+            </div>
             {!data ? (
                 <div className={'grid gap-4 md:grid-cols-2 xl:grid-cols-3'}>
                     {[...Array(3)].map((_, i) => (
@@ -71,11 +70,9 @@ export default () => {
                             const diskMax = node.disk * (1 + Math.max(0, node.disk_overallocate) / 100);
 
                             return (
-                                <motion.div
+                                <div
                                     key={node.id}
-                                    variants={item}
-                                    whileHover={{ y: -3 }}
-                                    transition={{ type: 'spring', stiffness: 400, damping: 28 }}
+                                    className={'transition-transform duration-150 hover:-translate-y-0.5'}
                                 >
                                     <Link
                                         to={`/admin/nodes/${node.id}`}
@@ -126,7 +123,7 @@ export default () => {
                                             </div>
                                         </div>
                                     </Link>
-                                </motion.div>
+                                </div>
                             );
                         })}
                     </div>

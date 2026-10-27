@@ -1,8 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
-import { animate, motion, useInView } from 'framer-motion';
-import { item } from '@/components/admin/ui/motion';
+import { animate, useInView } from 'framer-motion';
 
 type Tone = 'green' | 'yellow' | 'red' | 'gray' | 'blue';
 
@@ -82,15 +81,13 @@ export const Meter = ({ value, max, className }: { value: number; max: number; c
 
     return (
         <div className={classNames('h-1.5 rounded-full bg-gray-800 overflow-hidden', className)}>
-            <motion.div
-                className={classNames('h-full rounded-full', {
+            <div
+                className={classNames('h-full rounded-full origin-left animate-grow transition-[width] duration-500', {
                     'bg-raptor-500': percent <= 75,
                     'bg-amber-400': percent > 75 && percent <= 90,
                     'bg-rose-500': percent > 90,
                 })}
-                initial={{ width: 0 }}
-                animate={{ width: `${Math.min(100, percent)}%` }}
-                transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                style={{ width: `${Math.min(100, percent)}%` }}
             />
         </div>
     );
@@ -160,10 +157,10 @@ export const StatCard = ({
     );
 
     const className =
-        'group block rounded-xl bg-gray-900/70 ring-1 ring-inset ring-gray-800 p-4 shadow-card no-underline transition-colors hover:ring-raptor-500/40';
+        'group block rounded-xl bg-gray-900/70 ring-1 ring-inset ring-gray-800 p-4 shadow-card no-underline transition duration-150 hover:ring-raptor-500/40 hover:-translate-y-0.5';
 
     return (
-        <motion.div variants={item} whileHover={{ y: -2 }} transition={{ type: 'spring', stiffness: 400, damping: 30 }}>
+        <div>
             {href ? (
                 <Link to={href} className={className}>
                     {content}
@@ -171,20 +168,12 @@ export const StatCard = ({
             ) : (
                 <div className={className}>{content}</div>
             )}
-        </motion.div>
+        </div>
     );
 };
 
 export const Skeleton = ({ className }: { className?: string }) => (
-    <div className={classNames('relative overflow-hidden rounded-md bg-gray-800/70', className)}>
-        <motion.div
-            className={
-                'absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/5 to-transparent'
-            }
-            animate={{ x: ['-100%', '100%'] }}
-            transition={{ repeat: Infinity, duration: 1.4, ease: 'linear' }}
-        />
-    </div>
+    <div className={classNames('rounded-md bg-gray-800/70 animate-pulse', className)} />
 );
 
 export const EmptyState = ({
@@ -198,11 +187,7 @@ export const EmptyState = ({
     description?: React.ReactNode;
     action?: React.ReactNode;
 }) => (
-    <motion.div
-        initial={{ opacity: 0, scale: 0.98 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className={'flex flex-col items-center text-center py-12 px-6'}
-    >
+    <div className={'flex flex-col items-center text-center py-12 px-6 animate-fade-in'}>
         <span
             className={
                 'relative grid place-items-center w-14 h-14 rounded-2xl bg-raptor-500/10 ring-1 ring-inset ring-raptor-500/20'
@@ -214,7 +199,7 @@ export const EmptyState = ({
         <p className={'mt-4 text-sm font-semibold text-gray-100'}>{title}</p>
         {description && <p className={'mt-1 max-w-sm text-sm text-gray-400'}>{description}</p>}
         {action && <div className={'mt-5'}>{action}</div>}
-    </motion.div>
+    </div>
 );
 
 export const Callout = ({

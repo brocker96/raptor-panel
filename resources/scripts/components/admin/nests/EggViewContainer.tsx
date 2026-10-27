@@ -457,7 +457,7 @@ export default () => {
             {!egg ? (
                 <Skeleton className={'h-96 rounded-xl'} />
             ) : (
-                <motion.div variants={item} key={egg.updated_at}>
+                <div key={egg.updated_at}>
                     <Routes>
                         <Route
                             index
@@ -483,7 +483,7 @@ export default () => {
                         />
                         <Route path={'*'} element={<Navigate to={base} replace />} />
                     </Routes>
-                </motion.div>
+                </div>
             )}
             <Confirm
                 open={deleting}

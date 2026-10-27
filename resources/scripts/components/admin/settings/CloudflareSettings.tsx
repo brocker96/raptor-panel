@@ -48,8 +48,7 @@ export default () => {
 
     return (
         <div className={'space-y-6'}>
-            <motion.div
-                variants={item}
+            <div
                 className={classNames(
                     'relative overflow-hidden rounded-xl p-5 ring-1 ring-inset shadow-card',
                     request.via_cloudflare
@@ -88,7 +87,7 @@ export default () => {
                         Cloudflare guide
                     </Button>
                 </div>
-            </motion.div>
+            </div>
 
             {request.via_cloudflare && !data.settings.trust_proxies && (
                 <Callout tone={'red'} icon={ExclamationIcon} title={'Cloudflare is not trusted'}>

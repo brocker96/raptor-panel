@@ -1,6 +1,5 @@
 import React, { useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import { CollectionIcon, PencilIcon, PlusIcon, TrashIcon, UploadIcon } from '@heroicons/react/outline';
 import { useResource } from '@/api/query';
 import { AdminNest, createNest, deleteNest, getNests, importEgg, updateNest } from '@/api/admin';
@@ -83,9 +82,9 @@ export default () => {
                     e.target.value = '';
                 }}
             />
-            <motion.div variants={item}>
+            <div>
                 <SearchInput value={search} onChange={setSearch} placeholder={'Search eggs…'} className={'max-w-md'} />
-            </motion.div>
+            </div>
             {!data ? (
                 <Skeleton className={'h-64 rounded-xl'} />
             ) : nests.length === 0 ? (

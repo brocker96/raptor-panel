@@ -4,7 +4,7 @@
 
 .sidebar {
     @apply hidden lg:flex flex-col fixed inset-y-0 left-0 w-64 z-30;
-    @apply bg-gray-950/80 backdrop-blur border-r border-gray-800/80;
+    @apply bg-gray-950 border-r border-gray-800/80;
 }
 
 .nav {
@@ -51,7 +51,7 @@
 
 .topbar {
     @apply sticky top-0 z-20 flex items-center gap-3 h-14 px-4 lg:px-8;
-    @apply bg-gray-950/75 backdrop-blur border-b border-gray-800/80;
+    @apply bg-gray-950/95 border-b border-gray-800/80;
     padding-top: env(safe-area-inset-top);
 }
 
@@ -75,7 +75,7 @@
 
 .bottom_bar {
     @apply lg:hidden fixed bottom-0 inset-x-0 z-30 flex items-stretch;
-    @apply bg-gray-950/90 backdrop-blur border-t border-gray-800;
+    @apply bg-gray-950/[0.97] border-t border-gray-800;
     padding-bottom: env(safe-area-inset-bottom);
 }
 
@@ -93,7 +93,7 @@
 }
 
 .sheet_backdrop {
-    @apply lg:hidden fixed inset-0 z-40 flex items-end bg-gray-950/70 backdrop-blur-sm animate-fade-in;
+    @apply lg:hidden fixed inset-0 z-40 flex items-end bg-black/70 animate-fade-in;
 }
 
 .sheet {

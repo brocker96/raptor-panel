@@ -3,7 +3,6 @@ import classNames from 'classnames';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { BookOpenIcon, ChevronRightIcon } from '@heroicons/react/outline';
-import { page } from '@/components/admin/ui/motion';
 import { useGuide } from '@/components/admin/guides/GuideContext';
 import { useStoreState } from '@/state/hooks';
 
@@ -34,8 +33,8 @@ export const Page = ({ title, description, icon: Icon, crumbs, guide, actions, t
     }, [title, name]);
 
     return (
-        <motion.div variants={page} initial={'hidden'} animate={'show'} className={'pb-6'}>
-            <motion.header variants={page} className={'mb-6'}>
+        <div className={'pb-6 animate-page'}>
+            <header className={'mb-6'}>
                 {crumbs && crumbs.length > 0 && (
                     <nav
                         className={'flex items-center gap-1 mb-3 text-xs text-gray-500 min-w-0'}
@@ -57,16 +56,13 @@ export const Page = ({ title, description, icon: Icon, crumbs, guide, actions, t
                 )}
                 <div className={'flex flex-col sm:flex-row sm:items-start gap-4'}>
                     {Icon && (
-                        <motion.span
-                            initial={{ scale: 0.6, opacity: 0, rotate: -12 }}
-                            animate={{ scale: 1, opacity: 1, rotate: 0 }}
-                            transition={{ type: 'spring', stiffness: 300, damping: 18 }}
+                        <span
                             className={
-                                'hidden sm:grid place-items-center flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-raptor-500/25 to-raptor-500/5 ring-1 ring-inset ring-raptor-500/30 text-raptor-300 shadow-glow'
+                                'animate-pop hidden sm:grid place-items-center flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-raptor-500/25 to-raptor-500/5 ring-1 ring-inset ring-raptor-500/30 text-raptor-300 shadow-glow'
                             }
                         >
                             <Icon className={'w-6 h-6'} />
-                        </motion.span>
+                        </span>
                     )}
                     <div className={'flex-1 min-w-0'}>
                         <h1 className={'text-2xl sm:text-[1.75rem] font-semibold tracking-tight text-gray-50 truncate'}>
@@ -97,11 +93,9 @@ export const Page = ({ title, description, icon: Icon, crumbs, guide, actions, t
                     </div>
                 </div>
                 {tabs && <div className={'mt-5'}>{tabs}</div>}
-            </motion.header>
-            <motion.div variants={page} className={'space-y-6'}>
-                {children}
-            </motion.div>
-        </motion.div>
+            </header>
+            <div className={'space-y-6'}>{children}</div>
+        </div>
     );
 };
 

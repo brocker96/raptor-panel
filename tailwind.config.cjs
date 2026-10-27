@@ -79,10 +79,17 @@ module.exports = {
             }),
             keyframes: {
                 'fade-in': { from: { opacity: 0, transform: 'translateY(4px)' }, to: { opacity: 1, transform: 'none' } },
+                page: { from: { opacity: 0, transform: 'translateY(6px)' }, to: { opacity: 1, transform: 'none' } },
+                pop: { from: { opacity: 0, transform: 'scale(0.85)' }, to: { opacity: 1, transform: 'none' } },
+                grow: { from: { transform: 'scaleX(0)' }, to: { transform: 'scaleX(1)' } },
                 pulse_ring: { '0%': { boxShadow: '0 0 0 0 rgb(82 211 33 / 0.6)' }, '100%': { boxShadow: '0 0 0 6px rgb(82 211 33 / 0)' } },
             },
             animation: {
                 'fade-in': 'fade-in 160ms ease-out',
+                // Transform and opacity only, so these run on the compositor without layout work.
+                page: 'page 220ms cubic-bezier(0.22, 1, 0.36, 1) both',
+                pop: 'pop 260ms cubic-bezier(0.34, 1.56, 0.64, 1) both',
+                grow: 'grow 700ms cubic-bezier(0.22, 1, 0.36, 1) both',
                 'pulse-ring': 'pulse_ring 1.6s ease-out infinite',
             },
         },

@@ -73,7 +73,7 @@ export const Toaster = () => {
                             exit={{ opacity: 0, x: 40, transition: { duration: 0.15 } }}
                             transition={{ type: 'spring', stiffness: 500, damping: 35 }}
                             className={classNames(
-                                'pointer-events-auto w-full max-w-sm flex gap-3 rounded-xl p-3.5 bg-gray-900/95 backdrop-blur ring-1 shadow-2xl',
+                                'pointer-events-auto w-full max-w-sm flex gap-3 rounded-xl p-3.5 bg-gray-900 ring-1 shadow-2xl',
                                 {
                                     'ring-raptor-500/30': item.kind === 'success',
                                     'ring-rose-500/30': item.kind === 'error',

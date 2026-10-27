@@ -1,7 +1,5 @@
 import React from 'react';
 import classNames from 'classnames';
-import { motion } from 'framer-motion';
-import { item } from '@/components/admin/ui/motion';
 
 interface CardProps {
     title?: React.ReactNode;
@@ -29,8 +27,7 @@ export const Card = ({
     className,
     children,
 }: CardProps) => (
-    <motion.section
-        variants={item}
+    <section
         className={classNames(
             'relative rounded-xl bg-gray-900/70 ring-1 ring-inset shadow-card overflow-hidden',
             danger ? 'ring-red-500/25' : 'ring-gray-800',
@@ -68,7 +65,7 @@ export const Card = ({
                 {footer}
             </footer>
         )}
-    </motion.section>
+    </section>
 );
 
 /** Two column definition list used on detail pages ("Node: node-1", "Memory: 4 GiB"). */

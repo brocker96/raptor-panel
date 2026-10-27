@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import { BookOpenIcon, ClockIcon, SearchIcon } from '@heroicons/react/outline';
 import { Page } from '@/components/admin/ui/Page';
 import { Card } from '@/components/admin/ui/Card';
@@ -28,7 +27,7 @@ export const GuideHub = () => {
             icon={BookOpenIcon}
             description={`${guides.length} step by step guides covering every part of the admin area, from installing Wings to troubleshooting.`}
         >
-            <motion.div variants={item} className={'relative max-w-xl'}>
+            <div className={'relative max-w-xl'}>
                 <SearchIcon className={'absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500'} />
                 <input
                     autoFocus
@@ -39,14 +38,14 @@ export const GuideHub = () => {
                         'block w-full h-12 pl-12 pr-4 rounded-xl bg-gray-900/80 border-0 ring-1 ring-inset ring-gray-700 text-base text-gray-100 placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-raptor-500 shadow-card'
                     }
                 />
-            </motion.div>
+            </div>
             {results.length === 0 ? (
                 <EmptyState icon={SearchIcon} title={'No guides found'} description={'Try a different search term.'} />
             ) : (
                 categories
                     .filter((category) => results.some((guide) => guide.category === category))
                     .map((category) => (
-                        <motion.section key={category} variants={item}>
+                        <section key={category}>
                             <h2 className={'mb-3 text-xs font-semibold uppercase tracking-wider text-gray-500'}>
                                 {category}
                             </h2>
@@ -54,11 +53,9 @@ export const GuideHub = () => {
                                 {results
                                     .filter((guide) => guide.category === category)
                                     .map((guide) => (
-                                        <motion.div
+                                        <div
                                             key={guide.key}
-                                            layout
-                                            whileHover={{ y: -3 }}
-                                            transition={{ type: 'spring', stiffness: 400, damping: 28 }}
+                                            className={'transition-transform duration-150 hover:-translate-y-0.5'}
                                         >
                                             <Link
                                                 to={`/admin/guides/${guide.key}`}
@@ -82,10 +79,10 @@ export const GuideHub = () => {
                                                     {guide.faq?.length ? ` · ${guide.faq.length} FAQ` : ''}
                                                 </p>
                                             </Link>
-                                        </motion.div>
+                                        </div>
                                     ))}
                             </div>
-                        </motion.section>
+                        </section>
                     ))
             )}
         </Page>

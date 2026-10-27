@@ -137,7 +137,7 @@ const SystemWarnings = () => {
     if (!failing.length) return null;
 
     return (
-        <motion.div variants={item}>
+        <div>
             <Callout
                 tone={'yellow'}
                 icon={ExclamationIcon}
@@ -148,7 +148,7 @@ const SystemWarnings = () => {
                     Open system health
                 </Link>
             </Callout>
-        </motion.div>
+        </div>
     );
 };
 

@@ -223,11 +223,11 @@ export default () => {
                                 variants={{ show: { transition: { staggerChildren: 0.03 } } }}
                             >
                                 {data.extensions.map((ext) => (
-                                    <motion.span key={ext.name} variants={item}>
+                                    <span key={ext.name}>
                                         <Badge tone={ext.loaded ? 'green' : 'red'} dot>
                                             {ext.name}
                                         </Badge>
-                                    </motion.span>
+                                    </span>
                                 ))}
                             </motion.div>
                         </Card>

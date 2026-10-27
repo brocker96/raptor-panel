@@ -10,10 +10,18 @@ export default createGlobalStyle`
     body {
         ${tw`font-sans bg-gray-950 text-gray-200 antialiased`};
         font-feature-settings: 'cv11', 'ss01', 'ss03';
-        /* Subtle brand glow behind the page. */
+    }
+
+    /* Subtle brand glow behind the page. A fixed layer is composited once by the GPU, unlike a
+       background with background-attachment: fixed, which is repainted on every scroll frame. */
+    body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        pointer-events: none;
         background-image: radial-gradient(60rem 30rem at 10% -10%, rgb(82 211 33 / 0.07), transparent 60%),
             radial-gradient(50rem 30rem at 110% 0%, rgb(82 211 33 / 0.04), transparent 60%);
-        background-attachment: fixed;
     }
 
     h1, h2, h3, h4, h5, h6 {
@@ -22,6 +30,16 @@ export default createGlobalStyle`
 
     p {
         ${tw`text-gray-300 leading-relaxed font-sans`};
+    }
+
+    /* Respect the operating system setting for people who get motion sick from animations. */
+    @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+            animation-duration: 1ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 1ms !important;
+            scroll-behavior: auto !important;
+        }
     }
 
     ::selection {

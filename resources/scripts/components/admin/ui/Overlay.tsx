@@ -56,7 +56,7 @@ export const Drawer = ({ open, onClose, title, description, icon: Icon, footer, 
             {open && (
                 <div className={'fixed inset-0 z-50'}>
                     <motion.div
-                        className={'absolute inset-0 bg-black/60 backdrop-blur-sm'}
+                        className={'absolute inset-0 bg-black/60'}
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
@@ -152,7 +152,7 @@ export const Confirm = ({
             {open && (
                 <div className={'fixed inset-0 z-[60] grid place-items-center p-4'}>
                     <motion.div
-                        className={'absolute inset-0 bg-black/70 backdrop-blur-sm'}
+                        className={'absolute inset-0 bg-black/70'}
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}

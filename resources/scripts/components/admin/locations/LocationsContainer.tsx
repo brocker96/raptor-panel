@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import { GlobeIcon, PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/outline';
 import { useResource } from '@/api/query';
 import { AdminLocation, createLocation, deleteLocation, getLocations, updateLocation } from '@/api/admin';
@@ -68,10 +67,8 @@ export default () => {
             ) : (
                 <div className={'grid gap-4 sm:grid-cols-2 xl:grid-cols-3'}>
                     {data.map((location) => (
-                        <motion.div
+                        <div
                             key={location.id}
-                            variants={item}
-                            layout
                             className={'rounded-xl p-4 bg-gray-900/70 ring-1 ring-inset ring-gray-800 shadow-card'}
                         >
                             <div className={'flex items-start gap-3'}>
@@ -121,7 +118,7 @@ export default () => {
                                     ))}
                                 </div>
                             )}
-                        </motion.div>
+                        </div>
                     ))}
                 </div>
             )}
