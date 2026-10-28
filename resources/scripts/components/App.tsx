@@ -15,6 +15,7 @@ import { ServerContext } from '@/state/server';
 import '@/assets/tailwind.css';
 import Spinner from '@/components/elements/Spinner';
 import SecurityPrompts from '@/components/security/SecurityPrompts';
+import { Toaster } from '@/components/admin/ui/Toast';
 import { setLocked } from '@/plugins/securityPrompts';
 
 const DashboardRouter = lazy(() => import('@/routers/DashboardRouter'));
@@ -136,6 +137,7 @@ const App = () => {
                         <RouterProvider router={router} />
                     </div>
                     <SecurityPrompts />
+                    <Toaster />
                 </StoreProvider>
             </QueryClientProvider>
         </>

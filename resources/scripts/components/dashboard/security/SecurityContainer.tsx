@@ -2,7 +2,6 @@ import React from 'react';
 import { useLocation } from 'react-router-dom';
 import PageContentBlock from '@/components/elements/PageContentBlock';
 import { Callout, Skeleton } from '@/components/admin/ui/Feedback';
-import { Toaster } from '@/components/admin/ui/Toast';
 import { useResource } from '@/api/query';
 import { getSecurityOverview } from '@/api/account/security';
 import SecurityScore from '@/components/dashboard/security/SecurityScore';
@@ -28,7 +27,6 @@ export default () => {
 
     return (
         <PageContentBlock title={t('Security')}>
-            <Toaster />
             <div className={'mb-6'}>
                 <h1 className={'text-xl sm:text-2xl font-semibold text-gray-50'}>{t('Security')}</h1>
                 <p className={'mt-1 text-sm text-gray-400'}>

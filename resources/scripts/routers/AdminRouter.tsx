@@ -24,7 +24,6 @@ import ErrorBoundary from '@/components/elements/ErrorBoundary';
 import { useStoreState } from '@/state/hooks';
 import { GuideProvider } from '@/components/admin/guides/GuideContext';
 import GuideDrawer from '@/components/admin/guides/GuideDrawer';
-import { Toaster } from '@/components/admin/ui/Toast';
 import { t } from '@/i18n';
 
 const Overview = lazy(() => import('@/components/admin/overview/OverviewContainer'));
@@ -155,7 +154,6 @@ export default () => {
                 </ErrorBoundary>
             </Shell>
             <GuideDrawer />
-            <Toaster />
         </GuideProvider>
     );
 };
