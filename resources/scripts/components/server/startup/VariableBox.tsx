@@ -1,140 +1,159 @@
-import React, { memo, useState } from 'react';
-import { ServerEggVariable } from '@/api/server/types';
-import TitledGreyBox from '@/components/elements/TitledGreyBox';
-import { usePermissions } from '@/plugins/usePermissions';
-import InputSpinner from '@/components/elements/InputSpinner';
-import Input from '@/components/elements/Input';
-import Switch from '@/components/elements/Switch';
-import { debounce } from 'debounce';
-import updateStartupVariable from '@/api/server/updateStartupVariable';
-import useFlash from '@/plugins/useFlash';
-import FlashMessageRender from '@/components/FlashMessageRender';
-import getServerStartup from '@/api/swr/getServerStartup';
-import Select from '@/components/elements/Select';
-import isEqual from 'react-fast-compare';
+import React, { useEffect, useRef, useState } from 'react';
+import classNames from 'classnames';
+import { CheckIcon, LockClosedIcon, ReplyIcon } from '@heroicons/react/outline';
 import { ServerContext } from '@/state/server';
+import { ServerEggVariable } from '@/api/server/types';
+import updateStartupVariable from '@/api/server/updateStartupVariable';
+import getServerStartup from '@/api/swr/getServerStartup';
+import { usePermissions } from '@/plugins/usePermissions';
+import { httpErrorToHuman } from '@/api/http';
 import { t } from '@/i18n';
 
-interface Props {
-    variable: ServerEggVariable;
-}
+const SWITCH_RULES = ['boolean', 'in:0,1', 'in:1,0', 'in:true,false', 'in:false,true'];
 
-const VariableBox = ({ variable }: Props) => {
-    const FLASH_KEY = `server:startup:${variable.envVariable}`;
+const control =
+    'w-full h-10 rounded-lg bg-gray-950/60 px-3 text-sm text-gray-100 ring-1 ring-inset ring-gray-700 placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-raptor-500 disabled:opacity-60';
 
+const VariableBox = ({ variable }: { variable: ServerEggVariable }) => {
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
-    const [loading, setLoading] = useState(false);
     const [canEdit] = usePermissions(['startup.update']);
-    const { clearFlashes, clearAndAddHttpError } = useFlash();
     const { mutate } = getServerStartup(uuid);
+    const [value, setValue] = useState(variable.serverValue ?? '');
+    const [state, setState] = useState<'idle' | 'saving' | 'saved'>('idle');
+    const [error, setError] = useState('');
+    const timeout = useRef<ReturnType<typeof setTimeout>>();
 
-    const setVariableValue = debounce((value: string) => {
-        setLoading(true);
-        clearFlashes(FLASH_KEY);
+    useEffect(() => setValue(variable.serverValue ?? ''), [variable.serverValue]);
 
-        updateStartupVariable(uuid, variable.envVariable, value)
-            .then(([response, invocation]) =>
-                mutate(
+    const editable = canEdit && variable.isEditable;
+    const isSwitch = variable.rules.some((rule) => SWITCH_RULES.includes(rule));
+    const stringSwitch = variable.rules.includes('string') || /true|false/.test(variable.rules.join('|'));
+    const options = (variable.rules.find((rule) => rule.startsWith('in:')) || '')
+        .replace('in:', '')
+        .split(',')
+        .filter(Boolean);
+
+    const save = (next: string, wait = 0) => {
+        setValue(next);
+        clearTimeout(timeout.current);
+        timeout.current = setTimeout(async () => {
+            setState('saving');
+            setError('');
+            try {
+                const [response, invocation] = await updateStartupVariable(uuid, variable.envVariable, next);
+                await mutate(
                     (data) =>
                         data && {
                             ...data,
                             invocation,
-                            variables: (data.variables || []).map((v) =>
+                            variables: data.variables.map((v) =>
                                 v.envVariable === response.envVariable ? response : v
                             ),
                         },
                     false
-                )
-            )
-            .catch((error) => {
-                console.error(error);
-                clearAndAddHttpError({ error, key: FLASH_KEY });
-            })
-            .then(() => setLoading(false));
-    }, 500);
+                );
+                setState('saved');
+                setTimeout(() => setState('idle'), 1500);
+            } catch (err) {
+                setState('idle');
+                setError(httpErrorToHuman(err));
+            }
+        }, wait);
+    };
 
-    const useSwitch = variable.rules.some(
-        (v) => v === 'boolean' || v === 'in:0,1' || v === 'in:1,0' || v === 'in:true,false' || v === 'in:false,true'
-    );
-    const isStringSwitch = variable.rules.some((v) => v === 'string');
-    const selectValues = variable.rules.find((v) => v.startsWith('in:'))?.split(',') || [];
+    const on = stringSwitch ? value === 'true' : value === '1';
 
     return (
-        <TitledGreyBox
-            title={
-                <p className='text-sm uppercase'>
-                    {!variable.isEditable && (
-                        <span className='bg-neutral-700 text-xs py-1 px-2 rounded-full mr-2 mb-1'>
-                            {t('Read Only')}
+        <div
+            className={classNames('rounded-xl ring-1 bg-gray-900/40 p-4', error ? 'ring-rose-500/40' : 'ring-gray-800')}
+        >
+            <div className={'flex items-start gap-2'}>
+                <div className={'min-w-0 flex-1'}>
+                    <p className={'flex flex-wrap items-center gap-2 text-sm font-medium text-gray-100'}>
+                        {variable.name}
+                        {!variable.isEditable && (
+                            <LockClosedIcon className={'w-3.5 h-3.5 text-gray-500'} aria-label={t('Read only')} />
+                        )}
+                    </p>
+                    <code className={'text-[0.7rem] text-gray-500'}>{variable.envVariable}</code>
+                </div>
+                <span className={'text-xs text-gray-500 h-5 flex items-center'}>
+                    {state === 'saving' && t('Saving…')}
+                    {state === 'saved' && (
+                        <span className={'flex items-center gap-1 text-raptor-400'}>
+                            <CheckIcon className={'w-3.5 h-3.5'} />
+                            {t('Saved')}
                         </span>
                     )}
-                    {variable.name}
-                </p>
-            }
-        >
-            <FlashMessageRender byKey={FLASH_KEY} className='mb-2 md:mb-4' />
-            <InputSpinner visible={loading}>
-                {useSwitch ? (
-                    <>
-                        <Switch
-                            readOnly={!canEdit || !variable.isEditable}
-                            name={variable.envVariable}
-                            defaultChecked={
-                                isStringSwitch ? variable.serverValue === 'true' : variable.serverValue === '1'
-                            }
-                            onChange={() => {
-                                if (canEdit && variable.isEditable) {
-                                    if (isStringSwitch) {
-                                        setVariableValue(variable.serverValue === 'true' ? 'false' : 'true');
-                                    } else {
-                                        setVariableValue(variable.serverValue === '1' ? '0' : '1');
-                                    }
-                                }
-                            }}
-                        />
-                    </>
-                ) : (
-                    <>
-                        {selectValues.length > 0 ? (
-                            <>
-                                <Select
-                                    onChange={(e) => setVariableValue(e.target.value)}
-                                    name={variable.envVariable}
-                                    defaultValue={variable.serverValue ?? variable.defaultValue}
-                                    disabled={!canEdit || !variable.isEditable}
-                                >
-                                    {selectValues.map((selectValue) => (
-                                        <option
-                                            key={selectValue.replace('in:', '')}
-                                            value={selectValue.replace('in:', '')}
-                                        >
-                                            {selectValue.replace('in:', '')}
-                                        </option>
-                                    ))}
-                                </Select>
-                            </>
-                        ) : (
-                            <>
-                                <Input
-                                    onKeyUp={(e) => {
-                                        if (canEdit && variable.isEditable) {
-                                            setVariableValue(e.currentTarget.value);
-                                        }
-                                    }}
-                                    readOnly={!canEdit || !variable.isEditable}
-                                    name={variable.envVariable}
-                                    defaultValue={variable.serverValue ?? ''}
-                                    placeholder={variable.defaultValue}
-                                />
-                            </>
+                </span>
+            </div>
+            <div className={'mt-3'}>
+                {isSwitch ? (
+                    <button
+                        type={'button'}
+                        role={'switch'}
+                        aria-checked={on}
+                        disabled={!editable}
+                        onClick={() => save(stringSwitch ? (on ? 'false' : 'true') : on ? '0' : '1')}
+                        className={classNames(
+                            'relative inline-flex w-11 h-6 rounded-full transition-colors disabled:opacity-50',
+                            on ? 'bg-raptor-500' : 'bg-gray-700'
                         )}
-                    </>
+                    >
+                        <span
+                            className={classNames(
+                                'absolute top-1 w-4 h-4 rounded-full bg-white shadow transition-all',
+                                on ? 'left-6' : 'left-1'
+                            )}
+                        />
+                    </button>
+                ) : options.length ? (
+                    <select
+                        value={value || variable.defaultValue}
+                        disabled={!editable}
+                        onChange={(e) => save(e.target.value)}
+                        className={control}
+                    >
+                        {options.map((option) => (
+                            <option key={option} value={option}>
+                                {option}
+                            </option>
+                        ))}
+                    </select>
+                ) : (
+                    <input
+                        value={value}
+                        readOnly={!editable}
+                        onChange={(e) => save(e.target.value, 700)}
+                        placeholder={variable.defaultValue}
+                        className={classNames(control, 'font-mono text-[0.8rem]')}
+                    />
                 )}
-            </InputSpinner>
-
-            <p className='mt-1 text-xs text-neutral-300'>{variable.description}</p>
-        </TitledGreyBox>
+            </div>
+            {error ? (
+                <p className={'mt-2 text-xs text-rose-300'}>{error}</p>
+            ) : (
+                variable.description && (
+                    <p className={'mt-2 text-xs text-gray-400 leading-relaxed'}>{variable.description}</p>
+                )
+            )}
+            {editable && !isSwitch && variable.defaultValue && value !== '' && value !== variable.defaultValue && (
+                <button
+                    type={'button'}
+                    onClick={() => save(variable.defaultValue)}
+                    className={'mt-2 inline-flex items-center gap-1 text-xs text-gray-500 hover:text-gray-200'}
+                >
+                    <ReplyIcon className={'w-3.5 h-3.5'} />
+                    {t('Reset to {{value}}', {
+                        value:
+                            variable.defaultValue.length > 30
+                                ? variable.defaultValue.slice(0, 30) + '…'
+                                : variable.defaultValue,
+                    })}
+                </button>
+            )}
+        </div>
     );
 };
 
-export default memo(VariableBox, isEqual);
+export default VariableBox;
