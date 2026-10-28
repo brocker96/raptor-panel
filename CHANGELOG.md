@@ -3,6 +3,27 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.5.0-beta
+The first tagged Raptor Panel release. It contains everything built on the `0.x_beta` branch so far.
+
+### Added
+* **Raptor DB Manager** — a phpMyAdmin-style editor for server databases right in the panel: browse, search, filter and sort rows, edit, insert and delete them, view the structure (columns, indexes, foreign keys, `CREATE`), run SQL with history and snippets, import and export `.sql` dumps, empty or drop tables. Connections use the credentials of the server database, need the new `database.manage` permission and a fresh security confirmation, queries are time limited and every action is logged.
+* **Raptor Wings installer** (`wings.sh`) for clean Ubuntu 22.04/24.04 and Debian 11/12 nodes: Docker, checksum verified Wings, Let's Encrypt, firewall, automatic configuration from the Panel and the `raptor-wings` helper (`status`, `logs`, `update`, `doctor`, …). Admin → Nodes → Configuration shows a ready to run install command.
+* New subuser editor with roles (Viewer, Operator, Developer, Co-owner), grouped and searchable permissions and warnings for sensitive ones.
+* Schedules without cron knowledge: friendly frequency picker, human readable descriptions, templates (daily restart with warnings, nightly backup, autosave, announcements) and a task timeline.
+* Ctrl+K command palette for servers and pages.
+* Enterprise account security: tracked sessions and trusted devices, passkeys (WebAuthn), PIN, screen lock, sudo mode for sensitive actions, recovery codes, sign-in alerts and admin policies.
+* Interface in 9 languages (EN, RU, UK, BE, PL, DE, FR, CS, RO) with a panel default and a language per user.
+* Built-in updater with backups and rollback, migration from Pterodactyl (`migrate.sh`), Ubuntu installer (`install.sh`), Cloudflare support, React admin area with guides.
+
+### Changed
+* Redesigned databases, backups, schedules, network, startup, settings, users and activity tabs.
+* Every dialog uses one modal system that turns into a bottom sheet on phones, including confirmations, console helpers (EULA, Java version, GSL token, …) and file manager dialogs.
+
+### Fixed
+* The server search opened twice and did not accept typing.
+* Hytale sign in link now opens the verification URL instead of the whole console line.
+
 ## v1.12.3
 ### Fixed
 * Adds a rate limit when changing email addresses on an account to prevent account enumeration.
