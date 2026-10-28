@@ -133,7 +133,7 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
             <Dialog.Confirm
                 open={showConfirmation}
                 onClose={() => setShowConfirmation(false)}
-                title={t('Delete {{value}}', { value: file.isFile ? 'File' : 'Directory' })}
+                title={file.isFile ? t('Delete file') : t('Delete directory')}
                 confirm={t('Delete')}
                 onConfirmed={doDeletion}
             >

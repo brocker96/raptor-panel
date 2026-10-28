@@ -4,8 +4,8 @@ namespace Raptor\Http\Controllers\Base;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Translation\Translator;
-use Illuminate\Contracts\Translation\Loader;
 use Raptor\Http\Controllers\Controller;
+use Illuminate\Contracts\Translation\Loader;
 use Raptor\Http\Requests\Base\LocaleRequest;
 
 class LocaleController extends Controller
@@ -22,11 +22,14 @@ class LocaleController extends Controller
      */
     public function __invoke(LocaleRequest $request): JsonResponse
     {
-        $locale = $request->input('locale');
-        $namespace = $request->input('namespace');
-        $response[$locale][$namespace] = $namespace === 'ui'
-            ? $this->interface($locale)
-            : $this->i18n($this->loader->load($locale, $namespace));
+        $response = [];
+        foreach (explode(' ', $request->input('locale')) as $locale) {
+            foreach (explode(' ', $request->input('namespace')) as $namespace) {
+                $response[$locale][$namespace] = $namespace === 'ui'
+                    ? $this->interface($locale)
+                    : $this->i18n($this->loader->load($locale, $namespace));
+            }
+        }
 
         return new JsonResponse($response, 200, [
             // Cache this in the browser for an hour, and allow the browser to use a stale

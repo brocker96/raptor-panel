@@ -100,11 +100,11 @@ export const useAction = <A extends unknown[], T>(fn: (...args: A) => Promise<T>
 
 export const formatMb = (mb: number | null | undefined): string => {
     if (mb === null || mb === undefined) return '—';
-    if (mb === 0) return 'Unlimited';
-    if (mb >= 1024 * 1024) return `${(mb / 1024 / 1024).toFixed(1)} TiB`;
-    if (mb >= 1024) return `${(mb / 1024).toFixed(mb % 1024 === 0 ? 0 : 1)} GiB`;
+    if (mb === 0) return t('Unlimited');
+    if (mb >= 1024 * 1024) return t('{{value}} TiB', { value: (mb / 1024 / 1024).toFixed(1) });
+    if (mb >= 1024) return t('{{value}} GiB', { value: (mb / 1024).toFixed(mb % 1024 === 0 ? 0 : 1) });
 
-    return `${mb} MiB`;
+    return t('{{mb}} MiB', { mb: mb });
 };
 
 export const formatBytes = (bytes: number): string => {

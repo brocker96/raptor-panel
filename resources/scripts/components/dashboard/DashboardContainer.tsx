@@ -58,12 +58,7 @@ export default () => {
                 <div>
                     <h1 className={'text-2xl sm:text-3xl'}>{showOnlyAdmin ? t('All servers') : t('Your servers')}</h1>
                     <p className={'mt-1 text-sm text-gray-400'}>
-                        {servers
-                            ? t('{{total}} server{{value}}', {
-                                  total: servers.pagination.total,
-                                  value: servers.pagination.total === 1 ? '' : 's',
-                              })
-                            : t('Loading servers…')}
+                        {servers ? t('Servers: {{total}}', { total: servers.pagination.total }) : t('Loading servers…')}
                     </p>
                 </div>
                 {rootAdmin && (

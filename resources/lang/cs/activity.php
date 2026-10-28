@@ -1,0 +1,147 @@
+<?php
+
+/**
+ * Translations of the activity log events, see ../en/activity.php.
+ */
+return [
+    'auth' => [
+        'fail' => 'Neúspěšné přihlášení',
+        'success' => 'Přihlášení',
+        'password-reset' => 'Heslo obnoveno',
+        'reset-password' => 'Vyžádáno obnovení hesla',
+        'checkpoint' => 'Vyžádáno dvoufázové ověření',
+        'recovery-token' => 'Použit obnovovací kód 2FA',
+        'token' => 'Dvoufázové ověření splněno',
+        'ip-blocked' => 'Zablokován požadavek z nepovolené IP pro :identifier',
+        'sftp' => [
+            'fail' => 'Neúspěšné přihlášení přes SFTP',
+        ],
+    ],
+    'user' => [
+        'user' => [
+            'create' => 'Vytvořen uživatel :email',
+        ],
+        'account' => [
+            'email-changed' => 'E-mail změněn z :old na :new',
+            'password-changed' => 'Heslo změněno',
+            'language-changed' => 'Změněn jazyk rozhraní',
+        ],
+        'api-key' => [
+            'create' => 'Vytvořen API klíč :identifier',
+            'delete' => 'Smazán API klíč :identifier',
+        ],
+        'ssh-key' => [
+            'create' => 'Přidán SSH klíč :fingerprint',
+            'delete' => 'Odebrán SSH klíč :fingerprint',
+        ],
+        'two-factor' => [
+            'create' => 'Zapnuto 2FA',
+            'delete' => 'Vypnuto 2FA',
+        ],
+    ],
+    'server' => [
+        'reinstall' => 'Server přeinstalován',
+        'console' => [
+            'command' => 'Na serveru spuštěno „:command“',
+        ],
+        'power' => [
+            'start' => 'Server spuštěn',
+            'stop' => 'Server zastaven',
+            'restart' => 'Server restartován',
+            'kill' => 'Proces serveru ukončen',
+        ],
+        'backup' => [
+            'download' => 'Stažena záloha :name',
+            'delete' => 'Smazána záloha :name',
+            'restore' => 'Obnovena záloha :name (smazání souborů: :truncate)',
+            'restore-complete' => 'Obnovení zálohy :name dokončeno',
+            'restore-failed' => 'Obnovení zálohy :name selhalo',
+            'start' => 'Spuštěna záloha :name',
+            'complete' => 'Záloha :name označena jako dokončená',
+            'fail' => 'Záloha :name označena jako neúspěšná',
+            'lock' => 'Záloha :name zamčena',
+            'unlock' => 'Záloha :name odemčena',
+        ],
+        'database' => [
+            'create' => 'Vytvořena databáze :name',
+            'rotate-password' => 'Změněno heslo databáze :name',
+            'delete' => 'Smazána databáze :name',
+        ],
+        'file' => [
+            'compress_one' => 'Zkomprimováno :directory:files.0',
+            'compress_other' => 'Zkomprimováno souborů v :directory: :count',
+            'compress_few' => 'Zkomprimováno souborů v :directory: :count',
+            'compress_many' => 'Zkomprimováno souborů v :directory: :count',
+            'read' => 'Zobrazen obsah :file',
+            'copy' => 'Vytvořena kopie :file',
+            'create-directory' => 'Vytvořen adresář :directory:name',
+            'decompress' => 'Rozbaleno :files v :directory',
+            'delete_one' => 'Smazáno :directory:files.0',
+            'delete_other' => 'Smazáno souborů v :directory: :count',
+            'delete_few' => 'Smazáno souborů v :directory: :count',
+            'delete_many' => 'Smazáno souborů v :directory: :count',
+            'download' => 'Staženo :file',
+            'pull' => 'Stažen vzdálený soubor z :url do :directory',
+            'rename_one' => 'Přejmenováno :directory:files.0.from na :directory:files.0.to',
+            'rename_other' => 'Přejmenováno souborů v :directory: :count',
+            'rename_few' => 'Přejmenováno souborů v :directory: :count',
+            'rename_many' => 'Přejmenováno souborů v :directory: :count',
+            'write' => 'Zapsán nový obsah do :file',
+            'upload' => 'Zahájeno nahrávání souboru',
+            'uploaded' => 'Nahráno :directory:file',
+        ],
+        'sftp' => [
+            'denied' => 'Přístup přes SFTP zablokován kvůli oprávněním',
+            'create_one' => 'Vytvořeno :files.0',
+            'create_other' => 'Vytvořeno souborů: :count',
+            'create_few' => 'Vytvořeno souborů: :count',
+            'create_many' => 'Vytvořeno souborů: :count',
+            'write_one' => 'Změněn obsah :files.0',
+            'write_other' => 'Změněno souborů: :count',
+            'write_few' => 'Změněno souborů: :count',
+            'write_many' => 'Změněno souborů: :count',
+            'delete_one' => 'Smazáno :files.0',
+            'delete_other' => 'Smazáno souborů: :count',
+            'delete_few' => 'Smazáno souborů: :count',
+            'delete_many' => 'Smazáno souborů: :count',
+            'create-directory_one' => 'Vytvořen adresář :files.0',
+            'create-directory_other' => 'Vytvořeno adresářů: :count',
+            'create-directory_few' => 'Vytvořeno adresářů: :count',
+            'create-directory_many' => 'Vytvořeno adresářů: :count',
+            'rename_one' => 'Přejmenováno :files.0.from na :files.0.to',
+            'rename_other' => 'Přejmenováno nebo přesunuto souborů: :count',
+            'rename_few' => 'Přejmenováno nebo přesunuto souborů: :count',
+            'rename_many' => 'Přejmenováno nebo přesunuto souborů: :count',
+        ],
+        'allocation' => [
+            'create' => 'Přidána alokace :allocation',
+            'notes' => 'Poznámka :allocation změněna z „:old“ na „:new“',
+            'primary' => ':allocation nastavena jako primární alokace',
+            'delete' => 'Smazána alokace :allocation',
+        ],
+        'schedule' => [
+            'create' => 'Vytvořen plán :name',
+            'update' => 'Upraven plán :name',
+            'execute' => 'Plán :name ručně spuštěn',
+            'delete' => 'Smazán plán :name',
+        ],
+        'task' => [
+            'create' => 'Vytvořena úloha „:action“ v plánu :name',
+            'update' => 'Upravena úloha „:action“ v plánu :name',
+            'delete' => 'Smazána úloha z plánu :name',
+        ],
+        'settings' => [
+            'rename' => 'Server přejmenován z :old na :new',
+            'description' => 'Popis serveru změněn z :old na :new',
+        ],
+        'startup' => [
+            'edit' => 'Proměnná :variable změněna z „:old“ na „:new“',
+            'image' => 'Docker obraz změněn z :old na :new',
+        ],
+        'subuser' => [
+            'create' => ':email přidán jako poduživatel',
+            'update' => 'Upravena oprávnění poduživatele :email',
+            'delete' => ':email odebrán z poduživatelů',
+        ],
+    ],
+];

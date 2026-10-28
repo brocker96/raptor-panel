@@ -1,20 +1,21 @@
 import React from 'react';
 import classNames from 'classnames';
+import { t } from '@/i18n';
 
 export type PowerStatus = 'running' | 'starting' | 'stopping' | 'offline' | string | null | undefined;
 
 export const statusLabel = (status: PowerStatus): string => {
     switch (status) {
         case 'running':
-            return 'Online';
+            return t('Online');
         case 'starting':
-            return 'Starting';
+            return t('Starting');
         case 'stopping':
-            return 'Stopping';
+            return t('Stopping');
         case 'offline':
-            return 'Offline';
+            return t('Offline');
         default:
-            return 'Unknown';
+            return t('Unknown');
     }
 };
 

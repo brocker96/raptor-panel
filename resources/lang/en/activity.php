@@ -27,6 +27,7 @@ return [
         'account' => [
             'email-changed' => 'Changed email from :old to :new',
             'password-changed' => 'Changed password',
+            'language-changed' => 'Changed the interface language',
         ],
         'api-key' => [
             'create' => 'Created new API key :identifier',

@@ -37,9 +37,9 @@ type Props = React.DetailedHTMLProps<React.FormHTMLAttributes<HTMLFormElement>, 
 };
 
 const highlights = [
-    'Live console with instant search',
-    'File editor that works on your phone',
-    'Fast on the smallest VPS',
+    t('Live console with instant search'),
+    t('File editor that works on your phone'),
+    t('Fast on the smallest VPS'),
 ];
 
 export default forwardRef<HTMLFormElement, Props>(({ title, subtitle, className, ...props }, ref) => (

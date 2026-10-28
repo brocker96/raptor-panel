@@ -1,0 +1,147 @@
+<?php
+
+/**
+ * Translations of the activity log events, see ../en/activity.php.
+ */
+return [
+    'auth' => [
+        'fail' => 'Неудачная попытка входа',
+        'success' => 'Вход в аккаунт',
+        'password-reset' => 'Пароль сброшен',
+        'reset-password' => 'Запрошен сброс пароля',
+        'checkpoint' => 'Запрошена двухфакторная аутентификация',
+        'recovery-token' => 'Использован код восстановления 2FA',
+        'token' => 'Пройдена двухфакторная проверка',
+        'ip-blocked' => 'Заблокирован запрос с IP вне списка для :identifier',
+        'sftp' => [
+            'fail' => 'Неудачный вход по SFTP',
+        ],
+    ],
+    'user' => [
+        'user' => [
+            'create' => 'Создан пользователь :email',
+        ],
+        'account' => [
+            'email-changed' => 'Email изменён с :old на :new',
+            'password-changed' => 'Пароль изменён',
+            'language-changed' => 'Изменён язык интерфейса',
+        ],
+        'api-key' => [
+            'create' => 'Создан API-ключ :identifier',
+            'delete' => 'Удалён API-ключ :identifier',
+        ],
+        'ssh-key' => [
+            'create' => 'Добавлен SSH-ключ :fingerprint',
+            'delete' => 'Удалён SSH-ключ :fingerprint',
+        ],
+        'two-factor' => [
+            'create' => 'Включена 2FA',
+            'delete' => 'Отключена 2FA',
+        ],
+    ],
+    'server' => [
+        'reinstall' => 'Сервер переустановлен',
+        'console' => [
+            'command' => 'Выполнена команда «:command»',
+        ],
+        'power' => [
+            'start' => 'Сервер запущен',
+            'stop' => 'Сервер остановлен',
+            'restart' => 'Сервер перезапущен',
+            'kill' => 'Процесс сервера убит',
+        ],
+        'backup' => [
+            'download' => 'Скачана резервная копия :name',
+            'delete' => 'Удалена резервная копия :name',
+            'restore' => 'Восстановлена резервная копия :name (удаление файлов: :truncate)',
+            'restore-complete' => 'Восстановление копии :name завершено',
+            'restore-failed' => 'Не удалось восстановить копию :name',
+            'start' => 'Начата резервная копия :name',
+            'complete' => 'Копия :name помечена как завершённая',
+            'fail' => 'Копия :name помечена как неудавшаяся',
+            'lock' => 'Копия :name заблокирована',
+            'unlock' => 'Копия :name разблокирована',
+        ],
+        'database' => [
+            'create' => 'Создана база данных :name',
+            'rotate-password' => 'Сменён пароль базы данных :name',
+            'delete' => 'Удалена база данных :name',
+        ],
+        'file' => [
+            'compress_one' => 'Заархивирован :directory:files.0',
+            'compress_other' => 'Заархивировано файлов в :directory: :count',
+            'compress_few' => 'Заархивировано файлов в :directory: :count',
+            'compress_many' => 'Заархивировано файлов в :directory: :count',
+            'read' => 'Просмотрен файл :file',
+            'copy' => 'Создана копия :file',
+            'create-directory' => 'Создана папка :directory:name',
+            'decompress' => 'Распакован :files в :directory',
+            'delete_one' => 'Удалён :directory:files.0',
+            'delete_other' => 'Удалено файлов в :directory: :count',
+            'delete_few' => 'Удалено файлов в :directory: :count',
+            'delete_many' => 'Удалено файлов в :directory: :count',
+            'download' => 'Скачан :file',
+            'pull' => 'Загружен удалённый файл с :url в :directory',
+            'rename_one' => 'Переименован :directory:files.0.from в :directory:files.0.to',
+            'rename_other' => 'Переименовано файлов в :directory: :count',
+            'rename_few' => 'Переименовано файлов в :directory: :count',
+            'rename_many' => 'Переименовано файлов в :directory: :count',
+            'write' => 'Изменён файл :file',
+            'upload' => 'Начата загрузка файла',
+            'uploaded' => 'Загружен :directory:file',
+        ],
+        'sftp' => [
+            'denied' => 'Доступ по SFTP заблокирован из-за прав',
+            'create_one' => 'Создан :files.0',
+            'create_other' => 'Создано файлов: :count',
+            'create_few' => 'Создано файлов: :count',
+            'create_many' => 'Создано файлов: :count',
+            'write_one' => 'Изменено содержимое :files.0',
+            'write_other' => 'Изменено файлов: :count',
+            'write_few' => 'Изменено файлов: :count',
+            'write_many' => 'Изменено файлов: :count',
+            'delete_one' => 'Удалён :files.0',
+            'delete_other' => 'Удалено файлов: :count',
+            'delete_few' => 'Удалено файлов: :count',
+            'delete_many' => 'Удалено файлов: :count',
+            'create-directory_one' => 'Создана папка :files.0',
+            'create-directory_other' => 'Создано папок: :count',
+            'create-directory_few' => 'Создано папок: :count',
+            'create-directory_many' => 'Создано папок: :count',
+            'rename_one' => 'Переименован :files.0.from в :files.0.to',
+            'rename_other' => 'Переименовано или перемещено файлов: :count',
+            'rename_few' => 'Переименовано или перемещено файлов: :count',
+            'rename_many' => 'Переименовано или перемещено файлов: :count',
+        ],
+        'allocation' => [
+            'create' => 'Добавлена аллокация :allocation',
+            'notes' => 'Заметка :allocation изменена с «:old» на «:new»',
+            'primary' => ':allocation сделана основной аллокацией',
+            'delete' => 'Удалена аллокация :allocation',
+        ],
+        'schedule' => [
+            'create' => 'Создано расписание :name',
+            'update' => 'Изменено расписание :name',
+            'execute' => 'Расписание :name запущено вручную',
+            'delete' => 'Удалено расписание :name',
+        ],
+        'task' => [
+            'create' => 'Создана задача «:action» в расписании :name',
+            'update' => 'Изменена задача «:action» в расписании :name',
+            'delete' => 'Удалена задача из расписания :name',
+        ],
+        'settings' => [
+            'rename' => 'Сервер переименован с :old на :new',
+            'description' => 'Описание сервера изменено с :old на :new',
+        ],
+        'startup' => [
+            'edit' => 'Переменная :variable изменена с «:old» на «:new»',
+            'image' => 'Docker-образ изменён с :old на :new',
+        ],
+        'subuser' => [
+            'create' => ':email добавлен как субпользователь',
+            'update' => 'Изменены права субпользователя :email',
+            'delete' => ':email удалён из субпользователей',
+        ],
+    ],
+];

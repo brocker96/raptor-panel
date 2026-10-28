@@ -11,6 +11,8 @@ interface PowerButtonProps {
     className?: string;
 }
 
+const POWER_BUTTON = 'flex-1 min-w-0 px-2 sm:px-4 flex-col sm:flex-row gap-1 sm:gap-2 text-xs sm:text-sm';
+
 export default ({ className }: PowerButtonProps) => {
     const [open, setOpen] = useState(false);
     const status = ServerContext.useStoreState((state) => state.status.value);
@@ -40,6 +42,7 @@ export default ({ className }: PowerButtonProps) => {
 
     return (
         <div className={className}>
+            {/* On phones the label goes under the icon, so long translations fit next to each other. */}
             <Dialog.Confirm
                 open={open}
                 hideCloseIcon
@@ -52,7 +55,7 @@ export default ({ className }: PowerButtonProps) => {
             </Dialog.Confirm>
             <Can action={'control.start'}>
                 <Button
-                    className={'flex-1'}
+                    className={POWER_BUTTON}
                     disabled={status !== 'offline'}
                     onClick={onButtonClick.bind(this, 'start')}
                 >
@@ -61,14 +64,14 @@ export default ({ className }: PowerButtonProps) => {
                 </Button>
             </Can>
             <Can action={'control.restart'}>
-                <Button.Text className={'flex-1'} disabled={!status} onClick={onButtonClick.bind(this, 'restart')}>
+                <Button.Text className={POWER_BUTTON} disabled={!status} onClick={onButtonClick.bind(this, 'restart')}>
                     <RefreshIcon />
                     {t('Restart')}
                 </Button.Text>
             </Can>
             <Can action={'control.stop'}>
                 <Button.Danger
-                    className={'flex-1'}
+                    className={POWER_BUTTON}
                     disabled={status === 'offline'}
                     onClick={onButtonClick.bind(this, killable ? 'kill' : 'stop')}
                 >

@@ -103,7 +103,7 @@ class UpdateController extends AdminApiController
         try {
             $releases = $this->feed->releases($refresh);
         } catch (\Throwable $exception) {
-            $error = 'GitHub could not be reached: ' . $exception->getMessage();
+            $error = __('GitHub could not be reached: :error', ['error' => $exception->getMessage()]);
         }
 
         $latest = $error ? null : $this->feed->latest();

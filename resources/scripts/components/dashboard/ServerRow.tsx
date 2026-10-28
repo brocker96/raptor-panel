@@ -39,12 +39,12 @@ const Usage = ({ label, value, limit, usage }: UsageProps) => (
 );
 
 const badge = (server: Server, stats: ServerStats | null): string | null => {
-    if (server.status === 'suspended' || stats?.isSuspended) return 'Suspended';
-    if (server.isNodeUnderMaintenance) return 'Maintenance';
-    if (server.isTransferring) return 'Transferring';
-    if (server.status === 'installing') return 'Installing';
-    if (server.status === 'install_failed') return 'Install failed';
-    if (server.status === 'restoring_backup') return 'Restoring backup';
+    if (server.status === 'suspended' || stats?.isSuspended) return t('Suspended');
+    if (server.isNodeUnderMaintenance) return t('Maintenance');
+    if (server.isTransferring) return t('Transferring');
+    if (server.status === 'installing') return t('Installing');
+    if (server.status === 'install_failed') return t('Install failed');
+    if (server.status === 'restoring_backup') return t('Restoring backup');
 
     return null;
 };

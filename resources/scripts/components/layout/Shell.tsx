@@ -47,6 +47,16 @@ interface Props {
 // Number of navigation items shown in the bottom bar on phones, the rest is in the "More" sheet.
 const BOTTOM_BAR_ITEMS = 4;
 
+// Group names double as identifiers, so they are translated when they are shown.
+const groupLabels: Record<string, () => string> = {
+    General: () => t('General'),
+    Management: () => t('Management'),
+    Infrastructure: () => t('Infrastructure'),
+    Services: () => t('Services'),
+    Panel: () => t('Panel'),
+};
+const groupLabel = (group: string) => groupLabels[group]?.() ?? t(group);
+
 const NavItem = ({ entry, compact, onNavigate }: { entry: NavEntry; compact?: boolean; onNavigate?: () => void }) => {
     const Icon = entry.icon;
 
@@ -190,7 +200,7 @@ export default ({ nav, primary, context, title, banner, fullscreen, children }: 
                     {nav.map((entry, index) => (
                         <React.Fragment key={entry.to}>
                             {entry.group && entry.group !== nav[index - 1]?.group && (
-                                <p className={styles.nav_group}>{t(entry.group)}</p>
+                                <p className={styles.nav_group}>{groupLabel(entry.group)}</p>
                             )}
                             <NavItem entry={entry} />
                         </React.Fragment>

@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-return new class extends Migration {
+return new class () extends Migration {
     /**
      * Users without a language of their own follow the default language of the Panel. English
      * used to be the only language, so nobody picked it on purpose.

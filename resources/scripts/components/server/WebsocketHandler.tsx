@@ -32,7 +32,10 @@ const diagnose = (url: string, failures: number): string => {
         // Keep the raw value.
     }
 
-    return `Can't reach the node at ${host}. Wings may be offline, the port may be blocked by a firewall or proxy (Cloudflare only proxies HTTPS on 443/8443 and a few other ports), or its SSL certificate is invalid. Still retrying…`;
+    return t(
+        "Can't reach the node at {{host}}. Wings may be offline, the port may be blocked by a firewall or proxy (Cloudflare only proxies HTTPS on 443/8443 and a few other ports), or its SSL certificate is invalid. Still retrying…",
+        { host: host }
+    );
 };
 
 export default () => {
@@ -75,7 +78,7 @@ export default () => {
         });
         socket.on('SOCKET_CLOSE', () => setConnectionState(false));
         socket.on('SOCKET_CONNECT_ERROR', () => {
-            setError('Failed to connect to websocket instance after multiple attempts: try refreshing the page.');
+            setError(t('Failed to connect to websocket instance after multiple attempts: try refreshing the page.'));
         });
         socket.on('SOCKET_ERROR', () => {
             setConnectionState(false);
@@ -100,7 +103,9 @@ export default () => {
             } else {
                 socket.close();
                 setError(
-                    'There was an error validating the credentials provided for the websocket. Please refresh the page.'
+                    t(
+                        'There was an error validating the credentials provided for the websocket. Please refresh the page.'
+                    )
                 );
             }
         });
@@ -125,7 +130,9 @@ export default () => {
                 socketUrl.current = data.socket;
                 if (window.location.protocol === 'https:' && data.socket.startsWith('ws://')) {
                     setError(
-                        'The Panel uses HTTPS but this node does not, browsers block the insecure connection. Enable SSL for the node.'
+                        t(
+                            'The Panel uses HTTPS but this node does not, browsers block the insecure connection. Enable SSL for the node.'
+                        )
                     );
                 }
                 socket.setToken(data.token).connect(data.socket);

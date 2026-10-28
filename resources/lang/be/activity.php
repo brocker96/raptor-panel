@@ -1,0 +1,147 @@
+<?php
+
+/**
+ * Translations of the activity log events, see ../en/activity.php.
+ */
+return [
+    'auth' => [
+        'fail' => 'Няўдалая спроба ўваходу',
+        'success' => 'Уваход ва ўліковы запіс',
+        'password-reset' => 'Пароль скінуты',
+        'reset-password' => 'Запытаны скід пароля',
+        'checkpoint' => 'Запытана двухфактарная аўтэнтыфікацыя',
+        'recovery-token' => 'Выкарыстаны код аднаўлення 2FA',
+        'token' => 'Пройдзена двухфактарная праверка',
+        'ip-blocked' => 'Заблакаваны запыт з IP па-за спісам для :identifier',
+        'sftp' => [
+            'fail' => 'Няўдалы ўваход па SFTP',
+        ],
+    ],
+    'user' => [
+        'user' => [
+            'create' => 'Створаны карыстальнік :email',
+        ],
+        'account' => [
+            'email-changed' => 'Email зменены з :old на :new',
+            'password-changed' => 'Пароль зменены',
+            'language-changed' => 'Зменена мова інтэрфейсу',
+        ],
+        'api-key' => [
+            'create' => 'Створаны API-ключ :identifier',
+            'delete' => 'Выдалены API-ключ :identifier',
+        ],
+        'ssh-key' => [
+            'create' => 'Дададзены SSH-ключ :fingerprint',
+            'delete' => 'Выдалены SSH-ключ :fingerprint',
+        ],
+        'two-factor' => [
+            'create' => 'Уключана 2FA',
+            'delete' => 'Адключана 2FA',
+        ],
+    ],
+    'server' => [
+        'reinstall' => 'Сервер пераўсталяваны',
+        'console' => [
+            'command' => 'Выканана каманда «:command»',
+        ],
+        'power' => [
+            'start' => 'Сервер запушчаны',
+            'stop' => 'Сервер спынены',
+            'restart' => 'Сервер перазапушчаны',
+            'kill' => 'Працэс сервера забіты',
+        ],
+        'backup' => [
+            'download' => 'Спампавана рэзервовая копія :name',
+            'delete' => 'Выдалена рэзервовая копія :name',
+            'restore' => 'Адноўлена рэзервовая копія :name (выдаленне файлаў: :truncate)',
+            'restore-complete' => 'Аднаўленне копіі :name завершана',
+            'restore-failed' => 'Не атрымалася аднавіць копію :name',
+            'start' => 'Пачата рэзервовая копія :name',
+            'complete' => 'Копія :name пазначана як завершаная',
+            'fail' => 'Копія :name пазначана як няўдалая',
+            'lock' => 'Копія :name заблакавана',
+            'unlock' => 'Копія :name разблакавана',
+        ],
+        'database' => [
+            'create' => 'Створана база даных :name',
+            'rotate-password' => 'Зменены пароль базы даных :name',
+            'delete' => 'Выдалена база даных :name',
+        ],
+        'file' => [
+            'compress_one' => 'Заархіваваны :directory:files.0',
+            'compress_other' => 'Заархівавана файлаў у :directory: :count',
+            'compress_few' => 'Заархівавана файлаў у :directory: :count',
+            'compress_many' => 'Заархівавана файлаў у :directory: :count',
+            'read' => 'Прагледжаны файл :file',
+            'copy' => 'Створана копія :file',
+            'create-directory' => 'Створана папка :directory:name',
+            'decompress' => 'Распакаваны :files у :directory',
+            'delete_one' => 'Выдалены :directory:files.0',
+            'delete_other' => 'Выдалена файлаў у :directory: :count',
+            'delete_few' => 'Выдалена файлаў у :directory: :count',
+            'delete_many' => 'Выдалена файлаў у :directory: :count',
+            'download' => 'Спампаваны :file',
+            'pull' => 'Загружаны аддалены файл з :url у :directory',
+            'rename_one' => 'Перайменаваны :directory:files.0.from у :directory:files.0.to',
+            'rename_other' => 'Перайменавана файлаў у :directory: :count',
+            'rename_few' => 'Перайменавана файлаў у :directory: :count',
+            'rename_many' => 'Перайменавана файлаў у :directory: :count',
+            'write' => 'Зменены файл :file',
+            'upload' => 'Пачата загрузка файла',
+            'uploaded' => 'Загружаны :directory:file',
+        ],
+        'sftp' => [
+            'denied' => 'Доступ па SFTP заблакаваны з-за правоў',
+            'create_one' => 'Створаны :files.0',
+            'create_other' => 'Створана файлаў: :count',
+            'create_few' => 'Створана файлаў: :count',
+            'create_many' => 'Створана файлаў: :count',
+            'write_one' => 'Зменена змесціва :files.0',
+            'write_other' => 'Зменена файлаў: :count',
+            'write_few' => 'Зменена файлаў: :count',
+            'write_many' => 'Зменена файлаў: :count',
+            'delete_one' => 'Выдалены :files.0',
+            'delete_other' => 'Выдалена файлаў: :count',
+            'delete_few' => 'Выдалена файлаў: :count',
+            'delete_many' => 'Выдалена файлаў: :count',
+            'create-directory_one' => 'Створана папка :files.0',
+            'create-directory_other' => 'Створана папак: :count',
+            'create-directory_few' => 'Створана папак: :count',
+            'create-directory_many' => 'Створана папак: :count',
+            'rename_one' => 'Перайменаваны :files.0.from у :files.0.to',
+            'rename_other' => 'Перайменавана або перамешчана файлаў: :count',
+            'rename_few' => 'Перайменавана або перамешчана файлаў: :count',
+            'rename_many' => 'Перайменавана або перамешчана файлаў: :count',
+        ],
+        'allocation' => [
+            'create' => 'Дададзена алакацыя :allocation',
+            'notes' => 'Нататка :allocation зменена з «:old» на «:new»',
+            'primary' => ':allocation зроблена асноўнай алакацыяй',
+            'delete' => 'Выдалена алакацыя :allocation',
+        ],
+        'schedule' => [
+            'create' => 'Створаны расклад :name',
+            'update' => 'Зменены расклад :name',
+            'execute' => 'Расклад :name запушчаны ўручную',
+            'delete' => 'Выдалены расклад :name',
+        ],
+        'task' => [
+            'create' => 'Створана заданне «:action» у раскладзе :name',
+            'update' => 'Зменена заданне «:action» у раскладзе :name',
+            'delete' => 'Выдалена заданне з раскладу :name',
+        ],
+        'settings' => [
+            'rename' => 'Сервер перайменаваны з :old на :new',
+            'description' => 'Апісанне сервера зменена з :old на :new',
+        ],
+        'startup' => [
+            'edit' => 'Зменная :variable зменена з «:old» на «:new»',
+            'image' => 'Docker-вобраз зменены з :old на :new',
+        ],
+        'subuser' => [
+            'create' => ':email дададзены як субкарыстальнік',
+            'update' => 'Зменены правы субкарыстальніка :email',
+            'delete' => ':email выдалены з субкарыстальнікаў',
+        ],
+    ],
+];

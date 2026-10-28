@@ -31,5 +31,11 @@ class AccountLanguageTest extends IntegrationTestCase
             ->assertJsonPath('ru.ui.Settings', 'Настройки');
 
         $this->getJson('/locales/locale.json?locale=en&namespace=ui')->assertOk()->assertJsonPath('en.ui', []);
+
+        // The front-end loads every language and namespace it needs in one request.
+        $this->getJson('/locales/locale.json?locale=' . urlencode('ru en') . '&namespace=' . urlencode('ui activity'))
+            ->assertOk()
+            ->assertJsonPath('ru.ui.Settings', 'Настройки')
+            ->assertJsonStructure(['ru' => ['ui', 'activity'], 'en' => ['ui', 'activity']]);
     }
 }

@@ -1,0 +1,147 @@
+<?php
+
+/**
+ * Translations of the activity log events, see ../en/activity.php.
+ */
+return [
+    'auth' => [
+        'fail' => 'Fehlgeschlagene Anmeldung',
+        'success' => 'Angemeldet',
+        'password-reset' => 'Passwort zurückgesetzt',
+        'reset-password' => 'Passwort-Zurücksetzung angefordert',
+        'checkpoint' => 'Zwei-Faktor-Authentifizierung angefordert',
+        'recovery-token' => 'Zwei-Faktor-Wiederherstellungscode verwendet',
+        'token' => 'Zwei-Faktor-Prüfung bestanden',
+        'ip-blocked' => 'Anfrage von nicht erlaubter IP für :identifier blockiert',
+        'sftp' => [
+            'fail' => 'Fehlgeschlagene SFTP-Anmeldung',
+        ],
+    ],
+    'user' => [
+        'user' => [
+            'create' => 'Neuen Benutzer :email erstellt',
+        ],
+        'account' => [
+            'email-changed' => 'E-Mail von :old auf :new geändert',
+            'password-changed' => 'Passwort geändert',
+            'language-changed' => 'Sprache der Oberfläche geändert',
+        ],
+        'api-key' => [
+            'create' => 'API-Schlüssel :identifier erstellt',
+            'delete' => 'API-Schlüssel :identifier gelöscht',
+        ],
+        'ssh-key' => [
+            'create' => 'SSH-Schlüssel :fingerprint hinzugefügt',
+            'delete' => 'SSH-Schlüssel :fingerprint entfernt',
+        ],
+        'two-factor' => [
+            'create' => 'Zwei-Faktor-Authentifizierung aktiviert',
+            'delete' => 'Zwei-Faktor-Authentifizierung deaktiviert',
+        ],
+    ],
+    'server' => [
+        'reinstall' => 'Server neu installiert',
+        'console' => [
+            'command' => '„:command“ auf dem Server ausgeführt',
+        ],
+        'power' => [
+            'start' => 'Server gestartet',
+            'stop' => 'Server gestoppt',
+            'restart' => 'Server neu gestartet',
+            'kill' => 'Serverprozess beendet',
+        ],
+        'backup' => [
+            'download' => 'Backup :name heruntergeladen',
+            'delete' => 'Backup :name gelöscht',
+            'restore' => 'Backup :name wiederhergestellt (Dateien gelöscht: :truncate)',
+            'restore-complete' => 'Wiederherstellung von Backup :name abgeschlossen',
+            'restore-failed' => 'Wiederherstellung von Backup :name fehlgeschlagen',
+            'start' => 'Neues Backup :name gestartet',
+            'complete' => 'Backup :name als abgeschlossen markiert',
+            'fail' => 'Backup :name als fehlgeschlagen markiert',
+            'lock' => 'Backup :name gesperrt',
+            'unlock' => 'Backup :name entsperrt',
+        ],
+        'database' => [
+            'create' => 'Datenbank :name erstellt',
+            'rotate-password' => 'Passwort der Datenbank :name erneuert',
+            'delete' => 'Datenbank :name gelöscht',
+        ],
+        'file' => [
+            'compress_one' => ':directory:files.0 komprimiert',
+            'compress_other' => ':count Dateien in :directory komprimiert',
+            'compress_few' => ':count Dateien in :directory komprimiert',
+            'compress_many' => ':count Dateien in :directory komprimiert',
+            'read' => 'Inhalt von :file angesehen',
+            'copy' => 'Kopie von :file erstellt',
+            'create-directory' => 'Ordner :directory:name erstellt',
+            'decompress' => ':files in :directory entpackt',
+            'delete_one' => ':directory:files.0 gelöscht',
+            'delete_other' => ':count Dateien in :directory gelöscht',
+            'delete_few' => ':count Dateien in :directory gelöscht',
+            'delete_many' => ':count Dateien in :directory gelöscht',
+            'download' => ':file heruntergeladen',
+            'pull' => 'Entfernte Datei von :url nach :directory geladen',
+            'rename_one' => ':directory:files.0.from in :directory:files.0.to umbenannt',
+            'rename_other' => ':count Dateien in :directory umbenannt',
+            'rename_few' => ':count Dateien in :directory umbenannt',
+            'rename_many' => ':count Dateien in :directory umbenannt',
+            'write' => 'Neuen Inhalt in :file geschrieben',
+            'upload' => 'Datei-Upload begonnen',
+            'uploaded' => ':directory:file hochgeladen',
+        ],
+        'sftp' => [
+            'denied' => 'SFTP-Zugriff wegen fehlender Rechte blockiert',
+            'create_one' => ':files.0 erstellt',
+            'create_other' => ':count neue Dateien erstellt',
+            'create_few' => ':count neue Dateien erstellt',
+            'create_many' => ':count neue Dateien erstellt',
+            'write_one' => 'Inhalt von :files.0 geändert',
+            'write_other' => 'Inhalt von :count Dateien geändert',
+            'write_few' => 'Inhalt von :count Dateien geändert',
+            'write_many' => 'Inhalt von :count Dateien geändert',
+            'delete_one' => ':files.0 gelöscht',
+            'delete_other' => ':count Dateien gelöscht',
+            'delete_few' => ':count Dateien gelöscht',
+            'delete_many' => ':count Dateien gelöscht',
+            'create-directory_one' => 'Ordner :files.0 erstellt',
+            'create-directory_other' => ':count Ordner erstellt',
+            'create-directory_few' => ':count Ordner erstellt',
+            'create-directory_many' => ':count Ordner erstellt',
+            'rename_one' => ':files.0.from in :files.0.to umbenannt',
+            'rename_other' => ':count Dateien umbenannt oder verschoben',
+            'rename_few' => ':count Dateien umbenannt oder verschoben',
+            'rename_many' => ':count Dateien umbenannt oder verschoben',
+        ],
+        'allocation' => [
+            'create' => ':allocation zum Server hinzugefügt',
+            'notes' => 'Notiz von :allocation von „:old“ auf „:new“ geändert',
+            'primary' => ':allocation als primäre Allokation festgelegt',
+            'delete' => 'Allokation :allocation gelöscht',
+        ],
+        'schedule' => [
+            'create' => 'Zeitplan :name erstellt',
+            'update' => 'Zeitplan :name aktualisiert',
+            'execute' => 'Zeitplan :name manuell ausgeführt',
+            'delete' => 'Zeitplan :name gelöscht',
+        ],
+        'task' => [
+            'create' => 'Neue Aufgabe „:action“ im Zeitplan :name erstellt',
+            'update' => 'Aufgabe „:action“ im Zeitplan :name aktualisiert',
+            'delete' => 'Aufgabe aus dem Zeitplan :name gelöscht',
+        ],
+        'settings' => [
+            'rename' => 'Server von :old in :new umbenannt',
+            'description' => 'Serverbeschreibung von :old auf :new geändert',
+        ],
+        'startup' => [
+            'edit' => 'Variable :variable von „:old“ auf „:new“ geändert',
+            'image' => 'Docker-Image von :old auf :new geändert',
+        ],
+        'subuser' => [
+            'create' => ':email als Unterbenutzer hinzugefügt',
+            'update' => 'Berechtigungen des Unterbenutzers :email aktualisiert',
+            'delete' => ':email als Unterbenutzer entfernt',
+        ],
+    ],
+];

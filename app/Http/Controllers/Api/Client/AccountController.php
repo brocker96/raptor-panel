@@ -4,11 +4,11 @@ namespace Raptor\Http\Controllers\Api\Client;
 
 use Raptor\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
+use Raptor\Facades\Activity;
 use Illuminate\Http\Response;
+use Illuminate\Validation\Rule;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Http\JsonResponse;
-use Raptor\Facades\Activity;
 use Illuminate\Support\Facades\RateLimiter;
 use Raptor\Services\Users\UserUpdateService;
 use Raptor\Transformers\Api\Client\AccountTransformer;

@@ -71,7 +71,11 @@ const ServerConsoleContainer = () => {
                                 </span>
                             </CopyOnClick>
                         )}
-                        {description && <span className={'truncate hidden sm:inline'}>{description}</span>}
+                        {description && (
+                            <span className={'truncate hidden sm:inline'} title={description}>
+                                {description}
+                            </span>
+                        )}
                     </div>
                 </div>
                 <Can action={['control.start', 'control.stop', 'control.restart']} matchAny>

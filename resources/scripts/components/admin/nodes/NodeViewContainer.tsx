@@ -74,8 +74,8 @@ const About = ({ node }: { node: AdminNode }) => {
                 >
                     <div className={'grid gap-6 sm:grid-cols-2'}>
                         {[
-                            ['Memory', node.usage.memory, memoryMax, node.memory],
-                            ['Disk', node.usage.disk, diskMax, node.disk],
+                            [t('Memory'), node.usage.memory, memoryMax, node.memory],
+                            [t('Disk'), node.usage.disk, diskMax, node.disk],
                         ].map(([label, used, max, base]) => (
                             <div key={label as string}>
                                 <div className={'flex items-baseline justify-between'}>
@@ -315,11 +315,11 @@ const Configuration = ({ node }: { node: AdminNode }) => {
                 <Card title={t('Next steps')}>
                     <ol className={'space-y-2 text-sm text-gray-400'}>
                         {[
-                            'Install Docker and Wings on the machine.',
-                            'Save the configuration as /etc/pterodactyl/config.yml.',
-                            'Run "wings --debug" once to check for errors.',
-                            'Enable the service: systemctl enable --now wings',
-                            'Add allocations so servers can be created.',
+                            t('Install Docker and Wings on the machine.'),
+                            t('Save the configuration as /etc/pterodactyl/config.yml.'),
+                            t('Run "wings --debug" once to check for errors.'),
+                            t('Enable the service: systemctl enable --now wings'),
+                            t('Add allocations so servers can be created.'),
                         ].map((step, i) => (
                             <li key={i} className={'flex gap-3'}>
                                 <span
@@ -422,10 +422,12 @@ const Allocations = ({ node }: { node: AdminNode }) => {
     );
     const remove = useAction((target: { ids: number[] } | { ip: string }) => deleteAllocations(node.id, target), {
         success: (r) =>
-            t('{{deleted}} allocations deleted{{value}}', {
-                deleted: r.deleted,
-                value: r.skipped ? `, ${r.skipped} assigned ones were kept` : '',
-            }),
+            r.skipped
+                ? t('Allocations deleted: {{deleted}}, assigned ones kept: {{skipped}}', {
+                      deleted: r.deleted,
+                      skipped: r.skipped,
+                  })
+                : t('Allocations deleted: {{deleted}}', { deleted: r.deleted }),
         invalidate: [['admin', 'nodes']],
         onSuccess: () => {
             setConfirm(null);

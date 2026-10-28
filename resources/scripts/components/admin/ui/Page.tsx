@@ -165,14 +165,18 @@ export const Segmented = <T extends string>({
     options: { value: T; label: string }[];
     id: string;
 }) => (
-    <div className={'inline-flex p-1 rounded-lg bg-gray-950/60 ring-1 ring-inset ring-gray-800'}>
+    <div
+        className={
+            'inline-flex max-w-full overflow-x-auto p-1 rounded-lg bg-gray-950/60 ring-1 ring-inset ring-gray-800'
+        }
+    >
         {options.map((option) => (
             <button
                 key={option.value}
                 type={'button'}
                 onClick={() => onChange(option.value)}
                 className={classNames(
-                    'relative h-8 px-3 rounded-md text-xs font-medium transition-colors',
+                    'relative flex-shrink-0 h-8 px-3 rounded-md text-xs font-medium whitespace-nowrap transition-colors',
                     value === option.value ? 'text-gray-950' : 'text-gray-400 hover:text-gray-200'
                 )}
             >

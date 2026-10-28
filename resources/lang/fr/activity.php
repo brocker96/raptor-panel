@@ -1,0 +1,147 @@
+<?php
+
+/**
+ * Translations of the activity log events, see ../en/activity.php.
+ */
+return [
+    'auth' => [
+        'fail' => 'Échec de connexion',
+        'success' => 'Connexion',
+        'password-reset' => 'Mot de passe réinitialisé',
+        'reset-password' => 'Réinitialisation du mot de passe demandée',
+        'checkpoint' => 'Authentification à deux facteurs demandée',
+        'recovery-token' => 'Code de récupération 2FA utilisé',
+        'token' => 'Vérification à deux facteurs réussie',
+        'ip-blocked' => 'Requête bloquée depuis une IP non autorisée pour :identifier',
+        'sftp' => [
+            'fail' => 'Échec de connexion SFTP',
+        ],
+    ],
+    'user' => [
+        'user' => [
+            'create' => 'Utilisateur :email créé',
+        ],
+        'account' => [
+            'email-changed' => 'E-mail modifié de :old à :new',
+            'password-changed' => 'Mot de passe modifié',
+            'language-changed' => 'Langue de l\'interface modifiée',
+        ],
+        'api-key' => [
+            'create' => 'Clé API :identifier créée',
+            'delete' => 'Clé API :identifier supprimée',
+        ],
+        'ssh-key' => [
+            'create' => 'Clé SSH :fingerprint ajoutée',
+            'delete' => 'Clé SSH :fingerprint retirée',
+        ],
+        'two-factor' => [
+            'create' => '2FA activée',
+            'delete' => '2FA désactivée',
+        ],
+    ],
+    'server' => [
+        'reinstall' => 'Serveur réinstallé',
+        'console' => [
+            'command' => '« :command » exécutée sur le serveur',
+        ],
+        'power' => [
+            'start' => 'Serveur démarré',
+            'stop' => 'Serveur arrêté',
+            'restart' => 'Serveur redémarré',
+            'kill' => 'Processus du serveur tué',
+        ],
+        'backup' => [
+            'download' => 'Sauvegarde :name téléchargée',
+            'delete' => 'Sauvegarde :name supprimée',
+            'restore' => 'Sauvegarde :name restaurée (fichiers supprimés : :truncate)',
+            'restore-complete' => 'Restauration de la sauvegarde :name terminée',
+            'restore-failed' => 'Échec de la restauration de la sauvegarde :name',
+            'start' => 'Nouvelle sauvegarde :name lancée',
+            'complete' => 'Sauvegarde :name marquée comme terminée',
+            'fail' => 'Sauvegarde :name marquée comme échouée',
+            'lock' => 'Sauvegarde :name verrouillée',
+            'unlock' => 'Sauvegarde :name déverrouillée',
+        ],
+        'database' => [
+            'create' => 'Base de données :name créée',
+            'rotate-password' => 'Mot de passe de la base :name renouvelé',
+            'delete' => 'Base de données :name supprimée',
+        ],
+        'file' => [
+            'compress_one' => ':directory:files.0 compressé',
+            'compress_other' => ':count fichiers compressés dans :directory',
+            'compress_few' => ':count fichiers compressés dans :directory',
+            'compress_many' => ':count fichiers compressés dans :directory',
+            'read' => 'Contenu de :file consulté',
+            'copy' => 'Copie de :file créée',
+            'create-directory' => 'Dossier :directory:name créé',
+            'decompress' => ':files décompressé dans :directory',
+            'delete_one' => ':directory:files.0 supprimé',
+            'delete_other' => ':count fichiers supprimés dans :directory',
+            'delete_few' => ':count fichiers supprimés dans :directory',
+            'delete_many' => ':count fichiers supprimés dans :directory',
+            'download' => ':file téléchargé',
+            'pull' => 'Fichier distant téléchargé depuis :url vers :directory',
+            'rename_one' => ':directory:files.0.from renommé en :directory:files.0.to',
+            'rename_other' => ':count fichiers renommés dans :directory',
+            'rename_few' => ':count fichiers renommés dans :directory',
+            'rename_many' => ':count fichiers renommés dans :directory',
+            'write' => 'Nouveau contenu écrit dans :file',
+            'upload' => 'Envoi d\'un fichier commencé',
+            'uploaded' => ':directory:file envoyé',
+        ],
+        'sftp' => [
+            'denied' => 'Accès SFTP bloqué faute de permissions',
+            'create_one' => ':files.0 créé',
+            'create_other' => ':count nouveaux fichiers créés',
+            'create_few' => ':count nouveaux fichiers créés',
+            'create_many' => ':count nouveaux fichiers créés',
+            'write_one' => 'Contenu de :files.0 modifié',
+            'write_other' => 'Contenu de :count fichiers modifié',
+            'write_few' => 'Contenu de :count fichiers modifié',
+            'write_many' => 'Contenu de :count fichiers modifié',
+            'delete_one' => ':files.0 supprimé',
+            'delete_other' => ':count fichiers supprimés',
+            'delete_few' => ':count fichiers supprimés',
+            'delete_many' => ':count fichiers supprimés',
+            'create-directory_one' => 'Dossier :files.0 créé',
+            'create-directory_other' => ':count dossiers créés',
+            'create-directory_few' => ':count dossiers créés',
+            'create-directory_many' => ':count dossiers créés',
+            'rename_one' => ':files.0.from renommé en :files.0.to',
+            'rename_other' => ':count fichiers renommés ou déplacés',
+            'rename_few' => ':count fichiers renommés ou déplacés',
+            'rename_many' => ':count fichiers renommés ou déplacés',
+        ],
+        'allocation' => [
+            'create' => ':allocation ajoutée au serveur',
+            'notes' => 'Notes de :allocation modifiées de « :old » à « :new »',
+            'primary' => ':allocation définie comme allocation principale',
+            'delete' => 'Allocation :allocation supprimée',
+        ],
+        'schedule' => [
+            'create' => 'Planification :name créée',
+            'update' => 'Planification :name mise à jour',
+            'execute' => 'Planification :name exécutée manuellement',
+            'delete' => 'Planification :name supprimée',
+        ],
+        'task' => [
+            'create' => 'Tâche « :action » créée dans la planification :name',
+            'update' => 'Tâche « :action » mise à jour dans la planification :name',
+            'delete' => 'Tâche supprimée de la planification :name',
+        ],
+        'settings' => [
+            'rename' => 'Serveur renommé de :old en :new',
+            'description' => 'Description du serveur modifiée de :old à :new',
+        ],
+        'startup' => [
+            'edit' => 'Variable :variable modifiée de « :old » à « :new »',
+            'image' => 'Image Docker modifiée de :old à :new',
+        ],
+        'subuser' => [
+            'create' => ':email ajouté comme sous-utilisateur',
+            'update' => 'Permissions du sous-utilisateur :email mises à jour',
+            'delete' => ':email retiré des sous-utilisateurs',
+        ],
+    ],
+];

@@ -169,10 +169,7 @@ const SystemWarnings = () => {
             <Callout
                 tone={'yellow'}
                 icon={ExclamationIcon}
-                title={t('{{count}} health {{value}} attention', {
-                    count: failing.length,
-                    value: failing.length === 1 ? 'check needs' : 'checks need',
-                })}
+                title={t('Health checks that need attention: {{count}}', { count: failing.length })}
             >
                 {t('Not passing: {{value}}.', { value: failing.map((check) => check.label).join(' · ') })}{' '}
                 <Link to={'/admin/system'} className={'font-medium underline'}>
@@ -188,11 +185,17 @@ export default () => {
     const { data } = useResource(['admin', 'overview'], getOverview, { refetchInterval: 60_000 });
     const hour = new Date().getHours();
     const greeting =
-        hour < 5 ? 'Good night' : hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
+        hour < 5
+            ? t('Good night, {{username}}', { username })
+            : hour < 12
+            ? t('Good morning, {{username}}', { username })
+            : hour < 18
+            ? t('Good afternoon, {{username}}', { username })
+            : t('Good evening, {{username}}', { username });
 
     return (
         <Page
-            title={`${greeting}, ${username}`}
+            title={greeting}
             icon={ViewGridIcon}
             description={t('A live overview of everything running on this Panel.')}
             guide={'overview'}

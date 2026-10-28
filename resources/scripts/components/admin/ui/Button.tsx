@@ -27,7 +27,9 @@ export const buttonClass = (variant: Variant = 'primary', size: 'sm' | 'md' = 'm
         'transition-[background-color,color,box-shadow,transform] duration-150 active:scale-[0.98]',
         'focus:outline-none focus-visible:ring-2 focus-visible:ring-raptor-400 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950',
         'disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100',
-        size === 'sm' ? 'h-8 px-3 text-xs' : 'h-10 px-4 text-sm',
+        size === 'sm' ? 'min-h-8 py-1.5 px-3 text-xs' : 'min-h-10 py-2 px-4 text-sm',
+        // Translations can be much longer than the English label, the text wraps instead of being cut off.
+        'leading-tight text-center',
         variants[variant],
         className
     );
@@ -48,7 +50,7 @@ const Button = forwardRef<HTMLButtonElement, Props>(
                 ) : (
                     Icon && <Icon className={classNames(size === 'sm' ? 'w-3.5 h-3.5' : 'w-4 h-4')} />
                 )}
-                {children && <span className={'inline-flex items-center gap-1.5 min-w-0 truncate'}>{children}</span>}
+                {children && <span className={'inline-flex items-center gap-1.5 min-w-0 break-words'}>{children}</span>}
             </>
         );
 

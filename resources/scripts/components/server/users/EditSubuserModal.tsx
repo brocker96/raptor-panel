@@ -107,10 +107,9 @@ const EditSubuserModal = ({ subuser }: Props) => {
                 <div css={tw`flex justify-between`}>
                     <h2 css={tw`text-2xl`} ref={ref}>
                         {subuser
-                            ? t('{{value}} permissions for {{email}}', {
-                                  value: canEditUser ? 'Modify' : 'View',
-                                  email: subuser.email,
-                              })
+                            ? canEditUser
+                                ? t('Modify permissions for {{email}}', { email: subuser.email })
+                                : t('View permissions for {{email}}', { email: subuser.email })
                             : t('Create new subuser')}
                     </h2>
                     <div>

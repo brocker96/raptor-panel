@@ -1,0 +1,147 @@
+<?php
+
+/**
+ * Translations of the activity log events, see ../en/activity.php.
+ */
+return [
+    'auth' => [
+        'fail' => 'Nieudane logowanie',
+        'success' => 'Zalogowano',
+        'password-reset' => 'Zresetowano hasło',
+        'reset-password' => 'Poproszono o reset hasła',
+        'checkpoint' => 'Poproszono o uwierzytelnienie dwuskładnikowe',
+        'recovery-token' => 'Użyto kodu odzyskiwania 2FA',
+        'token' => 'Przeszedł weryfikację dwuskładnikową',
+        'ip-blocked' => 'Zablokowano żądanie z nieuprawnionego IP dla :identifier',
+        'sftp' => [
+            'fail' => 'Nieudane logowanie SFTP',
+        ],
+    ],
+    'user' => [
+        'user' => [
+            'create' => 'Utworzono użytkownika :email',
+        ],
+        'account' => [
+            'email-changed' => 'Zmieniono e-mail z :old na :new',
+            'password-changed' => 'Zmieniono hasło',
+            'language-changed' => 'Zmieniono język interfejsu',
+        ],
+        'api-key' => [
+            'create' => 'Utworzono klucz API :identifier',
+            'delete' => 'Usunięto klucz API :identifier',
+        ],
+        'ssh-key' => [
+            'create' => 'Dodano klucz SSH :fingerprint',
+            'delete' => 'Usunięto klucz SSH :fingerprint',
+        ],
+        'two-factor' => [
+            'create' => 'Włączono 2FA',
+            'delete' => 'Wyłączono 2FA',
+        ],
+    ],
+    'server' => [
+        'reinstall' => 'Przeinstalowano serwer',
+        'console' => [
+            'command' => 'Wykonano „:command” na serwerze',
+        ],
+        'power' => [
+            'start' => 'Uruchomiono serwer',
+            'stop' => 'Zatrzymano serwer',
+            'restart' => 'Zrestartowano serwer',
+            'kill' => 'Zabito proces serwera',
+        ],
+        'backup' => [
+            'download' => 'Pobrano kopię :name',
+            'delete' => 'Usunięto kopię :name',
+            'restore' => 'Przywrócono kopię :name (usunięcie plików: :truncate)',
+            'restore-complete' => 'Zakończono przywracanie kopii :name',
+            'restore-failed' => 'Nie udało się przywrócić kopii :name',
+            'start' => 'Rozpoczęto kopię :name',
+            'complete' => 'Oznaczono kopię :name jako ukończoną',
+            'fail' => 'Oznaczono kopię :name jako nieudaną',
+            'lock' => 'Zablokowano kopię :name',
+            'unlock' => 'Odblokowano kopię :name',
+        ],
+        'database' => [
+            'create' => 'Utworzono bazę danych :name',
+            'rotate-password' => 'Zmieniono hasło bazy danych :name',
+            'delete' => 'Usunięto bazę danych :name',
+        ],
+        'file' => [
+            'compress_one' => 'Skompresowano :directory:files.0',
+            'compress_other' => 'Skompresowano pliki w :directory: :count',
+            'compress_few' => 'Skompresowano pliki w :directory: :count',
+            'compress_many' => 'Skompresowano pliki w :directory: :count',
+            'read' => 'Wyświetlono zawartość :file',
+            'copy' => 'Utworzono kopię :file',
+            'create-directory' => 'Utworzono katalog :directory:name',
+            'decompress' => 'Rozpakowano :files w :directory',
+            'delete_one' => 'Usunięto :directory:files.0',
+            'delete_other' => 'Usunięto pliki w :directory: :count',
+            'delete_few' => 'Usunięto pliki w :directory: :count',
+            'delete_many' => 'Usunięto pliki w :directory: :count',
+            'download' => 'Pobrano :file',
+            'pull' => 'Pobrano zdalny plik z :url do :directory',
+            'rename_one' => 'Zmieniono nazwę :directory:files.0.from na :directory:files.0.to',
+            'rename_other' => 'Zmieniono nazwy plików w :directory: :count',
+            'rename_few' => 'Zmieniono nazwy plików w :directory: :count',
+            'rename_many' => 'Zmieniono nazwy plików w :directory: :count',
+            'write' => 'Zapisano nową zawartość :file',
+            'upload' => 'Rozpoczęto przesyłanie pliku',
+            'uploaded' => 'Przesłano :directory:file',
+        ],
+        'sftp' => [
+            'denied' => 'Zablokowano dostęp SFTP z powodu uprawnień',
+            'create_one' => 'Utworzono :files.0',
+            'create_other' => 'Utworzono pliki: :count',
+            'create_few' => 'Utworzono pliki: :count',
+            'create_many' => 'Utworzono pliki: :count',
+            'write_one' => 'Zmieniono zawartość :files.0',
+            'write_other' => 'Zmieniono pliki: :count',
+            'write_few' => 'Zmieniono pliki: :count',
+            'write_many' => 'Zmieniono pliki: :count',
+            'delete_one' => 'Usunięto :files.0',
+            'delete_other' => 'Usunięto pliki: :count',
+            'delete_few' => 'Usunięto pliki: :count',
+            'delete_many' => 'Usunięto pliki: :count',
+            'create-directory_one' => 'Utworzono katalog :files.0',
+            'create-directory_other' => 'Utworzono katalogi: :count',
+            'create-directory_few' => 'Utworzono katalogi: :count',
+            'create-directory_many' => 'Utworzono katalogi: :count',
+            'rename_one' => 'Zmieniono nazwę :files.0.from na :files.0.to',
+            'rename_other' => 'Zmieniono nazwy lub przeniesiono pliki: :count',
+            'rename_few' => 'Zmieniono nazwy lub przeniesiono pliki: :count',
+            'rename_many' => 'Zmieniono nazwy lub przeniesiono pliki: :count',
+        ],
+        'allocation' => [
+            'create' => 'Dodano :allocation do serwera',
+            'notes' => 'Zmieniono notatkę :allocation z „:old” na „:new”',
+            'primary' => 'Ustawiono :allocation jako główną alokację',
+            'delete' => 'Usunięto alokację :allocation',
+        ],
+        'schedule' => [
+            'create' => 'Utworzono harmonogram :name',
+            'update' => 'Zaktualizowano harmonogram :name',
+            'execute' => 'Ręcznie uruchomiono harmonogram :name',
+            'delete' => 'Usunięto harmonogram :name',
+        ],
+        'task' => [
+            'create' => 'Utworzono zadanie „:action” w harmonogramie :name',
+            'update' => 'Zaktualizowano zadanie „:action” w harmonogramie :name',
+            'delete' => 'Usunięto zadanie z harmonogramu :name',
+        ],
+        'settings' => [
+            'rename' => 'Zmieniono nazwę serwera z :old na :new',
+            'description' => 'Zmieniono opis serwera z :old na :new',
+        ],
+        'startup' => [
+            'edit' => 'Zmieniono zmienną :variable z „:old” na „:new”',
+            'image' => 'Zmieniono obraz Docker z :old na :new',
+        ],
+        'subuser' => [
+            'create' => 'Dodano :email jako podużytkownika',
+            'update' => 'Zaktualizowano uprawnienia podużytkownika :email',
+            'delete' => 'Usunięto podużytkownika :email',
+        ],
+    ],
+];

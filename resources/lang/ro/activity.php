@@ -1,0 +1,147 @@
+<?php
+
+/**
+ * Translations of the activity log events, see ../en/activity.php.
+ */
+return [
+    'auth' => [
+        'fail' => 'Autentificare eșuată',
+        'success' => 'Autentificat',
+        'password-reset' => 'Parolă resetată',
+        'reset-password' => 'Resetare de parolă solicitată',
+        'checkpoint' => 'Autentificare în doi pași solicitată',
+        'recovery-token' => 'Cod de recuperare 2FA folosit',
+        'token' => 'Verificare în doi pași reușită',
+        'ip-blocked' => 'Cerere blocată de la un IP nelistat pentru :identifier',
+        'sftp' => [
+            'fail' => 'Autentificare SFTP eșuată',
+        ],
+    ],
+    'user' => [
+        'user' => [
+            'create' => 'Utilizatorul :email a fost creat',
+        ],
+        'account' => [
+            'email-changed' => 'E-mail schimbat din :old în :new',
+            'password-changed' => 'Parolă schimbată',
+            'language-changed' => 'Limba interfeței a fost schimbată',
+        ],
+        'api-key' => [
+            'create' => 'Cheia API :identifier a fost creată',
+            'delete' => 'Cheia API :identifier a fost ștearsă',
+        ],
+        'ssh-key' => [
+            'create' => 'Cheia SSH :fingerprint a fost adăugată',
+            'delete' => 'Cheia SSH :fingerprint a fost eliminată',
+        ],
+        'two-factor' => [
+            'create' => '2FA activată',
+            'delete' => '2FA dezactivată',
+        ],
+    ],
+    'server' => [
+        'reinstall' => 'Server reinstalat',
+        'console' => [
+            'command' => 'S-a executat „:command” pe server',
+        ],
+        'power' => [
+            'start' => 'Server pornit',
+            'stop' => 'Server oprit',
+            'restart' => 'Server repornit',
+            'kill' => 'Procesul serverului a fost oprit forțat',
+        ],
+        'backup' => [
+            'download' => 'Copia :name a fost descărcată',
+            'delete' => 'Copia :name a fost ștearsă',
+            'restore' => 'Copia :name a fost restaurată (fișiere șterse: :truncate)',
+            'restore-complete' => 'Restaurarea copiei :name s-a încheiat',
+            'restore-failed' => 'Restaurarea copiei :name a eșuat',
+            'start' => 'A pornit copia :name',
+            'complete' => 'Copia :name marcată ca finalizată',
+            'fail' => 'Copia :name marcată ca eșuată',
+            'lock' => 'Copia :name a fost blocată',
+            'unlock' => 'Copia :name a fost deblocată',
+        ],
+        'database' => [
+            'create' => 'Baza de date :name a fost creată',
+            'rotate-password' => 'Parola bazei de date :name a fost schimbată',
+            'delete' => 'Baza de date :name a fost ștearsă',
+        ],
+        'file' => [
+            'compress_one' => 'S-a arhivat :directory:files.0',
+            'compress_other' => 'S-au arhivat :count fișiere în :directory',
+            'compress_few' => 'S-au arhivat :count fișiere în :directory',
+            'compress_many' => 'S-au arhivat :count fișiere în :directory',
+            'read' => 'S-a vizualizat :file',
+            'copy' => 'S-a creat o copie a :file',
+            'create-directory' => 'S-a creat directorul :directory:name',
+            'decompress' => 'S-a dezarhivat :files în :directory',
+            'delete_one' => 'S-a șters :directory:files.0',
+            'delete_other' => 'S-au șters :count fișiere în :directory',
+            'delete_few' => 'S-au șters :count fișiere în :directory',
+            'delete_many' => 'S-au șters :count fișiere în :directory',
+            'download' => 'S-a descărcat :file',
+            'pull' => 'S-a descărcat un fișier de la :url în :directory',
+            'rename_one' => ':directory:files.0.from redenumit în :directory:files.0.to',
+            'rename_other' => 'S-au redenumit :count fișiere în :directory',
+            'rename_few' => 'S-au redenumit :count fișiere în :directory',
+            'rename_many' => 'S-au redenumit :count fișiere în :directory',
+            'write' => 'S-a scris conținut nou în :file',
+            'upload' => 'A început o încărcare de fișier',
+            'uploaded' => 'S-a încărcat :directory:file',
+        ],
+        'sftp' => [
+            'denied' => 'Acces SFTP blocat din cauza permisiunilor',
+            'create_one' => 'S-a creat :files.0',
+            'create_other' => 'S-au creat :count fișiere',
+            'create_few' => 'S-au creat :count fișiere',
+            'create_many' => 'S-au creat :count fișiere',
+            'write_one' => 'S-a modificat conținutul :files.0',
+            'write_other' => 'S-a modificat conținutul a :count fișiere',
+            'write_few' => 'S-a modificat conținutul a :count fișiere',
+            'write_many' => 'S-a modificat conținutul a :count fișiere',
+            'delete_one' => 'S-a șters :files.0',
+            'delete_other' => 'S-au șters :count fișiere',
+            'delete_few' => 'S-au șters :count fișiere',
+            'delete_many' => 'S-au șters :count fișiere',
+            'create-directory_one' => 'S-a creat directorul :files.0',
+            'create-directory_other' => 'S-au creat :count directoare',
+            'create-directory_few' => 'S-au creat :count directoare',
+            'create-directory_many' => 'S-au creat :count directoare',
+            'rename_one' => ':files.0.from redenumit în :files.0.to',
+            'rename_other' => 'S-au redenumit sau mutat :count fișiere',
+            'rename_few' => 'S-au redenumit sau mutat :count fișiere',
+            'rename_many' => 'S-au redenumit sau mutat :count fișiere',
+        ],
+        'allocation' => [
+            'create' => ':allocation a fost adăugată serverului',
+            'notes' => 'Notele :allocation schimbate din „:old” în „:new”',
+            'primary' => ':allocation setată ca alocare principală',
+            'delete' => 'Alocarea :allocation a fost ștearsă',
+        ],
+        'schedule' => [
+            'create' => 'Programul :name a fost creat',
+            'update' => 'Programul :name a fost actualizat',
+            'execute' => 'Programul :name a fost rulat manual',
+            'delete' => 'Programul :name a fost șters',
+        ],
+        'task' => [
+            'create' => 'S-a creat sarcina „:action” în programul :name',
+            'update' => 'S-a actualizat sarcina „:action” în programul :name',
+            'delete' => 'S-a șters o sarcină din programul :name',
+        ],
+        'settings' => [
+            'rename' => 'Serverul a fost redenumit din :old în :new',
+            'description' => 'Descrierea serverului a fost schimbată din :old în :new',
+        ],
+        'startup' => [
+            'edit' => 'Variabila :variable a fost schimbată din „:old” în „:new”',
+            'image' => 'Imaginea Docker a fost schimbată din :old în :new',
+        ],
+        'subuser' => [
+            'create' => ':email a fost adăugat ca subutilizator',
+            'update' => 'Permisiunile subutilizatorului :email au fost actualizate',
+            'delete' => ':email a fost eliminat din subutilizatori',
+        ],
+    ],
+];
