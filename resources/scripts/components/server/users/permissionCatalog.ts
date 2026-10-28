@@ -44,10 +44,10 @@ export const permissionGroups = (): PermissionGroup[] => [
                 label: t('Start the server'),
                 description: t('Start the server when it is offline.'),
             },
-            { key: 'control.stop', label: t('Stop the server'), description: t('Stop or kill the server process.') },
+            { key: 'control.stop', label: t('Stopping the server'), description: t('Stop or kill the server process.') },
             {
                 key: 'control.restart',
-                label: t('Restart the server'),
+                label: t('Restarting the server'),
                 description: t('Restart the server, which also starts it when it is offline.'),
             },
         ],
