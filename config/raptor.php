@@ -53,6 +53,17 @@ return [
     | passkeys. All of them can be changed in Settings → Security.
     */
 
+    'db_manager' => [
+        // Seconds a single query of the Raptor DB Manager may run before the database stops it.
+        'query_timeout' => (int) env('RAPTOR_DB_MANAGER_TIMEOUT', 30),
+        // Rows returned per result in the SQL console.
+        'max_result_rows' => (int) env('RAPTOR_DB_MANAGER_MAX_ROWS', 1000),
+        // Statements run per console submission.
+        'max_statements' => 50,
+        // Largest SQL file that can be imported, in kilobytes.
+        'max_import_kb' => (int) env('RAPTOR_DB_MANAGER_MAX_IMPORT_KB', 51200),
+    ],
+
     'security' => [
         // How long "keep me signed in" lasts on a device, in days.
         'session_days' => (int) env('APP_SESSION_DAYS', 30),

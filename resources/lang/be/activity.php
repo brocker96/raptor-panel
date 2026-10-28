@@ -80,6 +80,16 @@ return [
             'create' => 'Створана база даных :name',
             'rotate-password' => 'Зменены пароль базы даных :name',
             'delete' => 'Выдалена база даных :name',
+            'manager' => [
+                'query' => 'Выканана SQL у базе даных :name',
+                'insert' => 'Дададзены радок у :table базы даных :name',
+                'update' => 'Зменены радок у :table базы даных :name',
+                'delete' => 'Выдалены радкі з :table базы даных :name (:count)',
+                'truncate' => 'Ачышчана табліца :table базы даных :name',
+                'drop' => 'Выдалена табліца :table базы даных :name',
+                'import' => 'Імпартаваны SQL-файл у базу даных :name',
+                'export' => 'Экспартавана база даных :name',
+            ],
         ],
         'file' => [
             'compress_one' => 'Заархіваваны :directory:files.0',

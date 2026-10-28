@@ -80,6 +80,16 @@ return [
             'create' => 'Utworzono bazę danych :name',
             'rotate-password' => 'Zmieniono hasło bazy danych :name',
             'delete' => 'Usunięto bazę danych :name',
+            'manager' => [
+                'query' => 'Wykonano SQL w bazie danych :name',
+                'insert' => 'Dodano wiersz do :table w bazie danych :name',
+                'update' => 'Zmieniono wiersz w :table w bazie danych :name',
+                'delete' => 'Usunięto wiersze z :table w bazie danych :name (:count)',
+                'truncate' => 'Wyczyszczono tabelę :table w bazie danych :name',
+                'drop' => 'Usunięto tabelę :table w bazie danych :name',
+                'import' => 'Zaimportowano plik SQL do bazy danych :name',
+                'export' => 'Wyeksportowano bazę danych :name',
+            ],
         ],
         'file' => [
             'compress_one' => 'Skompresowano :directory:files.0',

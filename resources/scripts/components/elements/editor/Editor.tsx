@@ -45,6 +45,8 @@ export interface EditorProps {
     lineWrapping?: boolean;
     readOnly?: boolean;
     onSave?: () => void;
+    /** Called on Ctrl/Cmd + Enter, used to run queries. */
+    onRun?: () => void;
     onDirtyChange?: (dirty: boolean) => void;
     /** Called with the current contents of the editor, debounced while the user is typing. */
     onChange?: (value: string) => void;
@@ -116,6 +118,14 @@ const Editor = forwardRef<EditorHandle, EditorProps>(
                     compartments.current.wrapping.of(latest.current.lineWrapping ? EditorView.lineWrapping : []),
                     compartments.current.readOnly.of(EditorState.readOnly.of(latest.current.readOnly)),
                     keymap.of([
+                        {
+                            key: 'Mod-Enter',
+                            run: () => {
+                                if (!latest.current.onRun) return false;
+                                latest.current.onRun();
+                                return true;
+                            },
+                        },
                         {
                             key: 'Mod-s',
                             preventDefault: true,

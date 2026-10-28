@@ -22,6 +22,7 @@ import { t } from '@/i18n';
 // static import here would make the dashboard download the console, charts and editor.
 const ServerConsole = lazyWithPreload(() => import('@/components/server/console/ServerConsoleContainer'));
 const DatabasesContainer = lazyWithPreload(() => import('@/components/server/databases/DatabasesContainer'));
+const DatabaseManager = lazyWithPreload(() => import('@/components/server/databases/manager/DatabaseManager'));
 const ScheduleContainer = lazyWithPreload(() => import('@/components/server/schedules/ScheduleContainer'));
 const UsersContainer = lazyWithPreload(() => import('@/components/server/users/UsersContainer'));
 const BackupContainer = lazyWithPreload(() => import('@/components/server/backups/BackupContainer'));
@@ -134,6 +135,12 @@ export default {
             name: t('Databases'),
             icon: DatabaseIcon,
             component: DatabasesContainer,
+        },
+        {
+            path: '/databases/:id/manager',
+            permission: 'database.manage',
+            name: undefined,
+            component: DatabaseManager,
         },
         {
             path: '/schedules',

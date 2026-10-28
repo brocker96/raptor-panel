@@ -80,6 +80,16 @@ return [
             'create' => 'Vytvořena databáze :name',
             'rotate-password' => 'Změněno heslo databáze :name',
             'delete' => 'Smazána databáze :name',
+            'manager' => [
+                'query' => 'Spuštěno SQL v databázi :name',
+                'insert' => 'Přidán řádek do :table v databázi :name',
+                'update' => 'Upraven řádek v :table v databázi :name',
+                'delete' => 'Smazány řádky z :table v databázi :name (:count)',
+                'truncate' => 'Vyprázdněna tabulka :table v databázi :name',
+                'drop' => 'Smazána tabulka :table v databázi :name',
+                'import' => 'Importován soubor SQL do databáze :name',
+                'export' => 'Exportována databáze :name',
+            ],
         ],
         'file' => [
             'compress_one' => 'Zkomprimováno :directory:files.0',

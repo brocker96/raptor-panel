@@ -103,6 +103,21 @@ Route::group([
             ->post('/', [Client\Servers\DatabaseController::class, 'store']);
         Route::post('/{database}/rotate-password', [Client\Servers\DatabaseController::class, 'rotatePassword'])->middleware('confirm');
         Route::delete('/{database}', [Client\Servers\DatabaseController::class, 'delete'])->middleware('confirm');
+
+        // Raptor DB Manager, every request needs a recent security confirmation.
+        Route::group(['prefix' => '/{database}/manager', 'middleware' => ['confirm', 'throttle:240,1']], function () {
+            Route::get('/', [Client\Servers\DatabaseManagerController::class, 'overview']);
+            Route::post('/query', [Client\Servers\DatabaseManagerController::class, 'query']);
+            Route::post('/import', [Client\Servers\DatabaseManagerController::class, 'import']);
+            Route::get('/export', [Client\Servers\DatabaseManagerController::class, 'export']);
+            Route::get('/tables/{table}', [Client\Servers\DatabaseManagerController::class, 'structure']);
+            Route::get('/tables/{table}/rows', [Client\Servers\DatabaseManagerController::class, 'rows']);
+            Route::post('/tables/{table}/rows', [Client\Servers\DatabaseManagerController::class, 'insert']);
+            Route::patch('/tables/{table}/rows', [Client\Servers\DatabaseManagerController::class, 'update']);
+            Route::post('/tables/{table}/rows/delete', [Client\Servers\DatabaseManagerController::class, 'delete']);
+            Route::post('/tables/{table}/truncate', [Client\Servers\DatabaseManagerController::class, 'truncate'])->middleware('confirm:strong');
+            Route::delete('/tables/{table}', [Client\Servers\DatabaseManagerController::class, 'drop'])->middleware('confirm:strong');
+        });
     });
 
     Route::group(['prefix' => '/files'], function () {

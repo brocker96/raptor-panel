@@ -80,6 +80,16 @@ return [
             'create' => 'Datenbank :name erstellt',
             'rotate-password' => 'Passwort der Datenbank :name erneuert',
             'delete' => 'Datenbank :name gelöscht',
+            'manager' => [
+                'query' => 'SQL in Datenbank :name ausgeführt',
+                'insert' => 'Zeile zu :table in Datenbank :name hinzugefügt',
+                'update' => 'Zeile in :table in Datenbank :name bearbeitet',
+                'delete' => 'Zeilen aus :table in Datenbank :name gelöscht (:count)',
+                'truncate' => 'Tabelle :table in Datenbank :name geleert',
+                'drop' => 'Tabelle :table in Datenbank :name gelöscht',
+                'import' => 'SQL-Datei in Datenbank :name importiert',
+                'export' => 'Datenbank :name exportiert',
+            ],
         ],
         'file' => [
             'compress_one' => ':directory:files.0 komprimiert',

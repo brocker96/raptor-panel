@@ -83,6 +83,16 @@ return [
             'create' => 'Created new database :name',
             'rotate-password' => 'Password rotated for database :name',
             'delete' => 'Deleted database :name',
+            'manager' => [
+                'query' => 'Ran SQL in database :name',
+                'insert' => 'Added a row to :table in database :name',
+                'update' => 'Edited a row of :table in database :name',
+                'delete' => 'Deleted :count rows from :table in database :name',
+                'truncate' => 'Emptied table :table in database :name',
+                'drop' => 'Dropped table :table in database :name',
+                'import' => 'Imported a SQL file into database :name',
+                'export' => 'Exported database :name',
+            ],
         ],
         'file' => [
             'compress_one' => 'Compressed :directory:files.0',

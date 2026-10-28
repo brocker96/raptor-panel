@@ -5,6 +5,7 @@ namespace Raptor\Services\Databases;
 use Raptor\Models\Server;
 use Raptor\Models\Database;
 use Raptor\Helpers\Utilities;
+use Raptor\Services\Databases\Manager\DatabaseManagerConnector;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Raptor\Extensions\DynamicDatabaseConnection;
@@ -147,6 +148,8 @@ class DatabaseManagementService
         $this->repository->dropDatabase($database->database);
         $this->repository->dropUser($database->username, $database->remote);
         $this->repository->flush();
+
+        app(DatabaseManagerConnector::class)->revokePanelAccess($database);
 
         return $database->delete();
     }

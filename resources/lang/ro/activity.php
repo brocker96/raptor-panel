@@ -80,6 +80,16 @@ return [
             'create' => 'Baza de date :name a fost creată',
             'rotate-password' => 'Parola bazei de date :name a fost schimbată',
             'delete' => 'Baza de date :name a fost ștearsă',
+            'manager' => [
+                'query' => 'SQL rulat în baza de date :name',
+                'insert' => 'Rând adăugat în :table din baza de date :name',
+                'update' => 'Rând modificat în :table din baza de date :name',
+                'delete' => 'Rânduri șterse din :table din baza de date :name (:count)',
+                'truncate' => 'Tabelul :table din baza de date :name a fost golit',
+                'drop' => 'Tabelul :table din baza de date :name a fost șters',
+                'import' => 'Fișier SQL importat în baza de date :name',
+                'export' => 'Baza de date :name a fost exportată',
+            ],
         ],
         'file' => [
             'compress_one' => 'S-a arhivat :directory:files.0',

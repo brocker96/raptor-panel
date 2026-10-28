@@ -80,6 +80,16 @@ return [
             'create' => 'Base de données :name créée',
             'rotate-password' => 'Mot de passe de la base :name renouvelé',
             'delete' => 'Base de données :name supprimée',
+            'manager' => [
+                'query' => 'SQL exécuté dans la base de données :name',
+                'insert' => 'Ligne ajoutée à :table dans la base de données :name',
+                'update' => 'Ligne modifiée dans :table de la base de données :name',
+                'delete' => 'Lignes supprimées de :table dans la base de données :name (:count)',
+                'truncate' => 'Table :table vidée dans la base de données :name',
+                'drop' => 'Table :table supprimée de la base de données :name',
+                'import' => 'Fichier SQL importé dans la base de données :name',
+                'export' => 'Base de données :name exportée',
+            ],
         ],
         'file' => [
             'compress_one' => ':directory:files.0 compressé',
