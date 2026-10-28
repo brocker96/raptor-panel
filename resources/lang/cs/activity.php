@@ -5,6 +5,8 @@
  */
 return [
     'auth' => [
+        'passkey' => 'Přihlášení přístupovým klíčem :name',
+        'account-locked' => 'Účet uzamčen na :minutes min po neúspěšných přihlášeních',
         'fail' => 'Neúspěšné přihlášení',
         'success' => 'Přihlášení',
         'password-reset' => 'Heslo obnoveno',
@@ -18,6 +20,18 @@ return [
         ],
     ],
     'user' => [
+        'security' => [
+            'confirmed' => 'Potvrzena identita (:method)',
+            'unlock-failed' => 'Neúspěšné odemknutí (:method)',
+            'pin-updated' => 'Nastaven PIN',
+            'pin-removed' => 'Odebrán PIN',
+            'session-revoked' => 'Odhlášen :browser na :os (:ip)',
+            'sessions-revoked' => 'Odhlášeno dalších relací: :count',
+            'trusted-device-removed' => 'Odebráno důvěryhodné zařízení',
+            'passkey-added' => 'Přidán přístupový klíč :name',
+            'passkey-removed' => 'Odebrán přístupový klíč :name',
+            'recovery-codes' => 'Vygenerovány nové obnovovací kódy',
+        ],
         'user' => [
             'create' => 'Vytvořen uživatel :email',
         ],

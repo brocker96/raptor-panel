@@ -1,4 +1,5 @@
-import axios, { AxiosInstance } from 'axios';
+import axios, { AxiosError, AxiosInstance, InternalAxiosRequestConfig } from 'axios';
+import { isBackgroundRequest, requestConfirmation, setLocked, waitForUnlock } from '@/plugins/securityPrompts';
 import { store } from '@/state';
 
 const http: AxiosInstance = axios.create({
@@ -16,8 +17,14 @@ http.interceptors.request.use((req) => {
         store.getActions().progress.startContinuous();
     }
 
+    if (req.url?.endsWith('/resources') || isBackgroundRequest()) {
+        req.headers.set('X-Raptor-Background', '1');
+    }
+
     return req;
 });
+
+type RetryConfig = InternalAxiosRequestConfig & { _confirmed?: boolean; _unlocked?: boolean };
 
 http.interceptors.response.use(
     (resp) => {
@@ -27,8 +34,32 @@ http.interceptors.response.use(
 
         return resp;
     },
-    (error) => {
+    async (error: AxiosError) => {
         store.getActions().progress.setComplete();
+
+        const config = error.config as RetryConfig | undefined;
+        const detail = (error.response?.data as any)?.errors?.[0];
+
+        // Sensitive actions: ask the user to confirm it is them and send the request again.
+        if (config && detail?.code === 'SecurityConfirmationRequired' && !config._confirmed) {
+            const confirmed = await requestConfirmation(detail.meta?.methods || ['password'], !!detail.meta?.strong);
+            if (confirmed) {
+                return http.request({ ...config, _confirmed: true } as RetryConfig);
+            }
+        }
+
+        // The screen locked while the request was made: wait for the unlock and replay it.
+        if (config && detail?.code === 'ScreenLocked' && !config._unlocked) {
+            setLocked(true);
+            await waitForUnlock();
+
+            return http.request({ ...config, _unlocked: true } as RetryConfig);
+        }
+
+        // The session was ended from another device or timed out.
+        if (detail?.code === 'SessionEnded' && !window.location.pathname.startsWith('/auth')) {
+            window.location.href = '/auth/login';
+        }
 
         throw error;
     }

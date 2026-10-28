@@ -2,8 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import {
     AdjustmentsIcon,
+    ClockIcon,
     CloudIcon,
     CogIcon,
+    GlobeAltIcon,
+    LockClosedIcon,
     MailIcon,
     PaperAirplaneIcon,
     ShieldCheckIcon,
@@ -13,13 +16,13 @@ import { getSettings, PanelSettings, sendTestMail, updateMailDriver, updateSetti
 import { Page, Segmented, Tabs } from '@/components/admin/ui/Page';
 import { Card } from '@/components/admin/ui/Card';
 import { Callout, Skeleton } from '@/components/admin/ui/Feedback';
-import { FormGrid, NumberInput, Select, TextInput, Toggle } from '@/components/admin/ui/Form';
+import { FormGrid, NumberInput, Select, TextArea, TextInput, Toggle } from '@/components/admin/ui/Form';
 import Button from '@/components/admin/ui/Button';
 import { useAction } from '@/components/admin/ui/hooks';
 import CloudflareSettings from '@/components/admin/settings/CloudflareSettings';
 import { t } from '@/i18n';
 
-const useSection = <K extends 'general' | 'mail' | 'advanced'>(settings: PanelSettings, key: K) => {
+const useSection = <K extends 'general' | 'mail' | 'advanced' | 'security'>(settings: PanelSettings, key: K) => {
     const [values, setValues] = useState<PanelSettings[K]>(settings[key]);
     useEffect(() => setValues(settings[key]), [settings]);
 
@@ -343,6 +346,166 @@ const Advanced = ({ settings }: { settings: PanelSettings }) => {
     );
 };
 
+const Security = ({ settings }: { settings: PanelSettings }) => {
+    const { values, set, save } = useSection(settings, 'security');
+    const flag = (key: keyof PanelSettings['security']) => values[key] === 'true';
+    const toggle = (key: keyof PanelSettings['security']) => (v: boolean) => set(key)(v ? 'true' : 'false');
+    const footer = (
+        <Button loading={save.loading} onClick={() => save.run(values)}>
+            {t('Save security settings')}
+        </Button>
+    );
+
+    return (
+        <div className={'space-y-6'}>
+            <Card
+                title={t('Sessions')}
+                icon={ClockIcon}
+                description={t(
+                    'How long users stay signed in. Users see and end their sessions on their Security page.'
+                )}
+            >
+                <FormGrid>
+                    <NumberInput
+                        label={t('Keep me signed in for')}
+                        suffix={t('days')}
+                        value={values['raptor:security:session_days']}
+                        onChange={set('raptor:security:session_days')}
+                        error={save.errors['raptor:security:session_days']}
+                        description={t('How long a device stays signed in when "Keep me signed in" is chosen.')}
+                    />
+                    <NumberInput
+                        label={t('Sign out after inactivity')}
+                        suffix={t('minutes')}
+                        value={values['raptor:security:idle_timeout']}
+                        onChange={set('raptor:security:idle_timeout')}
+                        error={save.errors['raptor:security:idle_timeout']}
+                        description={t('Ends sessions without any activity for this long. 0 disables it.')}
+                    />
+                    <NumberInput
+                        label={t('Maximum screen lock delay')}
+                        suffix={t('minutes')}
+                        value={values['raptor:security:screen_lock_max']}
+                        onChange={set('raptor:security:screen_lock_max')}
+                        error={save.errors['raptor:security:screen_lock_max']}
+                        description={t(
+                            'Forces the screen lock for every user after at most this many idle minutes. 0 lets users decide.'
+                        )}
+                    />
+                    <NumberInput
+                        label={t('Trust devices for')}
+                        suffix={t('days')}
+                        value={values['raptor:security:trusted_device_days']}
+                        onChange={set('raptor:security:trusted_device_days')}
+                        error={save.errors['raptor:security:trusted_device_days']}
+                        description={t(
+                            'Lets users skip the two-step code on a trusted browser. 0 disables trusted devices.'
+                        )}
+                    />
+                </FormGrid>
+            </Card>
+            <Card
+                title={t('Sign-in protection')}
+                icon={LockClosedIcon}
+                description={t('Accounts are locked for a while after too many failed sign-ins, from any address.')}
+            >
+                <div className={'space-y-4'}>
+                    <FormGrid>
+                        <NumberInput
+                            label={t('Failed sign-ins before locking')}
+                            value={values['raptor:security:lockout_attempts']}
+                            onChange={set('raptor:security:lockout_attempts')}
+                            error={save.errors['raptor:security:lockout_attempts']}
+                            description={t('0 disables account locking.')}
+                        />
+                        <NumberInput
+                            label={t('Lock duration')}
+                            suffix={t('minutes')}
+                            value={values['raptor:security:lockout_minutes']}
+                            onChange={set('raptor:security:lockout_minutes')}
+                            error={save.errors['raptor:security:lockout_minutes']}
+                        />
+                        <NumberInput
+                            label={t('Minimum password length')}
+                            suffix={t('characters')}
+                            value={values['raptor:security:password_min_length']}
+                            onChange={set('raptor:security:password_min_length')}
+                            error={save.errors['raptor:security:password_min_length']}
+                        />
+                    </FormGrid>
+                    <Toggle
+                        label={t('Allow passkeys')}
+                        description={t(
+                            'Users can sign in with fingerprint, face or security keys instead of a password. Requires HTTPS.'
+                        )}
+                        checked={flag('raptor:security:passkeys')}
+                        onChange={toggle('raptor:security:passkeys')}
+                    />
+                    <Toggle
+                        label={t('Security alert e-mails')}
+                        description={t(
+                            'E-mail users about sign-ins from new devices and changes to their password, e-mail, two-step verification, passkeys and PIN.'
+                        )}
+                        checked={flag('raptor:security:alerts')}
+                        onChange={toggle('raptor:security:alerts')}
+                    />
+                </div>
+            </Card>
+            <Card
+                title={t('Sensitive actions')}
+                icon={ShieldCheckIcon}
+                description={t(
+                    'Deleting backups, changing subusers, reinstalling servers, API keys and similar actions ask users to confirm it is them.'
+                )}
+            >
+                <div className={'space-y-4'}>
+                    <FormGrid>
+                        <NumberInput
+                            label={t('Confirmation stays valid for')}
+                            suffix={t('minutes')}
+                            value={values['raptor:security:confirm_window']}
+                            onChange={set('raptor:security:confirm_window')}
+                            error={save.errors['raptor:security:confirm_window']}
+                        />
+                    </FormGrid>
+                    <Toggle
+                        label={t('Confirm changes in the admin area')}
+                        description={t(
+                            'Administrators confirm with their password, code, passkey or PIN before their first change in the admin area.'
+                        )}
+                        checked={flag('raptor:security:confirm_admin')}
+                        onChange={toggle('raptor:security:confirm_admin')}
+                    />
+                </div>
+            </Card>
+            <Card
+                title={t('Admin area access')}
+                icon={GlobeAltIcon}
+                description={t(
+                    'Only these IP addresses or CIDR ranges can open the admin area. Leave empty to allow every address.'
+                )}
+                footer={footer}
+            >
+                <div className={'space-y-3'}>
+                    <TextArea
+                        mono
+                        label={t('Allowed addresses')}
+                        value={values['raptor:security:admin_allowlist'] || ''}
+                        onChange={set('raptor:security:admin_allowlist')}
+                        error={save.errors['raptor:security:admin_allowlist']}
+                        placeholder={'203.0.113.10\n10.0.0.0/8'}
+                    />
+                    <p className={'text-xs text-gray-500'}>
+                        {t('Your current address is {{ip}}. It must be in the list, otherwise saving is refused.', {
+                            ip: settings.meta.ip,
+                        })}
+                    </p>
+                </div>
+            </Card>
+        </div>
+    );
+};
+
 export default () => {
     const { data } = useResource(['admin', 'settings'], getSettings);
     const section = useLocation().pathname.split('/')[3] || 'general';
@@ -359,6 +522,7 @@ export default () => {
                     items={[
                         { to: '/admin/settings/general', label: t('General'), icon: CogIcon },
                         { to: '/admin/settings/mail', label: t('Mail'), icon: MailIcon },
+                        { to: '/admin/settings/security', label: t('Security'), icon: ShieldCheckIcon },
                         { to: '/admin/settings/advanced', label: t('Advanced'), icon: AdjustmentsIcon },
                         { to: '/admin/settings/cloudflare', label: t('Cloudflare'), icon: CloudIcon },
                     ]}
@@ -377,6 +541,7 @@ export default () => {
                             <Routes>
                                 <Route path={'general'} element={<General settings={data} />} />
                                 <Route path={'mail'} element={<Mail settings={data} />} />
+                                <Route path={'security'} element={<Security settings={data} />} />
                                 <Route path={'advanced'} element={<Advanced settings={data} />} />
                             </Routes>
                         )

@@ -10,6 +10,7 @@ import {
     GlobeAltIcon,
     KeyIcon,
     PlayIcon,
+    ShieldCheckIcon,
     TerminalIcon,
     UserCircleIcon,
     UsersIcon,
@@ -29,6 +30,7 @@ const StartupContainer = lazyWithPreload(() => import('@/components/server/start
 const FileManagerContainer = lazyWithPreload(() => import('@/components/server/files/FileManagerContainer'));
 const SettingsContainer = lazyWithPreload(() => import('@/components/server/settings/SettingsContainer'));
 const AccountOverviewContainer = lazyWithPreload(() => import('@/components/dashboard/AccountOverviewContainer'));
+const SecurityContainer = lazyWithPreload(() => import('@/components/dashboard/security/SecurityContainer'));
 const AccountApiContainer = lazyWithPreload(() => import('@/components/dashboard/AccountApiContainer'));
 const AccountSSHContainer = lazyWithPreload(() => import('@/components/dashboard/ssh/AccountSSHContainer'));
 const ActivityLogContainer = lazyWithPreload(() => import('@/components/dashboard/activity/ActivityLogContainer'));
@@ -78,6 +80,12 @@ export default {
             icon: UserCircleIcon,
             component: AccountOverviewContainer,
             exact: true,
+        },
+        {
+            path: '/security',
+            name: t('Security'),
+            icon: ShieldCheckIcon,
+            component: SecurityContainer,
         },
         {
             path: '/api',

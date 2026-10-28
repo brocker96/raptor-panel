@@ -16,7 +16,7 @@ class ResetPasswordRequest extends FormRequest
         return [
             'token' => 'required|string',
             'email' => 'required|email',
-            'password' => 'required|string|confirmed|min:8',
+            'password' => 'required|string|confirmed|min:' . max(8, (int) config('raptor.security.password_min_length', 8)),
         ];
     }
 }

@@ -70,6 +70,65 @@ export default [
         related: ['settings-general', 'system'],
     },
     {
+        key: 'settings-security',
+        title: 'Security settings',
+        category: 'Configuration',
+        summary: 'Sessions, re-confirmation of sensitive actions, account lockout, passkeys and admin area access.',
+        minutes: 6,
+        sections: [
+            {
+                heading: 'What users get',
+                body: 'Every user has a Security page (Account → Security) with a security score, two-step verification, passkeys, a PIN with automatic screen lock, the list of signed in devices, trusted devices and recent sign-ins. These settings decide the rules for all of them.',
+            },
+            {
+                heading: 'Sessions',
+                points: [
+                    'Keep me signed in for — how many days a device stays signed in when the user ticks "Keep me signed in". Every device gets its own token, so users and administrators can sign out a single device.',
+                    'Sign out after inactivity — ends sessions that made no request for this many minutes. `0` disables it.',
+                    'Maximum screen lock delay — forces the screen lock for everyone. Users can choose a shorter delay but not turn it off. `0` lets users decide.',
+                    'Trust devices for — how long a browser may skip the two-step code after the user chose "Trust this device". `0` disables trusted devices.',
+                ],
+            },
+            {
+                heading: 'Sign-in protection',
+                points: [
+                    'Failed sign-ins before locking — the account is locked for the lock duration after this many wrong passwords or two-step codes, no matter from how many IP addresses they came. The owner gets an e-mail. `0` disables it.',
+                    'Minimum password length — applies when users change or reset their password.',
+                    'Allow passkeys — sign in with fingerprint, face, device PIN or security keys. A passkey sign in counts as two factors. Passkeys only work over HTTPS (or on `localhost`).',
+                    'Security alert e-mails — new sign-in alerts (users can turn those off) and always-on alerts for password, e-mail, two-step, passkey and PIN changes.',
+                ],
+                warning:
+                    'The account lock is checked after the password, so it never reveals whether an account exists.',
+            },
+            {
+                heading: 'Sensitive actions',
+                body: 'Creating or deleting API keys and SSH keys, changing subusers, deleting or restoring backups, deleting databases, rotating database passwords and reinstalling servers ask the user to confirm it is them with their PIN, password, two-step code or a passkey. Changing the security of the account itself (PIN, passkeys, recovery codes) never accepts the PIN.\n\nA confirmation stays valid for the configured minutes, so a series of actions only asks once. Requests made with API keys are not affected.',
+                points: [
+                    'Confirm changes in the admin area — administrators confirm before their first change in the admin area.',
+                ],
+            },
+            {
+                heading: 'Admin area access',
+                body: 'Restrict the admin area (including `/api/admin`) to IP addresses or CIDR ranges, one per line or separated by commas. Leave it empty to allow every address. Saving is refused when your current address is not in the list, so you cannot lock yourself out.',
+                tips: [
+                    'Behind Cloudflare the real visitor address is used, see "Running behind Cloudflare".',
+                    'Locked out anyway (for example after your IP address changed)? Run `php artisan raptor:admin-allowlist --clear` on the Panel server.',
+                ],
+            },
+        ],
+        faq: [
+            {
+                q: 'A user lost the phone with their passkey or authenticator app',
+                a: 'Open the user in the admin area. The Account security card can disable two-step verification, remove all passkeys and trusted devices, reset the PIN and sign the user out everywhere.',
+            },
+            {
+                q: 'An account may be compromised',
+                a: 'Use "Sign out everywhere" on the user page and set a new password. Changing a password also signs out every other session and forgets trusted devices automatically.',
+            },
+        ],
+        related: ['settings-general', 'users', 'cloudflare'],
+    },
+    {
         key: 'settings-advanced',
         title: 'Advanced settings',
         category: 'Configuration',

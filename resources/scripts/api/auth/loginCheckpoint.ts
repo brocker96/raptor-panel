@@ -1,12 +1,13 @@
 import http from '@/api/http';
 import { LoginResponse } from '@/api/auth/login';
 
-export default (token: string, code: string, recoveryToken?: string): Promise<LoginResponse> => {
+export default (token: string, code: string, recoveryToken?: string, trustDevice = false): Promise<LoginResponse> => {
     return new Promise((resolve, reject) => {
         http.post('/auth/login/checkpoint', {
             confirmation_token: token,
             authentication_code: code,
             recovery_token: recoveryToken && recoveryToken.length > 0 ? recoveryToken : undefined,
+            trust_device: trustDevice,
         })
             .then((response) =>
                 resolve({

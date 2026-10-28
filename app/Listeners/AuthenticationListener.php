@@ -4,6 +4,8 @@ namespace Raptor\Listeners;
 
 use Raptor\Facades\Activity;
 use Illuminate\Auth\Events\Failed;
+use Illuminate\Auth\Events\Logout;
+use Raptor\Services\Security\SessionManager;
 use Raptor\Events\Auth\DirectLogin;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Contracts\Events\Dispatcher;
@@ -36,10 +38,25 @@ class AuthenticationListener implements SubscribesToEvents
         Activity::event('event:password-reset')->withRequestMetadata()->subject($event->user)->log();
     }
 
+    /**
+     * Signing out ends the tracked session and forgets the device, so the device cookie
+     * cannot sign the browser back in.
+     */
+    public function logout(Logout $event): void
+    {
+        $sessions = app(SessionManager::class);
+        if ($session = $sessions->current(request())) {
+            $sessions->revoke($session, 'logout');
+        }
+
+        $sessions->forgetDevice();
+    }
+
     public function subscribe(Dispatcher $events): void
     {
         $events->listen(Failed::class, [self::class, 'login']);
         $events->listen(DirectLogin::class, [self::class, 'login']);
         $events->listen(PasswordReset::class, [self::class, 'reset']);
+        $events->listen(Logout::class, [self::class, 'logout']);
     }
 }

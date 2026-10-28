@@ -163,7 +163,22 @@ export interface PanelSettings {
         'raptor:client_features:allocations:range_start': number | null;
         'raptor:client_features:allocations:range_end': number | null;
     };
+    security: {
+        'raptor:security:session_days': number;
+        'raptor:security:idle_timeout': number;
+        'raptor:security:confirm_window': number;
+        'raptor:security:confirm_admin': 'true' | 'false';
+        'raptor:security:lockout_attempts': number;
+        'raptor:security:lockout_minutes': number;
+        'raptor:security:alerts': 'true' | 'false';
+        'raptor:security:passkeys': 'true' | 'false';
+        'raptor:security:trusted_device_days': number;
+        'raptor:security:admin_allowlist': string;
+        'raptor:security:password_min_length': number;
+        'raptor:security:screen_lock_max': number;
+    };
     meta: {
+        ip: string;
         languages: Record<string, string>;
         mail_driver: string;
         mail_editable: boolean;
@@ -174,7 +189,7 @@ export interface PanelSettings {
 }
 
 export const getSettings = (signal?: AbortSignal) => get<PanelSettings>('/api/admin/settings', undefined, signal);
-export const updateSettings = (section: 'general' | 'mail' | 'advanced', values: object) =>
+export const updateSettings = (section: 'general' | 'mail' | 'advanced' | 'security', values: object) =>
     http.patch(`/api/admin/settings/${section}`, values);
 export const updateMailDriver = (driver: 'smtp' | 'log') => http.put('/api/admin/settings/mail/driver', { driver });
 export const sendTestMail = () => http.post<{ email: string }>('/api/admin/settings/mail/test').then((r) => r.data);
@@ -220,6 +235,22 @@ export interface AdminUserDetails extends AdminUser {
     servers: { id: number; identifier: string; name: string; status: string | null; node: string | null }[];
     subuser_of: { id: number; identifier: string; name: string }[];
     last_activity: string | null;
+    security: {
+        pin: boolean;
+        passkeys: number;
+        trusted_devices: number;
+        locked_until: string | null;
+        sessions: {
+            identifier: string;
+            ip: string;
+            method: string;
+            browser: string;
+            os: string;
+            type: string;
+            created_at: string;
+            last_active_at: string | null;
+        }[];
+    };
 }
 
 export interface UserValues {
@@ -242,6 +273,11 @@ export const updateUser = (id: number, values: UserValues) =>
 export const deleteUser = (id: number) => http.delete(`/api/admin/users/${id}`);
 export const deleteUserAvatar = (id: number) => http.delete(`/api/admin/users/${id}/avatar`);
 export const disableUserTwoFactor = (id: number) => http.post(`/api/admin/users/${id}/2fa/disable`);
+export const revokeUserSessions = (id: number) =>
+    http.post<{ revoked: number }>(`/api/admin/users/${id}/security/sessions/revoke`).then((r) => r.data.revoked);
+export const resetUserPin = (id: number) => http.delete(`/api/admin/users/${id}/security/pin`);
+export const deleteUserPasskeys = (id: number) => http.delete(`/api/admin/users/${id}/security/passkeys`);
+export const unlockUser = (id: number) => http.post(`/api/admin/users/${id}/security/unlock`);
 
 // ---------------------------------------------------------------------------------------------
 // Locations & nodes

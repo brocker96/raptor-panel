@@ -2,7 +2,6 @@ import * as React from 'react';
 import ContentBox from '@/components/elements/ContentBox';
 import UpdatePasswordForm from '@/components/dashboard/forms/UpdatePasswordForm';
 import UpdateEmailAddressForm from '@/components/dashboard/forms/UpdateEmailAddressForm';
-import ConfigureTwoFactorForm from '@/components/dashboard/forms/ConfigureTwoFactorForm';
 import PageContentBlock from '@/components/elements/PageContentBlock';
 import tw from 'twin.macro';
 import { breakpoint } from '@/theme';
@@ -10,7 +9,8 @@ import styled from 'styled-components/macro';
 import MessageBox from '@/components/MessageBox';
 import AvatarForm from '@/components/dashboard/forms/AvatarForm';
 import LanguageForm from '@/components/dashboard/forms/LanguageForm';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { ShieldCheckIcon } from '@heroicons/react/outline';
 import { t } from '@/i18n';
 
 const Container = styled.div`
@@ -31,6 +31,12 @@ const Container = styled.div`
 
 export default () => {
     const state = useLocation().state as { twoFactorRedirect?: boolean } | null;
+    const navigate = useNavigate();
+
+    // Two-step verification moved to the Security page, keep old redirects working.
+    React.useEffect(() => {
+        if (state?.twoFactorRedirect) navigate('/account/security', { replace: true, state });
+    }, [state]);
 
     return (
         <PageContentBlock title={t('Account Overview')}>
@@ -59,8 +65,21 @@ export default () => {
                 >
                     <UpdateEmailAddressForm />
                 </ContentBox>
-                <ContentBox css={tw`md:ml-8 mt-8 md:mt-0`} title={t('Two-Step Verification')}>
-                    <ConfigureTwoFactorForm />
+                <ContentBox css={tw`md:ml-8 mt-8 md:mt-0`} title={t('Security')}>
+                    <p className={'text-sm text-gray-400'}>
+                        {t(
+                            'Two-step verification, passkeys, PIN, screen lock and your active sessions are managed on the Security page.'
+                        )}
+                    </p>
+                    <Link
+                        to={'/account/security'}
+                        className={
+                            'mt-5 inline-flex items-center gap-2 text-sm font-semibold text-raptor-400 hover:text-raptor-300'
+                        }
+                    >
+                        <ShieldCheckIcon className={'w-4 h-4'} />
+                        {t('Open security settings')}
+                    </Link>
                 </ContentBox>
             </Container>
         </PageContentBlock>

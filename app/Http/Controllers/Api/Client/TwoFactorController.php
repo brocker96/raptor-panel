@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Raptor\Facades\Activity;
+use Raptor\Notifications\SecurityAlert;
+use Raptor\Services\Security\TrustedDevices;
+use Raptor\Services\Security\SecurityNotifier;
 use Raptor\Services\Users\TwoFactorSetupService;
 use Raptor\Services\Users\ToggleTwoFactorService;
 use Illuminate\Contracts\Validation\Factory as ValidationFactory;
@@ -21,6 +24,7 @@ class TwoFactorController extends ClientApiController
         private ToggleTwoFactorService $toggleTwoFactorService,
         private TwoFactorSetupService $setupService,
         private ValidationFactory $validation,
+        private SecurityNotifier $notifier,
     ) {
         parent::__construct();
     }
@@ -65,6 +69,7 @@ class TwoFactorController extends ClientApiController
         $tokens = $this->toggleTwoFactorService->handle($request->user(), $data['code'], true);
 
         Activity::event('user:two-factor.create')->log();
+        $this->notifier->notify($request->user(), SecurityAlert::TWO_FACTOR_ENABLED, $request);
 
         return new JsonResponse([
             'object' => 'recovery_tokens',
@@ -95,6 +100,8 @@ class TwoFactorController extends ClientApiController
         ]);
 
         Activity::event('user:two-factor.delete')->log();
+        app(TrustedDevices::class)->forgetAll($user);
+        $this->notifier->notify($user, SecurityAlert::TWO_FACTOR_DISABLED, $request);
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }

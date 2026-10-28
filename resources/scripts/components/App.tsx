@@ -14,6 +14,8 @@ import AuthenticatedRoute from '@/components/elements/AuthenticatedRoute';
 import { ServerContext } from '@/state/server';
 import '@/assets/tailwind.css';
 import Spinner from '@/components/elements/Spinner';
+import SecurityPrompts from '@/components/security/SecurityPrompts';
+import { setLocked } from '@/plugins/securityPrompts';
 
 const DashboardRouter = lazy(() => import('@/routers/DashboardRouter'));
 const ServerRouter = lazy(() => import('@/routers/ServerRouter'));
@@ -29,6 +31,9 @@ interface ExtendedWindow extends Window {
 
         root_admin: boolean;
         use_totp: boolean;
+        has_pin?: boolean;
+        screen_lock_effective?: number | null;
+        security_locked?: boolean;
         avatar_url?: string | null;
         language: string;
         updated_at: string;
@@ -105,10 +110,16 @@ const App = () => {
             language: RaptorUser.language,
             rootAdmin: RaptorUser.root_admin,
             useTotp: RaptorUser.use_totp,
+            hasPin: !!RaptorUser.has_pin,
+            screenLockMinutes: RaptorUser.screen_lock_effective ?? null,
             avatarUrl: RaptorUser.avatar_url ?? null,
             createdAt: new Date(RaptorUser.created_at),
             updatedAt: new Date(RaptorUser.updated_at),
         });
+    }
+
+    if (RaptorUser?.security_locked) {
+        setLocked(true, false);
     }
 
     if (!store.getState().settings.data) {
@@ -124,6 +135,7 @@ const App = () => {
                     <div css={tw`mx-auto w-auto`}>
                         <RouterProvider router={router} />
                     </div>
+                    <SecurityPrompts />
                 </StoreProvider>
             </QueryClientProvider>
         </>

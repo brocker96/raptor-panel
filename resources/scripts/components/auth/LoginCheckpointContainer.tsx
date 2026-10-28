@@ -9,20 +9,24 @@ import { FlashStore } from '@/state/flashes';
 import Field from '@/components/elements/Field';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
+import RememberSwitch from '@/components/auth/RememberSwitch';
 import { t } from '@/i18n';
 
 interface Values {
     code: string;
     recoveryCode: '';
+    trustDevice: boolean;
 }
 
 type Props = {
     token: string;
+    canTrustDevice: boolean;
+    trustDays: number;
     clearAndAddHttpError: ActionCreator<FlashStore['clearAndAddHttpError']['payload']>;
 };
 
-const LoginCheckpointContainer = () => {
-    const { isSubmitting, setFieldValue } = useFormikContext<Values>();
+const LoginCheckpointContainer = ({ canTrustDevice, trustDays }: { canTrustDevice: boolean; trustDays: number }) => {
+    const { isSubmitting, setFieldValue, values } = useFormikContext<Values>();
     const [isMissingDevice, setIsMissingDevice] = useState(false);
 
     return (
@@ -44,6 +48,21 @@ const LoginCheckpointContainer = () => {
                     autoFocus
                 />
             </div>
+            {canTrustDevice && !isMissingDevice && (
+                <RememberSwitch
+                    className={'mt-5'}
+                    checked={values.trustDevice}
+                    onChange={(value) => setFieldValue('trustDevice', value)}
+                    disabled={isSubmitting}
+                >
+                    {t('Trust this device for {{count}} days', { count: trustDays })}
+                    <span className={'block text-xs text-gray-500'}>
+                        {t(
+                            'Only your password is asked for on this browser until then. Do not use this on shared computers.'
+                        )}
+                    </span>
+                </RememberSwitch>
+            )}
             <div css={tw`mt-6`}>
                 <Button size={'xlarge'} type={'submit'} disabled={isSubmitting} isLoading={isSubmitting}>
                     {t('Continue')}
@@ -71,8 +90,8 @@ const LoginCheckpointContainer = () => {
 };
 
 const EnhancedForm = withFormik<Props, Values>({
-    handleSubmit: ({ code, recoveryCode }, { setSubmitting, props: { clearAndAddHttpError, token } }) => {
-        loginCheckpoint(token, code, recoveryCode)
+    handleSubmit: ({ code, recoveryCode, trustDevice }, { setSubmitting, props: { clearAndAddHttpError, token } }) => {
+        loginCheckpoint(token, code, recoveryCode, trustDevice)
             .then((response) => {
                 if (response.complete) {
                     // @ts-expect-error this is valid
@@ -92,17 +111,27 @@ const EnhancedForm = withFormik<Props, Values>({
     mapPropsToValues: () => ({
         code: '',
         recoveryCode: '',
+        trustDevice: false,
     }),
-})(LoginCheckpointContainer);
+})(({ canTrustDevice, trustDays }: Props) => (
+    <LoginCheckpointContainer canTrustDevice={canTrustDevice} trustDays={trustDays} />
+));
 
 export default () => {
     const location = useLocation();
     const { clearAndAddHttpError } = useFlash();
 
-    const token = (location.state as { token?: string } | null)?.token;
-    if (!token) {
+    const state = location.state as { token?: string; canTrustDevice?: boolean; trustDays?: number } | null;
+    if (!state?.token) {
         return <Navigate to={'/auth/login'} replace />;
     }
 
-    return <EnhancedForm clearAndAddHttpError={clearAndAddHttpError} token={token} />;
+    return (
+        <EnhancedForm
+            clearAndAddHttpError={clearAndAddHttpError}
+            token={state.token}
+            canTrustDevice={!!state.canTrustDevice}
+            trustDays={state.trustDays || 30}
+        />
+    );
 };

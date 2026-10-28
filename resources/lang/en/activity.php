@@ -8,6 +8,8 @@
  */
 return [
     'auth' => [
+        'passkey' => 'Signed in with passkey :name',
+        'account-locked' => 'Account locked for :minutes minutes after failed sign-ins',
         'fail' => 'Failed log in',
         'success' => 'Logged in',
         'password-reset' => 'Password reset',
@@ -21,6 +23,18 @@ return [
         ],
     ],
     'user' => [
+        'security' => [
+            'confirmed' => 'Confirmed identity (:method)',
+            'unlock-failed' => 'Failed to unlock the screen (:method)',
+            'pin-updated' => 'Set a security PIN',
+            'pin-removed' => 'Removed the security PIN',
+            'session-revoked' => 'Signed out :browser on :os (:ip)',
+            'sessions-revoked' => 'Signed out :count other sessions',
+            'trusted-device-removed' => 'Removed a trusted device',
+            'passkey-added' => 'Added passkey :name',
+            'passkey-removed' => 'Removed passkey :name',
+            'recovery-codes' => 'Generated new recovery codes',
+        ],
         'user' => [
             'create' => 'Created a new user :email',
         ],

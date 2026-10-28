@@ -46,6 +46,39 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Account Security
+    |--------------------------------------------------------------------------
+    |
+    | Policies for sessions, re-confirmation of sensitive actions, lockouts and
+    | passkeys. All of them can be changed in Settings → Security.
+    */
+
+    'security' => [
+        // How long "keep me signed in" lasts on a device, in days.
+        'session_days' => (int) env('APP_SESSION_DAYS', 30),
+        // Sign out sessions without any activity for this many minutes, 0 disables it.
+        'idle_timeout' => (int) env('APP_IDLE_TIMEOUT', 0),
+        // Minutes a successful re-confirmation stays valid for sensitive actions.
+        'confirm_window' => (int) env('APP_CONFIRM_WINDOW', 10),
+        // Require re-confirmation for changes made in the admin area.
+        'confirm_admin' => (bool) env('APP_CONFIRM_ADMIN', true),
+        // Failed logins (from any address) before an account is locked temporarily.
+        'lockout_attempts' => (int) env('APP_LOCKOUT_ATTEMPTS', 10),
+        'lockout_minutes' => (int) env('APP_LOCKOUT_MINUTES', 15),
+        // E-mail users about sign-ins from new devices and important account changes.
+        'alerts' => (bool) env('APP_SECURITY_ALERTS', true),
+        'passkeys' => (bool) env('APP_PASSKEYS', true),
+        // Days a device stays trusted after skipping the two-factor checkpoint, 0 disables it.
+        'trusted_device_days' => (int) env('APP_TRUSTED_DEVICE_DAYS', 30),
+        // Comma separated IP addresses or CIDR ranges allowed to open the admin area.
+        'admin_allowlist' => env('APP_ADMIN_ALLOWLIST', ''),
+        'password_min_length' => (int) env('APP_PASSWORD_MIN_LENGTH', 8),
+        // Maximum minutes of inactivity before the screen locks, 0 lets users decide.
+        'screen_lock_max' => (int) env('APP_SCREEN_LOCK_MAX', 0),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Pagination
     |--------------------------------------------------------------------------
     |

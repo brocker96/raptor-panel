@@ -12,6 +12,10 @@ use Illuminate\Support\Facades\Event;
 use Raptor\Events\Auth\DirectLogin;
 use Raptor\Exceptions\DisplayException;
 use Raptor\Http\Controllers\Controller;
+use Raptor\Services\Security\SessionManager;
+use Raptor\Notifications\SecurityAlert;
+use Raptor\Services\Security\AccountLockout;
+use Raptor\Services\Security\SecurityNotifier;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
@@ -70,14 +74,25 @@ abstract class AbstractLoginController extends Controller
     /**
      * Send the response after the user was authenticated.
      */
-    protected function sendLoginResponse(User $user, Request $request): JsonResponse
+    protected function sendLoginResponse(User $user, Request $request, string $method = 'password'): JsonResponse
     {
+        $remember = $request->session()->pull('auth_remember', $request->boolean('remember', true));
+
         $request->session()->remove('auth_confirmation_token');
         $request->session()->regenerate();
 
         $this->clearLoginAttempts($request);
 
-        $this->auth->guard()->login($user, true);
+        // Every device gets its own revocable token instead of Laravel's shared remember token.
+        $this->auth->guard()->login($user);
+        $session = Container::getInstance()->make(SessionManager::class)->start($user, $request, (bool) $remember, $method);
+
+        Container::getInstance()->make(AccountLockout::class)->succeeded($user);
+
+        $notifier = Container::getInstance()->make(SecurityNotifier::class);
+        if ($notifier->isNewDevice($user, $request, $session)) {
+            $notifier->notify($user, SecurityAlert::NEW_SIGN_IN, $request);
+        }
 
         Event::dispatch(new DirectLogin($user, true));
 

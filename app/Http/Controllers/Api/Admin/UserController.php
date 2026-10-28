@@ -3,6 +3,9 @@
 namespace Raptor\Http\Controllers\Api\Admin;
 
 use Raptor\Models\User;
+use Raptor\Models\UserSession;
+use Raptor\Services\Security\AccountLockout;
+use Raptor\Services\Security\SessionManager;
 use Raptor\Models\Server;
 use Illuminate\Http\Request;
 use Raptor\Facades\Activity;
@@ -81,6 +84,20 @@ class UserController extends AdminApiController
             'servers' => $servers,
             'subuser_of' => $subuserOf,
             'last_activity' => ActivityLog::query()->where('actor_type', 'user')->where('actor_id', $user->id)->max('timestamp'),
+            'security' => [
+                'pin' => !empty($user->security_pin),
+                'passkeys' => $user->passkeys()->count(),
+                'trusted_devices' => $user->trustedDevices()->where('expires_at', '>', now())->count(),
+                'locked_until' => $user->locked_until?->isFuture() ? $user->locked_until->toAtomString() : null,
+                'sessions' => $user->securitySessions()->active()->orderByDesc('last_active_at')->limit(50)->get()
+                    ->map(fn (UserSession $session) => [
+                        'identifier' => $session->identifier,
+                        'ip' => $session->ip,
+                        'method' => $session->method,
+                        'created_at' => $session->created_at->toAtomString(),
+                        'last_active_at' => $session->last_active_at?->toAtomString(),
+                    ] + $session->device()),
+            ],
         ]));
     }
 
@@ -126,8 +143,50 @@ class UserController extends AdminApiController
     {
         $user->update(['use_totp' => false, 'totp_secret' => null]);
         $user->recoveryTokens()->delete();
+        $user->trustedDevices()->delete();
 
         Activity::event('admin:user.2fa-disable')->subject($user)->property('email', $user->email)->log();
+
+        return response('', 204);
+    }
+
+    /**
+     * Signs the user out of every browser, for example when an account may be compromised.
+     */
+    public function revokeSessions(Request $request, User $user, SessionManager $sessions): JsonResponse
+    {
+        $current = $request->user()->id === $user->id ? $sessions->current($request) : null;
+        $count = $sessions->revokeOthers($user, $current, 'admin');
+
+        Activity::event('admin:user.sessions-revoke')->subject($user)->property(['email' => $user->email, 'count' => $count])->log();
+
+        return new JsonResponse(['revoked' => $count]);
+    }
+
+    public function resetPin(User $user): Response
+    {
+        $user->forceFill(['security_pin' => null, 'security_pin_set_at' => null])->save();
+
+        Activity::event('admin:user.pin-reset')->subject($user)->property('email', $user->email)->log();
+
+        return response('', 204);
+    }
+
+    public function deletePasskeys(User $user): Response
+    {
+        $user->passkeys()->delete();
+        $user->trustedDevices()->delete();
+
+        Activity::event('admin:user.passkeys-remove')->subject($user)->property('email', $user->email)->log();
+
+        return response('', 204);
+    }
+
+    public function unlock(User $user, AccountLockout $lockout): Response
+    {
+        $lockout->unlock($user);
+
+        Activity::event('admin:user.unlock')->subject($user)->property('email', $user->email)->log();
 
         return response('', 204);
     }

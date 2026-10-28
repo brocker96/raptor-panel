@@ -35,7 +35,7 @@ export default () => {
     );
 
     return (
-        <Shell nav={nav} primary={['/', '/account', '/account/api', '/account/activity']} title={current?.label}>
+        <Shell nav={nav} primary={['/', '/account', '/account/security', '/account/activity']} title={current?.label}>
             <TransitionRouter>
                 <React.Suspense fallback={<Spinner centered />}>
                     <Routes location={location}>

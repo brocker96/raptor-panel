@@ -7,9 +7,10 @@ import { t } from '@/i18n';
 
 interface RecoveryTokenDialogProps extends DialogProps {
     tokens: string[];
+    title?: string;
 }
 
-export default ({ tokens, open, onClose }: RecoveryTokenDialogProps) => {
+export default ({ tokens, open, onClose, title }: RecoveryTokenDialogProps) => {
     const grouped = [] as [string, string][];
     tokens.forEach((token, index) => {
         if (index % 2 === 0) {
@@ -21,7 +22,7 @@ export default ({ tokens, open, onClose }: RecoveryTokenDialogProps) => {
         <Dialog
             open={open}
             onClose={onClose}
-            title={t('Two-Step Authentication Enabled')}
+            title={title || t('Two-Step Authentication Enabled')}
             description={t(
                 'Store the codes below somewhere safe. If you lose access to your phone you can use these backup codes to sign in.'
             )}

@@ -5,6 +5,8 @@
  */
 return [
     'auth' => [
+        'passkey' => 'Mit Passkey :name angemeldet',
+        'account-locked' => 'Konto nach fehlgeschlagenen Anmeldungen für :minutes Minuten gesperrt',
         'fail' => 'Fehlgeschlagene Anmeldung',
         'success' => 'Angemeldet',
         'password-reset' => 'Passwort zurückgesetzt',
@@ -18,6 +20,18 @@ return [
         ],
     ],
     'user' => [
+        'security' => [
+            'confirmed' => 'Identität bestätigt (:method)',
+            'unlock-failed' => 'Entsperren fehlgeschlagen (:method)',
+            'pin-updated' => 'Sicherheits-PIN festgelegt',
+            'pin-removed' => 'Sicherheits-PIN entfernt',
+            'session-revoked' => ':browser auf :os (:ip) abgemeldet',
+            'sessions-revoked' => ':count andere Sitzungen abgemeldet',
+            'trusted-device-removed' => 'Vertrauenswürdiges Gerät entfernt',
+            'passkey-added' => 'Passkey :name hinzugefügt',
+            'passkey-removed' => 'Passkey :name entfernt',
+            'recovery-codes' => 'Neue Wiederherstellungscodes erzeugt',
+        ],
         'user' => [
             'create' => 'Neuen Benutzer :email erstellt',
         ],

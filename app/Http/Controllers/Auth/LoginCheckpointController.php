@@ -6,6 +6,8 @@ use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 use Carbon\CarbonInterface;
 use Raptor\Models\User;
+use Raptor\Services\Security\AccountLockout;
+use Raptor\Services\Security\TrustedDevices;
 use Illuminate\Http\JsonResponse;
 use PragmaRX\Google2FA\Google2FA;
 use Illuminate\Support\Facades\Event;
@@ -67,7 +69,7 @@ class LoginCheckpointController extends AbstractLoginController
             if ($this->isValidRecoveryToken($user, $recoveryToken)) {
                 Event::dispatch(new ProvidedAuthenticationToken($user, true));
 
-                return $this->sendLoginResponse($user, $request);
+                return $this->sendLoginResponse($user, $request, 'recovery');
             }
         } else {
             $decrypted = $this->encrypter->decrypt($user->totp_secret);
@@ -87,10 +89,15 @@ class LoginCheckpointController extends AbstractLoginController
 
                 Event::dispatch(new ProvidedAuthenticationToken($user));
 
-                return $this->sendLoginResponse($user, $request);
+                if ($request->boolean('trust_device')) {
+                    app(TrustedDevices::class)->trust($user, $request);
+                }
+
+                return $this->sendLoginResponse($user, $request, 'two-factor');
             }
         }
 
+        app(AccountLockout::class)->failed($user, $request);
         $this->sendFailedLoginResponse($request, $user, !empty($recoveryToken) ? 'The recovery token provided is not valid.' : null);
     }
 

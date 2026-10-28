@@ -8,6 +8,8 @@ export interface UserData {
     language: string | null;
     rootAdmin: boolean;
     useTotp: boolean;
+    hasPin?: boolean;
+    screenLockMinutes?: number | null;
     avatarUrl?: string | null;
     createdAt: Date;
     updatedAt: Date;

@@ -5,6 +5,8 @@
  */
 return [
     'auth' => [
+        'passkey' => 'Autentificare cu cheia de acces :name',
+        'account-locked' => 'Cont blocat :minutes minute după autentificări eșuate',
         'fail' => 'Autentificare eșuată',
         'success' => 'Autentificat',
         'password-reset' => 'Parolă resetată',
@@ -18,6 +20,18 @@ return [
         ],
     ],
     'user' => [
+        'security' => [
+            'confirmed' => 'Identitate confirmată (:method)',
+            'unlock-failed' => 'Deblocare eșuată (:method)',
+            'pin-updated' => 'PIN de securitate setat',
+            'pin-removed' => 'PIN de securitate eliminat',
+            'session-revoked' => 'Deconectat :browser pe :os (:ip)',
+            'sessions-revoked' => ':count alte sesiuni deconectate',
+            'trusted-device-removed' => 'Dispozitiv de încredere eliminat',
+            'passkey-added' => 'Cheie de acces :name adăugată',
+            'passkey-removed' => 'Cheie de acces :name eliminată',
+            'recovery-codes' => 'Coduri de recuperare noi generate',
+        ],
         'user' => [
             'create' => 'Utilizatorul :email a fost creat',
         ],

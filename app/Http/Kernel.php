@@ -7,6 +7,9 @@ use Illuminate\Http\Middleware\HandleCors;
 use Illuminate\Auth\Middleware\Authenticate;
 use Raptor\Http\Middleware\TrustProxies;
 use Raptor\Http\Middleware\TrimStrings;
+use Raptor\Http\Middleware\TrackUserSession;
+use Raptor\Http\Middleware\EnforceScreenLock;
+use Raptor\Http\Middleware\RequireSecurityConfirmation;
 use Illuminate\Session\Middleware\StartSession;
 use Raptor\Http\Middleware\EncryptCookies;
 use Raptor\Http\Middleware\Api\IsValidJson;
@@ -65,15 +68,18 @@ class Kernel extends HttpKernel
             ShareErrorsFromSession::class,
             VerifyCsrfToken::class,
             SubstituteBindings::class,
+            TrackUserSession::class,
             LanguageMiddleware::class,
         ],
         'api' => [
             EnsureStatefulRequests::class,
+            TrackUserSession::class,
             'auth:sanctum',
             IsValidJson::class,
             TrackAPIKey::class,
             RequireTwoFactorAuthentication::class,
             AuthenticateIPAccess::class,
+            EnforceScreenLock::class,
             LanguageMiddleware::class,
         ],
         'application-api' => [
@@ -104,5 +110,6 @@ class Kernel extends HttpKernel
         'bindings' => SubstituteBindings::class,
         'recaptcha' => VerifyReCaptcha::class,
         'node.maintenance' => MaintenanceMiddleware::class,
+        'confirm' => RequireSecurityConfirmation::class,
     ];
 }

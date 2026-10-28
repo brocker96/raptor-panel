@@ -5,6 +5,8 @@
  */
 return [
     'auth' => [
+        'passkey' => 'Connexion avec la clé d\'accès :name',
+        'account-locked' => 'Compte verrouillé :minutes minutes après des échecs de connexion',
         'fail' => 'Échec de connexion',
         'success' => 'Connexion',
         'password-reset' => 'Mot de passe réinitialisé',
@@ -18,6 +20,18 @@ return [
         ],
     ],
     'user' => [
+        'security' => [
+            'confirmed' => 'Identité confirmée (:method)',
+            'unlock-failed' => 'Échec du déverrouillage (:method)',
+            'pin-updated' => 'Code PIN défini',
+            'pin-removed' => 'Code PIN supprimé',
+            'session-revoked' => ':browser sur :os (:ip) déconnecté',
+            'sessions-revoked' => ':count autres sessions déconnectées',
+            'trusted-device-removed' => 'Appareil de confiance supprimé',
+            'passkey-added' => 'Clé d\'accès :name ajoutée',
+            'passkey-removed' => 'Clé d\'accès :name supprimée',
+            'recovery-codes' => 'Nouveaux codes de récupération générés',
+        ],
         'user' => [
             'create' => 'Utilisateur :email créé',
         ],

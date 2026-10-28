@@ -42,6 +42,7 @@ Route::group(['prefix' => '/settings'], function () {
     Route::post('/mail/test', [Admin\SettingsController::class, 'testMail']);
     Route::put('/mail/driver', [Admin\SettingsController::class, 'updateMailDriver']);
     Route::patch('/advanced', [Admin\SettingsController::class, 'updateAdvanced']);
+    Route::patch('/security', [Admin\SettingsController::class, 'updateSecurity']);
     Route::get('/cloudflare', [Admin\CloudflareController::class, 'index']);
     Route::patch('/cloudflare', [Admin\CloudflareController::class, 'update']);
     Route::post('/cloudflare/ranges', [Admin\CloudflareController::class, 'refresh']);
@@ -60,6 +61,10 @@ Route::group(['prefix' => '/users'], function () {
     Route::patch('/{user:id}', [Admin\UserController::class, 'update']);
     Route::delete('/{user:id}', [Admin\UserController::class, 'delete']);
     Route::post('/{user:id}/2fa/disable', [Admin\UserController::class, 'disableTwoFactor']);
+    Route::post('/{user:id}/security/sessions/revoke', [Admin\UserController::class, 'revokeSessions']);
+    Route::delete('/{user:id}/security/pin', [Admin\UserController::class, 'resetPin']);
+    Route::delete('/{user:id}/security/passkeys', [Admin\UserController::class, 'deletePasskeys']);
+    Route::post('/{user:id}/security/unlock', [Admin\UserController::class, 'unlock']);
     Route::delete('/{user:id}/avatar', [Admin\UserController::class, 'deleteAvatar']);
 });
 

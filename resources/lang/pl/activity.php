@@ -5,6 +5,8 @@
  */
 return [
     'auth' => [
+        'passkey' => 'Zalogowano kluczem dostępu :name',
+        'account-locked' => 'Konto zablokowane na :minutes min po nieudanych logowaniach',
         'fail' => 'Nieudane logowanie',
         'success' => 'Zalogowano',
         'password-reset' => 'Zresetowano hasło',
@@ -18,6 +20,18 @@ return [
         ],
     ],
     'user' => [
+        'security' => [
+            'confirmed' => 'Potwierdzono tożsamość (:method)',
+            'unlock-failed' => 'Nieudana próba odblokowania (:method)',
+            'pin-updated' => 'Ustawiono PIN',
+            'pin-removed' => 'Usunięto PIN',
+            'session-revoked' => 'Wylogowano :browser na :os (:ip)',
+            'sessions-revoked' => 'Wylogowano inne sesje: :count',
+            'trusted-device-removed' => 'Usunięto zaufane urządzenie',
+            'passkey-added' => 'Dodano klucz dostępu :name',
+            'passkey-removed' => 'Usunięto klucz dostępu :name',
+            'recovery-codes' => 'Wygenerowano nowe kody odzyskiwania',
+        ],
         'user' => [
             'create' => 'Utworzono użytkownika :email',
         ],

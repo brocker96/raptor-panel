@@ -11,6 +11,8 @@ use Illuminate\Auth\AuthManager;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\RateLimiter;
 use Raptor\Services\Users\UserUpdateService;
+use Raptor\Notifications\SecurityAlert;
+use Raptor\Services\Security\SecurityNotifier;
 use Raptor\Transformers\Api\Client\AccountTransformer;
 use Raptor\Http\Requests\Api\Client\Account\UpdateEmailRequest;
 use Raptor\Http\Requests\Api\Client\Account\UpdatePasswordRequest;
@@ -26,7 +28,7 @@ class AccountController extends ClientApiController
     /**
      * AccountController constructor.
      */
-    public function __construct(private AuthManager $manager, private UserUpdateService $updateService)
+    public function __construct(private AuthManager $manager, private UserUpdateService $updateService, private SecurityNotifier $notifier)
     {
         parent::__construct();
     }
@@ -81,6 +83,9 @@ class AccountController extends ClientApiController
             Activity::event('user:account.email-changed')
                 ->property(['old' => $original, 'new' => $request->validated('email')])
                 ->log();
+
+            // The alert goes to the old address, the owner of which may not have made this change.
+            $this->notifier->notify($user, SecurityAlert::EMAIL_CHANGED, $request, $request->validated('email'), $original);
         }
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
@@ -98,17 +103,9 @@ class AccountController extends ClientApiController
             return $this->updateService->handle($request->user(), $request->validated());
         });
 
-        $guard = $this->manager->guard();
-        // If you do not update the user in the session you'll end up working with a
-        // cached copy of the user that does not include the updated password. Do this
-        // to correctly store the new user details in the guard and allow the logout
-        // other devices functionality to work.
-        $guard->setUser($user);
-
-        // This method doesn't exist in the stateless Sanctum world.
-        if (method_exists($guard, 'logoutOtherDevices')) { // @phpstan-ignore function.alreadyNarrowedType
-            $guard->logoutOtherDevices($request->input('password'));
-        }
+        // Keep the guard in sync with the new password hash. Other sessions are signed out by
+        // the PasswordChanged listener.
+        $this->manager->guard()->setUser($user);
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }

@@ -5,6 +5,8 @@ export interface SiteSettings {
     locale: string;
     /** Sends periodic keepalives on the console websocket, see Settings → Cloudflare. */
     websocketKeepalive?: boolean;
+    /** Passwordless sign in with passkeys, see Settings → Security. */
+    passkeys?: boolean;
     recaptcha: {
         enabled: boolean;
         siteKey: string;

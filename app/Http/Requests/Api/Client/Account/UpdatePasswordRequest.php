@@ -31,7 +31,7 @@ class UpdatePasswordRequest extends ClientApiRequest
     public function rules(): array
     {
         return [
-            'password' => ['required', 'string', 'confirmed', 'min:8'],
+            'password' => ['required', 'string', 'confirmed', 'min:' . max(8, (int) config('raptor.security.password_min_length', 8))],
         ];
     }
 }

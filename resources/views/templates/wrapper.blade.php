@@ -25,7 +25,7 @@
             <!--email_off-->
             @if(!is_null(Auth::user()))
                 <script data-cfasync="false">
-                    window.RaptorUser = {!! json_encode(Auth::user()->toVueObject()) !!};
+                    window.RaptorUser = {!! json_encode(Auth::user()->toVueObject() + ['security_locked' => app(\Raptor\Services\Security\ScreenLock::class)->check(request(), Auth::user()), 'screen_lock_effective' => app(\Raptor\Services\Security\ScreenLock::class)->minutes(Auth::user())]) !!};
                 </script>
             @endif
             @if(!empty($siteConfiguration))

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Contracts\Events\Dispatcher;
 use Raptor\Events\User\PasswordChanged;
+use Raptor\Services\Security\SessionManager;
 use Raptor\Exceptions\DisplayException;
 use Raptor\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ResetsPasswords;
@@ -88,6 +89,7 @@ class ResetPasswordController extends Controller
         // fresh login where they'll be prompted to enter a token.
         if (!$user->use_totp) {
             $this->guard()->login($user);
+            app(SessionManager::class)->start($user, request(), false, 'password-reset');
         }
 
         $this->hasTwoFactor = $user->use_totp;

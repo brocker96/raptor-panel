@@ -4,6 +4,8 @@ namespace Raptor\Console;
 
 use Ramsey\Uuid\Uuid;
 use Raptor\Models\ActivityLog;
+use Raptor\Models\UserSession;
+use Raptor\Models\UserTrustedDevice;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Database\Console\PruneCommand;
 use Raptor\Repositories\Eloquent\SettingsRepository;
@@ -35,6 +37,7 @@ class Kernel extends ConsoleKernel
         // Execute scheduled commands for servers every minute, as if there was a normal cron running.
         $schedule->command(ProcessRunnableCommand::class)->everyMinute()->withoutOverlapping();
         $schedule->command(CleanServiceBackupFilesCommand::class)->daily();
+        $schedule->command(PruneCommand::class, ['--model' => [UserSession::class, UserTrustedDevice::class]])->daily();
 
         // Picks up updates requested from the admin area and refreshes the release list.
         $schedule->command(UpdateCommand::class, ['--pending'])->everyMinute()->withoutOverlapping(120)->runInBackground();

@@ -10,6 +10,7 @@ use Illuminate\Auth\Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Builder;
 use Raptor\Contracts\Models\Identifiable;
+use Illuminate\Contracts\Translation\HasLocalePreference;
 use Raptor\Models\Traits\HasAccessTokens;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Raptor\Traits\Helpers\AvailableLanguages;
@@ -88,6 +89,7 @@ class User extends Model implements
     AuthenticatableContract,
     AuthorizableContract,
     CanResetPasswordContract,
+    HasLocalePreference,
     Identifiable
 {
     use Authenticatable;
@@ -136,6 +138,8 @@ class User extends Model implements
         'totp_authenticated_at',
         'gravatar',
         'root_admin',
+        'screen_lock_minutes',
+        'security_alerts',
     ];
 
     /**
@@ -146,12 +150,16 @@ class User extends Model implements
         'use_totp' => 'boolean',
         'gravatar' => 'boolean',
         'totp_authenticated_at' => 'datetime',
+        'security_pin_set_at' => 'datetime',
+        'screen_lock_minutes' => 'integer',
+        'security_alerts' => 'boolean',
+        'locked_until' => 'datetime',
     ];
 
     /**
      * The attributes excluded from the model's JSON form.
      */
-    protected $hidden = ['password', 'remember_token', 'totp_secret', 'totp_authenticated_at'];
+    protected $hidden = ['password', 'remember_token', 'totp_secret', 'totp_authenticated_at', 'security_pin', 'locked_until'];
 
     /**
      * Computed attributes included when the model is serialized.
@@ -214,8 +222,8 @@ class User extends Model implements
 
     public function toVueObject(): array
     {
-        return Collection::make($this->toArray())->except(['id', 'external_id'])
-            ->merge(['identifier' => $this->identifier])
+        return Collection::make($this->toArray())->except(['id', 'external_id', 'security_pin_set_at'])
+            ->merge(['identifier' => $this->identifier, 'has_pin' => !empty($this->security_pin)])
             ->toArray();
     }
 
@@ -280,6 +288,29 @@ class User extends Model implements
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany<\Raptor\Models\UserSSHKey, $this>
      */
+    /**
+     * E-mails are sent in the language of the user, or the Panel default when they follow it.
+     */
+    public function preferredLocale(): string
+    {
+        return $this->language ?: (string) config('app.locale', 'en');
+    }
+
+    public function passkeys(): HasMany
+    {
+        return $this->hasMany(UserPasskey::class);
+    }
+
+    public function securitySessions(): HasMany
+    {
+        return $this->hasMany(UserSession::class);
+    }
+
+    public function trustedDevices(): HasMany
+    {
+        return $this->hasMany(UserTrustedDevice::class);
+    }
+
     public function sshKeys(): HasMany
     {
         return $this->hasMany(UserSSHKey::class);

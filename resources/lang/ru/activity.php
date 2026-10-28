@@ -5,6 +5,8 @@
  */
 return [
     'auth' => [
+        'passkey' => 'Вход с ключом доступа :name',
+        'account-locked' => 'Аккаунт заблокирован на :minutes мин. после неудачных входов',
         'fail' => 'Неудачная попытка входа',
         'success' => 'Вход в аккаунт',
         'password-reset' => 'Пароль сброшен',
@@ -18,6 +20,18 @@ return [
         ],
     ],
     'user' => [
+        'security' => [
+            'confirmed' => 'Подтверждение личности (:method)',
+            'unlock-failed' => 'Неудачная попытка разблокировки (:method)',
+            'pin-updated' => 'Установлен PIN-код',
+            'pin-removed' => 'Удалён PIN-код',
+            'session-revoked' => 'Завершён сеанс :browser на :os (:ip)',
+            'sessions-revoked' => 'Завершено других сеансов: :count',
+            'trusted-device-removed' => 'Удалено доверенное устройство',
+            'passkey-added' => 'Добавлен ключ доступа :name',
+            'passkey-removed' => 'Удалён ключ доступа :name',
+            'recovery-codes' => 'Созданы новые коды восстановления',
+        ],
         'user' => [
             'create' => 'Создан пользователь :email',
         ],

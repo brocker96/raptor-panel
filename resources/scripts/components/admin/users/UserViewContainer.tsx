@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { ClipboardListIcon, LockOpenIcon, ServerIcon, TrashIcon, UserIcon } from '@heroicons/react/outline';
+import { ClipboardListIcon, ServerIcon, TrashIcon, UserIcon } from '@heroicons/react/outline';
 import { useResource } from '@/api/query';
 import { deleteUser, deleteUserAvatar, disableUserTwoFactor, getUser, updateUser, UserValues } from '@/api/admin';
 import { Page } from '@/components/admin/ui/Page';
 import { Card, Details } from '@/components/admin/ui/Card';
+import UserSecurityCard from '@/components/admin/users/UserSecurityCard';
 import { Badge, ServerStatusBadge, Skeleton } from '@/components/admin/ui/Feedback';
 import { Confirm } from '@/components/admin/ui/Overlay';
 import Button from '@/components/admin/ui/Button';
@@ -214,20 +215,7 @@ export default () => {
                                 ]}
                             />
                         </Card>
-                        <Card
-                            title={t('Two-factor authentication')}
-                            icon={LockOpenIcon}
-                            description={t('Disable 2FA when the user lost access to their authenticator app.')}
-                        >
-                            <Button
-                                variant={'secondary'}
-                                disabled={!user['2fa']}
-                                onClick={() => setConfirm('2fa')}
-                                className={'w-full'}
-                            >
-                                {user['2fa'] ? t('Disable 2FA') : t('2FA is not enabled')}
-                            </Button>
-                        </Card>
+                        <UserSecurityCard user={user} onDisableTwoFactor={() => setConfirm('2fa')} />
                         <Card
                             title={t('Delete user')}
                             danger
