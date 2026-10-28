@@ -14,74 +14,6 @@
 
 ---
 
-## 🚀 Quick install
-
-One command on a **clean Ubuntu 24.04 LTS** server (run as root):
-
-```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/brocker96/raptor-panel/0.x_beta/install.sh)
-```
-
-The installer asks a few questions (domain, email, admin password, whether to install Wings) and then sets up
-PHP 8.3, MariaDB, Redis, nginx, the queue worker, cron, a Let's Encrypt certificate and — optionally — Docker +
-Wings on the same machine, registered as the first node with ready-to-use allocations. Budget VPS with < 2 GB RAM
-get a swap file automatically for the front-end build. Credentials end up in `/root/raptor-credentials.txt`.
-
-Fully unattended:
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/brocker96/raptor-panel/0.x_beta/install.sh -o install.sh
-RAPTOR_FQDN=panel.example.com RAPTOR_EMAIL=me@example.com RAPTOR_WINGS=yes RAPTOR_YES=1 bash install.sh
-```
-
-All options are documented at the top of [`install.sh`](install.sh).
-
-## 🪽 Add a node with Raptor Wings
-
-Game servers run on **Raptor Wings** — the Pterodactyl® Wings daemon, installed and managed the Raptor way.
-Create the node in **Admin → Nodes**, open **Configuration** and copy the install command. On a clean
-Ubuntu 22.04/24.04 or Debian 11/12 server run it as root:
-
-```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/brocker96/raptor-panel/0.x_beta/wings.sh) \
-  --panel-url https://panel.example.com --token ptla_xxx --node 1 --fqdn node.example.com
-```
-
-It installs Docker, verifies and installs Wings, requests a Let's Encrypt certificate, opens the
-firewall (SSH, 8080, 2022 and the game ports), downloads the node configuration from the Panel and
-starts the service. Run it without flags to answer the questions interactively. Afterwards
-`raptor-wings status | logs | restart | update | doctor` manages the node.
-
-## 🔁 Coming from Pterodactyl?
-
-Switch an existing Pterodactyl 1.x Panel to Raptor Panel **without losing anything**: users, servers, nodes,
-eggs, API keys, schedules, backups and settings stay, Wings and game servers keep running.
-
-```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/brocker96/raptor-panel/0.x_beta/migrate.sh)
-```
-
-Raptor Panel is installed next to the old Panel (`/var/www/raptor`), a full backup of the database, the old
-directory, the web server, queue worker and cron configuration is written to `/var/backups/raptor-migration`,
-and only then nginx/Apache, `pteroq` → `raptorq` and cron are switched over. If the Panel does not come up, the
-script rolls everything back on its own. Changed your mind later?
-
-```bash
-bash /var/www/raptor/migrate.sh --rollback
-```
-
-## 🔄 Updates
-
-New releases show up in the admin area under **Updates** and install with one click: the Panel backs up its
-files and database, installs the release in a short maintenance window and restores the backup automatically if
-any step fails. Older backups can be restored from the same page. Over SSH:
-
-```bash
-cd /var/www/raptor
-sudo -u www-data php artisan raptor:update            # newest release on your channel (stable or beta)
-sudo -u www-data php artisan raptor:update --rollback=latest
-```
-
 ## ⚡ Raptor vs. upstream — measured, not promised
 
 | | Pterodactyl 1.x | Raptor Panel |
@@ -107,6 +39,104 @@ sudo -u www-data php artisan raptor:update --rollback=latest
 <td align="center"><img src=".github/screenshots/mobile-03-console.png" alt="Mobile console" width="260"> <img src=".github/screenshots/mobile-06-editor.png" alt="Mobile editor" width="260"></td>
 </tr>
 </table>
+
+## 🎛️ Server area for players and owners
+
+- **Raptor DB Manager** — a phpMyAdmin-style editor right in the panel: browse, search and filter tables,
+  edit rows, view the structure, run SQL with history, import and export `.sql` dumps. It connects with the
+  credentials of the server database itself and every session needs a fresh security confirmation.
+- **Subusers in seconds** — invite by e-mail, pick a role (Viewer, Operator, Developer, Co-owner) or fine-tune
+  grouped permissions with search; risky permissions are marked.
+- **Schedules without cron knowledge** — every N minutes, hourly, daily, weekly or monthly, templates such as
+  a daily restart with warnings or a nightly backup, and a task timeline.
+- Redesigned backups, network, startup, settings and activity tabs, one modal system that becomes a bottom
+  sheet on phones, and a Ctrl+K command palette.
+
+## 🤖 Auto scripts — everything in one command
+
+| Script | What it does | Runs on |
+|---|---|---|
+| 🚀 [`install.sh`](install.sh) | Installs the whole Panel: PHP 8.3, MariaDB, Redis, nginx, queue worker, cron, HTTPS, optionally Docker + Wings as the first node | clean Ubuntu 24.04 |
+| 🪽 [`wings.sh`](wings.sh) | Installs **Raptor Wings** on a node: Docker, checksum-verified Wings, HTTPS, firewall, config pulled from the Panel, `raptor-wings` helper | clean Ubuntu 22.04/24.04, Debian 11/12 |
+| 🔁 [`migrate.sh`](migrate.sh) | Moves an existing Pterodactyl 1.x Panel to Raptor with a full backup and automatic rollback | your Pterodactyl server |
+| 🔄 `raptor:update` | One-click updates with backup and rollback, also from **Admin → Updates** | your Raptor Panel |
+
+**Install the Panel** (as root):
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/brocker96/raptor-panel/0.x_beta/install.sh)
+```
+
+**Add a node** — copy the ready command from **Admin → Nodes → Configuration**, or:
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/brocker96/raptor-panel/0.x_beta/wings.sh) \
+  --panel-url https://panel.example.com --token ptla_xxx --node 1 --fqdn node.example.com
+```
+
+**Coming from Pterodactyl** — users, servers, nodes, eggs, API keys, schedules and backups stay, game servers keep running:
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/brocker96/raptor-panel/0.x_beta/migrate.sh)
+```
+
+<details>
+<summary><b>🚀 install.sh — details and unattended mode</b></summary>
+
+The installer asks a few questions (domain, email, admin password, whether to install Wings) and then sets up
+PHP 8.3, MariaDB, Redis, nginx, the queue worker, cron, a Let's Encrypt certificate and — optionally — Docker +
+Wings on the same machine, registered as the first node with ready-to-use allocations. Budget VPS with < 2 GB RAM
+get a swap file automatically for the front-end build. Credentials end up in `/root/raptor-credentials.txt`.
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/brocker96/raptor-panel/0.x_beta/install.sh -o install.sh
+RAPTOR_FQDN=panel.example.com RAPTOR_EMAIL=me@example.com RAPTOR_WINGS=yes RAPTOR_YES=1 bash install.sh
+```
+
+All options are documented at the top of [`install.sh`](install.sh).
+</details>
+
+<details>
+<summary><b>🪽 wings.sh — Raptor Wings on a node</b></summary>
+
+Raptor Wings is the Pterodactyl® Wings daemon, installed and managed the Raptor way. The script installs Docker,
+verifies and installs Wings, requests a Let's Encrypt certificate, opens the firewall (SSH, 8080, 2022 and the
+game ports), downloads the node configuration from the Panel and starts the service. Run it without flags to
+answer the questions interactively, or paste the auto-deploy command when it asks. Afterwards:
+
+```bash
+raptor-wings status | logs | restart | update | doctor
+```
+
+Remove it again with `raptor-wings uninstall` (server files in `/var/lib/pterodactyl` are kept).
+</details>
+
+<details>
+<summary><b>🔁 migrate.sh — switching from Pterodactyl</b></summary>
+
+Raptor Panel is installed next to the old Panel (`/var/www/raptor`), a full backup of the database, the old
+directory, the web server, queue worker and cron configuration is written to `/var/backups/raptor-migration`,
+and only then nginx/Apache, `pteroq` → `raptorq` and cron are switched over. If the Panel does not come up, the
+script rolls everything back on its own. Changed your mind later?
+
+```bash
+bash /var/www/raptor/migrate.sh --rollback
+```
+</details>
+
+<details>
+<summary><b>🔄 Updates</b></summary>
+
+New releases show up in the admin area under **Updates** and install with one click: the Panel backs up its
+files and database, installs the release in a short maintenance window and restores the backup automatically if
+any step fails. Older backups can be restored from the same page. Over SSH:
+
+```bash
+cd /var/www/raptor
+sudo -u www-data php artisan raptor:update            # newest release on your channel (stable or beta)
+sudo -u www-data php artisan raptor:update --rollback=latest
+```
+</details>
 
 ## 🛡️ Admin area, rebuilt in React
 
@@ -134,18 +164,6 @@ The original Blade admin is still available at `/admin/legacy`.
 <td><img src=".github/screenshots/admin-04-guide.png" alt="Guide drawer"></td>
 </tr>
 </table>
-
-## 🎛️ Server area for players and owners
-
-- **Raptor DB Manager** — a phpMyAdmin-style editor right in the panel: browse, search and filter tables,
-  edit rows, view the structure, run SQL with history, import and export `.sql` dumps. It connects with the
-  credentials of the server database itself and every session needs a fresh security confirmation.
-- **Subusers in seconds** — invite by e-mail, pick a role (Viewer, Operator, Developer, Co-owner) or fine-tune
-  grouped permissions with search; risky permissions are marked.
-- **Schedules without cron knowledge** — every N minutes, hourly, daily, weekly or monthly, templates such as
-  a daily restart with warnings or a nightly backup, and a task timeline.
-- Redesigned backups, network, startup, settings and activity tabs, one modal system that becomes a bottom
-  sheet on phones, and a Ctrl+K command palette.
 
 ## 🧱 Stack
 
