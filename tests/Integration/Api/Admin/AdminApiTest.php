@@ -171,7 +171,8 @@ class AdminApiTest extends IntegrationTestCase
         $this->actingAs($this->admin)->getJson("/api/admin/nodes/{$node->id}")->assertOk()->assertJsonPath('allocations.assigned', 2);
         $this->actingAs($this->admin)->getJson("/api/admin/nodes/{$node->id}/configuration?deploy=1")
             ->assertOk()
-            ->assertJsonPath('deploy_command', fn ($value) => str_contains($value, "--node {$node->id}"));
+            ->assertJsonPath('deploy_command', fn ($value) => str_contains($value, "--node {$node->id}"))
+            ->assertJsonPath('install_command', fn ($value) => str_contains($value, '/wings.sh) --panel-url') && str_contains($value, "--node {$node->id} --fqdn {$node->fqdn}"));
         $this->actingAs($this->admin)->getJson("/api/admin/nodes/{$node->id}/system")->assertOk()->assertJsonPath('online', false);
     }
 

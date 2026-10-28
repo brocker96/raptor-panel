@@ -372,7 +372,7 @@ export const deleteNode = (id: number) => http.delete(`/api/admin/nodes/${id}`);
 export const getNodeSystem = (id: number, signal?: AbortSignal) =>
     get<NodeSystem>(`/api/admin/nodes/${id}/system`, undefined, signal);
 export const getNodeConfiguration = (id: number, deploy = false, signal?: AbortSignal) =>
-    get<{ yaml: string; deploy_command: string | null }>(
+    get<{ yaml: string; deploy_command: string | null; install_command: string | null }>(
         `/api/admin/nodes/${id}/configuration`,
         deploy ? { deploy: 1 } : undefined,
         signal

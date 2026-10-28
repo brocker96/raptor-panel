@@ -148,6 +148,7 @@ class NodeController extends AdminApiController
         }
 
         $command = null;
+        $install = null;
         if ($key) {
             $command = sprintf(
                 'cd /etc/pterodactyl && sudo wings configure --panel-url %s --token %s --node %d' . (config('app.debug') ? ' --allow-insecure' : ''),
@@ -155,11 +156,23 @@ class NodeController extends AdminApiController
                 $key->identifier . $this->encrypter->decrypt($key->token),
                 $node->id,
             );
+
+            // One line that installs Docker and Raptor Wings on a clean server and configures it.
+            $install = sprintf(
+                'bash <(curl -fsSL https://raw.githubusercontent.com/%s/%s/wings.sh) --panel-url %s --token %s --node %d --fqdn %s' . (config('app.debug') ? ' --insecure' : ''),
+                config('raptor.update.repository'),
+                config('raptor.installer_branch'),
+                config('app.url'),
+                $key->identifier . $this->encrypter->decrypt($key->token),
+                $node->id,
+                $node->fqdn,
+            );
         }
 
         return new JsonResponse([
             'yaml' => $node->getYamlConfiguration(),
             'deploy_command' => $command,
+            'install_command' => $install,
         ]);
     }
 

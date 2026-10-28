@@ -53,6 +53,9 @@ return [
     | passkeys. All of them can be changed in Settings → Security.
     */
 
+    // Branch of the repository the node installer (wings.sh) is downloaded from.
+    'installer_branch' => env('RAPTOR_INSTALLER_BRANCH', '0.x_beta'),
+
     'db_manager' => [
         // Seconds a single query of the Raptor DB Manager may run before the database stops it.
         'query_timeout' => (int) env('RAPTOR_DB_MANAGER_TIMEOUT', 30),

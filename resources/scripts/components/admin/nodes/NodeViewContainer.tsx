@@ -284,8 +284,31 @@ const Configuration = ({ node }: { node: AdminNode }) => {
                 <Card
                     title={t('Auto deploy')}
                     icon={LightningBoltIcon}
-                    description={t('Run one command on the node to download the configuration.')}
+                    description={t('Set up the node with a single command.')}
                 >
+                    {data?.install_command ? (
+                        <div className={'space-y-3'}>
+                            <p className={'text-xs font-medium text-gray-300'}>{t('New server: install Raptor Wings')}</p>
+                            <pre
+                                className={
+                                    'rounded-lg bg-black/60 p-3 text-xs text-gray-200 font-mono whitespace-pre-wrap break-all ring-1 ring-inset ring-raptor-500/30'
+                                }
+                            >
+                                {data.install_command}
+                            </pre>
+                            <Button
+                                className={'w-full'}
+                                icon={ClipboardCopyIcon}
+                                onClick={() => copyText(data.install_command!, 'Command')}
+                            >
+                                {t('Copy install command')}
+                            </Button>
+                            <p className={'text-xs text-gray-500'}>
+                                {t('Run it as root on a clean Ubuntu or Debian server. It installs Docker, Wings, an HTTPS certificate and the firewall, then connects the node to this Panel.')}
+                            </p>
+                            <p className={'pt-2 text-xs font-medium text-gray-300'}>{t('Wings already installed')}</p>
+                        </div>
+                    ) : null}
                     {data?.deploy_command ? (
                         <div className={'space-y-3'}>
                             <pre
@@ -297,6 +320,7 @@ const Configuration = ({ node }: { node: AdminNode }) => {
                             </pre>
                             <Button
                                 className={'w-full'}
+                                variant={'secondary'}
                                 icon={ClipboardCopyIcon}
                                 onClick={() => copyText(data.deploy_command!, 'Command')}
                             >

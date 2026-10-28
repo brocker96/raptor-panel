@@ -36,6 +36,22 @@ RAPTOR_FQDN=panel.example.com RAPTOR_EMAIL=me@example.com RAPTOR_WINGS=yes RAPTO
 
 All options are documented at the top of [`install.sh`](install.sh).
 
+## 🪽 Add a node with Raptor Wings
+
+Game servers run on **Raptor Wings** — the Pterodactyl® Wings daemon, installed and managed the Raptor way.
+Create the node in **Admin → Nodes**, open **Configuration** and copy the install command. On a clean
+Ubuntu 22.04/24.04 or Debian 11/12 server run it as root:
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/brocker96/raptor-panel/0.x_beta/wings.sh) \
+  --panel-url https://panel.example.com --token ptla_xxx --node 1 --fqdn node.example.com
+```
+
+It installs Docker, verifies and installs Wings, requests a Let's Encrypt certificate, opens the
+firewall (SSH, 8080, 2022 and the game ports), downloads the node configuration from the Panel and
+starts the service. Run it without flags to answer the questions interactively. Afterwards
+`raptor-wings status | logs | restart | update | doctor` manages the node.
+
 ## 🔁 Coming from Pterodactyl?
 
 Switch an existing Pterodactyl 1.x Panel to Raptor Panel **without losing anything**: users, servers, nodes,
@@ -118,6 +134,18 @@ The original Blade admin is still available at `/admin/legacy`.
 <td><img src=".github/screenshots/admin-04-guide.png" alt="Guide drawer"></td>
 </tr>
 </table>
+
+## 🎛️ Server area for players and owners
+
+- **Raptor DB Manager** — a phpMyAdmin-style editor right in the panel: browse, search and filter tables,
+  edit rows, view the structure, run SQL with history, import and export `.sql` dumps. It connects with the
+  credentials of the server database itself and every session needs a fresh security confirmation.
+- **Subusers in seconds** — invite by e-mail, pick a role (Viewer, Operator, Developer, Co-owner) or fine-tune
+  grouped permissions with search; risky permissions are marked.
+- **Schedules without cron knowledge** — every N minutes, hourly, daily, weekly or monthly, templates such as
+  a daily restart with warnings or a nightly backup, and a task timeline.
+- Redesigned backups, network, startup, settings and activity tabs, one modal system that becomes a bottom
+  sheet on phones, and a Ctrl+K command palette.
 
 ## 🧱 Stack
 
