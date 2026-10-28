@@ -1,77 +1,44 @@
-import React, { useEffect, useState } from 'react';
-import { ServerContext } from '@/state/server';
-import Modal from '@/components/elements/Modal';
-import tw from 'twin.macro';
-import Button from '@/components/elements/Button';
-import FlashMessageRender from '@/components/FlashMessageRender';
-import useFlash from '@/plugins/useFlash';
-import { SocketEvent } from '@/components/server/events';
+import React, { useState } from 'react';
+import { ExternalLinkIcon, LoginIcon } from '@heroicons/react/outline';
+import Modal from '@/components/ui/Modal';
+import Button from '@/components/admin/ui/Button';
+import useConsoleMatch from '@/components/server/features/useConsoleMatch';
 import { t } from '@/i18n';
 
-const HytaleOauthRequireFeature = () => {
-    const [visible, setVisible] = useState(false);
+const LINK = /https:\/\/oauth\.accounts\.hytale\.com\/oauth2\/device\/verify\?user_code=[\w-]+/i;
+
+export default () => {
     const [link, setLink] = useState('');
 
-    const status = ServerContext.useStoreState((state) => state.status.value);
-    const { clearFlashes } = useFlash();
-    const { connected, instance } = ServerContext.useStoreState((state) => state.socket);
+    useConsoleMatch([LINK], (_, match) => setLink(match));
 
-    useEffect(() => {
-        if (!connected || !instance || status === 'running') return;
-
-        const listener = (line: string) => {
-            if (line.match(/https:\/\/oauth\.accounts\.hytale\.com\/oauth2\/device\/verify\?user_code=(.*)/i)) {
-                setLink(line);
-                setVisible(true);
-            }
-        };
-
-        instance.addListener(SocketEvent.CONSOLE_OUTPUT, listener);
-
-        return () => {
-            instance.removeListener(SocketEvent.CONSOLE_OUTPUT, listener);
-        };
-    }, [connected, instance, status]);
-
-    useEffect(() => {
-        clearFlashes('feature:hytaleOauth');
-    }, []);
-
-    const handleLogin = () => {
-        if (link) {
-            window.open(link, '_blank', 'noopener,noreferrer');
-            setVisible(false);
-            setLink('');
-        }
+    const login = () => {
+        window.open(link, '_blank', 'noopener,noreferrer');
+        setLink('');
     };
 
     return (
         <Modal
-            visible={visible}
-            onDismissed={() => {
-                setVisible(false);
-                setLink('');
-            }}
-            closeOnBackground={false}
-            showSpinnerOverlay={false}
+            open={!!link}
+            onClose={() => setLink('')}
+            icon={LoginIcon}
+            title={t('Sign in with Hytale')}
+            description={t('The server needs your Hytale account to download or update its files.')}
+            footer={
+                <>
+                    <Button variant={'secondary'} onClick={() => setLink('')}>
+                        {t('Not now')}
+                    </Button>
+                    <Button icon={ExternalLinkIcon} onClick={login}>
+                        {t('Sign in')}
+                    </Button>
+                </>
+            }
         >
-            <FlashMessageRender key={'feature:hytaleOauth'} css={tw`mb-4`} />
-            <h2 css={tw`text-2xl mb-4 text-neutral-100`}>{t('Authentication Required')}</h2>
-            <p css={tw`text-neutral-200`}>
-                {t(
-                    'You need to authenticate with your Hytale account to download or update server files. Please log in to continue.'
-                )}
+            <p className={'text-sm text-gray-300'}>
+                {t('A Hytale page opens in a new tab, confirm the code there and come back.')}
             </p>
-            <div css={tw`mt-8 sm:flex items-center justify-end`}>
-                <Button isSecondary onClick={() => setVisible(false)} css={tw`w-full sm:w-auto border-transparent`}>
-                    {t('Cancel')}
-                </Button>
-                <Button onClick={handleLogin} css={tw`mt-4 sm:mt-0 sm:ml-4 w-full sm:w-auto`}>
-                    {t('Log in')}
-                </Button>
-            </div>
+            <p className={'mt-2 font-mono text-xs text-gray-500 break-all'}>{link}</p>
         </Modal>
     );
 };
-
-export default HytaleOauthRequireFeature;

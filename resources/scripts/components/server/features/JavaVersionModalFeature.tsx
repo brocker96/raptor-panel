@@ -1,17 +1,16 @@
 import React, { useEffect, useState } from 'react';
+import classNames from 'classnames';
+import { CubeIcon } from '@heroicons/react/outline';
 import { ServerContext } from '@/state/server';
-import Modal from '@/components/elements/Modal';
-import tw from 'twin.macro';
-import Button from '@/components/elements/Button';
-import setSelectedDockerImage from '@/api/server/setSelectedDockerImage';
-import FlashMessageRender from '@/components/FlashMessageRender';
-import useFlash from '@/plugins/useFlash';
-import { SocketEvent, SocketRequest } from '@/components/server/events';
-import Select from '@/components/elements/Select';
-import useWebsocketEvent from '@/plugins/useWebsocketEvent';
-import Can from '@/components/elements/Can';
 import getServerStartup from '@/api/swr/getServerStartup';
-import InputSpinner from '@/components/elements/InputSpinner';
+import setSelectedDockerImage from '@/api/server/setSelectedDockerImage';
+import { SocketRequest } from '@/components/server/events';
+import { usePermissions } from '@/plugins/usePermissions';
+import Modal from '@/components/ui/Modal';
+import Button from '@/components/admin/ui/Button';
+import { Skeleton } from '@/components/admin/ui/Feedback';
+import { toast } from '@/components/admin/ui/Toast';
+import useConsoleMatch from '@/components/server/features/useConsoleMatch';
 import { t } from '@/i18n';
 
 const MATCH_ERRORS = [
@@ -22,97 +21,95 @@ const MATCH_ERRORS = [
     'has been compiled by a more recent version of the java runtime',
 ];
 
-const JavaVersionModalFeature = () => {
-    const [visible, setVisible] = useState(false);
-    const [loading, setLoading] = useState(false);
-    const [selectedVersion, setSelectedVersion] = useState('');
-
+export default () => {
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
+    const current = ServerContext.useStoreState((state) => state.server.data!.dockerImage);
     const status = ServerContext.useStoreState((state) => state.status.value);
-    const { clearFlashes, clearAndAddHttpError } = useFlash();
-    const { instance } = ServerContext.useStoreState((state) => state.socket);
+    const instance = ServerContext.useStoreState((state) => state.socket.instance);
+    const setServerFromState = ServerContext.useStoreActions((actions) => actions.server.setServerFromState);
+    const [canChange] = usePermissions(['startup.docker-image']);
+    const [open, setOpen] = useState(false);
+    const [selected, setSelected] = useState('');
+    const [busy, setBusy] = useState(false);
+    const { data, mutate } = getServerStartup(uuid, null, { enabled: false });
 
-    const { data, isValidating, mutate } = getServerStartup(uuid, null, { enabled: false });
+    useConsoleMatch(MATCH_ERRORS, () => setOpen(true));
 
     useEffect(() => {
-        if (!visible) return;
+        if (!open) return;
+        mutate().then((value) => setSelected(Object.values(value?.dockerImages || {})[0] || ''));
+    }, [open]);
 
-        mutate().then((value) => {
-            setSelectedVersion(Object.values(value?.dockerImages || [])[0] || '');
-        });
-    }, [visible]);
-
-    useWebsocketEvent(SocketEvent.CONSOLE_OUTPUT, (data) => {
-        if (status === 'running') return;
-
-        if (MATCH_ERRORS.some((p) => data.toLowerCase().includes(p.toLowerCase()))) {
-            setVisible(true);
+    const save = async () => {
+        setBusy(true);
+        try {
+            await setSelectedDockerImage(uuid, selected);
+            setServerFromState((s) => ({ ...s, dockerImage: selected }));
+            if (status === 'offline' && instance) instance.send(SocketRequest.SET_STATE, 'restart');
+            toast.success(t('Java version changed'), t('The server is starting.'));
+            setOpen(false);
+        } catch (err) {
+            toast.fromError(err);
+        } finally {
+            setBusy(false);
         }
-    });
-
-    const updateJava = () => {
-        setLoading(true);
-        clearFlashes('feature:javaVersion');
-
-        setSelectedDockerImage(uuid, selectedVersion)
-            .then(() => {
-                if (status === 'offline' && instance) {
-                    instance.send(SocketRequest.SET_STATE, 'restart');
-                }
-                setVisible(false);
-            })
-            .catch((error) => clearAndAddHttpError({ key: 'feature:javaVersion', error }))
-            .then(() => setLoading(false));
     };
-
-    useEffect(() => {
-        clearFlashes('feature:javaVersion');
-    }, []);
 
     return (
         <Modal
-            visible={visible}
-            onDismissed={() => setVisible(false)}
-            closeOnBackground={false}
-            showSpinnerOverlay={loading}
-        >
-            <FlashMessageRender key={'feature:javaVersion'} css={tw`mb-4`} />
-            <h2 css={tw`text-2xl mb-4 text-neutral-100`}>{t('Unsupported Java Version')}</h2>
-            <p css={tw`mt-4`}>
-                {t('This server is currently running an unsupported version of Java and cannot be started.')}
-                <Can action={'startup.docker-image'}>
-                    {t(' Please select a supported version from the list below to continue starting the server.')}
-                </Can>
-            </p>
-            <Can action={'startup.docker-image'}>
-                <div css={tw`mt-4`}>
-                    <InputSpinner visible={!data || isValidating}>
-                        <Select disabled={!data} onChange={(e) => setSelectedVersion(e.target.value)}>
-                            {!data ? (
-                                <option disabled />
-                            ) : (
-                                Object.keys(data.dockerImages).map((key) => (
-                                    <option key={key} value={data.dockerImages[key]}>
-                                        {key}
-                                    </option>
-                                ))
-                            )}
-                        </Select>
-                    </InputSpinner>
-                </div>
-            </Can>
-            <div css={tw`mt-8 flex flex-col sm:flex-row justify-end sm:space-x-4 space-y-4 sm:space-y-0`}>
-                <Button isSecondary onClick={() => setVisible(false)} css={tw`w-full sm:w-auto`}>
-                    {t('Cancel')}
-                </Button>
-                <Can action={'startup.docker-image'}>
-                    <Button onClick={updateJava} css={tw`w-full sm:w-auto`}>
-                        {t('Update Docker Image')}
+            open={open}
+            onClose={() => setOpen(false)}
+            busy={busy}
+            tone={'warning'}
+            icon={CubeIcon}
+            title={t('This Java version is not supported')}
+            description={
+                canChange
+                    ? t(
+                          'The server or one of its plugins needs another Java version. Choose one and the server starts again.'
+                      )
+                    : t(
+                          'The server or one of its plugins needs another Java version. Ask the owner of the server to change it in Startup.'
+                      )
+            }
+            footer={
+                <>
+                    <Button variant={'secondary'} onClick={() => setOpen(false)} disabled={busy}>
+                        {t('Close')}
                     </Button>
-                </Can>
-            </div>
+                    {canChange && (
+                        <Button loading={busy} disabled={!selected} onClick={save}>
+                            {t('Use this version')}
+                        </Button>
+                    )}
+                </>
+            }
+        >
+            {canChange &&
+                (!data ? (
+                    <Skeleton className={'h-32 rounded-xl'} />
+                ) : (
+                    <div className={'grid grid-cols-2 sm:grid-cols-3 gap-2'}>
+                        {Object.entries(data.dockerImages).map(([label, value]) => (
+                            <button
+                                key={value}
+                                type={'button'}
+                                onClick={() => setSelected(value)}
+                                className={classNames(
+                                    'rounded-lg px-3 py-2.5 text-left text-sm ring-1 ring-inset transition-colors',
+                                    selected === value
+                                        ? 'bg-raptor-500/10 ring-raptor-500/50 text-gray-50'
+                                        : 'ring-gray-800 text-gray-300 hover:ring-gray-600'
+                                )}
+                            >
+                                {label}
+                                {value === current && (
+                                    <span className={'block text-[0.7rem] text-gray-500'}>{t('current')}</span>
+                                )}
+                            </button>
+                        ))}
+                    </div>
+                ))}
         </Modal>
     );
 };
-
-export default JavaVersionModalFeature;

@@ -21,7 +21,8 @@ export default ({ compact, className }: Props) => {
 
     // Ctrl/Cmd + K (or "/") opens the server search from anywhere outside of a text field.
     useEventListener('keydown', (e: KeyboardEvent) => {
-        if (visible) return;
+        // Both the desktop and the compact button are mounted, only one of them owns the shortcut.
+        if (visible || compact) return;
 
         const target = e.target as HTMLElement;
         const typing =

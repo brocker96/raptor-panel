@@ -1,94 +1,68 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
+import { DocumentTextIcon } from '@heroicons/react/outline';
 import { ServerContext } from '@/state/server';
-import Modal from '@/components/elements/Modal';
-import tw from 'twin.macro';
-import Button from '@/components/elements/Button';
 import saveFileContents from '@/api/server/files/saveFileContents';
-import FlashMessageRender from '@/components/FlashMessageRender';
-import useFlash from '@/plugins/useFlash';
-import { SocketEvent, SocketRequest } from '@/components/server/events';
+import { SocketRequest } from '@/components/server/events';
+import Modal from '@/components/ui/Modal';
+import Button from '@/components/admin/ui/Button';
+import { toast } from '@/components/admin/ui/Toast';
+import useConsoleMatch from '@/components/server/features/useConsoleMatch';
 import { t } from '@/i18n';
 
-const EulaModalFeature = () => {
-    const [visible, setVisible] = useState(false);
-    const [loading, setLoading] = useState(false);
-
+export default () => {
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
     const status = ServerContext.useStoreState((state) => state.status.value);
-    const { clearFlashes, clearAndAddHttpError } = useFlash();
-    const { connected, instance } = ServerContext.useStoreState((state) => state.socket);
+    const instance = ServerContext.useStoreState((state) => state.socket.instance);
+    const [open, setOpen] = useState(false);
+    const [busy, setBusy] = useState(false);
 
-    useEffect(() => {
-        if (!connected || !instance || status === 'running') return;
+    useConsoleMatch(['you need to agree to the eula in order to run the server'], () => setOpen(true));
 
-        const listener = (line: string) => {
-            if (line.toLowerCase().indexOf('you need to agree to the eula in order to run the server') >= 0) {
-                setVisible(true);
-            }
-        };
-
-        instance.addListener(SocketEvent.CONSOLE_OUTPUT, listener);
-
-        return () => {
-            instance.removeListener(SocketEvent.CONSOLE_OUTPUT, listener);
-        };
-    }, [connected, instance, status]);
-
-    const onAcceptEULA = () => {
-        setLoading(true);
-        clearFlashes('feature:eula');
-
-        saveFileContents(uuid, 'eula.txt', 'eula=true')
-            .then(() => {
-                if (status === 'offline' && instance) {
-                    instance.send(SocketRequest.SET_STATE, 'restart');
-                }
-
-                setLoading(false);
-                setVisible(false);
-            })
-            .catch((error) => {
-                console.error(error);
-                clearAndAddHttpError({ key: 'feature:eula', error });
-            })
-            .then(() => setLoading(false));
+    const accept = async () => {
+        setBusy(true);
+        try {
+            await saveFileContents(uuid, 'eula.txt', 'eula=true');
+            if (status === 'offline' && instance) instance.send(SocketRequest.SET_STATE, 'restart');
+            toast.success(t('EULA accepted'), t('The server is starting.'));
+            setOpen(false);
+        } catch (err) {
+            toast.fromError(err);
+        } finally {
+            setBusy(false);
+        }
     };
-
-    useEffect(() => {
-        clearFlashes('feature:eula');
-    }, []);
 
     return (
         <Modal
-            visible={visible}
-            onDismissed={() => setVisible(false)}
-            closeOnBackground={false}
-            showSpinnerOverlay={loading}
+            open={open}
+            onClose={() => setOpen(false)}
+            busy={busy}
+            icon={DocumentTextIcon}
+            title={t('Accept the Minecraft® EULA')}
+            description={t('Minecraft servers only start after the end user license agreement has been accepted.')}
+            footer={
+                <>
+                    <Button variant={'secondary'} onClick={() => setOpen(false)} disabled={busy}>
+                        {t('Not now')}
+                    </Button>
+                    <Button loading={busy} onClick={accept}>
+                        {t('Accept and start')}
+                    </Button>
+                </>
+            }
         >
-            <FlashMessageRender key={'feature:eula'} css={tw`mb-4`} />
-            <h2 css={tw`text-2xl mb-4 text-neutral-100`}>{t('Accept Minecraft® EULA')}</h2>
-            <p css={tw`text-neutral-200`}>
-                {t('By pressing')} {t('"I Accept"')} {t('below you are indicating your agreement to the ')}
+            <p className={'text-sm text-gray-300 leading-relaxed'}>
+                {t('By accepting you agree to the')}{' '}
                 <a
+                    href={'https://www.minecraft.net/eula'}
                     target={'_blank'}
-                    css={tw`text-primary-300 underline transition-colors duration-150 hover:text-primary-400`}
                     rel={'noreferrer noopener'}
-                    href='https://www.minecraft.net/eula'
+                    className={'text-raptor-400 underline hover:text-raptor-300'}
                 >
                     {t('Minecraft® EULA')}
                 </a>
-                .
+                . {t('Raptor writes eula=true into eula.txt and starts the server for you.')}
             </p>
-            <div css={tw`mt-8 sm:flex items-center justify-end`}>
-                <Button isSecondary onClick={() => setVisible(false)} css={tw`w-full sm:w-auto border-transparent`}>
-                    {t('Cancel')}
-                </Button>
-                <Button onClick={onAcceptEULA} css={tw`mt-4 sm:mt-0 sm:ml-4 w-full sm:w-auto`}>
-                    {t('I Accept')}
-                </Button>
-            </div>
         </Modal>
     );
 };
-
-export default EulaModalFeature;

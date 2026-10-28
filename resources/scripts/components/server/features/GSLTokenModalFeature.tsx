@@ -1,109 +1,79 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
+import { KeyIcon } from '@heroicons/react/outline';
 import { ServerContext } from '@/state/server';
-import Modal from '@/components/elements/Modal';
-import tw from 'twin.macro';
-import Button from '@/components/elements/Button';
-import FlashMessageRender from '@/components/FlashMessageRender';
-import useFlash from '@/plugins/useFlash';
-import { SocketEvent, SocketRequest } from '@/components/server/events';
-import Field from '@/components/elements/Field';
 import updateStartupVariable from '@/api/server/updateStartupVariable';
-import { Form, Formik } from 'formik';
+import { SocketRequest } from '@/components/server/events';
+import Modal from '@/components/ui/Modal';
+import Button from '@/components/admin/ui/Button';
+import { TextInput } from '@/components/admin/ui/Form';
+import { toast } from '@/components/admin/ui/Toast';
+import useConsoleMatch from '@/components/server/features/useConsoleMatch';
 import { t } from '@/i18n';
 
-interface Values {
-    gslToken: string;
-}
-
-const GSLTokenModalFeature = () => {
-    const [visible, setVisible] = useState(false);
-    const [loading, setLoading] = useState(false);
-
+export default () => {
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
-    const status = ServerContext.useStoreState((state) => state.status.value);
-    const { clearFlashes, clearAndAddHttpError } = useFlash();
-    const { connected, instance } = ServerContext.useStoreState((state) => state.socket);
+    const instance = ServerContext.useStoreState((state) => state.socket.instance);
+    const [open, setOpen] = useState(false);
+    const [token, setToken] = useState('');
+    const [busy, setBusy] = useState(false);
 
-    useEffect(() => {
-        if (!connected || !instance || status === 'running') return;
+    useConsoleMatch(['(gsl token expired)', '(account not found)'], () => setOpen(true));
 
-        const errors = ['(gsl token expired)', '(account not found)'];
-
-        const listener = (line: string) => {
-            if (errors.some((p) => line.toLowerCase().includes(p))) {
-                setVisible(true);
-            }
-        };
-
-        instance.addListener(SocketEvent.CONSOLE_OUTPUT, listener);
-
-        return () => {
-            instance.removeListener(SocketEvent.CONSOLE_OUTPUT, listener);
-        };
-    }, [connected, instance, status]);
-
-    const updateGSLToken = (values: Values) => {
-        setLoading(true);
-        clearFlashes('feature:gslToken');
-
-        updateStartupVariable(uuid, 'STEAM_ACC', values.gslToken)
-            .then(() => {
-                if (instance) {
-                    instance.send(SocketRequest.SET_STATE, 'restart');
-                }
-
-                setLoading(false);
-                setVisible(false);
-            })
-            .catch((error) => {
-                console.error(error);
-                clearAndAddHttpError({ key: 'feature:gslToken', error });
-            })
-            .then(() => setLoading(false));
+    const save = async () => {
+        setBusy(true);
+        try {
+            await updateStartupVariable(uuid, 'STEAM_ACC', token.trim());
+            instance?.send(SocketRequest.SET_STATE, 'restart');
+            toast.success(token ? t('Token saved') : t('Token removed'), t('The server is restarting.'));
+            setOpen(false);
+        } catch (err) {
+            toast.fromError(err);
+        } finally {
+            setBusy(false);
+        }
     };
 
-    useEffect(() => {
-        clearFlashes('feature:gslToken');
-    }, []);
-
     return (
-        <Formik onSubmit={updateGSLToken} initialValues={{ gslToken: '' }}>
-            <Modal
-                visible={visible}
-                onDismissed={() => setVisible(false)}
-                closeOnBackground={false}
-                showSpinnerOverlay={loading}
-            >
-                <FlashMessageRender key={'feature:gslToken'} css={tw`mb-4`} />
-                <Form>
-                    <h2 css={tw`text-2xl mb-4 text-neutral-100`}>{t('Invalid GSL token!')}</h2>
-                    <p css={tw`mt-4`}>
-                        {t('It seems like your Gameserver Login Token (GSL token) is invalid or has expired.')}
-                    </p>
-                    <p css={tw`mt-4`}>
-                        {t(
-                            'You can either generate a new one and enter it below or leave the field blank to remove it completely.'
-                        )}
-                    </p>
-                    <div css={tw`sm:flex items-center mt-4`}>
-                        <Field
-                            name={'gslToken'}
-                            label={t('GSL Token')}
-                            description={t(
-                                'Visit https://steamcommunity.com/dev/managegameservers to generate a token.'
-                            )}
-                            autoFocus
-                        />
-                    </div>
-                    <div css={tw`mt-8 sm:flex items-center justify-end`}>
-                        <Button type={'submit'} css={tw`mt-4 sm:mt-0 sm:ml-4 w-full sm:w-auto`}>
-                            {t('Update GSL Token')}
-                        </Button>
-                    </div>
-                </Form>
-            </Modal>
-        </Formik>
+        <Modal
+            open={open}
+            onClose={() => setOpen(false)}
+            busy={busy}
+            tone={'warning'}
+            icon={KeyIcon}
+            title={t('The GSL token is invalid')}
+            description={t('Steam rejected the Game Server Login Token of this server, it probably expired.')}
+            footer={
+                <>
+                    <Button variant={'secondary'} onClick={() => setOpen(false)} disabled={busy}>
+                        {t('Not now')}
+                    </Button>
+                    <Button loading={busy} onClick={save}>
+                        {token ? t('Save and restart') : t('Remove token and restart')}
+                    </Button>
+                </>
+            }
+        >
+            <TextInput
+                label={t('New GSL token')}
+                value={token}
+                onChange={setToken}
+                autoFocus
+                className={'font-mono'}
+                description={
+                    <>
+                        {t('Generate one at')}{' '}
+                        <a
+                            href={'https://steamcommunity.com/dev/managegameservers'}
+                            target={'_blank'}
+                            rel={'noreferrer noopener'}
+                            className={'text-raptor-400 underline'}
+                        >
+                            steamcommunity.com/dev/managegameservers
+                        </a>
+                        . {t('Leave it empty to remove the token.')}
+                    </>
+                }
+            />
+        </Modal>
     );
 };
-
-export default GSLTokenModalFeature;

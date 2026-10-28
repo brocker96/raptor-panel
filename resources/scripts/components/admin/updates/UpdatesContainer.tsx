@@ -397,7 +397,9 @@ export default () => {
                                                     )}
                                                 </p>
                                                 <p className={'text-xs text-gray-500'}>
-                                                    {release.published_at ? ago(release.published_at) : t('unpublished')}
+                                                    {release.published_at
+                                                        ? ago(release.published_at)
+                                                        : t('unpublished')}
                                                 </p>
                                             </div>
                                             {release.url && (

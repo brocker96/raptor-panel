@@ -132,11 +132,11 @@ export default ({ className }: WithClassname) => {
                         <div className={'w-full flex items-center justify-center pointer-events-none'}>
                             <div
                                 className={
-                                    'flex items-center space-x-4 bg-black w-full ring-4 ring-blue-200 ring-opacity-60 rounded p-6 mx-10 max-w-sm'
+                                    'flex flex-col items-center gap-3 w-full max-w-sm mx-6 rounded-2xl border-2 border-dashed border-raptor-500/70 bg-gray-900/90 px-6 py-10 shadow-2xl'
                                 }
                             >
-                                <CloudUploadIcon className={'w-10 h-10 flex-shrink-0'} />
-                                <p className={'font-header flex-1 text-lg text-neutral-100 text-center'}>
+                                <CloudUploadIcon className={'w-10 h-10 flex-shrink-0 text-raptor-400'} />
+                                <p className={'text-base font-medium text-gray-100 text-center'}>
                                     {t('Drag and drop files to upload.')}
                                 </p>
                             </div>

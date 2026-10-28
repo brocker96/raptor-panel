@@ -26,6 +26,8 @@ export interface ModalProps {
     /** Removes the padding of the body for lists and tables that run edge to edge. */
     flush?: boolean;
     className?: string;
+    /** Element focused when the modal opens, by default the first focusable element. */
+    initialFocus?: React.MutableRefObject<HTMLElement | null>;
     children?: React.ReactNode;
 }
 
@@ -74,6 +76,7 @@ const Modal = ({
     busy,
     flush,
     className,
+    initialFocus,
     children,
 }: ModalProps) => {
     const mobile = useMobile();
@@ -82,7 +85,7 @@ const Modal = ({
     return (
         <AnimatePresence>
             {open && (
-                <HDialog static open={open} onClose={close} className={'relative z-[60]'}>
+                <HDialog static open={open} onClose={close} initialFocus={initialFocus} className={'relative z-[60]'}>
                     <motion.div
                         className={'fixed inset-0 bg-black/70 backdrop-blur-[2px]'}
                         initial={{ opacity: 0 }}
@@ -155,14 +158,18 @@ const Modal = ({
                                     <XIcon className={'w-4 h-4'} />
                                 </button>
                                 {toolbar && <div className={'px-5 sm:px-6 pt-4'}>{toolbar}</div>}
-                                <div
-                                    className={classNames('min-h-0 flex-1 overflow-y-auto overscroll-contain', {
-                                        'px-5 sm:px-6 py-5': !flush,
-                                        'mt-4': flush && !!(title || toolbar),
-                                    })}
-                                >
-                                    {children}
-                                </div>
+                                {children ? (
+                                    <div
+                                        className={classNames('min-h-0 flex-1 overflow-y-auto overscroll-contain', {
+                                            'px-5 sm:px-6 py-5': !flush,
+                                            'mt-4': flush && !!(title || toolbar),
+                                        })}
+                                    >
+                                        {children}
+                                    </div>
+                                ) : (
+                                    <div className={'h-5'} />
+                                )}
                                 {footer && (
                                     <footer
                                         className={

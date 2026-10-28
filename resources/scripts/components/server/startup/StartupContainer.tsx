@@ -87,14 +87,25 @@ export default () => {
                         <div className={'rounded-xl ring-1 ring-gray-800 bg-gray-900/40 p-4 min-w-0'}>
                             <div className={'mb-2 flex items-center justify-between gap-2'}>
                                 <p className={'text-xs text-gray-500'}>{t('Startup command')}</p>
-                                <Button variant={'ghost'} size={'sm'} icon={copied ? CheckIcon : ClipboardCopyIcon} onClick={() => copy(data.invocation)}>
+                                <Button
+                                    variant={'ghost'}
+                                    size={'sm'}
+                                    icon={copied ? CheckIcon : ClipboardCopyIcon}
+                                    onClick={() => copy(data.invocation)}
+                                >
                                     {copied ? t('Copied') : t('Copy')}
                                 </Button>
                             </div>
-                            <pre className={'rounded-lg bg-gray-950/60 ring-1 ring-inset ring-gray-800 px-3 py-2.5 font-mono text-xs leading-relaxed text-gray-200 whitespace-pre-wrap break-all'}>
+                            <pre
+                                className={
+                                    'rounded-lg bg-gray-950/60 ring-1 ring-inset ring-gray-800 px-3 py-2.5 font-mono text-xs leading-relaxed text-gray-200 whitespace-pre-wrap break-all'
+                                }
+                            >
                                 {data.invocation}
                             </pre>
-                            <p className={'mt-2 text-xs text-gray-500'}>{t('Variables are filled in automatically, change them below.')}</p>
+                            <p className={'mt-2 text-xs text-gray-500'}>
+                                {t('Variables are filled in automatically, change them below.')}
+                            </p>
                         </div>
                         <div className={'rounded-xl ring-1 ring-gray-800 bg-gray-900/40 p-4'}>
                             <p className={'mb-2 flex items-center gap-1.5 text-xs text-gray-500'}>

@@ -1,60 +1,60 @@
-import React from 'react';
-import Modal, { RequiredModalProps } from '@/components/elements/Modal';
-import { Form, Formik, FormikHelpers } from 'formik';
-import { object, string } from 'yup';
-import Field from '@/components/elements/Field';
-import { ServerContext } from '@/state/server';
+import React, { useEffect, useState } from 'react';
 import { join } from 'pathe';
-import tw from 'twin.macro';
-import Button from '@/components/elements/Button';
+import { DocumentAddIcon } from '@heroicons/react/outline';
+import { RequiredModalProps } from '@/components/elements/Modal';
+import { ServerContext } from '@/state/server';
+import Modal from '@/components/ui/Modal';
+import Button from '@/components/admin/ui/Button';
+import { TextInput } from '@/components/admin/ui/Form';
 import { t } from '@/i18n';
 
 type Props = RequiredModalProps & {
     onFileNamed: (name: string) => void;
 };
 
-interface Values {
-    fileName: string;
-}
-
-export default ({ onFileNamed, onDismissed, ...props }: Props) => {
+export default ({ onFileNamed, onDismissed, visible }: Props) => {
     const directory = ServerContext.useStoreState((state) => state.files.directory);
+    const [name, setName] = useState('');
 
-    const submit = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
-        onFileNamed(join(directory, values.fileName));
-        setSubmitting(false);
-    };
+    useEffect(() => {
+        if (visible) setName('');
+    }, [visible]);
+
+    const submit = () => name.trim() && onFileNamed(join(directory, name.trim()));
 
     return (
-        <Formik
-            onSubmit={submit}
-            initialValues={{ fileName: '' }}
-            validationSchema={object().shape({
-                fileName: string().required().min(1),
-            })}
+        <Modal
+            open={visible}
+            onClose={onDismissed}
+            icon={DocumentAddIcon}
+            title={t('Save as new file')}
+            description={<span className={'font-mono'}>/home/container{join('/', directory)}</span>}
+            footer={
+                <>
+                    <Button variant={'secondary'} onClick={onDismissed}>
+                        {t('Cancel')}
+                    </Button>
+                    <Button disabled={!name.trim()} onClick={submit}>
+                        {t('Create file')}
+                    </Button>
+                </>
+            }
         >
-            {({ resetForm }) => (
-                <Modal
-                    onDismissed={() => {
-                        resetForm();
-                        onDismissed();
-                    }}
-                    {...props}
-                >
-                    <Form>
-                        <Field
-                            id={'fileName'}
-                            name={'fileName'}
-                            label={t('File Name')}
-                            description={t('Enter the name that this file should be saved as.')}
-                            autoFocus
-                        />
-                        <div css={tw`mt-6 text-right`}>
-                            <Button type={'submit'}>{t('Create File')}</Button>
-                        </div>
-                    </Form>
-                </Modal>
-            )}
-        </Formik>
+            <form
+                onSubmit={(e) => {
+                    e.preventDefault();
+                    submit();
+                }}
+            >
+                <TextInput
+                    label={t('File name')}
+                    value={name}
+                    onChange={setName}
+                    placeholder={'config.yml'}
+                    autoFocus
+                    className={'font-mono'}
+                />
+            </form>
+        </Modal>
     );
 };

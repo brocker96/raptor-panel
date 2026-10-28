@@ -1,10 +1,6 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Spinner from '@/components/elements/Spinner';
-import tw from 'twin.macro';
-import styled, { css } from 'styled-components/macro';
-import { breakpoint } from '@/theme';
-import Fade from '@/components/elements/Fade';
-import { createPortal } from 'react-dom';
+import Modal from '@/components/ui/Modal';
 
 export interface RequiredModalProps {
     visible: boolean;
@@ -20,131 +16,56 @@ export interface ModalProps extends RequiredModalProps {
     showSpinnerOverlay?: boolean;
 }
 
-export const ModalMask = styled.div`
-    ${tw`fixed z-50 overflow-auto flex w-full inset-0`};
-    background: rgba(4, 6, 5, 0.75);
-    backdrop-filter: blur(4px);
-`;
+/** Full screen backdrop, used by the drop zone of the file manager. */
+export const ModalMask = (props: React.HTMLAttributes<HTMLDivElement>) => (
+    <div {...props} className={'fixed inset-0 z-50 flex overflow-auto bg-black/70 backdrop-blur-[2px]'} />
+);
 
-const ModalContainer = styled.div<{ alignTop?: boolean }>`
-    max-width: 95%;
-    max-height: calc(100vh - 8rem);
-    ${breakpoint('md')`max-width: 75%`};
-    ${breakpoint('lg')`max-width: 50%`};
-
-    ${tw`relative flex flex-col w-full m-auto`};
-    ${(props) =>
-        props.alignTop &&
-        css`
-            margin-top: 20%;
-            ${breakpoint('md')`margin-top: 10%`};
-        `};
-
-    margin-bottom: auto;
-
-    & > .close-icon {
-        ${tw`absolute right-0 p-2 text-white cursor-pointer opacity-50 transition-all duration-150 ease-linear hover:opacity-100`};
-        top: -2.5rem;
-
-        &:hover {
-            ${tw`transform rotate-90`}
-        }
-
-        & > svg {
-            ${tw`w-6 h-6`};
-        }
-    }
-`;
-
-const Modal: React.FC<React.PropsWithChildren<ModalProps>> = ({
+/**
+ * Compatibility wrapper for the older modal API (visible / onDismissed) that renders through the
+ * shared modal, so every dialog of the panel looks and behaves the same, including the bottom
+ * sheet on phones.
+ */
+const LegacyModal: React.FC<React.PropsWithChildren<ModalProps>> = ({
     visible,
-    appear,
     dismissable,
     showSpinnerOverlay,
-    top = true,
-    closeOnBackground = true,
-    closeOnEscape = true,
     onDismissed,
     children,
 }) => {
-    const [render, setRender] = useState(visible);
+    const [open, setOpen] = useState(visible);
+    const wasOpen = useRef(visible);
 
-    const isDismissable = useMemo(() => {
-        return (dismissable ?? true) && !showSpinnerOverlay;
-    }, [dismissable, showSpinnerOverlay]);
+    useEffect(() => setOpen(visible), [visible]);
 
+    // Like before, onDismissed fires once the closing animation has finished.
     useEffect(() => {
-        if (!isDismissable || !closeOnEscape) return;
+        const closed = wasOpen.current && !open;
+        wasOpen.current = open;
+        if (!closed) return undefined;
 
-        const handler = (e: KeyboardEvent) => {
-            if (e.key === 'Escape') setRender(false);
-        };
+        const timeout = setTimeout(onDismissed, 200);
 
-        window.addEventListener('keydown', handler);
-        return () => {
-            window.removeEventListener('keydown', handler);
-        };
-    }, [isDismissable, closeOnEscape, render]);
-
-    useEffect(() => setRender(visible), [visible]);
+        return () => clearTimeout(timeout);
+    }, [open]);
 
     return (
-        <Fade in={render} timeout={150} appear={appear || true} unmountOnExit onExited={() => onDismissed()}>
-            <ModalMask
-                onClick={(e) => e.stopPropagation()}
-                onContextMenu={(e) => e.stopPropagation()}
-                onMouseDown={(e) => {
-                    if (isDismissable && closeOnBackground) {
-                        e.stopPropagation();
-                        if (e.target === e.currentTarget) {
-                            setRender(false);
-                        }
-                    }
-                }}
-            >
-                <ModalContainer alignTop={top}>
-                    {isDismissable && (
-                        <div className={'close-icon'} onClick={() => setRender(false)}>
-                            <svg
-                                xmlns={'http://www.w3.org/2000/svg'}
-                                fill={'none'}
-                                viewBox={'0 0 24 24'}
-                                stroke={'currentColor'}
-                            >
-                                <path
-                                    strokeLinecap={'round'}
-                                    strokeLinejoin={'round'}
-                                    strokeWidth={'2'}
-                                    d={'M6 18L18 6M6 6l12 12'}
-                                />
-                            </svg>
-                        </div>
-                    )}
-                    {showSpinnerOverlay && (
-                        <Fade timeout={150} appear in>
-                            <div
-                                css={tw`absolute w-full h-full rounded flex items-center justify-center`}
-                                style={{ background: 'hsla(211, 10%, 53%, 0.35)', zIndex: 9999 }}
-                            >
-                                <Spinner />
-                            </div>
-                        </Fade>
-                    )}
-                    <div
-                        css={tw`bg-gray-900 p-4 sm:p-6 rounded-xl shadow-2xl ring-1 ring-white/10 overflow-y-auto transition-all duration-150`}
-                    >
-                        {children}
+        <Modal
+            open={open}
+            onClose={() => setOpen(false)}
+            busy={dismissable === false || showSpinnerOverlay}
+            size={'lg'}
+        >
+            <div className={'relative'}>
+                {showSpinnerOverlay && (
+                    <div className={'absolute -inset-2 z-20 grid place-items-center rounded-xl bg-gray-900/70'}>
+                        <Spinner />
                     </div>
-                </ModalContainer>
-            </ModalMask>
-        </Fade>
+                )}
+                {children}
+            </div>
+        </Modal>
     );
 };
 
-const PortaledModal: React.FC<React.PropsWithChildren<ModalProps>> = ({ children, ...props }) => {
-    const element = useRef(document.getElementById('modal-portal'));
-
-    return createPortal(<Modal {...props}>{children}</Modal>, element.current!);
-};
-
-export default PortaledModal;
+export default LegacyModal;

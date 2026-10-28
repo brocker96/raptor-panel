@@ -1,108 +1,64 @@
-import React, { useEffect, useState } from 'react';
-import { ServerContext } from '@/state/server';
-import Modal from '@/components/elements/Modal';
-import tw from 'twin.macro';
-import Button from '@/components/elements/Button';
-import FlashMessageRender from '@/components/FlashMessageRender';
-import useFlash from '@/plugins/useFlash';
-import { SocketEvent } from '@/components/server/events';
-import { useStoreState } from 'easy-peasy';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
+import React, { useState } from 'react';
+import { ExclamationIcon } from '@heroicons/react/outline';
+import { useStoreState } from '@/state/hooks';
+import Modal from '@/components/ui/Modal';
+import Button from '@/components/admin/ui/Button';
+import useConsoleMatch from '@/components/server/features/useConsoleMatch';
 import { t } from '@/i18n';
 
-const PIDLimitModalFeature = () => {
-    const [visible, setVisible] = useState(false);
-    const [loading] = useState(false);
+const ERRORS = [
+    'pthread_create failed',
+    'failed to create thread',
+    'unable to create thread',
+    'unable to create native thread',
+    'unable to create new native thread',
+    'exception in thread "craft async scheduler management thread"',
+];
 
-    const status = ServerContext.useStoreState((state) => state.status.value);
-    const { clearFlashes } = useFlash();
-    const { connected, instance } = ServerContext.useStoreState((state) => state.socket);
+export default () => {
     const isAdmin = useStoreState((state) => state.user.data!.rootAdmin);
+    const [open, setOpen] = useState(false);
 
-    useEffect(() => {
-        if (!connected || !instance || status === 'running') return;
-
-        const errors = [
-            'pthread_create failed',
-            'failed to create thread',
-            'unable to create thread',
-            'unable to create native thread',
-            'unable to create new native thread',
-            'exception in thread "craft async scheduler management thread"',
-        ];
-
-        const listener = (line: string) => {
-            if (errors.some((p) => line.toLowerCase().includes(p))) {
-                setVisible(true);
-            }
-        };
-
-        instance.addListener(SocketEvent.CONSOLE_OUTPUT, listener);
-
-        return () => {
-            instance.removeListener(SocketEvent.CONSOLE_OUTPUT, listener);
-        };
-    }, [connected, instance, status]);
-
-    useEffect(() => {
-        clearFlashes('feature:pidLimit');
-    }, []);
+    useConsoleMatch(ERRORS, () => setOpen(true));
 
     return (
         <Modal
-            visible={visible}
-            onDismissed={() => setVisible(false)}
-            closeOnBackground={false}
-            showSpinnerOverlay={loading}
+            open={open}
+            onClose={() => setOpen(false)}
+            tone={'warning'}
+            icon={ExclamationIcon}
+            title={isAdmin ? t('Process or memory limit reached') : t('The server ran out of resources')}
+            description={
+                isAdmin
+                    ? t('The server could not create more threads, the container hit its process or memory limit.')
+                    : t(
+                          'The server tried to use more resources than it is allowed to. Send the error below to your hosting provider.'
+                      )
+            }
+            footer={<Button onClick={() => setOpen(false)}>{t('Close')}</Button>}
         >
-            <FlashMessageRender key={'feature:pidLimit'} css={tw`mb-4`} />
             {isAdmin ? (
-                <>
-                    <div css={tw`mt-4 sm:flex items-center`}>
-                        <FontAwesomeIcon css={tw`pr-4`} icon={faExclamationTriangle} color={'orange'} size={'4x'} />
-                        <h2 css={tw`text-2xl mb-4 text-neutral-100 `}>{t('Memory or process limit reached...')}</h2>
-                    </div>
-                    <p css={tw`mt-4`}>{t('This server has reached the maximum process or memory limit.')}</p>
-                    <p css={tw`mt-4`}>
-                        {t('Increasing')} <code css={tw`font-mono bg-neutral-900`}>container_pid_limit</code>{' '}
-                        {t('in the wings configuration,')} <code css={tw`font-mono bg-neutral-900`}>config.yml</code>
-                        {t(', might help resolve this issue.')}
+                <div className={'space-y-3 text-sm text-gray-300 leading-relaxed'}>
+                    <p>
+                        {t('Raise')}{' '}
+                        <code className={'rounded bg-gray-950 px-1.5 py-0.5 text-xs'}>container_pid_limit</code>{' '}
+                        {t('in the Wings configuration')}{' '}
+                        <code className={'rounded bg-gray-950 px-1.5 py-0.5 text-xs'}>/etc/pterodactyl/config.yml</code>{' '}
+                        {t('or give the server more memory.')}
                     </p>
-                    <p css={tw`mt-4`}>
-                        <b>{t('Note: Wings must be restarted for the configuration file changes to take effect')}</b>
+                    <p className={'text-gray-400'}>
+                        {t('Wings must be restarted for changes of its configuration to apply.')}
                     </p>
-                    <div css={tw`mt-8 sm:flex items-center justify-end`}>
-                        <Button onClick={() => setVisible(false)} css={tw`w-full sm:w-auto border-transparent`}>
-                            {t('Close')}
-                        </Button>
-                    </div>
-                </>
+                </div>
             ) : (
-                <>
-                    <div css={tw`mt-4 sm:flex items-center`}>
-                        <FontAwesomeIcon css={tw`pr-4`} icon={faExclamationTriangle} color={'orange'} size={'4x'} />
-                        <h2 css={tw`text-2xl mb-4 text-neutral-100`}>{t('Possible resource limit reached...')}</h2>
-                    </div>
-                    <p css={tw`mt-4`}>
-                        {t(
-                            'This server is attempting to use more resources than allocated. Please contact the administrator and give them the error below.'
-                        )}
-                    </p>
-                    <p css={tw`mt-4`}>
-                        <code css={tw`font-mono bg-neutral-900`}>
-                            pthread_create failed, Possibly out of memory or process/resource limits reached
-                        </code>
-                    </p>
-                    <div css={tw`mt-8 sm:flex items-center justify-end`}>
-                        <Button onClick={() => setVisible(false)} css={tw`w-full sm:w-auto border-transparent`}>
-                            {t('Close')}
-                        </Button>
-                    </div>
-                </>
+                <pre
+                    className={
+                        'rounded-lg bg-gray-950/60 px-3 py-2 font-mono text-xs text-gray-300 whitespace-pre-wrap'
+                    }
+                >
+                    pthread_create failed, possibly out of memory or process/resource limits reached
+                </pre>
             )}
         </Modal>
     );
 };
-
-export default PIDLimitModalFeature;

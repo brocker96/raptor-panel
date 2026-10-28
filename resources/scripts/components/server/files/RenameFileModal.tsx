@@ -1,99 +1,113 @@
-import React from 'react';
-import Modal, { RequiredModalProps } from '@/components/elements/Modal';
-import { Form, Formik, FormikHelpers } from 'formik';
-import Field from '@/components/elements/Field';
+import React, { useEffect, useState } from 'react';
 import { join } from 'pathe';
+import { FolderIcon, PencilIcon } from '@heroicons/react/outline';
 import renameFiles from '@/api/server/files/renameFiles';
-import { ServerContext } from '@/state/server';
-import tw from 'twin.macro';
-import Button from '@/components/elements/Button';
 import { useFileManagerMutate } from '@/plugins/useFileManagerSwr';
-import useFlash from '@/plugins/useFlash';
+import { RequiredModalProps } from '@/components/elements/Modal';
+import { ServerContext } from '@/state/server';
+import Modal from '@/components/ui/Modal';
+import Button from '@/components/admin/ui/Button';
+import { TextInput } from '@/components/admin/ui/Form';
+import { toast } from '@/components/admin/ui/Toast';
 import { t } from '@/i18n';
-
-interface FormikValues {
-    name: string;
-}
 
 type OwnProps = RequiredModalProps & { files: string[]; useMoveTerminology?: boolean };
 
-const RenameFileModal = ({ files, useMoveTerminology, ...props }: OwnProps) => {
+const RenameFileModal = ({ files, useMoveTerminology, visible, onDismissed }: OwnProps) => {
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
-    const mutate = useFileManagerMutate();
-    const { clearFlashes, clearAndAddHttpError } = useFlash();
     const directory = ServerContext.useStoreState((state) => state.files.directory);
     const setSelectedFiles = ServerContext.useStoreActions((actions) => actions.files.setSelectedFiles);
+    const mutate = useFileManagerMutate();
+    const [name, setName] = useState('');
+    const [busy, setBusy] = useState(false);
 
-    const submit = ({ name }: FormikValues, { setSubmitting }: FormikHelpers<FormikValues>) => {
-        clearFlashes('files');
+    useEffect(() => {
+        if (visible) setName(files.length > 1 ? '' : files[0] || '');
+    }, [visible]);
 
-        const len = name.split('/').length;
+    const submit = async () => {
+        if (!name.trim()) return;
+        setBusy(true);
+        const parts = name.split('/').length;
+
         if (files.length === 1) {
-            if (!useMoveTerminology && len === 1) {
-                // Rename the file within this directory.
+            if (!useMoveTerminology && parts === 1) {
                 mutate((data) => data?.map((f) => (f.name === files[0] ? { ...f, name } : f)), false);
-            } else if (useMoveTerminology || len > 1) {
-                // Remove the file from this directory since they moved it elsewhere.
+            } else {
                 mutate((data) => data?.filter((f) => f.name !== files[0]), false);
             }
         }
 
-        let data;
-        if (useMoveTerminology && files.length > 1) {
-            data = files.map((f) => ({ from: f, to: join(name, f) }));
-        } else {
-            data = files.map((f) => ({ from: f, to: name }));
-        }
+        const data =
+            useMoveTerminology && files.length > 1
+                ? files.map((f) => ({ from: f, to: join(name, f) }))
+                : files.map((f) => ({ from: f, to: name }));
 
-        renameFiles(uuid, directory, data)
-            .then((): Promise<any> => (files.length > 0 ? mutate() : Promise.resolve()))
-            .then(() => setSelectedFiles([]))
-            .catch((error) => {
-                mutate();
-                setSubmitting(false);
-                clearAndAddHttpError({ key: 'files', error });
-            })
-            .then(() => props.onDismissed());
+        try {
+            await renameFiles(uuid, directory, data);
+            await mutate();
+            setSelectedFiles([]);
+            toast.success(useMoveTerminology ? t('Moved') : t('Renamed'), name);
+            onDismissed();
+        } catch (err) {
+            mutate();
+            toast.fromError(err);
+        } finally {
+            setBusy(false);
+        }
     };
 
+    const target = join(directory, name).replace(/^(\.\.\/|\/)+/, '');
+
     return (
-        <Formik onSubmit={submit} initialValues={{ name: files.length > 1 ? '' : files[0] || '' }}>
-            {({ isSubmitting, values }) => (
-                <Modal {...props} dismissable={!isSubmitting} showSpinnerOverlay={isSubmitting}>
-                    <Form css={tw`m-0`}>
-                        <div css={[tw`flex flex-wrap`, useMoveTerminology ? tw`items-center` : tw`items-end`]}>
-                            <div css={tw`w-full sm:flex-1 sm:mr-4`}>
-                                <Field
-                                    type={'string'}
-                                    id={'file_name'}
-                                    name={'name'}
-                                    label={t('File Name')}
-                                    description={
-                                        useMoveTerminology
-                                            ? t(
-                                                  'Enter the new name and directory of this file or folder, relative to the current directory.'
-                                              )
-                                            : undefined
-                                    }
-                                    autoFocus
-                                />
-                            </div>
-                            <div css={tw`w-full sm:w-auto mt-4 sm:mt-0`}>
-                                <Button css={tw`w-full`}>{useMoveTerminology ? t('Move') : t('Rename')}</Button>
-                            </div>
-                        </div>
-                        {useMoveTerminology && (
-                            <p css={tw`text-xs mt-2 text-neutral-400`}>
-                                <strong css={tw`text-neutral-200`}>{t('New location:')}</strong>
-                                {t(' /home/container/{{value}}', {
-                                    value: join(directory, values.name).replace(/^(\.\.\/|\/)+/, ''),
-                                })}
-                            </p>
-                        )}
-                    </Form>
-                </Modal>
-            )}
-        </Formik>
+        <Modal
+            open={visible}
+            onClose={onDismissed}
+            busy={busy}
+            icon={useMoveTerminology ? FolderIcon : PencilIcon}
+            title={useMoveTerminology ? t('Move') : t('Rename')}
+            description={
+                files.length === 1 ? (
+                    <span className={'font-mono break-all'}>{files[0]}</span>
+                ) : (
+                    t('{{count}} files', { count: files.length })
+                )
+            }
+            footer={
+                <>
+                    <Button variant={'secondary'} onClick={onDismissed} disabled={busy}>
+                        {t('Cancel')}
+                    </Button>
+                    <Button loading={busy} disabled={!name.trim()} onClick={submit}>
+                        {useMoveTerminology ? t('Move') : t('Rename')}
+                    </Button>
+                </>
+            }
+        >
+            <form
+                onSubmit={(e) => {
+                    e.preventDefault();
+                    submit();
+                }}
+            >
+                <TextInput
+                    label={useMoveTerminology ? t('Destination') : t('New name')}
+                    value={name}
+                    onChange={setName}
+                    autoFocus
+                    className={'font-mono'}
+                    placeholder={useMoveTerminology ? 'plugins/old/' : undefined}
+                    description={
+                        useMoveTerminology ? (
+                            <>
+                                {t('Relative to the current folder, use ../ to go up.')}{' '}
+                                <span className={'font-mono text-gray-300'}>/home/container/{target}</span>
+                            </>
+                        ) : undefined
+                    }
+                />
+            </form>
+        </Modal>
     );
 };
 

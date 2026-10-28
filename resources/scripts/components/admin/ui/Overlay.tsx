@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { ExclamationIcon, XIcon } from '@heroicons/react/outline';
 import Button from '@/components/admin/ui/Button';
 import { spring } from '@/components/admin/ui/motion';
+import Modal from '@/components/ui/Modal';
 import { t } from '@/i18n';
 
 /** Closes the overlay with the escape key and stops the page behind it from scrolling. */
@@ -144,82 +145,59 @@ export const Confirm = ({
     onClose,
 }: ConfirmProps) => {
     const [typed, setTyped] = useState('');
-    useOverlay(open, onClose);
 
     useEffect(() => setTyped(''), [open]);
 
-    return createPortal(
-        <AnimatePresence>
-            {open && (
-                <div className={'fixed inset-0 z-[60] grid place-items-center p-4'}>
-                    <motion.div
-                        className={'absolute inset-0 bg-black/70'}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        onClick={onClose}
-                    />
-                    <motion.div
-                        role={'alertdialog'}
-                        aria-modal
-                        className={
-                            'relative w-full max-w-md rounded-2xl bg-gray-900 ring-1 ring-gray-800 shadow-2xl p-5'
-                        }
-                        initial={{ opacity: 0, scale: 0.92, y: 12 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.95 }}
-                        transition={spring}
+    const blocked = !!challenge && typed !== challenge;
+
+    return (
+        <Modal
+            open={open}
+            onClose={onClose}
+            busy={loading}
+            size={'sm'}
+            tone={danger ? 'danger' : 'default'}
+            icon={ExclamationIcon}
+            title={title}
+            description={children}
+            footer={
+                <>
+                    <Button variant={'secondary'} onClick={onClose} disabled={loading}>
+                        {t('Cancel')}
+                    </Button>
+                    <Button
+                        variant={danger ? 'danger' : 'primary'}
+                        loading={loading}
+                        disabled={blocked}
+                        onClick={onConfirm}
                     >
-                        <div className={'flex gap-4'}>
-                            <span
-                                className={classNames(
-                                    'grid place-items-center flex-shrink-0 w-10 h-10 rounded-full ring-1 ring-inset',
-                                    danger
-                                        ? 'bg-rose-500/10 text-rose-400 ring-rose-500/25'
-                                        : 'bg-raptor-500/10 text-raptor-400 ring-raptor-500/25'
-                                )}
-                            >
-                                <ExclamationIcon className={'w-5 h-5'} />
-                            </span>
-                            <div className={'min-w-0'}>
-                                <h3 className={'text-base font-semibold text-gray-50'}>{title}</h3>
-                                <div className={'mt-1 text-sm text-gray-400 leading-relaxed'}>{children}</div>
-                            </div>
-                        </div>
-                        {challenge && (
-                            <div className={'mt-4'}>
-                                <p className={'text-xs text-gray-400 mb-1.5'}>
-                                    {t('Type')}{' '}
-                                    <code className={'px-1 py-0.5 rounded bg-gray-800 text-gray-100'}>{challenge}</code>{' '}
-                                    {t('to confirm.')}
-                                </p>
-                                <input
-                                    autoFocus
-                                    value={typed}
-                                    onChange={(e) => setTyped(e.target.value)}
-                                    className={
-                                        'block w-full h-10 px-3 rounded-lg bg-gray-950/60 border-0 ring-1 ring-inset ring-gray-700 text-gray-100 focus:outline-none focus:ring-2 focus:ring-rose-500'
-                                    }
-                                />
-                            </div>
-                        )}
-                        <div className={'mt-5 flex justify-end gap-2'}>
-                            <Button variant={'ghost'} onClick={onClose}>
-                                {t('Cancel')}
-                            </Button>
-                            <Button
-                                variant={danger ? 'danger' : 'primary'}
-                                loading={loading}
-                                disabled={!!challenge && typed !== challenge}
-                                onClick={onConfirm}
-                            >
-                                {confirm}
-                            </Button>
-                        </div>
-                    </motion.div>
-                </div>
+                        {confirm}
+                    </Button>
+                </>
+            }
+        >
+            {challenge && (
+                <form
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        if (!blocked) onConfirm();
+                    }}
+                >
+                    <p className={'text-xs text-gray-400 mb-1.5'}>
+                        {t('Type')}{' '}
+                        <code className={'px-1 py-0.5 rounded bg-gray-800 text-gray-100 break-all'}>{challenge}</code>{' '}
+                        {t('to confirm.')}
+                    </p>
+                    <input
+                        autoFocus
+                        value={typed}
+                        onChange={(e) => setTyped(e.target.value)}
+                        className={
+                            'block w-full h-10 px-3 rounded-lg bg-gray-950/60 border-0 ring-1 ring-inset ring-gray-700 text-gray-100 focus:outline-none focus:ring-2 focus:ring-rose-500'
+                        }
+                    />
+                </form>
             )}
-        </AnimatePresence>,
-        document.body
+        </Modal>
     );
 };
