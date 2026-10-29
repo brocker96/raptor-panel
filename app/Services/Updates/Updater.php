@@ -325,6 +325,32 @@ class Updater
     }
 
     /**
+     * Refuses release archives that could write outside the installation: absolute paths, ".."
+     * in a path, and links that point outside the directory they are unpacked in. Backups made
+     * by the updater itself are not checked, they hold the links of the installation.
+     */
+    private function assertSafeArchive(string $archive): void
+    {
+        foreach (preg_split('/\R/', trim($this->run(['tar', '-tzf', $archive], quiet: true))) as $entry) {
+            if (str_starts_with($entry, '/') || in_array('..', explode('/', $entry), true)) {
+                throw new UpdateException("The archive contains an unsafe path: $entry");
+            }
+        }
+
+        $verbose = $this->run(['tar', '-tvzf', $archive], quiet: true);
+        foreach (preg_split('/\R/', trim($verbose)) as $line) {
+            if (!in_array($line[0] ?? '', ['l', 'h'], true)) {
+                continue;
+            }
+
+            $target = trim((string) preg_replace('/^.*? (?:->|link to) /', '', $line));
+            if (str_starts_with($target, '/') || in_array('..', explode('/', $target), true)) {
+                throw new UpdateException("The archive contains a link that leaves the Panel directory: $line");
+            }
+        }
+    }
+
+    /**
      * Runs the usual post-update commands. These run in new processes as the code of this one
      * was replaced.
      */
@@ -343,6 +369,8 @@ class Updater
         $this->step('Migrating the database');
         $this->artisan(['optimize:clear']);
         $this->artisan(['migrate', '--force', '--seed']);
+        // A database host that is down must not stop the update, the command can be run again.
+        $this->artisan(['raptor:database:repair-grants'], throw: false);
         if ($cache) {
             // The installer caches the configuration, routes and views, keep it that way.
             $this->artisan(['config:cache']);
@@ -361,21 +389,25 @@ class Updater
         $this->files->ensureDirectoryExists($this->path('downloads'));
         $target = $this->path('downloads/' . Str::slug($release['tag']) . '.tar.gz');
 
+        foreach (['archive', 'checksum'] as $key) {
+            if (!is_string($release[$key] ?? null) || !str_starts_with($release[$key], 'https://')) {
+                throw new UpdateException("The release has no HTTPS $key URL, updates are only installed when their checksum can be verified.");
+            }
+        }
+
         $this->line('GET ' . $release['archive']);
         Http::timeout(600)->withHeaders(['User-Agent' => 'Raptor-Panel'])->sink($target)->get($release['archive'])->throw();
 
-        if ($release['checksum']) {
-            $expected = strtolower(strtok(trim(Http::timeout(30)->get($release['checksum'])->throw()->body()), " \t\n") ?: '');
-            $actual = hash_file('sha256', $target);
-            if (!hash_equals($expected, $actual)) {
-                $this->files->delete($target);
+        $expected = strtolower(strtok(trim(Http::timeout(30)->get($release['checksum'])->throw()->body()), " \t\n") ?: '');
+        $actual = hash_file('sha256', $target);
+        if (!hash_equals($expected, $actual)) {
+            $this->files->delete($target);
 
-                throw new UpdateException("Checksum mismatch, expected $expected but the download is $actual.");
-            }
-            $this->line("Checksum verified ($actual)");
-        } else {
-            $this->line('The release has no panel.tar.gz.sha256 asset, skipping checksum verification.');
+            throw new UpdateException("Checksum mismatch, expected $expected but the download is $actual.");
         }
+        $this->line("Checksum verified ($actual)");
+
+        $this->assertSafeArchive($target);
 
         return $target;
     }

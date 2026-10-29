@@ -72,10 +72,13 @@ on_error() {
 }
 trap 'on_error $LINENO' ERR
 
+# Passwords and tokens passed as arguments never reach the log or the screen.
+redact() { sed -E 's/(--(password|token)[= ])[^ ]+/\1***/g' <<<"$*"; }
+
 run() {
-    echo "+ $*" >>"$LOG_FILE"
+    echo "+ $(redact "$*")" >>"$LOG_FILE"
     if ! "$@" >>"$LOG_FILE" 2>&1; then
-        echo "! command failed: $*" >>"$LOG_FILE"
+        echo "! command failed: $(redact "$*")" >>"$LOG_FILE"
         tail -n 15 "$LOG_FILE" | sed 's/^/       /' >&2
         return 1
     fi
@@ -230,6 +233,7 @@ BANNER
 
 [[ $EUID -eq 0 ]] || die "Run this script as root (sudo -i)."
 : >"$LOG_FILE"
+chmod 600 "$LOG_FILE"
 
 step "Checking the Pterodactyl installation"
 [[ -f "$OLD/artisan" && -f "$OLD/.env" ]] || die "No Pterodactyl Panel found in $OLD. Set PTERODACTYL_DIR to its directory."
@@ -413,6 +417,9 @@ info "Stored in $B ($(du -sh "$B" | cut -f1))"
 
 step "Migrating the database"
 run runuser -u "$WEB_USER" -- php "$DIR/artisan" migrate --force
+# Pterodactyl grants treat "_" in database names as a wildcard, narrow them to the one database.
+runuser -u "$WEB_USER" -- php "$DIR/artisan" raptor:database:repair-grants >>"$LOG_FILE" 2>&1 \
+    || warn "Some database grants could not be repaired, run: php artisan raptor:database:repair-grants"
 run runuser -u "$WEB_USER" -- php "$DIR/artisan" optimize:clear
 # Only the default name is changed, a name chosen by the owner is kept.
 if [[ "$(env_get APP_NAME "$DIR/.env")" == "Pterodactyl" ]]; then

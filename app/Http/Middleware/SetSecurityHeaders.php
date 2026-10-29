@@ -7,18 +7,21 @@ use Illuminate\Http\Request;
 class SetSecurityHeaders
 {
     /**
-     * Ideally we move away from X-Frame-Options/X-XSS-Protection and implement a
-     * proper standard CSP, but I can guarantee that will break for a lot of folks
-     * using custom plugins and who knows what image embeds.
-     *
-     * We'll circle back to that at a later date when it can be more fully controlled
-     * by the admin to support those cases without too much trouble.
+     * The policy does not limit scripts or styles, custom themes and plugins load those from
+     * anywhere. It does stop framing, <base> and plugin tricks and forms posting elsewhere.
      */
+    private const CONTENT_SECURITY_POLICY = "frame-ancestors 'none'; base-uri 'self'; object-src 'none'; form-action 'self'";
+
     private static array $headers = [
+        'Content-Security-Policy' => self::CONTENT_SECURITY_POLICY,
         'X-Frame-Options' => 'DENY',
         'X-Content-Type-Options' => 'nosniff',
-        'X-XSS-Protection' => '1; mode=block',
-        'Referrer-Policy' => 'no-referrer-when-downgrade',
+        // The XSS auditor is gone from browsers and could be abused to blank out page parts.
+        'X-XSS-Protection' => '0',
+        'Referrer-Policy' => 'strict-origin-when-cross-origin',
+        'Cross-Origin-Opener-Policy' => 'same-origin',
+        // Passkeys need publickey-credentials-*, so only hardware the Panel never uses is denied.
+        'Permissions-Policy' => 'camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()',
     ];
 
     /**
@@ -32,7 +35,13 @@ class SetSecurityHeaders
     {
         $response = $next($request);
 
-        foreach (static::$headers as $key => $value) {
+        $headers = static::$headers;
+        if ($request->isSecure()) {
+            // Only over HTTPS, a Panel reached over plain HTTP must not lock itself out.
+            $headers['Strict-Transport-Security'] = 'max-age=31536000';
+        }
+
+        foreach ($headers as $key => $value) {
             if (! $response->headers->has($key)) {
                 $response->headers->set($key, $value);
             }

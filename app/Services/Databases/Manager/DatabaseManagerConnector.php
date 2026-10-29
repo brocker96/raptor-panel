@@ -8,6 +8,7 @@ use Raptor\Exceptions\DisplayException;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Raptor\Extensions\DynamicDatabaseConnection;
+use Raptor\Repositories\Eloquent\DatabaseRepository;
 
 /**
  * Opens connections for the Raptor DB Manager. The connection always uses the credentials of the
@@ -117,8 +118,9 @@ class DatabaseManagerConnector
         $admin->statement(sprintf("CREATE USER IF NOT EXISTS %s IDENTIFIED BY '%s'", $user, $password));
         $admin->statement(sprintf("ALTER USER %s IDENTIFIED BY '%s'", $user, $password));
         $admin->statement(sprintf(
-            'GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, REFERENCES, INDEX, LOCK TABLES, CREATE ROUTINE, ALTER ROUTINE, EXECUTE, CREATE TEMPORARY TABLES, CREATE VIEW, SHOW VIEW, EVENT, TRIGGER ON `%s`.* TO %s',
-            str_replace('`', '``', $database->database),
+            'GRANT %s ON %s.* TO %s',
+            DatabaseRepository::PRIVILEGES,
+            DatabaseRepository::grantTarget($database->database),
             $user
         ));
         $admin->statement('FLUSH PRIVILEGES');

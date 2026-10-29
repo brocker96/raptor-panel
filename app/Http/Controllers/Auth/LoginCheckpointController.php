@@ -2,7 +2,6 @@
 
 namespace Raptor\Http\Controllers\Auth;
 
-use Carbon\Carbon;
 use Raptor\Models\User;
 use Carbon\CarbonImmutable;
 use Carbon\CarbonInterface;
@@ -84,9 +83,7 @@ class LoginCheckpointController extends AbstractLoginController
                 config('raptor.auth.2fa.window') ?? 1,
             );
 
-            if ($verified !== false) {
-                $user->update(['totp_authenticated_at' => Carbon::now()]);
-
+            if ($verified !== false && $user->claimTotpUse()) {
                 Event::dispatch(new ProvidedAuthenticationToken($user));
 
                 if ($request->boolean('trust_device')) {

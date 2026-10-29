@@ -2,7 +2,9 @@
 
 namespace Raptor\Http\Middleware;
 
+use Illuminate\Http\Request;
 use Raptor\Helpers\Cloudflare;
+use Symfony\Component\HttpFoundation\IpUtils;
 use Illuminate\Http\Middleware\TrustProxies as Middleware;
 
 class TrustProxies extends Middleware
@@ -25,5 +27,24 @@ class TrustProxies extends Middleware
         }
 
         return array_values(array_unique(array_filter($proxies)));
+    }
+
+    /**
+     * Cloudflare puts the visitor address in CF-Connecting-IP and only appends to whatever
+     * X-Forwarded-For the visitor sent. A Cloudflare Worker can even set X-Forwarded-For
+     * freely, so for requests from the edge network only CF-Connecting-IP is believed.
+     */
+    public function handle(Request $request, \Closure $next)
+    {
+        $connecting = (string) $request->headers->get('CF-Connecting-IP');
+        if (
+            filter_var(config('raptor.cloudflare.trust_proxies', true), FILTER_VALIDATE_BOOLEAN)
+            && filter_var($connecting, FILTER_VALIDATE_IP) !== false
+            && IpUtils::checkIp((string) $request->server->get('REMOTE_ADDR'), Cloudflare::ranges())
+        ) {
+            $request->headers->set('X-Forwarded-For', $connecting);
+        }
+
+        return parent::handle($request, $next);
     }
 }

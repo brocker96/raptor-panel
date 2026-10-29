@@ -216,6 +216,17 @@ class Server extends Model implements Identifiable
         return $this->status !== self::STATUS_INSTALLING && $this->status !== self::STATUS_INSTALL_FAILED;
     }
 
+    /**
+     * Locks this server's row until the surrounding transaction ends. Requests that
+     * create limited resources (databases, allocations, backups) take this lock first,
+     * so parallel requests count the resources one after another and cannot overshoot
+     * the limit, even when the server has none of that resource yet.
+     */
+    public function lockForResourceCreation(): void
+    {
+        static::query()->whereKey($this->getKey())->lockForUpdate()->first();
+    }
+
     public function isSuspended(): bool
     {
         return $this->status === self::STATUS_SUSPENDED;

@@ -54,4 +54,26 @@ class CloudflareProxyTest extends TestCase
 
         $this->assertSame('203.0.113.7', $request->ip());
     }
+
+    public function testConnectingIpWinsOverForwardedForFromCloudflare(): void
+    {
+        // A Cloudflare Worker can set X-Forwarded-For to anything, CF-Connecting-IP it cannot.
+        $request = $this->handle('173.245.48.10', ['HTTP_X_FORWARDED_FOR' => '10.0.0.1', 'HTTP_CF_CONNECTING_IP' => '203.0.113.7']);
+
+        $this->assertSame('203.0.113.7', $request->ip());
+    }
+
+    public function testConnectingIpFromOtherAddressesIsIgnored(): void
+    {
+        $request = $this->handle('198.51.100.20', ['HTTP_CF_CONNECTING_IP' => '10.0.0.1']);
+
+        $this->assertSame('198.51.100.20', $request->ip());
+    }
+
+    public function testInvalidConnectingIpIsIgnored(): void
+    {
+        $request = $this->handle('173.245.48.10', ['HTTP_X_FORWARDED_FOR' => '203.0.113.7', 'HTTP_CF_CONNECTING_IP' => 'not-an-ip']);
+
+        $this->assertSame('203.0.113.7', $request->ip());
+    }
 }

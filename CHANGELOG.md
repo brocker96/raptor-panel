@@ -3,6 +3,23 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## Unreleased
+
+### Security
+* **Database grants no longer reach other servers' databases.** MySQL reads `_` and `%` in a `GRANT` database name as wildcards, so a server database named `_shop` (stored as `s1__shop`) also gave its user access to `s11_shop` of another server. Grants now escape the name. `php artisan raptor:database:repair-grants` narrows existing grants and runs automatically on update and in `migrate.sh`. This also affects upstream Pterodactyl.
+* Running a schedule by hand now needs the permission of every task in it, so `schedule.update` alone can no longer start, stop or back up a server or send console commands (CVE-2026-86177).
+* A TOTP code can no longer pass twice when two requests race with it.
+* Removing admin rights from a user ends their SFTP sessions on every node.
+* Behind Cloudflare the visitor address comes from `CF-Connecting-IP`, so a Cloudflare Worker cannot fake `X-Forwarded-For` to get past the admin IP allowlist or rate limits.
+* The updater only installs releases with an HTTPS download and a matching SHA-256 checksum, and refuses archives with absolute paths, `..` or links leaving the Panel directory.
+* Stricter security headers: a base Content Security Policy (`frame-ancestors`, `base-uri`, `object-src`, `form-action`), HSTS over HTTPS, `Cross-Origin-Opener-Policy`, `Permissions-Policy` and `strict-origin-when-cross-origin` referrers.
+* Email and password changes are rate limited per user before validation, so taken addresses cannot be probed in bulk.
+* Resource limits lock the server row, so parallel requests cannot create more databases, allocations or backups than allowed.
+* `install.sh`, `wings.sh` and `migrate.sh` keep passwords and tokens out of their logs, the logs and `.env` are no longer world readable.
+* A table name with a line break can no longer inject statements into a DB Manager export.
+* Updated Laravel (TokenGuard bypass CVE-2026-114509 and two others), Symfony, CommonMark, phpseclib, Flysystem, axios, i18next-http-backend and other dependencies. `composer audit` and `yarn audit` report no advisories.
+* The test and new security workflows run on `0.x_beta`. Dependency advisories are checked daily, CodeQL scans the frontend and Dependabot keeps dependencies current.
+
 ## v0.5.0-beta
 The first tagged Raptor Panel release. It contains everything built on the `0.x_beta` branch so far.
 

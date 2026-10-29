@@ -64,12 +64,41 @@ class ExecuteScheduleTest extends ClientApiIntegrationTestCase
     }
 
     /**
-     * Test that a subuser can execute a schedule containing tasks they could not create.
+     * Test that a subuser cannot use a schedule to run tasks they could not run by hand
+     * (CVE-2026-86177).
      */
     #[\PHPUnit\Framework\Attributes\DataProvider('taskActionDataProvider')]
-    public function testSubuserCanExecuteScheduleWithoutTaskActionPermission(string $action, string $payload)
+    public function testSubuserCannotExecuteScheduleWithoutTaskActionPermission(string $action, string $payload)
     {
         [$user, $server] = $this->generateTestAccount([Permission::ACTION_SCHEDULE_UPDATE]);
+
+        Bus::fake();
+
+        /** @var Schedule $schedule */
+        $schedule = Schedule::factory()->create(['server_id' => $server->id]);
+
+        Task::factory()->create([
+            'schedule_id' => $schedule->id,
+            'sequence_id' => 1,
+            'action' => $action,
+            'payload' => $payload,
+        ]);
+
+        $this->actingAs($user)->postJson($this->link($schedule, '/execute'))->assertForbidden();
+
+        Bus::assertNotDispatched(RunTaskJob::class);
+    }
+
+    /**
+     * Test that a subuser holding the permission a task needs can still run the schedule.
+     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('taskActionDataProvider')]
+    public function testSubuserWithTaskActionPermissionCanExecuteSchedule(string $action, string $payload)
+    {
+        [$user, $server] = $this->generateTestAccount([
+            Permission::ACTION_SCHEDULE_UPDATE,
+            Task::permissionForAction($action, $payload),
+        ]);
 
         Bus::fake();
 
@@ -117,7 +146,8 @@ class ExecuteScheduleTest extends ClientApiIntegrationTestCase
 
     public static function permissionsDataProvider(): array
     {
-        return [[[]], [[Permission::ACTION_SCHEDULE_UPDATE]]];
+        // The factory task sends a console command, so a subuser also needs the console.
+        return [[[]], [[Permission::ACTION_SCHEDULE_UPDATE, Permission::ACTION_CONTROL_CONSOLE]]];
     }
 
     public static function taskActionDataProvider(): array

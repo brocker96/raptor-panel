@@ -50,7 +50,8 @@ class DatabaseController extends ClientApiController
     public function store(StoreDatabaseRequest $request, Server $server): array
     {
         $database = Activity::event('server:database.create')->transaction(function ($log) use ($request, $server) {
-            if ($server->databases()->lockForUpdate()->count() >= $server->database_limit) {
+            $server->lockForResourceCreation();
+            if ($server->databases()->count() >= $server->database_limit) {
                 throw new DisplayException('Cannot create additional databases on this server: limit has been reached.');
             }
 

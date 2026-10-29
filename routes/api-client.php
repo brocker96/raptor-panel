@@ -51,10 +51,11 @@ Route::prefix('/account')->middleware(AccountSubject::class)->group(function () 
         Route::post('/recovery-codes', [Client\SecurityController::class, 'regenerateRecoveryCodes'])->middleware('confirm:strong');
     });
 
+    // Counted per user before validation, so a taken address cannot be probed in bulk.
     Route::put('/email', [Client\AccountController::class, 'updateEmail'])
-        ->middleware('throttle')
+        ->middleware('throttle:10,60')
         ->name('api:client.account.update-email');
-    Route::put('/password', [Client\AccountController::class, 'updatePassword'])->name('api:client.account.update-password');
+    Route::put('/password', [Client\AccountController::class, 'updatePassword'])->middleware('throttle:10,10')->name('api:client.account.update-password');
     Route::post('/avatar', [Client\AccountAvatarController::class, 'store'])->middleware('throttle:10,1');
     Route::delete('/avatar', [Client\AccountAvatarController::class, 'delete']);
 

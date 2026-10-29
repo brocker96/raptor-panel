@@ -3,6 +3,7 @@
 namespace Raptor\Http\Controllers\Api\Client\Servers;
 
 use Carbon\Carbon;
+use Raptor\Models\Task;
 use Raptor\Models\Server;
 use Raptor\Models\Schedule;
 use Illuminate\Http\Request;
@@ -11,6 +12,7 @@ use Illuminate\Http\Response;
 use Raptor\Helpers\Utilities;
 use Illuminate\Http\JsonResponse;
 use Raptor\Exceptions\DisplayException;
+use Raptor\Exceptions\Http\HttpForbiddenException;
 use Raptor\Repositories\Eloquent\ScheduleRepository;
 use Raptor\Services\Schedules\ProcessScheduleService;
 use Raptor\Transformers\Api\Client\ScheduleTransformer;
@@ -149,6 +151,17 @@ class ScheduleController extends ClientApiController
      */
     public function execute(TriggerScheduleRequest $request, Server $server, Schedule $schedule): JsonResponse
     {
+        // Running a schedule runs every task in it, so the caller needs the permission
+        // each task would need if it was performed by hand.
+        foreach ($schedule->tasks as $task) {
+            // Owners and admins pass every check. Subusers are refused a task whose action maps
+            // to no permission, such as an old power payload.
+            $permission = Task::permissionForAction($task->action, $task->payload) ?? '__invalid';
+            if (!$request->user()->can($permission, $server)) {
+                throw new HttpForbiddenException('You do not have permission to run every task in this schedule.');
+            }
+        }
+
         $this->service->handle($schedule, true);
 
         Activity::event('server:schedule.execute')->subject($schedule)->property('name', $schedule->name)->log();

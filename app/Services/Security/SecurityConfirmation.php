@@ -177,13 +177,7 @@ class SecurityConfirmation
             config('raptor.auth.2fa.window') ?? 1,
         );
 
-        if ($verified === false) {
-            return false;
-        }
-
-        $user->forceFill(['totp_authenticated_at' => CarbonImmutable::now()])->save();
-
-        return true;
+        return $verified !== false && $user->claimTotpUse();
     }
 
     private function pinKey(User $user): string

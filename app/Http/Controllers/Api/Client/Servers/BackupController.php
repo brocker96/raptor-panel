@@ -78,7 +78,8 @@ class BackupController extends ClientApiController
         }
 
         $backup = Activity::event('server:backup.start')->transaction(function ($log) use ($action, $server, $request) {
-            $server->backups()->lockForUpdate()->count();
+            // The backup service checks the limit, the lock keeps parallel requests in line.
+            $server->lockForResourceCreation();
 
             $backup = $action->handle($server, $request->input('name'));
 

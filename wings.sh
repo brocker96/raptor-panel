@@ -51,10 +51,13 @@ info() { printf '     %s%s%s\n' "$DIM" "$*" "$RESET"; }
 warn() { printf '     %s! %s%s\n' "$YELLOW" "$*" "$RESET"; }
 fail() { printf '\n%s✖ %s%s\n' "$RED" "$*" "$RESET" >&2; exit 1; }
 
+# Passwords and tokens passed as arguments never reach the log or the screen.
+redact() { sed -E 's/(--(password|token)[= ])[^ ]+/\1***/g' <<<"$*"; }
+
 run() {
-    echo "+ $*" >>"$LOG_FILE"
+    echo "+ $(redact "$*")" >>"$LOG_FILE"
     if ! "$@" >>"$LOG_FILE" 2>&1; then
-        fail "Command failed: $*  (see $LOG_FILE for details)"
+        fail "Command failed: $(redact "$*")  (see $LOG_FILE for details)"
     fi
 }
 
@@ -120,6 +123,7 @@ BANNER
 
 [[ $EUID -eq 0 ]] || fail "Run this installer as root (sudo -i)."
 : >"$LOG_FILE"
+chmod 600 "$LOG_FILE"
 
 # ---------------------------------------------------------------------------------------------
 # Uninstall

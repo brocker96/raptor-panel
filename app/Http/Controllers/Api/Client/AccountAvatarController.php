@@ -17,7 +17,7 @@ class AccountAvatarController extends ClientApiController
     public function store(Request $request): JsonResponse
     {
         $request->validate([
-            'avatar' => 'required|file|max:5120|mimes:jpeg,jpg,png,webp,gif|dimensions:min_width=32,min_height=32,max_width=8000,max_height=8000',
+            'avatar' => 'required|file|max:5120|mimes:jpeg,jpg,png,webp,gif|dimensions:min_width=32,min_height=32,max_width=4096,max_height=4096',
         ]);
 
         $user = $this->avatarService->store($request->user(), $request->file('avatar'));

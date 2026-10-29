@@ -1,9 +1,12 @@
 name: Tests
 
 on:
+  push:
+    branches:
+      - "0.x_beta"
   pull_request:
     branches:
-      - "1.0-develop"
+      - "0.x_beta"
 
 jobs:
   tests:

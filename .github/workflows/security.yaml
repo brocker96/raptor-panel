@@ -1,0 +1,53 @@
+name: Security
+
+on:
+  push:
+    branches:
+      - "0.x_beta"
+  pull_request:
+    branches:
+      - "0.x_beta"
+  schedule:
+    # Every day, so a newly published advisory for a dependency shows up without a code change.
+    - cron: "17 4 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  dependencies:
+    name: Dependency advisories
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.3
+          tools: composer:v2
+          coverage: none
+      # Reads composer.lock only, nothing is installed.
+      - run: composer audit --locked --no-interaction
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      # The exit code is a bit mask of the severities found, 4 and up is moderate or worse.
+      - run: yarn audit || [ $? -lt 4 ]
+
+  codeql:
+    name: CodeQL
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      security-events: write
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [javascript-typescript, actions]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+          queries: security-extended
+      - uses: github/codeql-action/analyze@v3

@@ -16,6 +16,8 @@ class DatabaseRepository extends EloquentRepository implements DatabaseRepositor
     /**
      * DatabaseRepository constructor.
      */
+    public const PRIVILEGES = 'SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, REFERENCES, INDEX, LOCK TABLES, CREATE ROUTINE, ALTER ROUTINE, EXECUTE, CREATE TEMPORARY TABLES, CREATE VIEW, SHOW VIEW, EVENT, TRIGGER';
+
     public function __construct(Application $application, private DatabaseManager $database)
     {
         parent::__construct($application);
@@ -95,11 +97,40 @@ class DatabaseRepository extends EloquentRepository implements DatabaseRepositor
     public function assignUserToDatabase(string $database, string $username, string $remote): bool
     {
         return $this->run(sprintf(
-            'GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, REFERENCES, INDEX, LOCK TABLES, CREATE ROUTINE, ALTER ROUTINE, EXECUTE, CREATE TEMPORARY TABLES, CREATE VIEW, SHOW VIEW, EVENT, TRIGGER ON `%s`.* TO `%s`@`%s`',
-            $database,
+            'GRANT %s ON %s.* TO `%s`@`%s`',
+            self::PRIVILEGES,
+            self::grantTarget($database),
             $username,
             $remote
         ));
+    }
+
+    /**
+     * Removes a grant made before database names were escaped, see grantTarget(). Returns
+     * false when there was no such grant.
+     */
+    public function revokeUnescapedGrant(string $database, string $username, string $remote): bool
+    {
+        try {
+            return $this->run(sprintf('REVOKE ALL PRIVILEGES ON `%s`.* FROM `%s`@`%s`', str_replace('`', '``', $database), $username, $remote));
+        } catch (\Illuminate\Database\QueryException $exception) {
+            // 1141: there is no such grant, 1147: there is no such grant on the table level.
+            if (in_array((int) ($exception->errorInfo[1] ?? 0), [1141, 1147], true)) {
+                return false;
+            }
+
+            throw $exception;
+        }
+    }
+
+    /**
+     * The database name as it must appear in a GRANT. MySQL reads "_" and "%" in that
+     * position as wildcards, so without escaping a grant on "s1__shop" would also cover the
+     * database "s11_shop" of another server.
+     */
+    public static function grantTarget(string $database): string
+    {
+        return '`' . str_replace(['`', '\\', '_', '%'], ['``', '\\\\', '\\_', '\\%'], $database) . '`';
     }
 
     /**

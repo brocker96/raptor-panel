@@ -379,7 +379,9 @@ class DatabaseManagerService
                 continue;
             }
 
-            $write(sprintf("-- Table %s\nDROP TABLE IF EXISTS %s;\n%s;\n\n", $table, $this->ident($table), $create));
+            // A table name may hold a line break, which would end the comment and turn the rest
+            // of the name into a statement that runs on import.
+            $write(sprintf("-- Table %s\nDROP TABLE IF EXISTS %s;\n%s;\n\n", preg_replace('/[\r\n]+/', ' ', $table), $this->ident($table), $create));
             if (!$data) {
                 continue;
             }

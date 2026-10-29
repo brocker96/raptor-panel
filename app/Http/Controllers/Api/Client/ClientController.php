@@ -67,7 +67,7 @@ class ClientController extends ClientApiController
             $builder = $builder->whereIn('servers.id', $user->accessibleServers()->pluck('id')->all());
         }
 
-        $servers = $builder->paginate(min($request->query('per_page', 50), 100))->appends($request->query());
+        $servers = $builder->paginate(max(1, min((int) $request->query('per_page', 50), 100)))->appends($request->query());
 
         // The variables relationship cannot be eager loaded by Eloquent, so it is loaded for the
         // entire page in two queries instead of two queries for every server.

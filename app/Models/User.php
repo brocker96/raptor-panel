@@ -4,6 +4,7 @@ namespace Raptor\Models;
 
 use Raptor\Rules\Username;
 use Raptor\Facades\Activity;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Validation\Rules\In;
 use Illuminate\Auth\Authenticatable;
@@ -40,12 +41,12 @@ use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
  * @property bool $root_admin
  * @property bool $use_totp
  * @property string|null $totp_secret
- * @property \Illuminate\Support\Carbon|null $totp_authenticated_at
+ * @property Carbon|null $totp_authenticated_at
  * @property bool $gravatar
  * @property string|null $avatar
  * @property string|null $avatar_url
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @property \Illuminate\Database\Eloquent\Collection|\Raptor\Models\ApiKey[] $apiKeys
  * @property int|null $api_keys_count
  * @property string $name
@@ -229,9 +230,33 @@ class User extends Model implements
 
     /**
      * Send the password reset notification.
-     *
-     * @param string $token
      */
+    /**
+     * Records that a TOTP code was just used. The write only lands if no other code was
+     * used since this model was loaded, so two requests racing with the same code cannot
+     * both get through. Returns false for the request that lost.
+     */
+    public function claimTotpUse(): bool
+    {
+        $seen = $this->getOriginal('totp_authenticated_at');
+        $now = Carbon::now()->startOfSecond();
+
+        $updated = static::query()
+            ->whereKey($this->getKey())
+            ->when(
+                $seen,
+                fn (Builder $query) => $query->where('totp_authenticated_at', $seen),
+                fn (Builder $query) => $query->whereNull('totp_authenticated_at'),
+            )
+            ->update(['totp_authenticated_at' => $now]);
+
+        if ($updated === 1) {
+            $this->forceFill(['totp_authenticated_at' => $now])->syncOriginalAttribute('totp_authenticated_at');
+        }
+
+        return $updated === 1;
+    }
+
     public function sendPasswordResetNotification($token)
     {
         Activity::event('auth:reset-password')
