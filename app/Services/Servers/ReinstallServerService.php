@@ -3,8 +3,8 @@
 namespace Raptor\Services\Servers;
 
 use Raptor\Models\Server;
-use Illuminate\Database\ConnectionInterface;
 use Raptor\Exceptions\DisplayException;
+use Illuminate\Database\ConnectionInterface;
 use Raptor\Repositories\Wings\DaemonServerRepository;
 
 class ReinstallServerService

@@ -3,14 +3,14 @@
 namespace Raptor\Notifications;
 
 use Raptor\Models\User;
-use Illuminate\Bus\Queueable;
 use Raptor\Events\Event;
 use Raptor\Models\Server;
+use Illuminate\Bus\Queueable;
 use Illuminate\Container\Container;
 use Raptor\Events\Server\Installed;
+use Raptor\Contracts\Core\ReceivesEvents;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Raptor\Contracts\Core\ReceivesEvents;
 use Illuminate\Contracts\Notifications\Dispatcher;
 use Illuminate\Notifications\Messages\MailMessage;
 

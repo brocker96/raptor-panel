@@ -4,8 +4,8 @@ namespace Raptor\Tests\Integration\Api\Client\Server\ScheduleTask;
 
 use Raptor\Models\Task;
 use Raptor\Models\User;
-use Illuminate\Http\Response;
 use Raptor\Models\Schedule;
+use Illuminate\Http\Response;
 use Raptor\Models\Permission;
 use Raptor\Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
 

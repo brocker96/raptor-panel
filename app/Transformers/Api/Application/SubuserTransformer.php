@@ -4,8 +4,8 @@ namespace Raptor\Transformers\Api\Application;
 
 use Raptor\Models\Subuser;
 use League\Fractal\Resource\Item;
-use League\Fractal\Resource\NullResource;
 use Raptor\Services\Acl\Api\AdminAcl;
+use League\Fractal\Resource\NullResource;
 
 class SubuserTransformer extends BaseTransformer
 {

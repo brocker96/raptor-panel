@@ -2,9 +2,9 @@
 
 namespace Raptor\Http\Middleware\Admin\Servers;
 
+use Raptor\Models\Server;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Raptor\Models\Server;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 

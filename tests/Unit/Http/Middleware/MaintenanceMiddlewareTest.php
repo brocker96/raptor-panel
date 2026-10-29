@@ -3,10 +3,10 @@
 namespace Raptor\Tests\Unit\Http\Middleware;
 
 use Mockery as m;
-use Mockery\MockInterface;
 use Raptor\Models\Node;
-use Illuminate\Http\Response;
 use Raptor\Models\Server;
+use Mockery\MockInterface;
+use Illuminate\Http\Response;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Raptor\Http\Middleware\MaintenanceMiddleware;
 

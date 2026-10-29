@@ -2,10 +2,10 @@
 
 namespace Raptor\Http\Middleware\Api\Client\Server;
 
-use Illuminate\Http\Request;
 use Raptor\Models\Server;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Illuminate\Http\Request;
 use Raptor\Exceptions\Http\Server\ServerStateConflictException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class AuthenticateServerAccess
 {

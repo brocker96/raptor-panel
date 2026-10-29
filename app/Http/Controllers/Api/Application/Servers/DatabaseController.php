@@ -2,9 +2,9 @@
 
 namespace Raptor\Http\Controllers\Api\Application\Servers;
 
-use Illuminate\Http\Response;
 use Raptor\Models\Server;
 use Raptor\Models\Database;
+use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Raptor\Services\Databases\DatabasePasswordService;
 use Raptor\Services\Databases\DatabaseManagementService;

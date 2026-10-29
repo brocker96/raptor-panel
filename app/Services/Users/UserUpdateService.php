@@ -3,8 +3,8 @@
 namespace Raptor\Services\Users;
 
 use Raptor\Models\User;
-use Illuminate\Contracts\Hashing\Hasher;
 use Raptor\Events\User\PasswordChanged;
+use Illuminate\Contracts\Hashing\Hasher;
 use Raptor\Traits\Services\HasUserLevels;
 
 class UserUpdateService

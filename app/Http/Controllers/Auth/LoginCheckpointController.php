@@ -3,18 +3,18 @@
 namespace Raptor\Http\Controllers\Auth;
 
 use Carbon\Carbon;
+use Raptor\Models\User;
 use Carbon\CarbonImmutable;
 use Carbon\CarbonInterface;
-use Raptor\Models\User;
-use Raptor\Services\Security\AccountLockout;
-use Raptor\Services\Security\TrustedDevices;
 use Illuminate\Http\JsonResponse;
 use PragmaRX\Google2FA\Google2FA;
 use Illuminate\Support\Facades\Event;
+use Raptor\Services\Security\AccountLockout;
+use Raptor\Services\Security\TrustedDevices;
 use Illuminate\Contracts\Encryption\Encrypter;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Raptor\Events\Auth\ProvidedAuthenticationToken;
 use Raptor\Http\Requests\Auth\LoginCheckpointRequest;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Contracts\Validation\Factory as ValidationFactory;
 
 class LoginCheckpointController extends AbstractLoginController

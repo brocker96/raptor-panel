@@ -2,15 +2,15 @@
 
 namespace Raptor\Tests\Integration\Services\Backups;
 
-use Carbon\CarbonImmutable;
 use Raptor\Enum\JwtScope;
 use Raptor\Models\Backup;
+use Carbon\CarbonImmutable;
 use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
 use Lcobucci\JWT\Signer\Key\InMemory;
-use Lcobucci\JWT\Validation\Constraint\SignedWith;
 use Raptor\Services\Backups\DownloadLinkService;
 use Raptor\Tests\Integration\IntegrationTestCase;
+use Lcobucci\JWT\Validation\Constraint\SignedWith;
 
 class DownloadLinkServiceTest extends IntegrationTestCase
 {

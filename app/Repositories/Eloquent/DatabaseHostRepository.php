@@ -2,8 +2,8 @@
 
 namespace Raptor\Repositories\Eloquent;
 
-use Illuminate\Support\Collection;
 use Raptor\Models\DatabaseHost;
+use Illuminate\Support\Collection;
 use Raptor\Contracts\Repository\DatabaseHostRepositoryInterface;
 
 class DatabaseHostRepository extends EloquentRepository implements DatabaseHostRepositoryInterface

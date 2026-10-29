@@ -5,10 +5,10 @@ namespace Raptor\Listeners;
 use Raptor\Facades\Activity;
 use Illuminate\Auth\Events\Failed;
 use Illuminate\Auth\Events\Logout;
-use Raptor\Services\Security\SessionManager;
 use Raptor\Events\Auth\DirectLogin;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Contracts\Events\Dispatcher;
+use Raptor\Services\Security\SessionManager;
 use Raptor\Extensions\Illuminate\Events\Contracts\SubscribesToEvents;
 
 class AuthenticationListener implements SubscribesToEvents

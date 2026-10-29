@@ -5,8 +5,8 @@ namespace Raptor\Repositories\Eloquent;
 use Raptor\Models\Egg;
 use Webmozart\Assert\Assert;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Raptor\Contracts\Repository\EggRepositoryInterface;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Raptor\Exceptions\Repository\RecordNotFoundException;
 
 class EggRepository extends EloquentRepository implements EggRepositoryInterface

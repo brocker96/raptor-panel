@@ -2,12 +2,12 @@
 
 namespace Raptor\Services\Nodes;
 
-use Carbon\CarbonImmutable;
-use Illuminate\Support\Str;
 use Raptor\Models\Node;
 use Raptor\Models\User;
-use Webmozart\Assert\Assert;
 use Raptor\Enum\JwtScope;
+use Carbon\CarbonImmutable;
+use Illuminate\Support\Str;
+use Webmozart\Assert\Assert;
 use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\UnencryptedToken;
 use Lcobucci\JWT\Signer\Hmac\Sha256;

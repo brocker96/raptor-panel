@@ -2,8 +2,8 @@
 
 namespace Raptor\Services\Servers;
 
-use Illuminate\Support\Arr;
 use Raptor\Models\Server;
+use Illuminate\Support\Arr;
 use Raptor\Jobs\RevokeSftpAccessJob;
 use Illuminate\Database\ConnectionInterface;
 use Raptor\Traits\Services\ReturnsUpdatedModels;

@@ -6,8 +6,8 @@ use Raptor\Models\ApiKey;
 use Raptor\Tests\TestCase;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Contracts\Support\Arrayable;
-use Laravel\Sanctum\NewAccessToken as SanctumAccessToken;
 use Raptor\Extensions\Laravel\Sanctum\NewAccessToken;
+use Laravel\Sanctum\NewAccessToken as SanctumAccessToken;
 
 class NewAccessTokenTest extends TestCase
 {

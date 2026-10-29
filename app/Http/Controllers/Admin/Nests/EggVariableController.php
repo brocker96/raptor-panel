@@ -2,13 +2,13 @@
 
 namespace Raptor\Http\Controllers\Admin\Nests;
 
-use Illuminate\View\View;
 use Raptor\Models\Egg;
+use Illuminate\View\View;
 use Raptor\Models\EggVariable;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
-use Illuminate\View\Factory as ViewFactory;
 use Raptor\Http\Controllers\Controller;
+use Illuminate\View\Factory as ViewFactory;
 use Raptor\Contracts\Repository\EggRepositoryInterface;
 use Raptor\Services\Eggs\Variables\VariableUpdateService;
 use Raptor\Http\Requests\Admin\Egg\EggVariableFormRequest;

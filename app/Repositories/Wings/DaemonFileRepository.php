@@ -2,9 +2,9 @@
 
 namespace Raptor\Repositories\Wings;
 
+use Raptor\Models\Server;
 use Illuminate\Support\Arr;
 use Webmozart\Assert\Assert;
-use Raptor\Models\Server;
 use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\TransferException;

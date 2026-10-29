@@ -2,21 +2,21 @@
 
 namespace Raptor\Http\Controllers\Auth;
 
-use Illuminate\Http\Request;
 use Raptor\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Auth\Events\Failed;
 use Illuminate\Container\Container;
-use Illuminate\Support\Facades\Event;
 use Raptor\Events\Auth\DirectLogin;
+use Illuminate\Support\Facades\Event;
 use Raptor\Exceptions\DisplayException;
 use Raptor\Http\Controllers\Controller;
-use Raptor\Services\Security\SessionManager;
 use Raptor\Notifications\SecurityAlert;
 use Raptor\Services\Security\AccountLockout;
-use Raptor\Services\Security\SecurityNotifier;
+use Raptor\Services\Security\SessionManager;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Raptor\Services\Security\SecurityNotifier;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 abstract class AbstractLoginController extends Controller

@@ -1,10 +1,10 @@
 <?php
 
+use Raptor\Models\Permission;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Raptor\Models\Permission;
-use Illuminate\Support\Facades\Schema;
 use Raptor\Models\Permission as P;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 

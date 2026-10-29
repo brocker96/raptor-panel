@@ -3,8 +3,8 @@
 namespace Raptor\Tests\Unit\Http\Middleware;
 
 use Mockery as m;
-use Mockery\MockInterface;
 use Raptor\Models\User;
+use Mockery\MockInterface;
 use Illuminate\Foundation\Application;
 use Raptor\Http\Middleware\LanguageMiddleware;
 

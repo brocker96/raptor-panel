@@ -2,19 +2,19 @@
 
 namespace Raptor\Tests\Integration\Services\Servers;
 
-use Mockery\MockInterface;
 use Raptor\Models\Egg;
-use GuzzleHttp\Psr7\Request;
 use Raptor\Models\Node;
 use Raptor\Models\User;
-use GuzzleHttp\Psr7\Response;
 use Raptor\Models\Server;
+use Mockery\MockInterface;
 use Raptor\Models\Location;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
 use Raptor\Models\Allocation;
+use Raptor\Models\Objects\DeploymentObject;
 use Illuminate\Foundation\Testing\WithFaker;
 use GuzzleHttp\Exception\BadResponseException;
 use Illuminate\Validation\ValidationException;
-use Raptor\Models\Objects\DeploymentObject;
 use Raptor\Tests\Integration\IntegrationTestCase;
 use Raptor\Services\Servers\ServerCreationService;
 use Raptor\Repositories\Wings\DaemonServerRepository;

@@ -4,8 +4,8 @@ namespace Raptor\Http\Resources\Wings;
 
 use Raptor\Models\Server;
 use Illuminate\Container\Container;
-use Illuminate\Http\Resources\Json\ResourceCollection;
 use Raptor\Services\Eggs\EggConfigurationService;
+use Illuminate\Http\Resources\Json\ResourceCollection;
 use Raptor\Services\Servers\ServerConfigurationStructureService;
 
 class ServerConfigurationCollection extends ResourceCollection

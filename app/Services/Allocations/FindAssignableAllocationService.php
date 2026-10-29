@@ -2,8 +2,8 @@
 
 namespace Raptor\Services\Allocations;
 
-use Webmozart\Assert\Assert;
 use Raptor\Models\Server;
+use Webmozart\Assert\Assert;
 use Raptor\Models\Allocation;
 use Raptor\Exceptions\Service\Allocation\AutoAllocationNotEnabledException;
 use Raptor\Exceptions\Service\Allocation\NoAutoAllocationSpaceAvailableException;

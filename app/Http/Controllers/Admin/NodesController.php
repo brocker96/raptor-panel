@@ -2,20 +2,20 @@
 
 namespace Raptor\Http\Controllers\Admin;
 
+use Raptor\Models\Node;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
-use Raptor\Models\Node;
 use Illuminate\Http\Response;
 use Raptor\Models\Allocation;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
-use Illuminate\View\Factory as ViewFactory;
 use Raptor\Http\Controllers\Controller;
+use Illuminate\View\Factory as ViewFactory;
 use Raptor\Services\Nodes\NodeUpdateService;
-use Illuminate\Cache\Repository as CacheRepository;
 use Raptor\Services\Nodes\NodeCreationService;
 use Raptor\Services\Nodes\NodeDeletionService;
 use Raptor\Services\Allocations\AssignmentService;
+use Illuminate\Cache\Repository as CacheRepository;
 use Raptor\Services\Helpers\SoftwareVersionService;
 use Raptor\Http\Requests\Admin\Node\NodeFormRequest;
 use Raptor\Contracts\Repository\NodeRepositoryInterface;

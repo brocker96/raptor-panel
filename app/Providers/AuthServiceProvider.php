@@ -2,9 +2,9 @@
 
 namespace Raptor\Providers;
 
-use Laravel\Sanctum\Sanctum;
 use Raptor\Models\ApiKey;
 use Raptor\Models\Server;
+use Laravel\Sanctum\Sanctum;
 use Raptor\Policies\ServerPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 

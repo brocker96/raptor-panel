@@ -2,12 +2,12 @@
 
 namespace Raptor\Tests\Integration\Api\Client\Server\Backup;
 
+use Raptor\Models\Backup;
 use Mockery\MockInterface;
 use Illuminate\Http\Response;
-use Raptor\Models\Backup;
 use Raptor\Models\Permission;
-use Illuminate\Support\Facades\Event;
 use Raptor\Events\ActivityLogged;
+use Illuminate\Support\Facades\Event;
 use Raptor\Repositories\Wings\DaemonBackupRepository;
 use Raptor\Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
 

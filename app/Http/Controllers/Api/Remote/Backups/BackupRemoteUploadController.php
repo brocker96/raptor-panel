@@ -2,9 +2,9 @@
 
 namespace Raptor\Http\Controllers\Api\Remote\Backups;
 
+use Raptor\Models\Backup;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
-use Raptor\Models\Backup;
 use Illuminate\Http\JsonResponse;
 use Raptor\Http\Controllers\Controller;
 use Raptor\Extensions\Backups\BackupManager;

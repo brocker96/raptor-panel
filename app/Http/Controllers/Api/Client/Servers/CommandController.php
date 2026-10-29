@@ -2,12 +2,12 @@
 
 namespace Raptor\Http\Controllers\Api\Client\Servers;
 
-use Illuminate\Http\Response;
 use Raptor\Models\Server;
 use Raptor\Facades\Activity;
+use Illuminate\Http\Response;
 use GuzzleHttp\Exception\BadResponseException;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use Raptor\Repositories\Wings\DaemonCommandRepository;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Raptor\Http\Controllers\Api\Client\ClientApiController;
 use Raptor\Http\Requests\Api\Client\Servers\SendCommandRequest;
 use Raptor\Exceptions\Http\Connection\DaemonConnectionException;

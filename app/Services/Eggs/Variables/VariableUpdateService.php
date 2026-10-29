@@ -6,8 +6,8 @@ use Illuminate\Support\Str;
 use Raptor\Models\EggVariable;
 use Raptor\Exceptions\DisplayException;
 use Raptor\Traits\Services\ValidatesValidationRules;
-use Illuminate\Contracts\Validation\Factory as ValidationFactory;
 use Raptor\Contracts\Repository\EggVariableRepositoryInterface;
+use Illuminate\Contracts\Validation\Factory as ValidationFactory;
 use Raptor\Exceptions\Service\Egg\Variable\ReservedVariableNameException;
 
 class VariableUpdateService

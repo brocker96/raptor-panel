@@ -2,9 +2,9 @@
 
 namespace Raptor\Http\Controllers\Admin\Nodes;
 
+use Raptor\Models\Node;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use Raptor\Models\Node;
 use Illuminate\Http\JsonResponse;
 use Raptor\Http\Controllers\Controller;
 use Raptor\Repositories\Wings\DaemonConfigurationRepository;

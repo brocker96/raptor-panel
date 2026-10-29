@@ -2,7 +2,6 @@
 
 namespace Raptor\Tests\Integration\Api\Client\Server\Database;
 
-use PDO;
 use Raptor\Models\Server;
 use Raptor\Models\Subuser;
 use Raptor\Models\Database;
@@ -20,18 +19,18 @@ class DatabaseManagerTest extends ClientApiIntegrationTestCase
 {
     private const SCHEMA = 'e2e';
 
-    private PDO $pdo;
+    private \PDO $pdo;
 
     public function setUp(): void
     {
         parent::setUp();
 
         try {
-            $this->pdo = new PDO(
+            $this->pdo = new \PDO(
                 sprintf('mysql:host=%s;port=%s;dbname=%s', env('DB_HOST', '127.0.0.1'), env('DB_PORT', 3306), self::SCHEMA),
                 env('DB_USERNAME'),
                 env('DB_PASSWORD'),
-                [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
+                [\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION]
             );
         } catch (\PDOException) {
             $this->markTestSkipped('The schema ' . self::SCHEMA . ' is not available for the DB Manager tests.');
@@ -127,7 +126,7 @@ class DatabaseManagerTest extends ClientApiIntegrationTestCase
             'values' => ['score' => null, 'note' => "it's"],
         ])->assertOk()->assertJsonPath('affected', 1);
 
-        $this->assertSame([null, "it's"], $this->pdo->query('SELECT score, note FROM dbm_players WHERE id = 2')->fetch(PDO::FETCH_NUM));
+        $this->assertSame([null, "it's"], $this->pdo->query('SELECT score, note FROM dbm_players WHERE id = 2')->fetch(\PDO::FETCH_NUM));
 
         $this->postJson($this->url($server, $database, '/tables/dbm_players/rows/delete'), [
             'keys' => [['id' => 1], ['id' => 4]],
@@ -233,5 +232,4 @@ class DatabaseManagerTest extends ClientApiIntegrationTestCase
             'SELECT 3',
         ], iterator_to_array(SqlSplitter::split($sql), false));
     }
-
 }

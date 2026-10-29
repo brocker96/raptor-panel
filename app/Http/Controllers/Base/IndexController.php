@@ -3,8 +3,8 @@
 namespace Raptor\Http\Controllers\Base;
 
 use Illuminate\View\View;
-use Illuminate\View\Factory as ViewFactory;
 use Raptor\Http\Controllers\Controller;
+use Illuminate\View\Factory as ViewFactory;
 use Raptor\Contracts\Repository\ServerRepositoryInterface;
 
 class IndexController extends Controller

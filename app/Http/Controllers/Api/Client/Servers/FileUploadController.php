@@ -2,10 +2,10 @@
 
 namespace Raptor\Http\Controllers\Api\Client\Servers;
 
-use Carbon\CarbonImmutable;
 use Raptor\Models\User;
 use Raptor\Enum\JwtScope;
 use Raptor\Models\Server;
+use Carbon\CarbonImmutable;
 use Illuminate\Http\JsonResponse;
 use Raptor\Services\Nodes\NodeJWTService;
 use Raptor\Http\Controllers\Api\Client\ClientApiController;

@@ -3,13 +3,13 @@
 namespace Raptor\Services\Eggs\Sharing;
 
 use Ramsey\Uuid\Uuid;
-use Illuminate\Support\Arr;
 use Raptor\Models\Egg;
 use Raptor\Models\Nest;
-use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Arr;
 use Raptor\Models\EggVariable;
-use Illuminate\Database\ConnectionInterface;
+use Illuminate\Http\UploadedFile;
 use Raptor\Services\Eggs\EggParserService;
+use Illuminate\Database\ConnectionInterface;
 
 class EggImporterService
 {

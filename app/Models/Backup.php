@@ -2,8 +2,8 @@
 
 namespace Raptor\Models;
 
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Raptor\Contracts\Models\Identifiable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Raptor\Models\Traits\HasRealtimeIdentifier;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

@@ -5,8 +5,8 @@ namespace Raptor\Tests\Integration\Api\Client;
 use Carbon\Carbon;
 use Raptor\Models\User;
 use Illuminate\Http\Response;
-use PragmaRX\Google2FA\Google2FA;
 use Raptor\Models\RecoveryToken;
+use PragmaRX\Google2FA\Google2FA;
 use PHPUnit\Framework\ExpectationFailedException;
 
 class TwoFactorControllerTest extends ClientApiIntegrationTestCase

@@ -2,9 +2,9 @@
 
 namespace Raptor\Http\Controllers\Admin\Nodes;
 
+use Raptor\Models\Node;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
-use Raptor\Models\Node;
 use Spatie\QueryBuilder\QueryBuilder;
 use Raptor\Http\Controllers\Controller;
 

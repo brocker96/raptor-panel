@@ -3,9 +3,9 @@
 namespace Raptor\Exceptions\Model;
 
 use Illuminate\Support\MessageBag;
+use Raptor\Exceptions\RaptorException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Validation\Validator;
-use Raptor\Exceptions\RaptorException;
 use Illuminate\Contracts\Support\MessageProvider;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 

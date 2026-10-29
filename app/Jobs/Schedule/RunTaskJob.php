@@ -2,8 +2,8 @@
 
 namespace Raptor\Jobs\Schedule;
 
-use Carbon\CarbonImmutable;
 use Raptor\Models\Task;
+use Carbon\CarbonImmutable;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;

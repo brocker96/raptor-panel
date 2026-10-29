@@ -2,9 +2,9 @@
 
 namespace Raptor\Services\Databases;
 
-use Webmozart\Assert\Assert;
 use Raptor\Models\Server;
 use Raptor\Models\Database;
+use Webmozart\Assert\Assert;
 use Raptor\Models\DatabaseHost;
 use Raptor\Exceptions\Service\Database\NoSuitableDatabaseHostException;
 

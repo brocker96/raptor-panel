@@ -2,8 +2,8 @@
 
 namespace Raptor\Tests\Integration\Services\Servers;
 
-use Mockery\MockInterface;
 use Raptor\Models\Server;
+use Mockery\MockInterface;
 use Raptor\Services\Servers\SuspensionService;
 use Raptor\Tests\Integration\IntegrationTestCase;
 use Raptor\Repositories\Wings\DaemonServerRepository;

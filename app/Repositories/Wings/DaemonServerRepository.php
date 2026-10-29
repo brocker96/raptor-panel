@@ -2,8 +2,8 @@
 
 namespace Raptor\Repositories\Wings;
 
-use Webmozart\Assert\Assert;
 use Raptor\Models\Server;
+use Webmozart\Assert\Assert;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\TransferException;
 use Raptor\Exceptions\Http\Connection\DaemonConnectionException;

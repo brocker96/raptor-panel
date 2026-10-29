@@ -2,17 +2,17 @@
 
 namespace Raptor\Http\Controllers\Api\Remote\Servers;
 
+use Raptor\Models\Server;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Raptor\Models\Server;
 use Illuminate\Http\JsonResponse;
 use Raptor\Http\Controllers\Controller;
 use Raptor\Exceptions\Http\HttpForbiddenException;
 use Raptor\Repositories\Eloquent\ServerRepository;
 use Raptor\Events\Server\Installed as ServerInstalled;
-use Illuminate\Contracts\Events\Dispatcher as EventDispatcher;
 use Raptor\Http\Requests\Api\Remote\InstallationDataRequest;
+use Illuminate\Contracts\Events\Dispatcher as EventDispatcher;
 
 class ServerInstallController extends Controller
 {

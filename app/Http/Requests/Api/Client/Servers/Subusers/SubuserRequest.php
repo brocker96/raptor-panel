@@ -2,9 +2,9 @@
 
 namespace Raptor\Http\Requests\Api\Client\Servers\Subusers;
 
-use Illuminate\Http\Request;
 use Raptor\Models\User;
 use Raptor\Models\Subuser;
+use Illuminate\Http\Request;
 use Raptor\Exceptions\Http\HttpForbiddenException;
 use Raptor\Http\Requests\Api\Client\ClientApiRequest;
 use Raptor\Services\Servers\GetUserPermissionsService;

@@ -2,10 +2,10 @@
 
 namespace Raptor\Http\Controllers\Admin\Servers;
 
-use Illuminate\View\View;
-use Illuminate\Http\Request;
 use Raptor\Models\Nest;
+use Illuminate\View\View;
 use Raptor\Models\Server;
+use Illuminate\Http\Request;
 use Raptor\Exceptions\DisplayException;
 use Raptor\Http\Controllers\Controller;
 use Raptor\Services\Servers\EnvironmentService;

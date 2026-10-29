@@ -2,14 +2,14 @@
 
 namespace Raptor\Services\Servers;
 
-use Illuminate\Support\Arr;
 use Raptor\Models\Server;
+use Illuminate\Support\Arr;
 use Raptor\Models\Allocation;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Database\ConnectionInterface;
 use Raptor\Exceptions\DisplayException;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\ConnectionInterface;
 use Raptor\Repositories\Wings\DaemonServerRepository;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Raptor\Exceptions\Http\Connection\DaemonConnectionException;
 
 class BuildModificationService

@@ -2,8 +2,8 @@
 
 namespace Raptor\Services\Servers;
 
-use Illuminate\Http\Response;
 use Raptor\Models\Server;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\ConnectionInterface;
 use Raptor\Repositories\Wings\DaemonServerRepository;

@@ -5,10 +5,10 @@ namespace Raptor\Models;
 use Cron\CronExpression;
 use Carbon\CarbonImmutable;
 use Illuminate\Container\Container;
+use Raptor\Contracts\Extensions\HashidsInterface;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Raptor\Contracts\Extensions\HashidsInterface;
 
 /**
  * @property int $id

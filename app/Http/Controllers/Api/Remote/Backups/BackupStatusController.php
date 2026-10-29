@@ -2,18 +2,18 @@
 
 namespace Raptor\Http\Controllers\Api\Remote\Backups;
 
+use Raptor\Models\Backup;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
-use Raptor\Models\Backup;
-use Illuminate\Http\JsonResponse;
 use Raptor\Facades\Activity;
+use Illuminate\Http\JsonResponse;
 use Raptor\Exceptions\DisplayException;
 use Raptor\Http\Controllers\Controller;
 use Raptor\Extensions\Backups\BackupManager;
 use Raptor\Extensions\Filesystem\S3Filesystem;
 use Raptor\Exceptions\Http\HttpForbiddenException;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Raptor\Http\Requests\Api\Remote\ReportBackupCompleteRequest;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class BackupStatusController extends Controller
 {

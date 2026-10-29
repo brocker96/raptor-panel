@@ -5,9 +5,9 @@ namespace Raptor\Transformers\Api\Application;
 use Raptor\Models\Egg;
 use Raptor\Models\Nest;
 use Raptor\Models\Server;
+use Raptor\Services\Acl\Api\AdminAcl;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\NullResource;
-use Raptor\Services\Acl\Api\AdminAcl;
 
 class NestTransformer extends BaseTransformer
 {

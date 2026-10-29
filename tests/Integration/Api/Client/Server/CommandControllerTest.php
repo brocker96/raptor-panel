@@ -2,9 +2,9 @@
 
 namespace Raptor\Tests\Integration\Api\Client\Server;
 
+use Raptor\Models\Server;
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Http\Response;
-use Raptor\Models\Server;
 use Raptor\Models\Permission;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;

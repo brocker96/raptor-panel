@@ -2,8 +2,8 @@
 
 namespace Raptor\Tests\Integration\Services\Databases;
 
-use Mockery\MockInterface;
 use Raptor\Models\Node;
+use Mockery\MockInterface;
 use Raptor\Models\Database;
 use Raptor\Models\DatabaseHost;
 use Raptor\Tests\Integration\IntegrationTestCase;

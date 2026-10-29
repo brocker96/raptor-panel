@@ -2,11 +2,11 @@
 
 namespace Raptor\Tests\Integration;
 
+use Raptor\Tests\TestCase;
 use Carbon\CarbonImmutable;
 use Carbon\CarbonInterface;
-use Raptor\Tests\TestCase;
-use Illuminate\Support\Facades\Event;
 use Raptor\Events\ActivityLogged;
+use Illuminate\Support\Facades\Event;
 use Raptor\Tests\Assertions\AssertsActivityLogged;
 use Raptor\Tests\Traits\Integration\CreatesTestModels;
 use Raptor\Transformers\Api\Application\BaseTransformer;

@@ -2,10 +2,10 @@
 
 namespace Raptor\Tests\Integration\Api\Client;
 
-use Illuminate\Support\Str;
 use Raptor\Models\User;
-use Illuminate\Http\Response;
 use Raptor\Models\Subuser;
+use Illuminate\Support\Str;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Hash;
 use Raptor\Jobs\RevokeSftpAccessJob;
@@ -124,9 +124,9 @@ class AccountControllerTest extends ClientApiIntegrationTestCase
 
 
         /*
-        * RFCs limit certain parts of an email to certain character limits.
-        * A limit of <= 64 for the local, then <= 63 for each domain label.
-        */
+         * RFCs limit certain parts of an email to certain character limits.
+         * A limit of <= 64 for the local, then <= 63 for each domain label.
+         */
         $local = str_repeat(Str::random(10), 6) . '1234';
         $label = str_repeat(Str::random(10), 6) . '1';
 
@@ -187,8 +187,8 @@ class AccountControllerTest extends ClientApiIntegrationTestCase
         $this->assertNotEquals($server->node_id, $server2->node_id);
 
         Bus::assertDispatchedTimes(RevokeSftpAccessJob::class, 2);
-        Bus::assertDispatched(fn(RevokeSftpAccessJob $job) => $job->user === $user->uuid && $job->target->is($server->node));
-        Bus::assertDispatched(fn(RevokeSftpAccessJob $job) => $job->user === $user->uuid && $job->target->is($server2->node));
+        Bus::assertDispatched(fn (RevokeSftpAccessJob $job) => $job->user === $user->uuid && $job->target->is($server->node));
+        Bus::assertDispatched(fn (RevokeSftpAccessJob $job) => $job->user === $user->uuid && $job->target->is($server2->node));
     }
 
     /**

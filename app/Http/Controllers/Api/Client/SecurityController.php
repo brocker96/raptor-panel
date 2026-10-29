@@ -8,11 +8,11 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Raptor\Facades\Activity;
 use Illuminate\Http\Response;
-use Raptor\Models\UserSession;
 use Raptor\Models\UserPasskey;
+use Raptor\Models\UserSession;
+use Illuminate\Validation\Rule;
 use Raptor\Models\RecoveryToken;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Validation\Rule;
 use Raptor\Models\UserTrustedDevice;
 use Raptor\Exceptions\DisplayException;
 use Raptor\Notifications\SecurityAlert;
@@ -182,9 +182,7 @@ class SecurityController extends ClientApiController
         if (!$valid) {
             Activity::event('user:security.unlock-failed')->property('method', $data['method'])->log();
 
-            throw new DisplayException($data['method'] === 'pin'
-                ? ($this->confirmation->pinLocked($user) ? __('Too many wrong PIN attempts. Unlock with your password instead.') : __('The PIN is not correct.'))
-                : __('The password is not correct.'));
+            throw new DisplayException($data['method'] === 'pin' ? ($this->confirmation->pinLocked($user) ? __('Too many wrong PIN attempts. Unlock with your password instead.') : __('The PIN is not correct.')) : __('The password is not correct.'));
         }
 
         if ($data['method'] === 'password') {

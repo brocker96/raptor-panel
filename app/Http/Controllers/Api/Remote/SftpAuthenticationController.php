@@ -2,21 +2,21 @@
 
 namespace Raptor\Http\Controllers\Api\Remote;
 
-use Illuminate\Http\Request;
 use Raptor\Models\User;
 use Raptor\Models\Server;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Raptor\Facades\Activity;
 use Raptor\Models\Permission;
 use Raptor\Models\UserSSHKey;
+use Illuminate\Http\JsonResponse;
 use phpseclib3\Crypt\PublicKeyLoader;
 use Raptor\Http\Controllers\Controller;
 use phpseclib3\Exception\NoKeyLoadedException;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Raptor\Exceptions\Http\HttpForbiddenException;
 use Raptor\Services\Servers\GetUserPermissionsService;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Raptor\Http\Requests\Api\Remote\SftpAuthenticationFormRequest;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 
 class SftpAuthenticationController extends Controller

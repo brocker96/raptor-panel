@@ -5,8 +5,8 @@ namespace Raptor\Http\Middleware\Api\Daemon;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Raptor\Repositories\Eloquent\NodeRepository;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use Raptor\Exceptions\Repository\RecordNotFoundException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 

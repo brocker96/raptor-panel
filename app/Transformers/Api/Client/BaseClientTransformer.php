@@ -3,8 +3,8 @@
 namespace Raptor\Transformers\Api\Client;
 
 use Raptor\Models\User;
-use Webmozart\Assert\Assert;
 use Raptor\Models\Server;
+use Webmozart\Assert\Assert;
 use Raptor\Transformers\Api\Application\BaseTransformer as BaseApplicationTransformer;
 
 abstract class BaseClientTransformer extends BaseApplicationTransformer

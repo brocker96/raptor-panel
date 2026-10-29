@@ -2,8 +2,8 @@
 
 namespace Raptor\Console\Commands\Schedule;
 
-use Illuminate\Console\Command;
 use Raptor\Models\Schedule;
+use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Builder;
 use Raptor\Services\Schedules\ProcessScheduleService;

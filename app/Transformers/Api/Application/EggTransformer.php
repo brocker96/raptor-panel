@@ -2,15 +2,15 @@
 
 namespace Raptor\Transformers\Api\Application;
 
-use Illuminate\Support\Arr;
 use Raptor\Models\Egg;
 use Raptor\Models\Nest;
 use Raptor\Models\Server;
-use League\Fractal\Resource\Item;
+use Illuminate\Support\Arr;
 use Raptor\Models\EggVariable;
+use League\Fractal\Resource\Item;
+use Raptor\Services\Acl\Api\AdminAcl;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\NullResource;
-use Raptor\Services\Acl\Api\AdminAcl;
 
 class EggTransformer extends BaseTransformer
 {

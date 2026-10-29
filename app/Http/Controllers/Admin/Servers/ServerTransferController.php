@@ -2,16 +2,16 @@
 
 namespace Raptor\Http\Controllers\Admin\Servers;
 
-use Carbon\CarbonImmutable;
-use Illuminate\Http\Request;
 use Raptor\Enum\JwtScope;
 use Raptor\Models\Server;
+use Carbon\CarbonImmutable;
+use Illuminate\Http\Request;
+use Raptor\Models\ServerTransfer;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
-use Raptor\Models\ServerTransfer;
-use Illuminate\Database\ConnectionInterface;
 use Raptor\Http\Controllers\Controller;
 use Raptor\Services\Nodes\NodeJWTService;
+use Illuminate\Database\ConnectionInterface;
 use Raptor\Repositories\Eloquent\NodeRepository;
 use Raptor\Repositories\Wings\DaemonTransferRepository;
 use Raptor\Contracts\Repository\AllocationRepositoryInterface;

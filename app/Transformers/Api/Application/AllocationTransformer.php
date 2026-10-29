@@ -4,10 +4,10 @@ namespace Raptor\Transformers\Api\Application;
 
 use Raptor\Models\Node;
 use Raptor\Models\Server;
-use League\Fractal\Resource\Item;
 use Raptor\Models\Allocation;
-use League\Fractal\Resource\NullResource;
+use League\Fractal\Resource\Item;
 use Raptor\Services\Acl\Api\AdminAcl;
+use League\Fractal\Resource\NullResource;
 
 class AllocationTransformer extends BaseTransformer
 {

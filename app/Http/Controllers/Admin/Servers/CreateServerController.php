@@ -2,9 +2,9 @@
 
 namespace Raptor\Http\Controllers\Admin\Servers;
 
-use Illuminate\View\View;
 use Raptor\Models\Nest;
 use Raptor\Models\Node;
+use Illuminate\View\View;
 use Raptor\Models\Location;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;

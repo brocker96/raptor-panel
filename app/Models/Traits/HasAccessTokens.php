@@ -2,9 +2,9 @@
 
 namespace Raptor\Models\Traits;
 
+use Raptor\Models\ApiKey;
 use Illuminate\Support\Str;
 use Laravel\Sanctum\Sanctum;
-use Raptor\Models\ApiKey;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Raptor\Extensions\Laravel\Sanctum\NewAccessToken;

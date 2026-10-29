@@ -2,15 +2,15 @@
 
 namespace Raptor\Transformers\Api\Application;
 
+use Raptor\Models\ApiKey;
 use Carbon\CarbonImmutable;
 use Carbon\CarbonInterface;
 use Illuminate\Http\Request;
 use Webmozart\Assert\Assert;
-use Raptor\Models\ApiKey;
 use Illuminate\Container\Container;
+use Raptor\Services\Acl\Api\AdminAcl;
 use Illuminate\Database\Eloquent\Model;
 use League\Fractal\TransformerAbstract;
-use Raptor\Services\Acl\Api\AdminAcl;
 
 /**
  * @method array transform(Model $model)

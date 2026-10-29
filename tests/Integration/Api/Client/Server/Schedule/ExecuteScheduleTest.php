@@ -3,8 +3,8 @@
 namespace Raptor\Tests\Integration\Api\Client\Server\Schedule;
 
 use Raptor\Models\Task;
-use Illuminate\Http\Response;
 use Raptor\Models\Schedule;
+use Illuminate\Http\Response;
 use Raptor\Models\Permission;
 use Illuminate\Support\Facades\Bus;
 use Raptor\Jobs\Schedule\RunTaskJob;

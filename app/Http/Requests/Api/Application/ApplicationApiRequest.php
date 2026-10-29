@@ -2,14 +2,14 @@
 
 namespace Raptor\Http\Requests\Api\Application;
 
-use Webmozart\Assert\Assert;
 use Raptor\Models\ApiKey;
+use Webmozart\Assert\Assert;
 use Laravel\Sanctum\TransientToken;
 use Illuminate\Validation\Validator;
-use Illuminate\Database\Eloquent\Model;
 use Raptor\Services\Acl\Api\AdminAcl;
-use Illuminate\Foundation\Http\FormRequest;
 use Raptor\Exceptions\RaptorException;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Http\FormRequest;
 
 abstract class ApplicationApiRequest extends FormRequest
 {

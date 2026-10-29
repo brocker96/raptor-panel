@@ -2,13 +2,13 @@
 
 namespace Raptor\Services\Servers;
 
-use Illuminate\Support\Arr;
 use Raptor\Models\Egg;
 use Raptor\Models\User;
 use Raptor\Models\Server;
+use Illuminate\Support\Arr;
 use Raptor\Models\ServerVariable;
-use Illuminate\Database\ConnectionInterface;
 use Raptor\Traits\Services\HasUserLevels;
+use Illuminate\Database\ConnectionInterface;
 
 class StartupModificationService
 {

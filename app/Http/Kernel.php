@@ -2,40 +2,40 @@
 
 namespace Raptor\Http;
 
+use Raptor\Http\Middleware\TrimStrings;
+use Raptor\Http\Middleware\TrustProxies;
 use Illuminate\Auth\Middleware\Authorize;
 use Illuminate\Http\Middleware\HandleCors;
-use Illuminate\Auth\Middleware\Authenticate;
-use Raptor\Http\Middleware\TrustProxies;
-use Raptor\Http\Middleware\TrimStrings;
-use Raptor\Http\Middleware\TrackUserSession;
-use Raptor\Http\Middleware\EnforceScreenLock;
-use Raptor\Http\Middleware\RequireSecurityConfirmation;
-use Illuminate\Session\Middleware\StartSession;
 use Raptor\Http\Middleware\EncryptCookies;
 use Raptor\Http\Middleware\Api\IsValidJson;
 use Raptor\Http\Middleware\VerifyCsrfToken;
 use Raptor\Http\Middleware\VerifyReCaptcha;
-use Illuminate\Routing\Middleware\ThrottleRequests;
+use Illuminate\Auth\Middleware\Authenticate;
+use Raptor\Http\Middleware\TrackUserSession;
+use Raptor\Http\Middleware\EnforceScreenLock;
 use Raptor\Http\Middleware\LanguageMiddleware;
 use Raptor\Http\Middleware\SetSecurityHeaders;
-use Illuminate\Foundation\Http\Kernel as HttpKernel;
-use Illuminate\Routing\Middleware\SubstituteBindings;
+use Illuminate\Session\Middleware\StartSession;
 use Raptor\Http\Middleware\Activity\TrackAPIKey;
-use Illuminate\Session\Middleware\AuthenticateSession;
-use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Raptor\Http\Middleware\MaintenanceMiddleware;
 use Raptor\Http\Middleware\EnsureStatefulRequests;
+use Illuminate\Routing\Middleware\ThrottleRequests;
 use Raptor\Http\Middleware\RedirectIfAuthenticated;
-use Illuminate\Auth\Middleware\AuthenticateWithBasicAuth;
+use Illuminate\Foundation\Http\Kernel as HttpKernel;
 use Raptor\Http\Middleware\Api\AuthenticateIPAccess;
-use Illuminate\Foundation\Http\Middleware\ValidatePostSize;
-use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
+use Illuminate\Routing\Middleware\SubstituteBindings;
+use Illuminate\Session\Middleware\AuthenticateSession;
+use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Raptor\Http\Middleware\RequireSecurityConfirmation;
+use Illuminate\Auth\Middleware\AuthenticateWithBasicAuth;
 use Raptor\Http\Middleware\Api\Daemon\DaemonAuthenticate;
 use Raptor\Http\Middleware\Api\Client\RequireClientApiKey;
 use Raptor\Http\Middleware\RequireTwoFactorAuthentication;
-use Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull;
-use Raptor\Http\Middleware\Api\Client\SubstituteClientBindings;
+use Illuminate\Foundation\Http\Middleware\ValidatePostSize;
+use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Raptor\Http\Middleware\PreventRequestsDuringMaintenance;
+use Raptor\Http\Middleware\Api\Client\SubstituteClientBindings;
+use Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull;
 use Raptor\Http\Middleware\Api\Application\AuthenticateApplicationUser;
 
 class Kernel extends HttpKernel

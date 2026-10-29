@@ -2,11 +2,11 @@
 
 namespace Raptor\Http\Controllers\Admin\Nodes;
 
+use Raptor\Models\Node;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
-use Raptor\Models\Node;
-use Illuminate\Support\Collection;
 use Raptor\Models\Allocation;
+use Illuminate\Support\Collection;
 use Raptor\Http\Controllers\Controller;
 use Raptor\Repositories\Eloquent\NodeRepository;
 use Raptor\Repositories\Eloquent\ServerRepository;

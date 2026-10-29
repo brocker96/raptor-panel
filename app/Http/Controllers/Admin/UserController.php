@@ -2,23 +2,23 @@
 
 namespace Raptor\Http\Controllers\Admin;
 
-use Illuminate\View\View;
-use Illuminate\Http\Request;
 use Raptor\Models\User;
 use Raptor\Models\Model;
+use Illuminate\View\View;
+use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
 use Spatie\QueryBuilder\QueryBuilder;
-use Illuminate\View\Factory as ViewFactory;
 use Raptor\Exceptions\DisplayException;
 use Raptor\Http\Controllers\Controller;
-use Illuminate\Contracts\Translation\Translator;
+use Illuminate\View\Factory as ViewFactory;
 use Raptor\Services\Users\UserUpdateService;
 use Raptor\Traits\Helpers\AvailableLanguages;
 use Raptor\Services\Users\UserCreationService;
 use Raptor\Services\Users\UserDeletionService;
 use Raptor\Http\Requests\Admin\UserFormRequest;
+use Illuminate\Contracts\Translation\Translator;
 use Raptor\Http\Requests\Admin\NewUserFormRequest;
 use Raptor\Contracts\Repository\UserRepositoryInterface;
 

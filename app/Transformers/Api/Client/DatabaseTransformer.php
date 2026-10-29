@@ -3,8 +3,8 @@
 namespace Raptor\Transformers\Api\Client;
 
 use Raptor\Models\Database;
-use League\Fractal\Resource\Item;
 use Raptor\Models\Permission;
+use League\Fractal\Resource\Item;
 use League\Fractal\Resource\NullResource;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Raptor\Contracts\Extensions\HashidsInterface;

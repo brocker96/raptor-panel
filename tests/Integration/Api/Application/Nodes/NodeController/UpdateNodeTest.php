@@ -2,10 +2,10 @@
 
 namespace Raptor\Tests\Integration\Api\Application\Nodes\NodeController;
 
-use Mockery\MockInterface;
 use Raptor\Models\Node;
-use GuzzleHttp\Psr7\Response;
+use Mockery\MockInterface;
 use Raptor\Models\Location;
+use GuzzleHttp\Psr7\Response;
 use Raptor\Repositories\Wings\DaemonConfigurationRepository;
 use Raptor\Tests\Integration\Api\Application\ApplicationApiIntegrationTestCase;
 

@@ -2,8 +2,8 @@
 
 namespace Raptor\Http\Controllers\Api\Application\Servers;
 
-use Illuminate\Http\Response;
 use Raptor\Models\Server;
+use Illuminate\Http\Response;
 use Raptor\Services\Servers\SuspensionService;
 use Raptor\Services\Servers\ReinstallServerService;
 use Raptor\Http\Requests\Api\Application\Servers\ServerWriteRequest;

@@ -4,9 +4,9 @@ namespace Raptor\Http\Controllers\Api\Client;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Raptor\Facades\Activity;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
-use Raptor\Facades\Activity;
 use Raptor\Notifications\SecurityAlert;
 use Raptor\Services\Security\TrustedDevices;
 use Raptor\Services\Security\SecurityNotifier;

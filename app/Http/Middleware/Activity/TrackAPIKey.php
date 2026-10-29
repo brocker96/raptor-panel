@@ -2,8 +2,8 @@
 
 namespace Raptor\Http\Middleware\Activity;
 
-use Illuminate\Http\Request;
 use Raptor\Models\ApiKey;
+use Illuminate\Http\Request;
 use Raptor\Facades\LogTarget;
 
 class TrackAPIKey

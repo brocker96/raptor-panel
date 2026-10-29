@@ -2,8 +2,8 @@
 
 namespace Raptor\Tests\Integration\Api\Application\Nests;
 
-use Illuminate\Support\Arr;
 use Raptor\Models\Egg;
+use Illuminate\Support\Arr;
 use Illuminate\Http\Response;
 use Raptor\Transformers\Api\Application\EggTransformer;
 use Raptor\Tests\Integration\Api\Application\ApplicationApiIntegrationTestCase;

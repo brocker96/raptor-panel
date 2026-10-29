@@ -3,8 +3,8 @@
 namespace Raptor\Services\Nodes;
 
 use Ramsey\Uuid\Uuid;
-use Illuminate\Support\Str;
 use Raptor\Models\Node;
+use Illuminate\Support\Str;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Raptor\Contracts\Repository\NodeRepositoryInterface;
 

@@ -3,13 +3,13 @@
 namespace Raptor\Http\Controllers\Api\Client\Servers;
 
 use Carbon\Carbon;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Raptor\Models\Server;
 use Raptor\Models\Schedule;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Raptor\Facades\Activity;
+use Illuminate\Http\Response;
 use Raptor\Helpers\Utilities;
+use Illuminate\Http\JsonResponse;
 use Raptor\Exceptions\DisplayException;
 use Raptor\Repositories\Eloquent\ScheduleRepository;
 use Raptor\Services\Schedules\ProcessScheduleService;

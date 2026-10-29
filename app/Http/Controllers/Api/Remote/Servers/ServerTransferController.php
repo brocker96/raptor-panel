@@ -2,21 +2,21 @@
 
 namespace Raptor\Http\Controllers\Api\Remote\Servers;
 
-use Illuminate\Http\Request;
 use Raptor\Models\Node;
+use Illuminate\Http\Request;
 use Webmozart\Assert\Assert;
 use Illuminate\Http\Response;
-use Illuminate\Http\JsonResponse;
 use Raptor\Models\Allocation;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Http\JsonResponse;
 use Raptor\Models\ServerTransfer;
-use Illuminate\Database\ConnectionInterface;
+use Illuminate\Support\Facades\Log;
 use Raptor\Http\Controllers\Controller;
+use Illuminate\Database\ConnectionInterface;
 use Raptor\Exceptions\Http\HttpForbiddenException;
 use Raptor\Repositories\Eloquent\ServerRepository;
 use Raptor\Repositories\Wings\DaemonServerRepository;
-use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Raptor\Exceptions\Http\Connection\DaemonConnectionException;
+use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 
 class ServerTransferController extends Controller
 {

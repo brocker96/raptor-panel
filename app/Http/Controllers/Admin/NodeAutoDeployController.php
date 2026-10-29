@@ -2,13 +2,13 @@
 
 namespace Raptor\Http\Controllers\Admin;
 
-use Illuminate\Http\Request;
 use Raptor\Models\Node;
 use Raptor\Models\ApiKey;
+use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Raptor\Http\Controllers\Controller;
-use Illuminate\Contracts\Encryption\Encrypter;
 use Raptor\Services\Api\KeyCreationService;
+use Illuminate\Contracts\Encryption\Encrypter;
 
 class NodeAutoDeployController extends Controller
 {

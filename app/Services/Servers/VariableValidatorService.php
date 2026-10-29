@@ -3,10 +3,10 @@
 namespace Raptor\Services\Servers;
 
 use Raptor\Models\User;
-use Illuminate\Support\Collection;
 use Raptor\Models\EggVariable;
-use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Collection;
 use Raptor\Traits\Services\HasUserLevels;
+use Illuminate\Validation\ValidationException;
 use Illuminate\Contracts\Validation\Factory as ValidationFactory;
 
 class VariableValidatorService

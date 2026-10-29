@@ -2,10 +2,10 @@
 
 namespace Raptor\Tests\Integration\Api\Client\Server\Backup;
 
+use Raptor\Models\Backup;
 use Mockery\MockInterface;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Response;
-use Raptor\Models\Backup;
 use Raptor\Models\Permission;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
 use Raptor\Repositories\Wings\DaemonBackupRepository;

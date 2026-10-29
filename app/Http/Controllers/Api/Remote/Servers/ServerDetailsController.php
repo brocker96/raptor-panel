@@ -2,14 +2,14 @@
 
 namespace Raptor\Http\Controllers\Api\Remote\Servers;
 
-use Illuminate\Http\Request;
 use Raptor\Models\Node;
-use Webmozart\Assert\Assert;
 use Raptor\Models\Server;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Raptor\Facades\Activity;
-use Illuminate\Database\ConnectionInterface;
+use Webmozart\Assert\Assert;
+use Illuminate\Http\JsonResponse;
 use Raptor\Http\Controllers\Controller;
+use Illuminate\Database\ConnectionInterface;
 use Raptor\Services\Eggs\EggConfigurationService;
 use Raptor\Exceptions\Http\HttpForbiddenException;
 use Raptor\Repositories\Eloquent\ServerRepository;

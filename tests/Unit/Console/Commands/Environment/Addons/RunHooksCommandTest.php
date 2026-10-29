@@ -2,8 +2,8 @@
 
 namespace Raptor\Tests\Unit\Console\Commands\Environment\Addons;
 
-use Illuminate\Console\Command;
 use Raptor\Tests\TestCase;
+use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 use Illuminate\Testing\PendingCommand;
 use Illuminate\Support\Facades\Process;

@@ -2,8 +2,8 @@
 
 namespace Raptor\Http\Controllers\Api\Application\Locations;
 
-use Illuminate\Http\Response;
 use Raptor\Models\Location;
+use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Spatie\QueryBuilder\QueryBuilder;
 use Raptor\Services\Locations\LocationUpdateService;

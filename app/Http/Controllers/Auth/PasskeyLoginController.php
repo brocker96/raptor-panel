@@ -50,9 +50,7 @@ class PasskeyLoginController extends AbstractLoginController
 
         $user = $passkey->user;
         if ($lockout->isLocked($user)) {
-            throw new DisplayException(__('This account is temporarily locked after too many failed sign-in attempts. Try again after :time.', [
-                'time' => $user->locked_until->toTimeString('minute'),
-            ]));
+            throw new DisplayException(__('This account is temporarily locked after too many failed sign-in attempts. Try again after :time.', ['time' => $user->locked_until->toTimeString('minute')]));
         }
 
         Activity::event('auth:passkey')->withRequestMetadata()->subject($user)->property('name', $passkey->name)->log();

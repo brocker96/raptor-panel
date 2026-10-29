@@ -2,8 +2,8 @@
 
 namespace Raptor\Tests\Integration\Api\Application\Servers;
 
-use Illuminate\Http\Response;
 use Raptor\Models\Server;
+use Illuminate\Http\Response;
 use Raptor\Repositories\Wings\DaemonServerRepository;
 use Raptor\Tests\Integration\Api\Application\ApplicationApiIntegrationTestCase;
 

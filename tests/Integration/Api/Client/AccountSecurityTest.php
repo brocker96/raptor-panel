@@ -4,9 +4,9 @@ namespace Raptor\Tests\Integration\Api\Client;
 
 use Raptor\Models\User;
 use Raptor\Models\UserSession;
-use Illuminate\Support\Facades\Notification;
 use Raptor\Notifications\SecurityAlert;
 use Raptor\Services\Security\ScreenLock;
+use Illuminate\Support\Facades\Notification;
 use Raptor\Tests\Integration\IntegrationTestCase;
 use Raptor\Services\Security\SecurityConfirmation;
 

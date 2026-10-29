@@ -2,13 +2,13 @@
 
 namespace Raptor\Tests\Integration\Services\Servers;
 
+use Raptor\Models\Server;
 use Mockery\MockInterface;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
-use Raptor\Models\Server;
 use Raptor\Models\Allocation;
-use GuzzleHttp\Exception\RequestException;
 use Raptor\Exceptions\DisplayException;
+use GuzzleHttp\Exception\RequestException;
 use Raptor\Tests\Integration\IntegrationTestCase;
 use Raptor\Repositories\Wings\DaemonServerRepository;
 use Raptor\Services\Servers\BuildModificationService;

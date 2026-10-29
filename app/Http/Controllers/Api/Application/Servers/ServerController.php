@@ -2,8 +2,8 @@
 
 namespace Raptor\Http\Controllers\Api\Application\Servers;
 
-use Illuminate\Http\Response;
 use Raptor\Models\Server;
+use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Spatie\QueryBuilder\QueryBuilder;
 use Raptor\Services\Servers\ServerCreationService;

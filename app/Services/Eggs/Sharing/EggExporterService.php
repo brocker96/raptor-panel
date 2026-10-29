@@ -4,8 +4,8 @@ namespace Raptor\Services\Eggs\Sharing;
 
 use Carbon\Carbon;
 use Raptor\Models\Egg;
-use Illuminate\Support\Collection;
 use Raptor\Models\EggVariable;
+use Illuminate\Support\Collection;
 use Raptor\Contracts\Repository\EggRepositoryInterface;
 
 class EggExporterService

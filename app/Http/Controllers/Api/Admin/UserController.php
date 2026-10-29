@@ -3,18 +3,18 @@
 namespace Raptor\Http\Controllers\Api\Admin;
 
 use Raptor\Models\User;
-use Raptor\Models\UserSession;
-use Raptor\Services\Security\AccountLockout;
-use Raptor\Services\Security\SessionManager;
 use Raptor\Models\Server;
 use Illuminate\Http\Request;
 use Raptor\Facades\Activity;
 use Illuminate\Http\Response;
 use Raptor\Models\ActivityLog;
+use Raptor\Models\UserSession;
 use Illuminate\Http\JsonResponse;
 use Raptor\Exceptions\DisplayException;
 use Raptor\Services\Users\AvatarService;
 use Illuminate\Database\Eloquent\Builder;
+use Raptor\Services\Security\AccountLockout;
+use Raptor\Services\Security\SessionManager;
 use Raptor\Services\Users\UserUpdateService;
 use Raptor\Services\Users\UserCreationService;
 use Raptor\Services\Users\UserDeletionService;

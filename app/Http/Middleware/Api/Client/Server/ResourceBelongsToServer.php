@@ -2,7 +2,6 @@
 
 namespace Raptor\Http\Middleware\Api\Client\Server;
 
-use Illuminate\Http\Request;
 use Raptor\Models\Task;
 use Raptor\Models\User;
 use Raptor\Models\Backup;
@@ -10,6 +9,7 @@ use Raptor\Models\Server;
 use Raptor\Models\Subuser;
 use Raptor\Models\Database;
 use Raptor\Models\Schedule;
+use Illuminate\Http\Request;
 use Raptor\Models\Allocation;
 use Illuminate\Database\Eloquent\Model;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;

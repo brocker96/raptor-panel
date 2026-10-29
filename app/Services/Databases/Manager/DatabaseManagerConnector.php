@@ -2,13 +2,11 @@
 
 namespace Raptor\Services\Databases\Manager;
 
-use PDO;
-use PDOException;
 use Raptor\Models\Database;
 use Illuminate\Support\Facades\Cache;
+use Raptor\Exceptions\DisplayException;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Contracts\Encryption\Encrypter;
-use Raptor\Exceptions\DisplayException;
 use Raptor\Extensions\DynamicDatabaseConnection;
 
 /**
@@ -33,11 +31,11 @@ class DatabaseManagerConnector
      *
      * @throws DisplayException
      */
-    public function connect(Database $database, bool $buffered = true): PDO
+    public function connect(Database $database, bool $buffered = true): \PDO
     {
         try {
             return $this->open($database, $buffered);
-        } catch (PDOException $exception) {
+        } catch (\PDOException $exception) {
             if ((int) ($exception->errorInfo[1] ?? 0) !== self::ACCESS_DENIED) {
                 throw $this->unreachable($exception);
             }
@@ -47,7 +45,7 @@ class DatabaseManagerConnector
             $this->grantPanelAccess($database);
 
             return $this->open($database, $buffered);
-        } catch (PDOException $exception) {
+        } catch (\PDOException $exception) {
             throw $this->unreachable($exception);
         }
     }
@@ -69,31 +67,31 @@ class DatabaseManagerConnector
         }
     }
 
-    private function open(Database $database, bool $buffered): PDO
+    private function open(Database $database, bool $buffered): \PDO
     {
         $host = $database->host;
 
-        $pdo = new PDO(
+        $pdo = new \PDO(
             sprintf('mysql:host=%s;port=%d;dbname=%s;charset=utf8mb4', $host->host, $host->port, $database->database),
             $database->username,
             $this->encrypter->decrypt($database->password),
             [
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_TIMEOUT => 5,
-                PDO::ATTR_EMULATE_PREPARES => false,
-                PDO::ATTR_STRINGIFY_FETCHES => false,
-                PDO::MYSQL_ATTR_LOCAL_INFILE => false,
-                PDO::MYSQL_ATTR_MULTI_STATEMENTS => false,
-                PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => $buffered,
+                \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+                \PDO::ATTR_TIMEOUT => 5,
+                \PDO::ATTR_EMULATE_PREPARES => false,
+                \PDO::ATTR_STRINGIFY_FETCHES => false,
+                \PDO::MYSQL_ATTR_LOCAL_INFILE => false,
+                \PDO::MYSQL_ATTR_MULTI_STATEMENTS => false,
+                \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => $buffered,
             ]
         );
 
         // Stops runaway queries, MySQL counts milliseconds and MariaDB seconds.
         $timeout = (int) config('raptor.db_manager.query_timeout', 30);
-        foreach (["SET SESSION max_execution_time = %d", "SET SESSION max_statement_time = %d"] as $i => $statement) {
+        foreach (['SET SESSION max_execution_time = %d', 'SET SESSION max_statement_time = %d'] as $i => $statement) {
             try {
                 $pdo->exec(sprintf($statement, $i === 0 ? $timeout * 1000 : $timeout));
-            } catch (PDOException) {
+            } catch (\PDOException) {
                 // Not supported by this server flavour.
             }
         }
@@ -157,7 +155,7 @@ class DatabaseManagerConnector
         return '`' . str_replace('`', '``', $value) . '`';
     }
 
-    private function unreachable(PDOException $exception): DisplayException
+    private function unreachable(\PDOException $exception): DisplayException
     {
         report($exception);
 

@@ -4,8 +4,8 @@ namespace Raptor\Repositories\Wings;
 
 use GuzzleHttp\Client;
 use Raptor\Models\Node;
-use Webmozart\Assert\Assert;
 use Raptor\Models\Server;
+use Webmozart\Assert\Assert;
 use Illuminate\Contracts\Foundation\Application;
 
 abstract class DaemonRepository

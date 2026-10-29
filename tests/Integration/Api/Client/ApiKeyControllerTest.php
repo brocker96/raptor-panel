@@ -3,10 +3,10 @@
 namespace Raptor\Tests\Integration\Api\Client;
 
 use Raptor\Models\User;
-use Illuminate\Http\Response;
 use Raptor\Models\ApiKey;
-use Illuminate\Support\Facades\Event;
+use Illuminate\Http\Response;
 use Raptor\Events\ActivityLogged;
+use Illuminate\Support\Facades\Event;
 
 class ApiKeyControllerTest extends ClientApiIntegrationTestCase
 {

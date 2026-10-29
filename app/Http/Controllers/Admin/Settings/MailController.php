@@ -5,15 +5,15 @@ namespace Raptor\Http\Controllers\Admin\Settings;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Contracts\Console\Kernel;
 use Raptor\Notifications\MailTested;
-use Illuminate\Support\Facades\Notification;
 use Raptor\Exceptions\DisplayException;
 use Raptor\Http\Controllers\Controller;
-use Illuminate\Contracts\Encryption\Encrypter;
+use Illuminate\Contracts\Console\Kernel;
+use Illuminate\Support\Facades\Notification;
 use Raptor\Providers\SettingsServiceProvider;
-use Illuminate\Contracts\Config\Repository as ConfigRepository;
+use Illuminate\Contracts\Encryption\Encrypter;
 use Raptor\Contracts\Repository\SettingsRepositoryInterface;
+use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Raptor\Http\Requests\Admin\Settings\MailSettingsFormRequest;
 
 class MailController extends Controller

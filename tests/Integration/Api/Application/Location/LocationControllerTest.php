@@ -3,8 +3,8 @@
 namespace Raptor\Tests\Integration\Api\Application\Location;
 
 use Raptor\Models\Node;
-use Illuminate\Http\Response;
 use Raptor\Models\Location;
+use Illuminate\Http\Response;
 use Raptor\Transformers\Api\Application\NodeTransformer;
 use Raptor\Transformers\Api\Application\ServerTransformer;
 use Raptor\Transformers\Api\Application\LocationTransformer;

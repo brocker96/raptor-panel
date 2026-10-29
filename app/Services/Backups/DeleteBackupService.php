@@ -2,8 +2,8 @@
 
 namespace Raptor\Services\Backups;
 
-use Illuminate\Http\Response;
 use Raptor\Models\Backup;
+use Illuminate\Http\Response;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Database\ConnectionInterface;
 use Raptor\Extensions\Backups\BackupManager;

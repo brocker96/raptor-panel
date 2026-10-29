@@ -4,8 +4,8 @@ namespace Raptor\Http\Controllers\Auth;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Password;
 use Raptor\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Password;
 use Raptor\Events\Auth\FailedPasswordReset;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 

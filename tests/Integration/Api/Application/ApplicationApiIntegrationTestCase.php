@@ -2,14 +2,14 @@
 
 namespace Raptor\Tests\Integration\Api\Application;
 
-use Illuminate\Http\Request;
 use Raptor\Models\User;
-use PHPUnit\Framework\Assert;
 use Raptor\Models\ApiKey;
+use Illuminate\Http\Request;
+use PHPUnit\Framework\Assert;
 use Raptor\Services\Acl\Api\AdminAcl;
 use Raptor\Tests\Integration\IntegrationTestCase;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Raptor\Tests\Traits\Integration\CreatesTestModels;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Raptor\Transformers\Api\Application\BaseTransformer;
 use Raptor\Transformers\Api\Client\BaseClientTransformer;
 use Raptor\Tests\Traits\Http\IntegrationJsonRequestAssertions;

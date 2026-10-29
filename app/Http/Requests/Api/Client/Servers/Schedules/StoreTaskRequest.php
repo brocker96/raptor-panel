@@ -4,8 +4,8 @@ namespace Raptor\Http\Requests\Api\Client\Servers\Schedules;
 
 use Raptor\Models\Task;
 use Raptor\Models\Server;
-use Illuminate\Validation\Rule;
 use Raptor\Models\Permission;
+use Illuminate\Validation\Rule;
 
 class StoreTaskRequest extends ViewScheduleRequest
 {

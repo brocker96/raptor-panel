@@ -3,12 +3,12 @@
 namespace Raptor\Http\Controllers\Api\Client\Servers;
 
 use Raptor\Models\Task;
-use Illuminate\Http\Response;
 use Raptor\Models\Server;
 use Raptor\Models\Schedule;
-use Illuminate\Http\JsonResponse;
 use Raptor\Facades\Activity;
+use Illuminate\Http\Response;
 use Raptor\Models\Permission;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Database\ConnectionInterface;
 use Raptor\Repositories\Eloquent\TaskRepository;
 use Raptor\Exceptions\Http\HttpForbiddenException;

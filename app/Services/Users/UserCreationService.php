@@ -6,9 +6,9 @@ use Ramsey\Uuid\Uuid;
 use Raptor\Models\User;
 use Raptor\Facades\Activity;
 use Illuminate\Contracts\Hashing\Hasher;
+use Raptor\Notifications\AccountCreated;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Contracts\Auth\PasswordBroker;
-use Raptor\Notifications\AccountCreated;
 use Raptor\Contracts\Repository\UserRepositoryInterface;
 
 class UserCreationService

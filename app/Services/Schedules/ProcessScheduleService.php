@@ -4,10 +4,10 @@ namespace Raptor\Services\Schedules;
 
 use Exception;
 use Raptor\Models\Schedule;
-use Illuminate\Contracts\Bus\Dispatcher;
 use Raptor\Jobs\Schedule\RunTaskJob;
-use Illuminate\Database\ConnectionInterface;
 use Raptor\Exceptions\DisplayException;
+use Illuminate\Contracts\Bus\Dispatcher;
+use Illuminate\Database\ConnectionInterface;
 use Raptor\Repositories\Wings\DaemonServerRepository;
 use Raptor\Exceptions\Http\Connection\DaemonConnectionException;
 

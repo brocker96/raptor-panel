@@ -2,11 +2,11 @@
 
 namespace Raptor\Transformers\Api\Application;
 
-use League\Fractal\Resource\Item;
 use Raptor\Models\EggVariable;
+use League\Fractal\Resource\Item;
 use Raptor\Models\ServerVariable;
-use League\Fractal\Resource\NullResource;
 use Raptor\Services\Acl\Api\AdminAcl;
+use League\Fractal\Resource\NullResource;
 
 class ServerVariableTransformer extends BaseTransformer
 {

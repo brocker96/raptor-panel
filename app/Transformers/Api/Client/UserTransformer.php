@@ -2,8 +2,8 @@
 
 namespace Raptor\Transformers\Api\Client;
 
-use Illuminate\Support\Str;
 use Raptor\Models\User;
+use Illuminate\Support\Str;
 
 class UserTransformer extends BaseClientTransformer
 {

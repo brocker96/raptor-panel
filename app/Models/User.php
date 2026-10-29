@@ -10,19 +10,19 @@ use Illuminate\Auth\Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Builder;
 use Raptor\Contracts\Models\Identifiable;
-use Illuminate\Contracts\Translation\HasLocalePreference;
 use Raptor\Models\Traits\HasAccessTokens;
-use Illuminate\Auth\Passwords\CanResetPassword;
 use Raptor\Traits\Helpers\AvailableLanguages;
+use Illuminate\Auth\Passwords\CanResetPassword;
+use Raptor\Models\Traits\HasRealtimeIdentifier;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\Access\Authorizable;
-use Raptor\Models\Traits\HasRealtimeIdentifier;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Contracts\Translation\HasLocalePreference;
+use Raptor\Notifications\SendPasswordReset as ResetPasswordNotification;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
-use Raptor\Notifications\SendPasswordReset as ResetPasswordNotification;
 
 /**
  * Raptor\Models\User.

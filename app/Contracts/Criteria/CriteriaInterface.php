@@ -2,8 +2,8 @@
 
 namespace Raptor\Contracts\Criteria;
 
-use Illuminate\Database\Eloquent\Model;
 use Raptor\Repositories\Repository;
+use Illuminate\Database\Eloquent\Model;
 
 interface CriteriaInterface
 {

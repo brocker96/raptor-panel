@@ -3,8 +3,8 @@
 namespace Raptor\Http\Controllers\Api\Client;
 
 use Raptor\Models\ApiKey;
-use Illuminate\Http\JsonResponse;
 use Raptor\Facades\Activity;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Raptor\Exceptions\DisplayException;
 use Raptor\Http\Requests\Api\Client\ClientApiRequest;

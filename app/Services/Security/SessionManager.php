@@ -2,8 +2,8 @@
 
 namespace Raptor\Services\Security;
 
-use Carbon\CarbonImmutable;
 use Raptor\Models\User;
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Raptor\Models\UserSession;

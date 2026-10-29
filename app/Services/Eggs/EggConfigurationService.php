@@ -2,9 +2,9 @@
 
 namespace Raptor\Services\Eggs;
 
+use Raptor\Models\Server;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use Raptor\Models\Server;
 use Raptor\Services\Servers\ServerConfigurationStructureService;
 
 class EggConfigurationService

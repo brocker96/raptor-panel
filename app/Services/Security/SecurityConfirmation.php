@@ -2,14 +2,14 @@
 
 namespace Raptor\Services\Security;
 
-use Carbon\CarbonImmutable;
 use Raptor\Models\User;
+use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
 use PragmaRX\Google2FA\Google2FA;
-use Illuminate\Support\Facades\Cache;
 use Laravel\Sanctum\TransientToken;
-use Illuminate\Contracts\Encryption\Encrypter;
+use Illuminate\Support\Facades\Cache;
 use Raptor\Exceptions\DisplayException;
+use Illuminate\Contracts\Encryption\Encrypter;
 
 /**
  * "Sudo mode": sensitive actions require the user to prove again that they are in front of the
@@ -99,11 +99,7 @@ class SecurityConfirmation
 
         if (!$valid) {
             throw new DisplayException(match ($method) {
-                'pin' => $this->pinLocked($user)
-                    ? __('Too many wrong PIN attempts. Confirm with your password instead.')
-                    : __('The PIN is not correct.'),
-                'totp' => __('The two-factor code is not valid.'),
-                default => __('The password is not correct.'),
+                'pin' => $this->pinLocked($user) ? __('Too many wrong PIN attempts. Confirm with your password instead.') : __('The PIN is not correct.'), 'totp' => __('The two-factor code is not valid.'), default => __('The password is not correct.'),
             });
         }
 

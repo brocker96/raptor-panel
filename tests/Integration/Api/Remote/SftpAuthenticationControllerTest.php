@@ -2,9 +2,9 @@
 
 namespace Raptor\Tests\Integration\Api\Remote;
 
-use phpseclib3\Crypt\EC;
 use Raptor\Models\Node;
 use Raptor\Models\User;
+use phpseclib3\Crypt\EC;
 use Raptor\Models\Server;
 use Raptor\Models\Permission;
 use Raptor\Models\UserSSHKey;

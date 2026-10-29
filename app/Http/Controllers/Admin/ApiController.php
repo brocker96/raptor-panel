@@ -3,9 +3,9 @@
 namespace Raptor\Http\Controllers\Admin;
 
 use Illuminate\View\View;
+use Raptor\Models\ApiKey;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Raptor\Models\ApiKey;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
 use Raptor\Services\Acl\Api\AdminAcl;

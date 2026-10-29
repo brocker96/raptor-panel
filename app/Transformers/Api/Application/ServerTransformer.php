@@ -4,9 +4,9 @@ namespace Raptor\Transformers\Api\Application;
 
 use Raptor\Models\Server;
 use League\Fractal\Resource\Item;
+use Raptor\Services\Acl\Api\AdminAcl;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\NullResource;
-use Raptor\Services\Acl\Api\AdminAcl;
 use Raptor\Services\Servers\EnvironmentService;
 
 class ServerTransformer extends BaseTransformer

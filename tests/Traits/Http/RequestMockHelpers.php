@@ -4,8 +4,8 @@ namespace Raptor\Tests\Traits\Http;
 
 use Mockery as m;
 use Mockery\Mock;
-use Illuminate\Http\Request;
 use Raptor\Models\User;
+use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 trait RequestMockHelpers

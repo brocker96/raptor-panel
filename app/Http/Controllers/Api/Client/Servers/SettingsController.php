@@ -2,10 +2,10 @@
 
 namespace Raptor\Http\Controllers\Api\Client\Servers;
 
-use Illuminate\Http\Response;
 use Raptor\Models\Server;
-use Illuminate\Http\JsonResponse;
 use Raptor\Facades\Activity;
+use Illuminate\Http\Response;
+use Illuminate\Http\JsonResponse;
 use Raptor\Repositories\Eloquent\ServerRepository;
 use Raptor\Services\Servers\ReinstallServerService;
 use Raptor\Http\Controllers\Api\Client\ClientApiController;

@@ -2,11 +2,11 @@
 
 namespace Raptor\Http\Controllers\Api\Client\Servers;
 
-use Illuminate\Http\Request;
 use Raptor\Models\Server;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Raptor\Facades\Activity;
 use Raptor\Models\Permission;
+use Illuminate\Http\JsonResponse;
 use Raptor\Jobs\RevokeSftpAccessJob;
 use Raptor\Repositories\Eloquent\SubuserRepository;
 use Raptor\Services\Subusers\SubuserCreationService;

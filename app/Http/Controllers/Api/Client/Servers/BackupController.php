@@ -2,15 +2,15 @@
 
 namespace Raptor\Http\Controllers\Api\Client\Servers;
 
-use Illuminate\Http\Request;
 use Raptor\Models\Backup;
 use Raptor\Models\Server;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Raptor\Facades\Activity;
 use Raptor\Models\Permission;
-use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Http\JsonResponse;
 use Raptor\Services\Backups\DeleteBackupService;
 use Raptor\Services\Backups\DownloadLinkService;
+use Illuminate\Auth\Access\AuthorizationException;
 use Raptor\Repositories\Eloquent\BackupRepository;
 use Raptor\Services\Backups\InitiateBackupService;
 use Raptor\Repositories\Wings\DaemonBackupRepository;

@@ -4,9 +4,9 @@ namespace Raptor\Models;
 
 use Illuminate\Container\Container;
 use Znck\Eloquent\Traits\BelongsToThrough;
+use Raptor\Contracts\Extensions\HashidsInterface;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Raptor\Contracts\Extensions\HashidsInterface;
 
 /**
  * @property int $id

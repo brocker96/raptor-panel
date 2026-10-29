@@ -3,11 +3,11 @@
 namespace Raptor\Http\Controllers\Api\Client\Servers;
 
 use Raptor\Models\Server;
-use Illuminate\Http\JsonResponse;
 use Raptor\Facades\Activity;
 use Raptor\Models\Allocation;
-use Illuminate\Database\ConnectionInterface;
+use Illuminate\Http\JsonResponse;
 use Raptor\Exceptions\DisplayException;
+use Illuminate\Database\ConnectionInterface;
 use Raptor\Repositories\Eloquent\ServerRepository;
 use Raptor\Transformers\Api\Client\AllocationTransformer;
 use Raptor\Http\Controllers\Api\Client\ClientApiController;

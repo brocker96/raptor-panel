@@ -5,9 +5,9 @@ namespace Raptor\Tests\Integration\Services\Security;
 use Raptor\Models\User;
 use Illuminate\Http\Request;
 use Raptor\Models\UserPasskey;
-use Raptor\Tests\Integration\IntegrationTestCase;
 use Raptor\Services\Security\WebAuthn\Cbor;
 use Raptor\Services\Security\WebAuthn\WebAuthn;
+use Raptor\Tests\Integration\IntegrationTestCase;
 use Raptor\Services\Security\WebAuthn\WebAuthnException;
 
 /**

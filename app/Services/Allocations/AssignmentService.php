@@ -4,8 +4,8 @@ namespace Raptor\Services\Allocations;
 
 use IPTools\Network;
 use Raptor\Models\Node;
-use Illuminate\Database\ConnectionInterface;
 use Raptor\Exceptions\DisplayException;
+use Illuminate\Database\ConnectionInterface;
 use Raptor\Contracts\Repository\AllocationRepositoryInterface;
 use Raptor\Exceptions\Service\Allocation\CidrOutOfRangeException;
 use Raptor\Exceptions\Service\Allocation\PortOutOfRangeException;

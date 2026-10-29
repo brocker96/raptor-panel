@@ -2,8 +2,8 @@
 
 namespace Raptor\Http\Controllers\Api\Client;
 
-use Illuminate\Http\JsonResponse;
 use Raptor\Facades\Activity;
+use Illuminate\Http\JsonResponse;
 use Raptor\Http\Requests\Api\Client\ClientApiRequest;
 use Raptor\Transformers\Api\Client\UserSSHKeyTransformer;
 use Raptor\Http\Requests\Api\Client\Account\StoreSSHKeyRequest;

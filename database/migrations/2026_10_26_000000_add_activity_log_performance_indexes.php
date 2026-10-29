@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-return new class extends Migration {
+return new class () extends Migration {
     /**
      * Activity logs grow without bound on busy panels. These indexes allow the activity pages
      * to be answered from the index (subject -> log id) and to read the newest entries first

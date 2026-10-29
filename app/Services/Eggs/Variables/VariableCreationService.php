@@ -4,8 +4,8 @@ namespace Raptor\Services\Eggs\Variables;
 
 use Raptor\Models\EggVariable;
 use Raptor\Traits\Services\ValidatesValidationRules;
-use Illuminate\Contracts\Validation\Factory as ValidationFactory;
 use Raptor\Contracts\Repository\EggVariableRepositoryInterface;
+use Illuminate\Contracts\Validation\Factory as ValidationFactory;
 use Raptor\Exceptions\Service\Egg\Variable\ReservedVariableNameException;
 
 class VariableCreationService

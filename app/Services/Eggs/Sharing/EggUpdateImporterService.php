@@ -3,11 +3,11 @@
 namespace Raptor\Services\Eggs\Sharing;
 
 use Raptor\Models\Egg;
+use Raptor\Models\EggVariable;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
-use Raptor\Models\EggVariable;
-use Illuminate\Database\ConnectionInterface;
 use Raptor\Services\Eggs\EggParserService;
+use Illuminate\Database\ConnectionInterface;
 
 class EggUpdateImporterService
 {

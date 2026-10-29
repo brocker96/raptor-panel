@@ -6,8 +6,8 @@ use Raptor\Models\Server;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Validation\ValidationException;
-use Illuminate\Validation\Factory as ValidatorFactory;
 use Raptor\Repositories\Wings\DaemonPowerRepository;
+use Illuminate\Validation\Factory as ValidatorFactory;
 use Raptor\Exceptions\Http\Connection\DaemonConnectionException;
 
 class BulkPowerActionCommand extends Command

@@ -3,10 +3,10 @@
 namespace Raptor\Tests\Assertions;
 
 use PHPUnit\Framework\Assert;
-use Illuminate\Support\Facades\Event;
 use Raptor\Events\ActivityLogged;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Event;
 use Raptor\Models\ActivityLogSubject;
+use Illuminate\Database\Eloquent\Model;
 
 trait AssertsActivityLogged
 {

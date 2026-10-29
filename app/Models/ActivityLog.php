@@ -3,15 +3,15 @@
 namespace Raptor\Models;
 
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Event;
 use Raptor\Events\ActivityLogged;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\MassPrunable;
 use Raptor\Contracts\Models\Identifiable;
+use Illuminate\Database\Eloquent\MassPrunable;
+use Raptor\Models\Traits\HasRealtimeIdentifier;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Raptor\Models\Traits\HasRealtimeIdentifier;
 use Illuminate\Database\Eloquent\Model as IlluminateModel;
 
 /**

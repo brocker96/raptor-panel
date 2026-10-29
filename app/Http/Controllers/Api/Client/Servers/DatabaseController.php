@@ -2,10 +2,10 @@
 
 namespace Raptor\Http\Controllers\Api\Client\Servers;
 
-use Illuminate\Http\Response;
 use Raptor\Models\Server;
 use Raptor\Models\Database;
 use Raptor\Facades\Activity;
+use Illuminate\Http\Response;
 use Raptor\Exceptions\DisplayException;
 use Raptor\Services\Databases\DatabasePasswordService;
 use Raptor\Transformers\Api\Client\DatabaseTransformer;

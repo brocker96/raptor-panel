@@ -2,11 +2,11 @@
 
 namespace Raptor\Tests\Integration\Api\Client\Server;
 
+use Raptor\Enum\JwtScope;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Response;
-use Raptor\Enum\JwtScope;
-use Lcobucci\JWT\Configuration;
 use Raptor\Models\Permission;
+use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
 use Lcobucci\JWT\Signer\Key\InMemory;
 use Lcobucci\JWT\Validation\Constraint\SignedWith;

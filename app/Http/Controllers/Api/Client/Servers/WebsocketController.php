@@ -2,11 +2,11 @@
 
 namespace Raptor\Http\Controllers\Api\Client\Servers;
 
-use Carbon\CarbonImmutable;
 use Raptor\Enum\JwtScope;
 use Raptor\Models\Server;
-use Illuminate\Http\JsonResponse;
+use Carbon\CarbonImmutable;
 use Raptor\Models\Permission;
+use Illuminate\Http\JsonResponse;
 use Raptor\Services\Nodes\NodeJWTService;
 use Raptor\Exceptions\Http\HttpForbiddenException;
 use Raptor\Http\Requests\Api\Client\ClientApiRequest;

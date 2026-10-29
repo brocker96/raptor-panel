@@ -2,8 +2,8 @@
 
 namespace Raptor\Tests\Integration\Api\Client;
 
-use phpseclib3\Crypt\EC;
 use Raptor\Models\User;
+use phpseclib3\Crypt\EC;
 use Raptor\Models\UserSSHKey;
 
 class SSHKeyControllerTest extends ClientApiIntegrationTestCase

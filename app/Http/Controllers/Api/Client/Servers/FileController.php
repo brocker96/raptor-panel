@@ -2,12 +2,12 @@
 
 namespace Raptor\Http\Controllers\Api\Client\Servers;
 
-use Carbon\CarbonImmutable;
-use Illuminate\Http\Response;
 use Raptor\Enum\JwtScope;
 use Raptor\Models\Server;
-use Illuminate\Http\JsonResponse;
+use Carbon\CarbonImmutable;
 use Raptor\Facades\Activity;
+use Illuminate\Http\Response;
+use Illuminate\Http\JsonResponse;
 use Raptor\Services\Nodes\NodeJWTService;
 use Raptor\Repositories\Wings\DaemonFileRepository;
 use Raptor\Transformers\Api\Client\FileObjectTransformer;

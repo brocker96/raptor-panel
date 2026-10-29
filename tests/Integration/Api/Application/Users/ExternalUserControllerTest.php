@@ -2,8 +2,8 @@
 
 namespace Raptor\Tests\Integration\Api\Application\Users;
 
-use Illuminate\Support\Str;
 use Raptor\Models\User;
+use Illuminate\Support\Str;
 use Illuminate\Http\Response;
 use Raptor\Tests\Integration\Api\Application\ApplicationApiIntegrationTestCase;
 

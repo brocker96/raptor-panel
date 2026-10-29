@@ -2,12 +2,12 @@
 
 namespace Raptor\Http\Controllers\Admin;
 
-use Illuminate\Http\Request;
 use Raptor\Models\User;
-use Illuminate\Http\Response;
 use Raptor\Models\Mount;
 use Raptor\Models\Server;
 use Raptor\Models\Database;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Raptor\Models\MountServer;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
@@ -28,10 +28,10 @@ use Raptor\Contracts\Repository\NestRepositoryInterface;
 use Raptor\Http\Requests\Admin\ServerDetailsFormRequest;
 use Raptor\Repositories\Eloquent\DatabaseHostRepository;
 use Raptor\Services\Databases\DatabaseManagementService;
-use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Raptor\Contracts\Repository\ServerRepositoryInterface;
 use Raptor\Contracts\Repository\DatabaseRepositoryInterface;
 use Raptor\Contracts\Repository\AllocationRepositoryInterface;
+use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Raptor\Services\Servers\ServerConfigurationStructureService;
 use Raptor\Http\Requests\Admin\Servers\Databases\StoreServerDatabaseRequest;
 

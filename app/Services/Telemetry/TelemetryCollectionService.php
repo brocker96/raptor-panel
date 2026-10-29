@@ -3,7 +3,6 @@
 namespace Raptor\Services\Telemetry;
 
 use Ramsey\Uuid\Uuid;
-use Illuminate\Support\Arr;
 use Raptor\Models\Egg;
 use Raptor\Models\Nest;
 use Raptor\Models\Node;
@@ -11,9 +10,10 @@ use Raptor\Models\User;
 use Raptor\Models\Mount;
 use Raptor\Models\Backup;
 use Raptor\Models\Server;
+use Illuminate\Support\Arr;
 use Raptor\Models\Location;
-use Illuminate\Support\Facades\DB;
 use Raptor\Models\Allocation;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Raptor\Repositories\Eloquent\SettingsRepository;
 use Raptor\Repositories\Wings\DaemonConfigurationRepository;

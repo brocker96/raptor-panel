@@ -4,8 +4,8 @@ namespace Raptor\Services\Security;
 
 use Raptor\Models\User;
 use Illuminate\Http\Request;
-use Raptor\Models\UserSession;
 use Psr\Log\LoggerInterface;
+use Raptor\Models\UserSession;
 use Raptor\Notifications\SecurityAlert;
 use Illuminate\Support\Facades\Notification;
 

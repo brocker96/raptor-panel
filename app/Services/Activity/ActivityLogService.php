@@ -4,12 +4,12 @@ namespace Raptor\Services\Activity;
 
 use Illuminate\Support\Arr;
 use Webmozart\Assert\Assert;
+use Raptor\Models\ActivityLog;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
-use Raptor\Models\ActivityLog;
+use Raptor\Models\ActivityLogSubject;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Request;
-use Raptor\Models\ActivityLogSubject;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
 

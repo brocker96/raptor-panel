@@ -3,13 +3,13 @@
 namespace Raptor\Tests\Integration\Services\Schedules;
 
 use Exception;
-use Carbon\CarbonImmutable;
 use Raptor\Models\Task;
+use Carbon\CarbonImmutable;
 use Raptor\Models\Schedule;
 use Illuminate\Support\Facades\Bus;
-use Illuminate\Contracts\Bus\Dispatcher;
 use Raptor\Jobs\Schedule\RunTaskJob;
 use Raptor\Exceptions\DisplayException;
+use Illuminate\Contracts\Bus\Dispatcher;
 use Raptor\Tests\Integration\IntegrationTestCase;
 use Raptor\Services\Schedules\ProcessScheduleService;
 

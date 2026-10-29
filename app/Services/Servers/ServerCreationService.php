@@ -3,15 +3,15 @@
 namespace Raptor\Services\Servers;
 
 use Ramsey\Uuid\Uuid;
-use Illuminate\Support\Arr;
 use Raptor\Models\Egg;
 use Raptor\Models\User;
-use Webmozart\Assert\Assert;
 use Raptor\Models\Server;
-use Illuminate\Support\Collection;
+use Illuminate\Support\Arr;
+use Webmozart\Assert\Assert;
 use Raptor\Models\Allocation;
-use Illuminate\Database\ConnectionInterface;
+use Illuminate\Support\Collection;
 use Raptor\Models\Objects\DeploymentObject;
+use Illuminate\Database\ConnectionInterface;
 use Raptor\Repositories\Eloquent\ServerRepository;
 use Raptor\Repositories\Wings\DaemonServerRepository;
 use Raptor\Services\Deployment\FindViableNodesService;

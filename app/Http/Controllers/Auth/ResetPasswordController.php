@@ -4,14 +4,14 @@ namespace Raptor\Http\Controllers\Auth;
 
 use Illuminate\Support\Str;
 use Illuminate\Http\JsonResponse;
+use Raptor\Events\User\PasswordChanged;
+use Raptor\Exceptions\DisplayException;
+use Raptor\Http\Controllers\Controller;
 use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Contracts\Events\Dispatcher;
-use Raptor\Events\User\PasswordChanged;
 use Raptor\Services\Security\SessionManager;
-use Raptor\Exceptions\DisplayException;
-use Raptor\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use Raptor\Http\Requests\Auth\ResetPasswordRequest;
 use Raptor\Contracts\Repository\UserRepositoryInterface;

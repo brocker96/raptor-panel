@@ -2,9 +2,9 @@
 
 namespace Raptor\Http\Controllers\Api\Client\Servers;
 
-use Illuminate\Http\Response;
 use Raptor\Models\Server;
 use Raptor\Facades\Activity;
+use Illuminate\Http\Response;
 use Raptor\Repositories\Wings\DaemonPowerRepository;
 use Raptor\Http\Controllers\Api\Client\ClientApiController;
 use Raptor\Http\Requests\Api\Client\Servers\SendPowerRequest;

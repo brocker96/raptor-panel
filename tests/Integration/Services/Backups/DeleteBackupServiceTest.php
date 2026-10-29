@@ -2,9 +2,9 @@
 
 namespace Raptor\Tests\Integration\Services\Backups;
 
+use Raptor\Models\Backup;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
-use Raptor\Models\Backup;
 use GuzzleHttp\Exception\ClientException;
 use Raptor\Extensions\Backups\BackupManager;
 use Raptor\Extensions\Filesystem\S3Filesystem;

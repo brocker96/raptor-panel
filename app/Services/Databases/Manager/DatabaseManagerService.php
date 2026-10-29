@@ -2,9 +2,6 @@
 
 namespace Raptor\Services\Databases\Manager;
 
-use PDO;
-use PDOException;
-use PDOStatement;
 use Raptor\Models\Database;
 use Raptor\Exceptions\DisplayException;
 
@@ -23,7 +20,7 @@ class DatabaseManagerService
     {
     }
 
-    public function connection(Database $database): PDO
+    public function connection(Database $database): \PDO
     {
         return $this->pdo[$database->id] ??= $this->connector->connect($database);
     }
@@ -40,7 +37,7 @@ class DatabaseManagerService
                 DATA_LENGTH AS data, INDEX_LENGTH AS `index`, TABLE_COLLATION AS collation,
                 TABLE_COMMENT AS comment, UPDATE_TIME AS updated
             FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() ORDER BY TABLE_NAME'
-        )->fetchAll(PDO::FETCH_ASSOC);
+        )->fetchAll(\PDO::FETCH_ASSOC);
 
         return [
             'name' => $database->database,
@@ -69,20 +66,22 @@ class DatabaseManagerService
         $pdo = $this->connection($database);
         $this->assertTable($database, $table);
 
-        $columns = $this->prepare($pdo,
+        $columns = $this->prepare(
+            $pdo,
             'SELECT COLUMN_NAME AS name, COLUMN_TYPE AS type, DATA_TYPE AS data_type, IS_NULLABLE AS nullable,
                 COLUMN_DEFAULT AS `default`, COLUMN_KEY AS `key`, EXTRA AS extra, COLUMN_COMMENT AS comment,
                 CHARACTER_MAXIMUM_LENGTH AS length
             FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? ORDER BY ORDINAL_POSITION',
             [$table]
-        )->fetchAll(PDO::FETCH_ASSOC);
+        )->fetchAll(\PDO::FETCH_ASSOC);
 
         $indexes = [];
-        foreach ($this->prepare($pdo,
+        foreach ($this->prepare(
+            $pdo,
             'SELECT INDEX_NAME AS name, NON_UNIQUE AS non_unique, COLUMN_NAME AS col, INDEX_TYPE AS type
             FROM information_schema.STATISTICS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? ORDER BY INDEX_NAME, SEQ_IN_INDEX',
             [$table]
-        )->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        )->fetchAll(\PDO::FETCH_ASSOC) as $row) {
             $indexes[$row['name']] ??= [
                 'name' => $row['name'],
                 'unique' => !(int) $row['non_unique'],
@@ -93,14 +92,15 @@ class DatabaseManagerService
             $indexes[$row['name']]['columns'][] = $row['col'];
         }
 
-        $foreign = $this->prepare($pdo,
+        $foreign = $this->prepare(
+            $pdo,
             'SELECT CONSTRAINT_NAME AS name, COLUMN_NAME AS col, REFERENCED_TABLE_NAME AS ref_table, REFERENCED_COLUMN_NAME AS ref_column
             FROM information_schema.KEY_COLUMN_USAGE
             WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? AND REFERENCED_TABLE_NAME IS NOT NULL',
             [$table]
-        )->fetchAll(PDO::FETCH_ASSOC);
+        )->fetchAll(\PDO::FETCH_ASSOC);
 
-        $create = $pdo->query('SHOW CREATE TABLE ' . $this->ident($table))->fetch(PDO::FETCH_NUM);
+        $create = $pdo->query('SHOW CREATE TABLE ' . $this->ident($table))->fetch(\PDO::FETCH_NUM);
 
         return [
             'name' => $table,
@@ -294,7 +294,7 @@ class DatabaseManagerService
 
                 $rows = [];
                 $more = false;
-                while (($row = $result->fetch(PDO::FETCH_NUM)) !== false) {
+                while (($row = $result->fetch(\PDO::FETCH_NUM)) !== false) {
                     if (count($rows) >= $limit) {
                         $more = true;
                         continue;
@@ -310,7 +310,7 @@ class DatabaseManagerService
                     'rows' => $rows,
                     'limited' => $more,
                 ];
-            } catch (PDOException $exception) {
+            } catch (\PDOException $exception) {
                 $results[] = [
                     'sql' => $statement,
                     'error' => $exception->errorInfo[2] ?? $exception->getMessage(),
@@ -338,7 +338,7 @@ class DatabaseManagerService
             try {
                 $pdo->exec($statement);
                 ++$executed;
-            } catch (PDOException $exception) {
+            } catch (\PDOException $exception) {
                 return [
                     'executed' => $executed,
                     'time' => round(microtime(true) - $started, 2),
@@ -372,7 +372,7 @@ class DatabaseManagerService
         ));
 
         foreach ($tables as $table) {
-            $create = $pdo->query('SHOW CREATE TABLE ' . $this->ident($table))->fetch(PDO::FETCH_NUM)[1];
+            $create = $pdo->query('SHOW CREATE TABLE ' . $this->ident($table))->fetch(\PDO::FETCH_NUM)[1];
 
             if ($all[$table]) {
                 $write(sprintf("DROP VIEW IF EXISTS %s;\n%s;\n\n", $this->ident($table), $create));
@@ -387,7 +387,7 @@ class DatabaseManagerService
             $result = $pdo->query('SELECT * FROM ' . $this->ident($table));
             $batch = [];
             $columns = null;
-            while (($row = $result->fetch(PDO::FETCH_ASSOC)) !== false) {
+            while (($row = $result->fetch(\PDO::FETCH_ASSOC)) !== false) {
                 $columns ??= implode(', ', array_map(fn ($c) => $this->ident($c), array_keys($row)));
                 $batch[] = '(' . implode(', ', array_map(fn ($v) => $this->literal($pdo, $v), $row)) . ')';
                 if (count($batch) >= 200) {
@@ -477,13 +477,13 @@ class DatabaseManagerService
         return array_intersect_key($values, array_flip($columns));
     }
 
-    private function fetchRows(PDOStatement $statement, array $columns): array
+    private function fetchRows(\PDOStatement $statement, array $columns): array
     {
         $binary = array_column($columns, 'binary');
         $rows = [];
         $truncated = [];
 
-        while (($row = $statement->fetch(PDO::FETCH_NUM)) !== false) {
+        while (($row = $statement->fetch(\PDO::FETCH_NUM)) !== false) {
             foreach ($row as $i => $value) {
                 if (($binary[$i] ?? false) && $value !== null) {
                     $row[$i] = ['$binary' => strlen($value)];
@@ -518,7 +518,7 @@ class DatabaseManagerService
         return [$value, false];
     }
 
-    private function literal(PDO $pdo, mixed $value): string
+    private function literal(\PDO $pdo, mixed $value): string
     {
         return match (true) {
             $value === null => 'NULL',
@@ -547,7 +547,7 @@ class DatabaseManagerService
         }
     }
 
-    private function prepare(PDO $pdo, string $sql, array $bindings = []): PDOStatement
+    private function prepare(\PDO $pdo, string $sql, array $bindings = []): \PDOStatement
     {
         $statement = $pdo->prepare($sql);
         $statement->execute(array_values($bindings));

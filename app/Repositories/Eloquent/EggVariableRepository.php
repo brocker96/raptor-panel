@@ -2,8 +2,8 @@
 
 namespace Raptor\Repositories\Eloquent;
 
-use Illuminate\Support\Collection;
 use Raptor\Models\EggVariable;
+use Illuminate\Support\Collection;
 use Raptor\Contracts\Repository\EggVariableRepositoryInterface;
 
 class EggVariableRepository extends EloquentRepository implements EggVariableRepositoryInterface

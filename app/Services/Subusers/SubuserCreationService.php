@@ -2,9 +2,9 @@
 
 namespace Raptor\Services\Subusers;
 
-use Illuminate\Support\Str;
 use Raptor\Models\Server;
 use Raptor\Models\Subuser;
+use Illuminate\Support\Str;
 use Illuminate\Database\ConnectionInterface;
 use Raptor\Services\Users\UserCreationService;
 use Raptor\Repositories\Eloquent\SubuserRepository;

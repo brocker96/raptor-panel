@@ -9,8 +9,8 @@ use Raptor\Models\Server;
 use Raptor\Models\ServerVariable;
 use Illuminate\Validation\ValidationException;
 use Raptor\Tests\Integration\IntegrationTestCase;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Raptor\Services\Servers\StartupModificationService;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class StartupModificationServiceTest extends IntegrationTestCase
 {

@@ -2,12 +2,12 @@
 
 namespace Raptor\Http\Controllers\Auth;
 
+use Raptor\Models\User;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use Raptor\Models\User;
-use Illuminate\Http\JsonResponse;
 use Raptor\Facades\Activity;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Contracts\View\View;
 use Raptor\Exceptions\DisplayException;
 use Raptor\Services\Security\AccountLockout;
@@ -29,7 +29,7 @@ class LoginController extends AbstractLoginController
     /**
      * Handle a login request to the application.
      *
-     * @throws \Raptor\Exceptions\DisplayException
+     * @throws DisplayException
      * @throws \Illuminate\Validation\ValidationException
      */
     public function login(Request $request): JsonResponse
@@ -60,9 +60,7 @@ class LoginController extends AbstractLoginController
 
         // Checked only after the password, so a lock does not reveal that an account exists.
         if ($lockout->isLocked($user)) {
-            throw new DisplayException(__('This account is temporarily locked after too many failed sign-in attempts. Try again after :time.', [
-                'time' => $user->locked_until->toTimeString('minute'),
-            ]));
+            throw new DisplayException(__('This account is temporarily locked after too many failed sign-in attempts. Try again after :time.', ['time' => $user->locked_until->toTimeString('minute')]));
         }
 
         $request->session()->put('auth_remember', $request->boolean('remember', true));

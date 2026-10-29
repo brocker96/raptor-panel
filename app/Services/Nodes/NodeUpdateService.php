@@ -2,8 +2,8 @@
 
 namespace Raptor\Services\Nodes;
 
-use Illuminate\Support\Str;
 use Raptor\Models\Node;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Contracts\Encryption\Encrypter;

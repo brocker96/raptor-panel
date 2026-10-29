@@ -3,9 +3,9 @@
 namespace Raptor\Tests\Integration\Services\Servers;
 
 use Mockery\MockInterface;
+use Raptor\Models\Database;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
-use Raptor\Models\Database;
 use Raptor\Models\DatabaseHost;
 use GuzzleHttp\Exception\BadResponseException;
 use Raptor\Tests\Integration\IntegrationTestCase;

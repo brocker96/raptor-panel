@@ -3,12 +3,12 @@
 namespace Raptor\Tests\Integration\Jobs\Schedule;
 
 use Carbon\Carbon;
-use Carbon\CarbonImmutable;
-use GuzzleHttp\Psr7\Request;
 use Raptor\Models\Task;
-use GuzzleHttp\Psr7\Response;
 use Raptor\Models\Server;
+use Carbon\CarbonImmutable;
 use Raptor\Models\Schedule;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
 use Illuminate\Support\Facades\Bus;
 use Raptor\Jobs\Schedule\RunTaskJob;
 use GuzzleHttp\Exception\BadResponseException;

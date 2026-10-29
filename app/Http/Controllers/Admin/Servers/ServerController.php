@@ -3,8 +3,8 @@
 namespace Raptor\Http\Controllers\Admin\Servers;
 
 use Illuminate\View\View;
-use Illuminate\Http\Request;
 use Raptor\Models\Server;
+use Illuminate\Http\Request;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
 use Raptor\Http\Controllers\Controller;

@@ -2,10 +2,10 @@
 
 namespace Raptor\Tests\Integration\Api\Client\Server\Subuser;
 
-use Illuminate\Support\Str;
 use Raptor\Models\User;
-use Illuminate\Http\Response;
 use Raptor\Models\Subuser;
+use Illuminate\Support\Str;
+use Illuminate\Http\Response;
 use Raptor\Models\Permission;
 use Illuminate\Foundation\Testing\WithFaker;
 use Raptor\Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
