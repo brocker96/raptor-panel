@@ -100,6 +100,7 @@ class Kernel extends HttpKernel
      * The application's route middleware.
      */
     protected $middlewareAliases = [
+        'raptor.key' => Middleware\Api\Raptor\RequireRaptorKey::class,
         'auth' => Authenticate::class,
         'auth.basic' => AuthenticateWithBasicAuth::class,
         'auth.session' => AuthenticateSession::class,

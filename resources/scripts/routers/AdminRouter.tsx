@@ -9,10 +9,12 @@ import {
     CloudIcon,
     CogIcon,
     CollectionIcon,
+    CubeIcon,
     DatabaseIcon,
     FolderIcon,
     GlobeIcon,
     KeyIcon,
+    LightningBoltIcon,
     ServerIcon,
     TemplateIcon,
     UsersIcon,
@@ -37,6 +39,8 @@ const UserView = lazy(() => import('@/components/admin/users/UserViewContainer')
 const Nodes = lazy(() => import('@/components/admin/nodes/NodesContainer'));
 const NodeCreate = lazy(() => import('@/components/admin/nodes/NodeCreateContainer'));
 const NodeView = lazy(() => import('@/components/admin/nodes/NodeViewContainer'));
+const Packages = lazy(() => import('@/components/admin/packages/PackagesContainer'));
+const RaptorApi = lazy(() => import('@/components/admin/raptor/RaptorApiContainer'));
 const Support = lazy(() => import('@/components/admin/support/SupportContainer'));
 const TicketView = lazy(() => import('@/components/admin/support/TicketViewContainer'));
 const Locations = lazy(() => import('@/components/admin/locations/LocationsContainer'));
@@ -67,8 +71,10 @@ const nav: NavEntry[] = [
     { to: '/admin/databases', label: t('Databases'), icon: DatabaseIcon, group: 'Infrastructure' },
     { to: '/admin/mounts', label: t('Mounts'), icon: FolderIcon, group: 'Infrastructure' },
     { to: '/admin/nests', label: t('Nests & eggs'), icon: CollectionIcon, group: 'Services' },
+    { to: '/admin/packages', label: t('Packages'), icon: CubeIcon, group: 'Services' },
     { to: '/admin/settings', label: t('Settings'), icon: CogIcon, group: 'Panel' },
     { to: '/admin/api', label: t('API keys'), icon: KeyIcon, group: 'Panel' },
+    { to: '/admin/raptor-api', label: t('Raptor API'), icon: LightningBoltIcon, group: 'Panel' },
     { to: '/admin/activity', label: t('Audit log'), icon: ClipboardListIcon, group: 'Panel' },
     { to: '/admin/system', label: t('System'), icon: TemplateIcon, group: 'Panel' },
     { to: '/admin/updates', label: t('Updates'), icon: ArrowCircleUpIcon, group: 'Panel' },
@@ -149,6 +155,8 @@ export default () => {
                             <Route path={'nodes'} element={<Nodes />} />
                             <Route path={'nodes/new'} element={<NodeCreate />} />
                             <Route path={'nodes/:id/*'} element={<NodeView />} />
+                            <Route path={'packages'} element={<Packages />} />
+                            <Route path={'raptor-api'} element={<RaptorApi />} />
                             <Route path={'support'} element={<Support />} />
                             <Route path={'support/:id'} element={<TicketView />} />
                             <Route path={'locations'} element={<Locations />} />

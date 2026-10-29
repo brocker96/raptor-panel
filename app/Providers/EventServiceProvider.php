@@ -12,6 +12,7 @@ use Raptor\Observers\SubuserObserver;
 use Raptor\Listeners\TwoFactorListener;
 use Raptor\Listeners\RevocationListener;
 use Raptor\Observers\EggVariableObserver;
+use Raptor\Listeners\RaptorWebhookListener;
 use Raptor\Listeners\AuthenticationListener;
 use Raptor\Events\Server\Installed as ServerInstalledEvent;
 use Raptor\Notifications\ServerInstalled as ServerInstalledNotification;
@@ -30,6 +31,7 @@ class EventServiceProvider extends ServiceProvider
         AuthenticationListener::class,
         RevocationListener::class,
         TwoFactorListener::class,
+        RaptorWebhookListener::class,
     ];
 
     protected static $shouldDiscoverEvents = false;

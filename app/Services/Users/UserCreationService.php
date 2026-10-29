@@ -30,7 +30,7 @@ class UserCreationService
      * @throws \Exception
      * @throws \Raptor\Exceptions\Model\DataValidationException
      */
-    public function handle(array $data): User
+    public function handle(array $data, bool $notify = true): User
     {
         if (array_key_exists('password', $data) && !empty($data['password'])) {
             $data['password'] = $this->hasher->make($data['password']);
@@ -52,7 +52,9 @@ class UserCreationService
         }
 
         $this->connection->commit();
-        $user->notify(new AccountCreated($user, $token ?? null));
+        if ($notify) {
+            $user->notify(new AccountCreated($user, $token ?? null));
+        }
 
         Activity::event('user:user.create')
             ->subject($user)

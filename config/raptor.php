@@ -56,6 +56,15 @@ return [
     // Branch of the repository the node installer (wings.sh) is downloaded from.
     'installer_branch' => env('RAPTOR_INSTALLER_BRANCH', '0.x_beta'),
 
+    'raptor_api' => [
+        // Minutes a sign in link from POST /users/{user}/login-link stays valid. Links work once.
+        'login_link_minutes' => (int) env('RAPTOR_API_LOGIN_LINK_MINUTES', 5),
+        // Sign in links for administrators are refused unless this is turned on.
+        'login_links_for_admins' => (bool) env('RAPTOR_API_ADMIN_LOGIN_LINKS', false),
+        // Seconds a response to a request with an Idempotency-Key header is replayed.
+        'idempotency_ttl' => (int) env('RAPTOR_API_IDEMPOTENCY_TTL', 86400),
+    ],
+
     'support' => [
         // Support tickets in the account area, answered from Admin → Support. Off by default,
         // a private Panel does not need them, hosting companies turn them on in Admin → Settings.

@@ -138,6 +138,26 @@ sudo -u www-data php artisan raptor:update --rollback=latest
 ```
 </details>
 
+## 💳 Raptor API — made for billing systems
+
+A small REST API at `/api/raptor/v1` that does exactly what a shop needs. **[Read the docs →](docs/raptor-api.md)**
+
+- **Packages** — server plans (game, resources, locations, ports, variables) built in *Admin → Packages*,
+  ordered by slug. Availability check to hide sold out plans.
+- **One call per order** — `POST /servers` creates the customer if needed and deploys on the emptiest node.
+  The same `external_id` never creates a second server, `Idempotency-Key` makes every write safe to retry.
+- **Your ids everywhere** — `/servers/ext:order-1042`, `/users/ext:client-7`, or e-mail, UUID and Panel id.
+- **Lifecycle** — suspend, unsuspend, upgrade to another package, add-on limits, reinstall, power, live usage, delete.
+- **"Open control panel"** — one time sign in links that skip the second password but never 2FA.
+- **Signed webhooks** — `server.installed`, `server.suspended`, `server.deleted` and more, HMAC-SHA256, retries,
+  delivery log with resend in *Admin → Raptor API*, plus a one click billing key.
+
+```bash
+curl -X POST https://panel.example.com/api/raptor/v1/servers -H "Authorization: Bearer $KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"package":"minecraft-4gb","external_id":"order-1042","user":{"email":"jane@example.com"},"login_link":true}'
+```
+
 ## 🛡️ Admin area, rebuilt in React
 
 The whole admin area is a fast React app with animations, live node status and **29 built-in step-by-step guides** —
@@ -304,7 +324,9 @@ Compatibility with existing Eggs and integrations will be evaluated throughout d
 
 ## 📖 Documentation
 
-Dedicated Raptor Panel documentation is planned.
+- [Raptor API for billing systems](docs/raptor-api.md)
+
+More Raptor Panel documentation is planned.
 
 Until then, the original Pterodactyl documentation may be useful for understanding the underlying architecture.
 

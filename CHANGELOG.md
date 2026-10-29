@@ -3,6 +3,13 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## Unreleased
+
+### Added
+* **Raptor API** (`/api/raptor/v1`) for billing systems, documented in [docs/raptor-api.md](docs/raptor-api.md): packages, one call provisioning that creates the customer and deploys on the emptiest node, the same `external_id` never creating a second server, `Idempotency-Key` on every write, addressing by the billing system's own ids (`ext:order-1042`), suspend, unsuspend, package upgrades, add-on limits, reinstall, power, live usage, user upsert, one time sign in links and signed webhooks with retries.
+* **Admin → Packages**: server plans with the game, resources, features, placement (locations, nodes, port ranges, dedicated IP) and variable defaults, availability check and duplicate.
+* **Admin → Raptor API**: connection details, a one click billing key with exactly the permissions the API needs, a quick start, webhooks with test events, delivery log, resend and secret rotation.
+
 ## v0.6.1
 
 ### Added

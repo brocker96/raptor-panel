@@ -21,6 +21,7 @@ use Raptor\Exceptions\Http\Server\ServerStateConflictException;
  *
  * @property int $id
  * @property string|null $external_id
+ * @property int|null $package_id
  * @property string $uuid
  * @property string $uuidShort
  * @property int $node_id
@@ -192,6 +193,7 @@ class Server extends Model implements Identifiable
         'allocation_id' => 'integer',
         'nest_id' => 'integer',
         'egg_id' => 'integer',
+        'package_id' => 'integer',
         'database_limit' => 'integer',
         'allocation_limit' => 'integer',
         'backup_limit' => 'integer',
@@ -300,6 +302,14 @@ class Server extends Model implements Identifiable
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne<\Raptor\Models\Egg, $this>
      */
+    /**
+     * The package (plan) the server was created from or last changed to.
+     */
+    public function package(): BelongsTo
+    {
+        return $this->belongsTo(ServerPackage::class, 'package_id');
+    }
+
     public function egg(): HasOne
     {
         return $this->hasOne(Egg::class, 'id', 'egg_id');

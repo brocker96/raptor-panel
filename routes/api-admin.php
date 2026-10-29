@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Raptor\Http\Controllers\Api\Admin;
+use Raptor\Http\Controllers\Api\Raptor;
 use Raptor\Http\Middleware\SupportEnabled;
 
 /*
@@ -38,6 +39,30 @@ Route::group(['prefix' => '/support', 'middleware' => SupportEnabled::class], fu
     Route::get('/{ticket}', [Admin\SupportController::class, 'show']);
     Route::patch('/{ticket}', [Admin\SupportController::class, 'update']);
     Route::post('/{ticket}/messages', [Admin\SupportController::class, 'reply']);
+});
+
+// Packages and webhooks share the controllers of the Raptor API (/api/raptor/v1).
+Route::group(['prefix' => '/packages'], function () {
+    Route::get('/', [Raptor\PackageController::class, 'index']);
+    Route::post('/', [Raptor\PackageController::class, 'store']);
+    Route::get('/{package}', [Raptor\PackageController::class, 'show']);
+    Route::patch('/{package}', [Raptor\PackageController::class, 'update']);
+    Route::delete('/{package}', [Raptor\PackageController::class, 'delete']);
+    Route::post('/{package}/duplicate', [Raptor\PackageController::class, 'duplicate']);
+    Route::get('/{package}/availability', [Raptor\PackageController::class, 'availability']);
+});
+
+Route::group(['prefix' => '/raptor-api'], function () {
+    Route::get('/', [Admin\RaptorApiController::class, 'index']);
+    Route::post('/keys', [Admin\RaptorApiController::class, 'createKey']);
+    Route::get('/webhooks', [Raptor\WebhookController::class, 'index']);
+    Route::post('/webhooks', [Raptor\WebhookController::class, 'store']);
+    Route::patch('/webhooks/{webhook}', [Raptor\WebhookController::class, 'update']);
+    Route::delete('/webhooks/{webhook}', [Raptor\WebhookController::class, 'delete']);
+    Route::post('/webhooks/{webhook}/rotate-secret', [Raptor\WebhookController::class, 'rotate']);
+    Route::post('/webhooks/{webhook}/test', [Raptor\WebhookController::class, 'test']);
+    Route::get('/webhooks/{webhook}/deliveries', [Raptor\WebhookController::class, 'deliveries']);
+    Route::post('/webhooks/{webhook}/deliveries/{delivery}/redeliver', [Raptor\WebhookController::class, 'redeliver']);
 });
 
 Route::get('/activity', [Admin\ActivityController::class, 'index']);

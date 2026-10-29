@@ -11,6 +11,8 @@ use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Support\Facades\RateLimiter;
 use Raptor\Http\Middleware\AdminIpAllowlist;
 use Raptor\Http\Middleware\AdminAuthenticate;
+use Raptor\Http\Middleware\Api\Raptor\Idempotency;
+use Raptor\Http\Controllers\Auth\LoginLinkController;
 use Raptor\Http\Middleware\RequireTwoFactorAuthentication;
 use Raptor\Http\Middleware\Api\Admin\RequireSessionAuthentication;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
@@ -47,6 +49,9 @@ class RouteServiceProvider extends ServiceProvider
                     ->group(base_path('routes/admin.php'));
 
                 Route::middleware('guest')->prefix('/auth')->group(base_path('routes/auth.php'));
+
+                // One time sign in links from the Raptor API, they also switch an open session.
+                Route::get('/auth/link/{token}', LoginLinkController::class)->middleware('throttle:30,1')->where('token', '[A-Za-z0-9]{64}');
             });
 
             Route::middleware(['api', RequireTwoFactorAuthentication::class])->group(function () {
@@ -59,6 +64,10 @@ class RouteServiceProvider extends ServiceProvider
                     ->prefix('/api/admin')
                     ->scopeBindings()
                     ->group(base_path('routes/api-admin.php'));
+
+                Route::middleware(['application-api', 'raptor.key:servers,read', Idempotency::class, 'throttle:api.application'])
+                    ->prefix('/api/raptor/v1')
+                    ->group(base_path('routes/api-raptor.php'));
 
                 Route::middleware(['client-api', 'throttle:api.client'])
                     ->prefix('/api/client')

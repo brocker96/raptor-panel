@@ -54,6 +54,7 @@ class AppServiceProvider extends ServiceProvider
             'node' => Models\Node::class,
             'schedule' => Models\Schedule::class,
             'server' => Models\Server::class,
+            'server_package' => Models\ServerPackage::class,
             'ssh_key' => Models\UserSSHKey::class,
             'support_ticket' => Models\SupportTicket::class,
             'task' => Models\Task::class,
