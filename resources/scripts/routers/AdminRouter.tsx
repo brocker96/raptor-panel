@@ -3,6 +3,7 @@ import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import {
     ArrowCircleUpIcon,
     BookOpenIcon,
+    ChatAlt2Icon,
     ChipIcon,
     ClipboardListIcon,
     CloudIcon,
@@ -24,6 +25,7 @@ import ErrorBoundary from '@/components/elements/ErrorBoundary';
 import { useStoreState } from '@/state/hooks';
 import { GuideProvider } from '@/components/admin/guides/GuideContext';
 import GuideDrawer from '@/components/admin/guides/GuideDrawer';
+import useInbox from '@/components/support/useInbox';
 import { t } from '@/i18n';
 
 const Overview = lazy(() => import('@/components/admin/overview/OverviewContainer'));
@@ -35,6 +37,8 @@ const UserView = lazy(() => import('@/components/admin/users/UserViewContainer')
 const Nodes = lazy(() => import('@/components/admin/nodes/NodesContainer'));
 const NodeCreate = lazy(() => import('@/components/admin/nodes/NodeCreateContainer'));
 const NodeView = lazy(() => import('@/components/admin/nodes/NodeViewContainer'));
+const Support = lazy(() => import('@/components/admin/support/SupportContainer'));
+const TicketView = lazy(() => import('@/components/admin/support/TicketViewContainer'));
 const Locations = lazy(() => import('@/components/admin/locations/LocationsContainer'));
 const Nests = lazy(() => import('@/components/admin/nests/NestsContainer'));
 const EggView = lazy(() => import('@/components/admin/nests/EggViewContainer'));
@@ -57,6 +61,7 @@ const nav: NavEntry[] = [
     { to: '/admin/guides', label: t('Guides'), icon: BookOpenIcon, group: 'General' },
     { to: '/admin/servers', label: t('Servers'), icon: ServerIcon, group: 'Management' },
     { to: '/admin/users', label: t('Users'), icon: UsersIcon, group: 'Management' },
+    { to: '/admin/support', label: t('Support'), icon: ChatAlt2Icon, group: 'Management' },
     { to: '/admin/nodes', label: t('Nodes'), icon: ChipIcon, group: 'Infrastructure' },
     { to: '/admin/locations', label: t('Locations'), icon: GlobeIcon, group: 'Infrastructure' },
     { to: '/admin/databases', label: t('Databases'), icon: DatabaseIcon, group: 'Infrastructure' },
@@ -90,6 +95,14 @@ const AdminContextCard = () => (
 export default () => {
     const location = useLocation();
     const rootAdmin = useStoreState((state) => state.user.data!.rootAdmin);
+    const inbox = useInbox();
+    const entries = useMemo(
+        () =>
+            nav
+                .filter((entry) => entry.to !== '/admin/support' || inbox.enabled)
+                .map((entry) => (entry.to === '/admin/support' ? { ...entry, badge: inbox.staff } : entry)),
+        [inbox.enabled, inbox.staff]
+    );
 
     const current = useMemo(
         () =>
@@ -111,7 +124,7 @@ export default () => {
     return (
         <GuideProvider>
             <Shell
-                nav={nav}
+                nav={entries}
                 primary={['/admin', '/admin/servers', '/admin/users', '/admin/nodes']}
                 context={<AdminContextCard />}
                 title={
@@ -136,6 +149,8 @@ export default () => {
                             <Route path={'nodes'} element={<Nodes />} />
                             <Route path={'nodes/new'} element={<NodeCreate />} />
                             <Route path={'nodes/:id/*'} element={<NodeView />} />
+                            <Route path={'support'} element={<Support />} />
+                            <Route path={'support/:id'} element={<TicketView />} />
                             <Route path={'locations'} element={<Locations />} />
                             <Route path={'nests'} element={<Nests />} />
                             <Route path={'nests/eggs/new'} element={<EggCreate />} />

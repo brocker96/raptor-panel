@@ -3,6 +3,14 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## Unreleased
+
+### Added
+* **Support tickets** for hosting companies. Users open tickets from Account → Support (category, priority, optional server) and talk to the team in a thread, administrators answer in Admin → Support with a queue sorted by urgency and waiting time, assignees, status and priority. Email notifications both ways, unread badges in the navigation. Off by default: turn it on in Admin → Settings → General, turned off the pages and the API are gone completely.
+
+### Fixed
+* `install.sh` left `APP_ENVIRONMENT_ONLY=true` from `.env.example`, so everything saved in Admin → Settings was silently ignored. New installs use the admin settings, and the settings pages show a warning with a one click fix for existing installs.
+
 ## v0.6.0
 A security release. Every published Pterodactyl advisory was checked against Raptor Panel, the remaining gaps are closed and the Panel is hardened against new ones. Update as soon as possible, see [SECURITY.md](SECURITY.md) for the full list.
 

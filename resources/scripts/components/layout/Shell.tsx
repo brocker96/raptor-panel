@@ -25,6 +25,8 @@ export interface NavEntry {
     end?: boolean;
     /** Sidebar section the entry belongs to, a heading is rendered whenever the group changes. */
     group?: string;
+    /** Count shown next to the label, such as tickets waiting for an answer. */
+    badge?: number;
     /** Props spread onto the link, used to preload the route when the user shows intent. */
     linkProps?: Partial<React.ComponentProps<typeof NavLink>>;
 }
@@ -70,8 +72,28 @@ const NavItem = ({ entry, compact, onNavigate }: { entry: NavEntry; compact?: bo
             }
             {...entry.linkProps}
         >
-            {Icon && <Icon className={styles.nav_icon} aria-hidden />}
-            <span className={compact ? styles.tab_label : 'truncate'}>{entry.label}</span>
+            {Icon && (
+                <span className={'relative flex'}>
+                    <Icon className={styles.nav_icon} aria-hidden />
+                    {compact && !!entry.badge && (
+                        <span
+                            className={
+                                'absolute -top-1 -right-1.5 w-2 h-2 rounded-full bg-raptor-400 ring-2 ring-gray-950'
+                            }
+                        />
+                    )}
+                </span>
+            )}
+            <span className={compact ? styles.tab_label : 'truncate flex-1'}>{entry.label}</span>
+            {!compact && !!entry.badge && (
+                <span
+                    className={
+                        'min-w-[1.25rem] h-5 px-1.5 grid place-items-center rounded-full bg-raptor-500 text-[0.65rem] font-semibold text-gray-950 tabular-nums'
+                    }
+                >
+                    {entry.badge > 99 ? '99+' : entry.badge}
+                </span>
+            )}
         </NavLink>
     );
 };

@@ -14,6 +14,7 @@ use Raptor\Providers\SettingsServiceProvider;
 use Raptor\Traits\Helpers\AvailableLanguages;
 use Symfony\Component\HttpFoundation\IpUtils;
 use Illuminate\Contracts\Encryption\Encrypter;
+use Raptor\Traits\Commands\EnvironmentWriterTrait;
 use Raptor\Contracts\Repository\SettingsRepositoryInterface;
 use Raptor\Http\Requests\Admin\Settings\BaseSettingsFormRequest;
 use Raptor\Http\Requests\Admin\Settings\MailSettingsFormRequest;
@@ -22,6 +23,7 @@ use Raptor\Http\Requests\Admin\Settings\AdvancedSettingsFormRequest;
 class SettingsController extends AdminApiController
 {
     use AvailableLanguages;
+    use EnvironmentWriterTrait;
 
     public function __construct(
         private Encrypter $encrypter,
@@ -44,6 +46,8 @@ class SettingsController extends AdminApiController
                 'app:name' => config('app.name'),
                 'app:locale' => config('app.locale'),
                 'raptor:auth:2fa_required' => (int) config('raptor.auth.2fa_required'),
+                'raptor:support:enabled' => filter_var(config('raptor.support.enabled'), FILTER_VALIDATE_BOOLEAN) ? 'true' : 'false',
+                'raptor:support:mail' => filter_var(config('raptor.support.mail'), FILTER_VALIDATE_BOOLEAN) ? 'true' : 'false',
             ],
             'mail' => [
                 'mail:mailers:smtp:host' => config('mail.mailers.smtp.host'),
@@ -80,6 +84,8 @@ class SettingsController extends AdminApiController
             'meta' => [
                 'ip' => request()->ip(),
                 'languages' => $this->getAvailableLanguages(true),
+                // APP_ENVIRONMENT_ONLY=true ignores everything saved on these pages.
+                'environment_only' => (bool) config('raptor.load_environment_only'),
                 'mail_driver' => config('mail.default'),
                 'mail_editable' => config('mail.default') === 'smtp',
                 'mail_switchable' => in_array(config('mail.default'), SettingsServiceProvider::SWITCHABLE_MAIL_DRIVERS, true),
@@ -198,6 +204,20 @@ class SettingsController extends AdminApiController
      * Persists the given settings and restarts the queue workers so that they pick up the new
      * configuration values.
      */
+    /**
+     * Turns off APP_ENVIRONMENT_ONLY so the settings saved in the admin area take effect. Older
+     * installers left it on, which silently ignored every change made on these pages.
+     */
+    public function useDatabaseSettings(): Response
+    {
+        $cached = app()->configurationIsCached();
+        $this->writeToEnvironment(['APP_ENVIRONMENT_ONLY' => 'false']);
+        $this->kernel->call($cached ? 'config:cache' : 'config:clear');
+        $this->kernel->call('queue:restart');
+
+        return response('', 204);
+    }
+
     private function store(array $values): void
     {
         foreach ($values as $key => $value) {

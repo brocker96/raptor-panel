@@ -56,6 +56,14 @@ return [
     // Branch of the repository the node installer (wings.sh) is downloaded from.
     'installer_branch' => env('RAPTOR_INSTALLER_BRANCH', '0.x_beta'),
 
+    'support' => [
+        // Support tickets in the account area, answered from Admin → Support. Off by default,
+        // a private Panel does not need them, hosting companies turn them on in Admin → Settings.
+        'enabled' => env('RAPTOR_SUPPORT', false),
+        // Email administrators about new tickets and users about staff replies.
+        'mail' => env('RAPTOR_SUPPORT_MAIL', true),
+    ],
+
     'db_manager' => [
         // Seconds a single query of the Raptor DB Manager may run before the database stops it.
         'query_timeout' => (int) env('RAPTOR_DB_MANAGER_TIMEOUT', 30),

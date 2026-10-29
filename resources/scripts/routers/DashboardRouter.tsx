@@ -7,27 +7,31 @@ import TransitionRouter from '@/TransitionRouter';
 import Spinner from '@/components/elements/Spinner';
 import Shell, { NavEntry } from '@/components/layout/Shell';
 import routes, { preload } from '@/routers/routes';
+import useInbox from '@/components/support/useInbox';
 import { t } from '@/i18n';
 
 const accountPath = (path: string) => `/account/${path}`.replace(/\/+/g, '/').replace(/(.)\/$/, '$1');
 
 export default () => {
     const location = useLocation();
+    const inbox = useInbox();
+    const available = useMemo(() => routes.account.filter((route) => !route.feature || inbox.enabled), [inbox.enabled]);
 
     const nav = useMemo<NavEntry[]>(
         () => [
             { to: '/', label: t('Servers'), icon: ServerIcon, end: true },
-            ...routes.account
+            ...available
                 .filter((route) => !!route.name)
                 .map((route) => ({
                     to: accountPath(route.path),
                     label: route.name!,
                     icon: route.icon,
                     end: route.exact ?? false,
+                    badge: route.feature === 'support' ? inbox.tickets : undefined,
                     linkProps: preload(route),
                 })),
         ],
-        []
+        [available, inbox.tickets]
     );
 
     const current = nav.find((entry) =>
@@ -40,7 +44,7 @@ export default () => {
                 <React.Suspense fallback={<Spinner centered />}>
                     <Routes location={location}>
                         <Route path={'/'} element={<DashboardContainer />} />
-                        {routes.account.map(({ path, component: Component }) => (
+                        {available.map(({ path, component: Component }) => (
                             <Route key={path} path={accountPath(path)} element={<Component />} />
                         ))}
                         <Route path={'*'} element={<NotFound />} />

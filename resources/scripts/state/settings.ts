@@ -7,6 +7,8 @@ export interface SiteSettings {
     websocketKeepalive?: boolean;
     /** Passwordless sign in with passkeys, see Settings → Security. */
     passkeys?: boolean;
+    /** Support tickets in the account area, RAPTOR_SUPPORT. */
+    support?: boolean;
     recaptcha: {
         enabled: boolean;
         siteKey: string;

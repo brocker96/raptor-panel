@@ -1,6 +1,7 @@
 import React from 'react';
 import {
     ArchiveIcon,
+    ChatAlt2Icon,
     ClipboardListIcon,
     ClockIcon,
     CogIcon,
@@ -35,6 +36,8 @@ const SecurityContainer = lazyWithPreload(() => import('@/components/dashboard/s
 const AccountApiContainer = lazyWithPreload(() => import('@/components/dashboard/AccountApiContainer'));
 const AccountSSHContainer = lazyWithPreload(() => import('@/components/dashboard/ssh/AccountSSHContainer'));
 const ActivityLogContainer = lazyWithPreload(() => import('@/components/dashboard/activity/ActivityLogContainer'));
+const SupportContainer = lazyWithPreload(() => import('@/components/dashboard/support/SupportContainer'));
+const TicketContainer = lazyWithPreload(() => import('@/components/dashboard/support/TicketContainer'));
 const ServerActivityLogContainer = lazyWithPreload(() => import('@/components/server/ServerActivityLogContainer'));
 const FileEditContainer = lazyWithPreload(() => import('@/components/server/files/FileEditContainer'));
 const ScheduleEditContainer = lazyWithPreload(() => import('@/components/server/schedules/ScheduleEditContainer'));
@@ -48,6 +51,8 @@ interface RouteDefinition {
     // Icon displayed next to the route in the navigation.
     icon?: React.ComponentType<React.ComponentProps<'svg'>>;
     exact?: boolean;
+    /** Only shown when the Panel has this optional feature turned on. */
+    feature?: 'support';
 }
 
 interface ServerRouteDefinition extends RouteDefinition {
@@ -105,6 +110,19 @@ export default {
             name: t('Activity'),
             icon: ClipboardListIcon,
             component: ActivityLogContainer,
+        },
+        {
+            path: '/support',
+            name: t('Support'),
+            icon: ChatAlt2Icon,
+            component: SupportContainer,
+            feature: 'support',
+        },
+        {
+            path: '/support/:id',
+            name: undefined,
+            component: TicketContainer,
+            feature: 'support',
         },
     ],
     server: [

@@ -15,6 +15,9 @@ class BaseSettingsFormRequest extends AdminFormRequest
         return [
             'app:name' => 'required|string|max:191',
             'raptor:auth:2fa_required' => 'required|integer|in:0,1,2',
+            // Optional so the classic settings page, which has no such fields, keeps working.
+            'raptor:support:enabled' => 'sometimes|in:true,false',
+            'raptor:support:mail' => 'sometimes|in:true,false',
             'app:locale' => ['required', 'string', Rule::in(array_keys($this->getAvailableLanguages()))],
         ];
     }

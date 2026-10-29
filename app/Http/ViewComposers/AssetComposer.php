@@ -17,6 +17,7 @@ class AssetComposer
             'locale' => config('app.locale') ?? 'en',
             'websocketKeepalive' => filter_var(config('raptor.cloudflare.websocket_keepalive', true), FILTER_VALIDATE_BOOLEAN),
             'passkeys' => filter_var(config('raptor.security.passkeys', true), FILTER_VALIDATE_BOOLEAN),
+            'support' => filter_var(config('raptor.support.enabled'), FILTER_VALIDATE_BOOLEAN),
             'recaptcha' => [
                 'enabled' => config('recaptcha.enabled', false),
                 'siteKey' => config('recaptcha.website_key') ?? '',

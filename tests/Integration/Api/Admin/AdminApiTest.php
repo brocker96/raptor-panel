@@ -195,6 +195,11 @@ class AdminApiTest extends IntegrationTestCase
         $this->actingAs($this->admin)->getJson('/api/admin/settings')->assertOk()->assertJsonStructure(['general', 'mail', 'advanced', 'meta' => ['languages']]);
         $this->actingAs($this->admin)->patchJson('/api/admin/settings/general', ['app:name' => 'My Raptor', 'app:locale' => 'en', 'raptor:auth:2fa_required' => 1])->assertNoContent();
         $this->assertDatabaseHas('settings', ['key' => 'settings::app:name', 'value' => 'My Raptor']);
+        $this->actingAs($this->admin)->getJson('/api/admin/settings')->assertJsonPath('general.raptor:support:enabled', 'false');
+
+        $this->actingAs($this->admin)->patchJson('/api/admin/settings/general', ['app:name' => 'My Raptor', 'app:locale' => 'en', 'raptor:auth:2fa_required' => 1, 'raptor:support:enabled' => 'true', 'raptor:support:mail' => 'false'])->assertNoContent();
+        $this->assertDatabaseHas('settings', ['key' => 'settings::raptor:support:enabled', 'value' => 'true']);
+        $this->actingAs($this->admin)->patchJson('/api/admin/settings/general', ['app:name' => 'My Raptor', 'app:locale' => 'en', 'raptor:auth:2fa_required' => 1, 'raptor:support:enabled' => 'maybe'])->assertUnprocessable();
     }
 
     public function testApiKeys(): void

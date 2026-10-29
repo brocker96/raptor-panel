@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import {
     AdjustmentsIcon,
+    ChatAlt2Icon,
     ClockIcon,
     CloudIcon,
     CogIcon,
+    ExclamationIcon,
     GlobeAltIcon,
     LockClosedIcon,
     MailIcon,
@@ -12,7 +14,15 @@ import {
     ShieldCheckIcon,
 } from '@heroicons/react/outline';
 import { useResource } from '@/api/query';
-import { getSettings, PanelSettings, sendTestMail, updateMailDriver, updateSettings } from '@/api/admin';
+import { useStoreActions, useStoreState } from '@/state/hooks';
+import {
+    getSettings,
+    PanelSettings,
+    sendTestMail,
+    updateMailDriver,
+    updateSettings,
+    enableDatabaseSettings,
+} from '@/api/admin';
 import { Page, Segmented, Tabs } from '@/components/admin/ui/Page';
 import { Card } from '@/components/admin/ui/Card';
 import { Callout, Skeleton } from '@/components/admin/ui/Feedback';
@@ -35,15 +45,48 @@ const useSection = <K extends 'general' | 'mail' | 'advanced' | 'security'>(sett
     return { values, set, save };
 };
 
+const EnvironmentOnlyNotice = () => {
+    const fix = useAction(enableDatabaseSettings, {
+        success: t('Settings from the admin area are used now'),
+        invalidate: [['admin', 'settings']],
+    });
+
+    return (
+        <div className={'mb-6'}>
+            <Callout tone={'red'} icon={ExclamationIcon} title={t('Changes on these pages are ignored')}>
+                <p>
+                    {t(
+                        'APP_ENVIRONMENT_ONLY=true is set in the .env file, so the Panel only reads the .env file and everything saved here has no effect. Older installers set it by mistake.'
+                    )}
+                </p>
+                <Button size={'sm'} className={'mt-3'} loading={fix.loading} onClick={() => fix.run()}>
+                    {t('Use the settings from the admin area')}
+                </Button>
+            </Callout>
+        </div>
+    );
+};
+
 const General = ({ settings }: { settings: PanelSettings }) => {
     const { values, set, save } = useSection(settings, 'general');
+    const site = useStoreState((state) => state.settings.data!);
+    const setSite = useStoreActions((actions) => actions.settings.setSettings);
+
+    // The Support entries in the navigation follow the switch without reloading the page.
+    const submit = () =>
+        save
+            .run(values)
+            .then(
+                (saved) =>
+                    saved !== undefined && setSite({ ...site, support: values['raptor:support:enabled'] === 'true' })
+            );
 
     return (
         <Card
             title={t('General')}
             icon={CogIcon}
             footer={
-                <Button loading={save.loading} onClick={() => save.run(values)}>
+                <Button loading={save.loading} onClick={submit}>
                     {t('Save')}
                 </Button>
             }
@@ -83,6 +126,27 @@ const General = ({ settings }: { settings: PanelSettings }) => {
                     <p className={'mt-2 text-xs text-gray-500'}>
                         {t('Affected users must set up 2FA before they can continue using the Panel.')}
                     </p>
+                </div>
+                <div className={'space-y-2'}>
+                    <p className={'flex items-center gap-2 text-xs font-medium text-gray-300'}>
+                        <ChatAlt2Icon className={'w-4 h-4 text-raptor-400'} /> {t('Support tickets')}
+                    </p>
+                    <Toggle
+                        label={t('Enable support tickets')}
+                        description={t(
+                            'Users get a Support page to contact you and you answer in Admin → Support. Useful for hosting companies, a private Panel does not need it. Turned off, the pages and the API are gone.'
+                        )}
+                        checked={values['raptor:support:enabled'] === 'true'}
+                        onChange={(v) => set('raptor:support:enabled')(v ? 'true' : 'false')}
+                    />
+                    {values['raptor:support:enabled'] === 'true' && (
+                        <Toggle
+                            label={t('Email about tickets')}
+                            description={t('Administrators get new tickets, users get answers from the team.')}
+                            checked={values['raptor:support:mail'] === 'true'}
+                            onChange={(v) => set('raptor:support:mail')(v ? 'true' : 'false')}
+                        />
+                    )}
                 </div>
             </div>
         </Card>
@@ -529,6 +593,7 @@ export default () => {
                 />
             }
         >
+            {data?.meta.environment_only && <EnvironmentOnlyNotice />}
             <Routes>
                 <Route index element={<Navigate to={'general'} replace />} />
                 <Route path={'cloudflare'} element={<CloudflareSettings />} />

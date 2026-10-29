@@ -144,7 +144,13 @@ export const getActivityEvents = (signal?: AbortSignal) =>
 // ---------------------------------------------------------------------------------------------
 
 export interface PanelSettings {
-    general: { 'app:name': string; 'app:locale': string; 'raptor:auth:2fa_required': number };
+    general: {
+        'app:name': string;
+        'app:locale': string;
+        'raptor:auth:2fa_required': number;
+        'raptor:support:enabled': 'true' | 'false';
+        'raptor:support:mail': 'true' | 'false';
+    };
     mail: {
         'mail:mailers:smtp:host': string;
         'mail:mailers:smtp:port': number;
@@ -182,6 +188,7 @@ export interface PanelSettings {
         languages: Record<string, string>;
         mail_driver: string;
         mail_editable: boolean;
+        environment_only: boolean;
         mail_switchable: boolean;
         mail_password_set: boolean;
         recaptcha_shipped_keys: boolean;
@@ -191,6 +198,7 @@ export interface PanelSettings {
 export const getSettings = (signal?: AbortSignal) => get<PanelSettings>('/api/admin/settings', undefined, signal);
 export const updateSettings = (section: 'general' | 'mail' | 'advanced' | 'security', values: object) =>
     http.patch(`/api/admin/settings/${section}`, values);
+export const enableDatabaseSettings = () => http.post('/api/admin/settings/use-database');
 export const updateMailDriver = (driver: 'smtp' | 'log') => http.put('/api/admin/settings/mail/driver', { driver });
 export const sendTestMail = () => http.post<{ email: string }>('/api/admin/settings/mail/test').then((r) => r.data);
 

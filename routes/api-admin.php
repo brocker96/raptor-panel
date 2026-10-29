@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Raptor\Http\Controllers\Api\Admin;
+use Raptor\Http\Middleware\SupportEnabled;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,6 +33,13 @@ Route::group(['prefix' => '/updates'], function () {
     Route::delete('/queue', [Admin\UpdateController::class, 'cancel']);
 });
 
+Route::group(['prefix' => '/support', 'middleware' => SupportEnabled::class], function () {
+    Route::get('/', [Admin\SupportController::class, 'index']);
+    Route::get('/{ticket}', [Admin\SupportController::class, 'show']);
+    Route::patch('/{ticket}', [Admin\SupportController::class, 'update']);
+    Route::post('/{ticket}/messages', [Admin\SupportController::class, 'reply']);
+});
+
 Route::get('/activity', [Admin\ActivityController::class, 'index']);
 Route::get('/activity/events', [Admin\ActivityController::class, 'events']);
 
@@ -43,6 +51,7 @@ Route::group(['prefix' => '/settings'], function () {
     Route::put('/mail/driver', [Admin\SettingsController::class, 'updateMailDriver']);
     Route::patch('/advanced', [Admin\SettingsController::class, 'updateAdvanced']);
     Route::patch('/security', [Admin\SettingsController::class, 'updateSecurity']);
+    Route::post('/use-database', [Admin\SettingsController::class, 'useDatabaseSettings']);
     Route::get('/cloudflare', [Admin\CloudflareController::class, 'index']);
     Route::patch('/cloudflare', [Admin\CloudflareController::class, 'update']);
     Route::post('/cloudflare/ranges', [Admin\CloudflareController::class, 'refresh']);

@@ -3,6 +3,7 @@
 use Raptor\Enum\ResourceLimit;
 use Illuminate\Support\Facades\Route;
 use Raptor\Http\Controllers\Api\Client;
+use Raptor\Http\Middleware\SupportEnabled;
 use Raptor\Http\Middleware\Activity\ServerSubject;
 use Raptor\Http\Middleware\Activity\AccountSubject;
 use Raptor\Http\Middleware\RequireTwoFactorAuthentication;
@@ -70,6 +71,15 @@ Route::prefix('/account')->middleware(AccountSubject::class)->group(function () 
         Route::post('/', [Client\SSHKeyController::class, 'store'])->middleware('confirm');
         Route::post('/remove', [Client\SSHKeyController::class, 'delete'])->middleware('confirm');
     });
+});
+
+Route::prefix('/support')->middleware(SupportEnabled::class)->group(function () {
+    Route::get('/inbox', [Client\Support\SupportController::class, 'inbox']);
+    Route::get('/tickets', [Client\Support\SupportController::class, 'index']);
+    Route::post('/tickets', [Client\Support\SupportController::class, 'store'])->middleware('throttle:5,10');
+    Route::get('/tickets/{ticket}', [Client\Support\SupportController::class, 'show'])->whereNumber('ticket');
+    Route::post('/tickets/{ticket}/messages', [Client\Support\SupportController::class, 'reply'])->whereNumber('ticket')->middleware('throttle:20,1');
+    Route::post('/tickets/{ticket}/close', [Client\Support\SupportController::class, 'close'])->whereNumber('ticket');
 });
 
 /*

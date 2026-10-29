@@ -303,6 +303,8 @@ set_env() {
     fi
 }
 set_env APP_URL "$SCHEME://$RAPTOR_FQDN"
+# Settings saved in the admin area must take effect.
+set_env APP_ENVIRONMENT_ONLY false
 set_env APP_TIMEZONE "$RAPTOR_TIMEZONE"
 set_env APP_SERVICE_AUTHOR "$RAPTOR_EMAIL"
 set_env DB_USERNAME raptor
