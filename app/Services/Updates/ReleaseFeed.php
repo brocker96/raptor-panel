@@ -109,7 +109,8 @@ class ReleaseFeed
      */
     public static function normalize(?string $version): ?string
     {
-        $version = ltrim(trim((string) $version), 'vV');
+        // Tolerates a stray dot after the prefix ("v.0.6.1"), an easy typo when tagging by hand.
+        $version = ltrim(ltrim(trim((string) $version), 'vV'), '.');
 
         return preg_match('/^\d+\.\d+(\.\d+)?([-.+][0-9A-Za-z.-]+)?$/', $version) ? $version : null;
     }
