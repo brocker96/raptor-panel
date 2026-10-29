@@ -3,7 +3,7 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
-## Unreleased
+## v0.6.1
 
 ### Added
 * **Support tickets** for hosting companies. Users open tickets from Account → Support (category, priority, optional server) and talk to the team in a thread, administrators answer in Admin → Support with a queue sorted by urgency and waiting time, assignees, status and priority. Email notifications both ways, unread badges in the navigation. Off by default: turn it on in Admin → Settings → General, turned off the pages and the API are gone completely.
