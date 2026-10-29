@@ -3,7 +3,8 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
-## Unreleased
+## v0.6.0
+A security release. Every published Pterodactyl advisory was checked against Raptor Panel, the remaining gaps are closed and the Panel is hardened against new ones. Update as soon as possible, see [SECURITY.md](SECURITY.md) for the full list.
 
 ### Security
 * **Database grants no longer reach other servers' databases.** MySQL reads `_` and `%` in a `GRANT` database name as wildcards, so a server database named `_shop` (stored as `s1__shop`) also gave its user access to `s11_shop` of another server. Grants now escape the name. `php artisan raptor:database:repair-grants` narrows existing grants and runs automatically on update and in `migrate.sh`. This also affects upstream Pterodactyl.
