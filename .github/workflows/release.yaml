@@ -27,7 +27,9 @@ jobs:
           git config --local user.name 'Raptor Panel CI'
           git checkout -b "$BRANCH"
           git push -u origin "$BRANCH"
-          sed -i "s/'canary'/'${VERSION:1}'/" config/app.php
+          # "v0.6.1" and the typo "v.0.6.1" both become 0.6.1.
+          CLEAN="${VERSION#[vV]}"; CLEAN="${CLEAN#.}"
+          sed -i "s/'canary'/'${CLEAN}'/" config/app.php
           git add config/app.php
           git commit -m 'ci(release): bump version'
           git push
