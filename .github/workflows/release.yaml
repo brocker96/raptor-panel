@@ -39,7 +39,9 @@ jobs:
           sha256sum panel.tar.gz > panel.tar.gz.sha256
       - name: write changelog
         run: |
-          sed -n "/^## ${{ github.ref_name }}/,/^## /{/^## /b;p}" CHANGELOG.md > ./RELEASE_CHANGELOG
+          # Only the first section with this version: the old Pterodactyl entries further down reuse
+          # version numbers such as v0.6.1, a sed range would append them as well.
+          awk -v head="## ${{ github.ref_name }}" '$0 == head || index($0, head " ") == 1 { found = 1; next } found && /^## / { exit } found' CHANGELOG.md > ./RELEASE_CHANGELOG
       - uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
