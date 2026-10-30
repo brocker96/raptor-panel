@@ -43,6 +43,9 @@ class DynamicDatabaseConnection
             'password' => $this->encrypter->decrypt($host->password),
             'charset' => self::DB_CHARSET,
             'collation' => self::DB_COLLATION,
+            // An unreachable host (a closed firewall drops packets) must fail fast instead of
+            // hanging the request until PHP gives up.
+            'options' => [\PDO::ATTR_TIMEOUT => 5],
         ]);
     }
 }
