@@ -1,0 +1,1120 @@
+openapi: 3.1.0
+info:
+  title: Raptor API
+  version: v1
+  description: |
+    The API for billing systems. Packages become servers with one call, everything can be addressed by
+    the billing system's own ids, and signed webhooks report back. Guide: docs/raptor-api.md
+  license:
+    name: MIT
+servers:
+  - url: https://panel.example.com/api/raptor/v1
+security:
+  - bearer: []
+
+tags:
+  - name: Meta
+  - name: Packages
+  - name: Servers
+  - name: Users
+  - name: Webhooks
+
+paths:
+  /:
+    get:
+      tags: [Meta]
+      operationId: ping
+      summary: Test the connection and show the permissions of the key
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Ping' }
+        '401': { $ref: '#/components/responses/Error' }
+        '403': { $ref: '#/components/responses/Error' }
+
+  /eggs:
+    get:
+      tags: [Meta]
+      operationId: listEggs
+      summary: Eggs with their variables
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/Egg' } }
+
+  /locations:
+    get:
+      tags: [Meta]
+      operationId: listLocations
+      summary: Locations
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id: { type: integer }
+                        short: { type: string }
+                        long: { type: [string, 'null'] }
+                        nodes_count: { type: integer }
+
+  /nodes:
+    get:
+      tags: [Meta]
+      operationId: listNodes
+      summary: Nodes with used and total memory and disk in MiB
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/Node' } }
+
+  /packages:
+    get:
+      tags: [Packages]
+      operationId: listPackages
+      parameters:
+        - { name: active, in: query, schema: { type: boolean } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/Package' } }
+    post:
+      tags: [Packages]
+      operationId: createPackage
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/PackageInput' }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Package' }
+        '422': { $ref: '#/components/responses/Error' }
+
+  /packages/{package}:
+    parameters:
+      - $ref: '#/components/parameters/Package'
+    get:
+      tags: [Packages]
+      operationId: getPackage
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Package' }
+        '404': { $ref: '#/components/responses/Error' }
+    patch:
+      tags: [Packages]
+      operationId: updatePackage
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/PackageInput' }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Package' }
+        '422': { $ref: '#/components/responses/Error' }
+    delete:
+      tags: [Packages]
+      operationId: deletePackage
+      description: Servers made from the package keep running.
+      responses:
+        '204': { description: 'Deleted' }
+
+  /packages/{package}/availability:
+    parameters:
+      - $ref: '#/components/parameters/Package'
+    get:
+      tags: [Packages]
+      operationId: packageAvailability
+      summary: Whether a server of this package can be created right now
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Availability' }
+
+  /packages/{package}/duplicate:
+    parameters:
+      - $ref: '#/components/parameters/Package'
+    post:
+      tags: [Packages]
+      operationId: duplicatePackage
+      responses:
+        '201':
+          description: Created, inactive
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Package' }
+
+  /servers:
+    get:
+      tags: [Servers]
+      operationId: listServers
+      parameters:
+        - { name: external_id, in: query, schema: { type: string } }
+        - { name: user, in: query, description: 'Any user reference', schema: { type: string } }
+        - { name: package, in: query, schema: { type: string } }
+        - { name: state, in: query, schema: { $ref: '#/components/schemas/ServerState' } }
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PerPage'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/Server' } }
+                  meta: { $ref: '#/components/schemas/Meta' }
+    post:
+      tags: [Servers]
+      operationId: createServer
+      summary: Create a server from a package, creating the user when needed
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CreateServer' }
+      responses:
+        '200':
+          description: A server with this external_id exists already, or a dry run
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/CreateServerResult'
+                  - $ref: '#/components/schemas/DryRunResult'
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CreateServerResult' }
+        '409': { $ref: '#/components/responses/Error' }
+        '422': { $ref: '#/components/responses/Error' }
+
+  /servers/{server}:
+    parameters:
+      - $ref: '#/components/parameters/Server'
+    get:
+      tags: [Servers]
+      operationId: getServer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Server' }
+        '404': { $ref: '#/components/responses/Error' }
+    patch:
+      tags: [Servers]
+      operationId: updateServer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name: { type: string }
+                description: { type: [string, 'null'] }
+                external_id: { type: [string, 'null'] }
+                owner: { type: string, description: 'Any user reference' }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Server' }
+    delete:
+      tags: [Servers]
+      operationId: deleteServer
+      parameters:
+        - { name: force, in: query, description: 'Delete even if the node is offline', schema: { type: boolean } }
+      responses:
+        '204': { description: 'Deleted' }
+
+  /servers/{server}/resources:
+    parameters:
+      - $ref: '#/components/parameters/Server'
+    get:
+      tags: [Servers]
+      operationId: serverResources
+      summary: Live usage from Wings
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Resources' }
+        '502': { $ref: '#/components/responses/Error' }
+
+  /servers/{server}/package:
+    parameters:
+      - $ref: '#/components/parameters/Server'
+    put:
+      tags: [Servers]
+      operationId: changeServerPackage
+      summary: Upgrade or downgrade
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [package]
+              properties:
+                package: { type: string }
+                overrides: { $ref: '#/components/schemas/LimitInput' }
+                reinstall:
+                  type: boolean
+                  description: Required when the package runs another game. Switches the game and runs its install script.
+                environment: { type: object, additionalProperties: { type: string } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Server' }
+        '422': { $ref: '#/components/responses/Error' }
+
+  /servers/{server}/limits:
+    parameters:
+      - $ref: '#/components/parameters/Server'
+    patch:
+      tags: [Servers]
+      operationId: changeServerLimits
+      summary: Single limit changes for add-ons
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/LimitInput' }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Server' }
+
+  /servers/{server}/suspend:
+    parameters:
+      - $ref: '#/components/parameters/Server'
+    post:
+      tags: [Servers]
+      operationId: suspendServer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason: { type: string, maxLength: 500, description: 'Shown to the owner' }
+                payment_url: { type: string, format: uri, description: 'The "Pay and reactivate" button' }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Server' }
+
+  /servers/{server}/unsuspend:
+    parameters:
+      - $ref: '#/components/parameters/Server'
+    post:
+      tags: [Servers]
+      operationId: unsuspendServer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Server' }
+
+  /servers/{server}/reinstall:
+    parameters:
+      - $ref: '#/components/parameters/Server'
+    post:
+      tags: [Servers]
+      operationId: reinstallServer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Server' }
+
+  /servers/{server}/power:
+    parameters:
+      - $ref: '#/components/parameters/Server'
+    post:
+      tags: [Servers]
+      operationId: powerServer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [signal]
+              properties:
+                signal: { type: string, enum: [start, stop, restart, kill] }
+      responses:
+        '204': { description: 'Sent' }
+
+  /users:
+    get:
+      tags: [Users]
+      operationId: listUsers
+      parameters:
+        - { name: email, in: query, schema: { type: string } }
+        - { name: external_id, in: query, schema: { type: string } }
+        - { name: username, in: query, schema: { type: string } }
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PerPage'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/User' } }
+                  meta: { $ref: '#/components/schemas/Meta' }
+    post:
+      tags: [Users]
+      operationId: upsertUser
+      summary: Create or update, matched by external_id, then e-mail
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/UserInput'
+                - type: object
+                  properties:
+                    send_welcome_email: { type: boolean, default: true }
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/UserUpsertResult' }
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/UserUpsertResult' }
+
+  /users/{user}:
+    parameters:
+      - $ref: '#/components/parameters/User'
+    get:
+      tags: [Users]
+      operationId: getUser
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/User' }
+    patch:
+      tags: [Users]
+      operationId: updateUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email: { type: string, format: email }
+                external_id: { type: [string, 'null'] }
+                first_name: { type: string }
+                last_name: { type: string }
+                password: { type: string, minLength: 8 }
+                language: { type: [string, 'null'] }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/User' }
+    delete:
+      tags: [Users]
+      operationId: deleteUser
+      responses:
+        '204': { description: 'Deleted' }
+        '409': { $ref: '#/components/responses/Error' }
+
+  /users/{user}/servers:
+    parameters:
+      - $ref: '#/components/parameters/User'
+    get:
+      tags: [Users]
+      operationId: listUserServers
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/Server' } }
+
+  /users/{user}/login-link:
+    parameters:
+      - $ref: '#/components/parameters/User'
+    post:
+      tags: [Users]
+      operationId: createLoginLink
+      summary: A link that signs the user in once
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                redirect: { type: string, example: /server/9f8a2c1e }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/LoginLink' }
+        '403': { $ref: '#/components/responses/Error' }
+
+  /webhooks:
+    get:
+      tags: [Webhooks]
+      operationId: listWebhooks
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/Webhook' } }
+                  events: { type: array, items: { $ref: '#/components/schemas/WebhookEvent' } }
+    post:
+      tags: [Webhooks]
+      operationId: createWebhook
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/WebhookInput' }
+      responses:
+        '201':
+          description: Created, holds the secret once
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Webhook'
+                  - type: object
+                    properties:
+                      secret: { type: string }
+
+  /webhooks/{webhook}:
+    parameters:
+      - $ref: '#/components/parameters/Webhook'
+    patch:
+      tags: [Webhooks]
+      operationId: updateWebhook
+      requestBody:
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/WebhookInput' }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Webhook' }
+    delete:
+      tags: [Webhooks]
+      operationId: deleteWebhook
+      responses:
+        '204': { description: 'Deleted' }
+
+  /webhooks/{webhook}/rotate-secret:
+    parameters:
+      - $ref: '#/components/parameters/Webhook'
+    post:
+      tags: [Webhooks]
+      operationId: rotateWebhookSecret
+      responses:
+        '200':
+          description: OK, holds the new secret once
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Webhook'
+                  - type: object
+                    properties:
+                      secret: { type: string }
+
+  /webhooks/{webhook}/test:
+    parameters:
+      - $ref: '#/components/parameters/Webhook'
+    post:
+      tags: [Webhooks]
+      operationId: testWebhook
+      summary: Send a ping event
+      responses:
+        '202':
+          description: Queued
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Delivery' }
+
+  /webhooks/{webhook}/deliveries:
+    parameters:
+      - $ref: '#/components/parameters/Webhook'
+    get:
+      tags: [Webhooks]
+      operationId: listDeliveries
+      responses:
+        '200':
+          description: The last 50
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/Delivery' } }
+
+  /webhooks/{webhook}/deliveries/{delivery}/redeliver:
+    parameters:
+      - $ref: '#/components/parameters/Webhook'
+      - { name: delivery, in: path, required: true, schema: { type: integer } }
+    post:
+      tags: [Webhooks]
+      operationId: redeliver
+      responses:
+        '202':
+          description: Queued
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Delivery' }
+
+webhooks:
+  event:
+    post:
+      summary: An event sent to every webhook that wants it
+      parameters:
+        - { name: X-Raptor-Event, in: header, required: true, schema: { $ref: '#/components/schemas/WebhookEvent' } }
+        - { name: X-Raptor-Delivery, in: header, required: true, schema: { type: string, format: uuid } }
+        - name: X-Raptor-Signature
+          in: header
+          required: true
+          description: 't=<unix time>,v1=<hex HMAC-SHA256 of "<t>.<raw body>" with the webhook secret>'
+          schema: { type: string }
+      requestBody:
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/WebhookPayload' }
+      responses:
+        '200': { description: 'Any 2xx acknowledges the delivery' }
+
+components:
+  securitySchemes:
+    bearer:
+      type: http
+      scheme: bearer
+      description: Application API key from Admin → Raptor API
+
+  parameters:
+    Server:
+      name: server
+      in: path
+      required: true
+      description: 'ext:<billing id>, Panel id, UUID or short identifier'
+      schema: { type: string, example: 'ext:order-1042' }
+    User:
+      name: user
+      in: path
+      required: true
+      description: 'ext:<billing id>, Panel id, UUID or e-mail'
+      schema: { type: string, example: 'ext:client-7' }
+    Package:
+      name: package
+      in: path
+      required: true
+      description: Slug or id
+      schema: { type: string, example: minecraft-4gb }
+    Webhook:
+      name: webhook
+      in: path
+      required: true
+      schema: { type: integer }
+    Page:
+      { name: page, in: query, schema: { type: integer, minimum: 1 } }
+    PerPage:
+      { name: per_page, in: query, schema: { type: integer, minimum: 1, maximum: 100, default: 50 } }
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      description: Retries with the same key return the first answer for 24 hours
+      schema: { type: string, maxLength: 255 }
+
+  responses:
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+
+  schemas:
+    Error:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              code: { type: string }
+              status: { type: string }
+              detail: { type: string }
+              meta:
+                type: object
+                properties:
+                  source_field: { type: string }
+                  rule: { type: string }
+
+    Meta:
+      type: object
+      properties:
+        total: { type: integer }
+        per_page: { type: integer }
+        page: { type: integer }
+        last_page: { type: integer }
+
+    Ping:
+      type: object
+      properties:
+        api: { type: string, const: raptor }
+        version: { type: string, const: v1 }
+        panel:
+          type: object
+          properties:
+            name: { type: string }
+            version: { type: string }
+            url: { type: string }
+        time: { type: string, format: date-time }
+        key:
+          type: object
+          properties:
+            identifier: { type: string }
+            memo: { type: [string, 'null'] }
+            permissions:
+              type: object
+              additionalProperties: { type: string, enum: [none, read, write] }
+        packages: { type: integer }
+
+    Limits:
+      type: object
+      properties:
+        memory: { type: integer, description: 'MiB, 0 = unlimited' }
+        swap: { type: integer, description: 'MiB, -1 = unlimited' }
+        disk: { type: integer, description: 'MiB, 0 = unlimited' }
+        io: { type: integer }
+        cpu: { type: integer, description: 'Percent of one core, 0 = unlimited' }
+        threads: { type: [string, 'null'] }
+        oom_disabled: { type: boolean }
+
+    FeatureLimits:
+      type: object
+      properties:
+        databases: { type: integer }
+        allocations: { type: integer }
+        backups: { type: integer }
+
+    LimitInput:
+      type: object
+      properties:
+        memory: { type: integer }
+        swap: { type: integer }
+        disk: { type: integer }
+        io: { type: integer }
+        cpu: { type: integer }
+        threads: { type: [string, 'null'] }
+        database_limit: { type: integer }
+        allocation_limit: { type: integer }
+        backup_limit: { type: integer }
+
+    Package:
+      type: object
+      properties:
+        id: { type: integer }
+        slug: { type: string }
+        name: { type: string }
+        description: { type: [string, 'null'] }
+        active: { type: boolean }
+        egg:
+          type: object
+          properties:
+            id: { type: integer }
+            name: { type: [string, 'null'] }
+            nest_id: { type: [integer, 'null'] }
+        image: { type: [string, 'null'] }
+        startup: { type: [string, 'null'] }
+        environment: { type: object, additionalProperties: { type: string } }
+        limits: { $ref: '#/components/schemas/Limits' }
+        feature_limits: { $ref: '#/components/schemas/FeatureLimits' }
+        deploy:
+          type: object
+          properties:
+            location_ids: { type: array, items: { type: integer } }
+            node_ids: { type: array, items: { type: integer } }
+            port_range: { type: array, items: { type: string } }
+            dedicated_ip: { type: boolean }
+            start_on_completion: { type: boolean }
+        metadata: { type: object }
+        sort: { type: integer }
+        servers_count: { type: [integer, 'null'] }
+
+    PackageInput:
+      type: object
+      properties:
+        slug: { type: string, pattern: '^[a-z0-9][a-z0-9\-_.]*$' }
+        name: { type: string }
+        description: { type: [string, 'null'] }
+        active: { type: boolean }
+        egg_id: { type: integer }
+        image: { type: [string, 'null'] }
+        startup: { type: [string, 'null'] }
+        environment: { type: object, additionalProperties: { type: string } }
+        memory: { type: integer }
+        swap: { type: integer }
+        disk: { type: integer }
+        io: { type: integer }
+        cpu: { type: integer }
+        threads: { type: [string, 'null'] }
+        oom_disabled: { type: boolean }
+        database_limit: { type: integer }
+        allocation_limit: { type: integer }
+        backup_limit: { type: integer }
+        location_ids: { type: array, items: { type: integer } }
+        node_ids: { type: array, items: { type: integer } }
+        port_range: { type: array, items: { type: string } }
+        dedicated_ip: { type: boolean }
+        start_on_completion: { type: boolean }
+        metadata: { type: object }
+        sort: { type: integer }
+
+    Availability:
+      type: object
+      properties:
+        package: { type: string }
+        active: { type: boolean }
+        available: { type: boolean }
+        reason: { type: [string, 'null'], enum: [no_node_with_capacity, no_free_allocation, null] }
+
+    ServerState:
+      type: string
+      enum: [active, installing, install_failed, reinstall_failed, suspended, restoring_backup]
+
+    UserSummary:
+      type: object
+      properties:
+        id: { type: integer }
+        uuid: { type: string, format: uuid }
+        external_id: { type: [string, 'null'] }
+        username: { type: string }
+        email: { type: string, format: email }
+
+    User:
+      allOf:
+        - $ref: '#/components/schemas/UserSummary'
+        - type: object
+          properties:
+            first_name: { type: string }
+            last_name: { type: string }
+            language: { type: [string, 'null'] }
+            admin: { type: boolean }
+            2fa: { type: boolean }
+            servers_count: { type: integer }
+            created_at: { type: string, format: date-time }
+
+    UserInput:
+      type: object
+      required: [email]
+      properties:
+        email: { type: string, format: email }
+        external_id: { type: [string, 'null'] }
+        username: { type: [string, 'null'] }
+        first_name: { type: [string, 'null'] }
+        last_name: { type: [string, 'null'] }
+        password: { type: [string, 'null'], minLength: 8 }
+        language: { type: [string, 'null'] }
+
+    UserUpsertResult:
+      allOf:
+        - $ref: '#/components/schemas/User'
+        - type: object
+          properties:
+            created: { type: boolean }
+
+    Server:
+      type: object
+      properties:
+        id: { type: integer }
+        uuid: { type: string, format: uuid }
+        identifier: { type: string }
+        external_id: { type: [string, 'null'] }
+        name: { type: string }
+        description: { type: [string, 'null'] }
+        state: { $ref: '#/components/schemas/ServerState' }
+        suspension:
+          type: [object, 'null']
+          properties:
+            reason: { type: [string, 'null'] }
+            payment_url: { type: [string, 'null'] }
+        package:
+          type: [object, 'null']
+          properties:
+            id: { type: integer }
+            slug: { type: string }
+            name: { type: string }
+        owner: { $ref: '#/components/schemas/UserSummary' }
+        node:
+          type: [object, 'null']
+          properties:
+            id: { type: integer }
+            name: { type: string }
+            location_id: { type: integer }
+        address:
+          type: [object, 'null']
+          properties:
+            ip: { type: string }
+            alias: { type: [string, 'null'] }
+            port: { type: integer }
+            display: { type: string }
+        limits: { $ref: '#/components/schemas/Limits' }
+        feature_limits: { $ref: '#/components/schemas/FeatureLimits' }
+        egg:
+          type: object
+          properties:
+            id: { type: integer }
+            name: { type: [string, 'null'] }
+        panel_url: { type: string, format: uri }
+        installed_at: { type: [string, 'null'], format: date-time }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    CreateServer:
+      type: object
+      required: [package, user]
+      properties:
+        package: { type: string, description: 'Slug or id' }
+        user:
+          oneOf:
+            - type: string
+              description: Reference to an existing user
+            - $ref: '#/components/schemas/UserInput'
+        external_id: { type: [string, 'null'], description: 'Order or service id, never creates a second server' }
+        name: { type: [string, 'null'] }
+        description: { type: [string, 'null'] }
+        environment: { type: object, additionalProperties: { type: string } }
+        overrides: { $ref: '#/components/schemas/LimitInput' }
+        start_on_completion: { type: boolean }
+        send_welcome_email: { type: boolean, default: true }
+        login_link: { type: boolean }
+        dry_run: { type: boolean }
+
+    CreateServerResult:
+      type: object
+      properties:
+        existing: { type: boolean }
+        server: { $ref: '#/components/schemas/Server' }
+        user:
+          allOf:
+            - $ref: '#/components/schemas/UserSummary'
+            - type: object
+              properties:
+                created: { type: boolean }
+        login_link: { $ref: '#/components/schemas/LoginLink' }
+
+    DryRunResult:
+      type: object
+      properties:
+        dry_run: { type: boolean, const: true }
+        package: { type: string }
+        available: { type: boolean }
+        reason: { type: [string, 'null'] }
+        user:
+          type: object
+          properties:
+            exists: { type: boolean }
+            email: { type: string }
+            username: { type: string }
+
+    LoginLink:
+      type: object
+      properties:
+        url: { type: string, format: uri }
+        expires_at: { type: string, format: date-time }
+
+    Resources:
+      type: object
+      properties:
+        state: { type: string, enum: [offline, starting, running, stopping] }
+        suspended: { type: boolean }
+        cpu: { type: number }
+        memory_bytes: { type: integer }
+        memory_limit_bytes: { type: integer }
+        disk_bytes: { type: integer }
+        network_rx_bytes: { type: integer }
+        network_tx_bytes: { type: integer }
+        uptime_ms: { type: integer }
+
+    Egg:
+      type: object
+      properties:
+        id: { type: integer }
+        nest:
+          type: object
+          properties:
+            id: { type: integer }
+            name: { type: string }
+        name: { type: string }
+        description: { type: [string, 'null'] }
+        docker_images: { type: object, additionalProperties: { type: string } }
+        startup: { type: string }
+        variables:
+          type: array
+          items:
+            type: object
+            properties:
+              env: { type: string }
+              name: { type: string }
+              default: { type: [string, 'null'] }
+              rules: { type: string }
+              user_editable: { type: boolean }
+
+    Node:
+      type: object
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        location_id: { type: integer }
+        fqdn: { type: string }
+        public: { type: boolean }
+        maintenance: { type: boolean }
+        servers_count: { type: integer }
+        memory:
+          type: object
+          properties:
+            total: { type: number }
+            used: { type: integer }
+        disk:
+          type: object
+          properties:
+            total: { type: number }
+            used: { type: integer }
+
+    WebhookEvent:
+      type: string
+      enum:
+        - server.created
+        - server.installed
+        - server.install_failed
+        - server.suspended
+        - server.unsuspended
+        - server.package_changed
+        - server.deleted
+        - user.created
+        - user.deleted
+        - ping
+
+    Webhook:
+      type: object
+      properties:
+        id: { type: integer }
+        url: { type: string, format: uri }
+        events: { type: array, items: { $ref: '#/components/schemas/WebhookEvent' } }
+        description: { type: [string, 'null'] }
+        active: { type: boolean }
+        failures: { type: integer }
+        last_delivery_at: { type: [string, 'null'], format: date-time }
+        created_at: { type: string, format: date-time }
+
+    WebhookInput:
+      type: object
+      properties:
+        url: { type: string, format: uri }
+        events: { type: array, items: { $ref: '#/components/schemas/WebhookEvent' }, description: 'Empty means every event' }
+        description: { type: [string, 'null'] }
+        active: { type: boolean }
+
+    WebhookPayload:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        event: { $ref: '#/components/schemas/WebhookEvent' }
+        created_at: { type: string, format: date-time }
+        data:
+          type: object
+          properties:
+            server: { $ref: '#/components/schemas/Server' }
+            user: { $ref: '#/components/schemas/User' }
+            message: { type: string }
+
+    Delivery:
+      type: object
+      properties:
+        id: { type: integer }
+        uuid: { type: string, format: uuid }
+        event: { $ref: '#/components/schemas/WebhookEvent' }
+        status: { type: [integer, 'null'] }
+        error: { type: [string, 'null'] }
+        attempts: { type: integer }
+        duration_ms: { type: [integer, 'null'] }
+        delivered_at: { type: [string, 'null'], format: date-time }
+        created_at: { type: string, format: date-time }
+        payload: { $ref: '#/components/schemas/WebhookPayload' }

@@ -7,6 +7,7 @@ everything can be addressed by the billing system's own ids, and signed webhooks
 - Base URL: `https://panel.example.com/api/raptor/v1`
 - Format: JSON in, JSON out, `snake_case`, times in ISO 8601
 - Stable: everything under `v1` stays compatible. New fields may be added, existing ones are not removed
+- OpenAPI 3.1: `GET /api/raptor/v1/openapi.json` (public) or [raptor-api.openapi.yaml](raptor-api.openapi.yaml). Import it into Postman or Insomnia, or generate a typed client with `openapi-generator`
 
 ## Contents
 

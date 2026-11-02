@@ -132,6 +132,15 @@ class RaptorApiTest extends ApplicationApiIntegrationTestCase
         $this->postJson($this->api('/servers/ext:o 7/suspend'), ['payment_url' => 'javascript:alert(1)'])->assertUnprocessable();
     }
 
+    public function testOpenApiDocumentIsPublic()
+    {
+        $this->flushHeaders();
+        $this->getJson('/api/raptor/v1/openapi.json')->assertOk()
+            ->assertJsonPath('openapi', '3.1.0')
+            ->assertJsonPath('servers.0.url', url('/api/raptor/v1'))
+            ->assertJsonPath('paths./servers.post.operationId', 'createServer');
+    }
+
     public function testDryRunCreatesNothing()
     {
         $this->postJson($this->api('/servers'), ['package' => 'proxy-1g', 'user' => ['email' => 'New@Example.com'], 'dry_run' => true])

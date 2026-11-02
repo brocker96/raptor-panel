@@ -8,7 +8,9 @@ use Raptor\Models\ApiKey;
 use Raptor\Models\Location;
 use Illuminate\Http\Request;
 use Raptor\Models\ServerPackage;
+use Symfony\Component\Yaml\Yaml;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Cache;
 use Raptor\Services\Acl\Api\AdminAcl;
 use Raptor\Services\RaptorApi\Presenter;
 
@@ -41,6 +43,18 @@ class MetaController extends RaptorController
             ],
             'packages' => ServerPackage::query()->where('active', true)->count(),
         ]);
+    }
+
+    /**
+     * The OpenAPI document, public so code generators and API tools can fetch it. The server
+     * URL points at this Panel.
+     */
+    public function openapi(): JsonResponse
+    {
+        $spec = Cache::remember('raptor:openapi:' . config('app.version'), now()->addDay(), fn () => Yaml::parseFile(base_path('docs/raptor-api.openapi.yaml')));
+        $spec['servers'] = [['url' => url('/api/raptor/v1')]];
+
+        return new JsonResponse($spec, 200, ['Access-Control-Allow-Origin' => '*']);
     }
 
     public function eggs(): JsonResponse

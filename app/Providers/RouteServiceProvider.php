@@ -13,6 +13,7 @@ use Raptor\Http\Middleware\AdminIpAllowlist;
 use Raptor\Http\Middleware\AdminAuthenticate;
 use Raptor\Http\Middleware\Api\Raptor\Idempotency;
 use Raptor\Http\Controllers\Auth\LoginLinkController;
+use Raptor\Http\Controllers\Api\Raptor\MetaController;
 use Raptor\Http\Middleware\RequireTwoFactorAuthentication;
 use Raptor\Http\Middleware\Api\Admin\RequireSessionAuthentication;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
@@ -53,6 +54,9 @@ class RouteServiceProvider extends ServiceProvider
                 // One time sign in links from the Raptor API, they also switch an open session.
                 Route::get('/auth/link/{token}', LoginLinkController::class)->middleware('throttle:30,1')->where('token', '[A-Za-z0-9]{64}');
             });
+
+            // Public, so API tools and code generators can read it without a key.
+            Route::get('/api/raptor/v1/openapi.json', [MetaController::class, 'openapi'])->middleware('throttle:60,1');
 
             Route::middleware(['api', RequireTwoFactorAuthentication::class])->group(function () {
                 Route::middleware(['application-api', 'throttle:api.application'])
