@@ -18,7 +18,7 @@ use Illuminate\Contracts\Encryption\Encrypter;
 class RaptorApiController extends AdminApiController
 {
     /** What a billing key may do: everything the Raptor API offers, nothing beyond it. */
-    private const BILLING_PERMISSIONS = [
+    public const BILLING_PERMISSIONS = [
         'r_servers' => AdminAcl::READ | AdminAcl::WRITE,
         'r_users' => AdminAcl::READ | AdminAcl::WRITE,
         'r_nodes' => AdminAcl::READ,
