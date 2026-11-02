@@ -22,6 +22,7 @@ use Raptor\Exceptions\Http\Server\ServerStateConflictException;
  * @property int $id
  * @property string|null $external_id
  * @property int|null $package_id
+ * @property ServerPackage|null $package
  * @property string|null $suspension_reason
  * @property string|null $suspension_url
  * @property string $uuid

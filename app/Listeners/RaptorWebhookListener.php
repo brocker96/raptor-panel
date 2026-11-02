@@ -24,11 +24,6 @@ class RaptorWebhookListener implements SubscribesToEvents
         $this->server('server.created', $event->server);
     }
 
-    public function installed(Events\Server\Installed $event): void
-    {
-        $this->server('server.installed', $event->server->refresh());
-    }
-
     public function updated(Events\Server\Updated $event): void
     {
         $server = $event->server;
@@ -36,7 +31,13 @@ class RaptorWebhookListener implements SubscribesToEvents
             $event = match ($server->status) {
                 Server::STATUS_SUSPENDED => 'server.suspended',
                 Server::STATUS_INSTALL_FAILED, Server::STATUS_REINSTALL_FAILED => 'server.install_failed',
-                default => $server->getOriginal('status') === Server::STATUS_SUSPENDED ? 'server.unsuspended' : null,
+                // Not the Installed event: that one is skipped when install e-mails are turned off.
+                null => match ($server->getOriginal('status')) {
+                    Server::STATUS_SUSPENDED => 'server.unsuspended',
+                    Server::STATUS_INSTALLING, Server::STATUS_INSTALL_FAILED, Server::STATUS_REINSTALL_FAILED => 'server.installed',
+                    default => null,
+                },
+                default => null,
             };
             if ($event) {
                 $this->server($event, $server);
@@ -73,7 +74,6 @@ class RaptorWebhookListener implements SubscribesToEvents
     public function subscribe(Dispatcher $events): void
     {
         $events->listen(Events\Server\Created::class, [self::class, 'created']);
-        $events->listen(Events\Server\Installed::class, [self::class, 'installed']);
         $events->listen(Events\Server\Updated::class, [self::class, 'updated']);
         $events->listen(Events\Server\Deleted::class, [self::class, 'deleted']);
         $events->listen(Events\User\Created::class, [self::class, 'userCreated']);

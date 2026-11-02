@@ -2,6 +2,8 @@
 
 namespace Raptor\Services\Eggs;
 
+use Raptor\Models\ServerPackage;
+use Raptor\Exceptions\DisplayException;
 use Raptor\Contracts\Repository\EggRepositoryInterface;
 use Raptor\Exceptions\Service\Egg\HasChildrenException;
 use Raptor\Exceptions\Service\HasActiveServersException;
@@ -34,6 +36,11 @@ class EggDeletionService
         $children = $this->repository->findCountWhere([['config_from', '=', $egg]]);
         if ($children > 0) {
             throw new HasChildrenException(trans('exceptions.nest.egg.has_children'));
+        }
+
+        $packages = ServerPackage::query()->where('egg_id', $egg)->pluck('name');
+        if ($packages->isNotEmpty()) {
+            throw new DisplayException(trans('This egg is used by the packages :packages. Change or delete them first.', ['packages' => $packages->implode(', ')]));
         }
 
         return $this->repository->delete($egg);

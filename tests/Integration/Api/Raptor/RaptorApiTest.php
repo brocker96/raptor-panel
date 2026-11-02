@@ -230,6 +230,21 @@ class RaptorApiTest extends ApplicationApiIntegrationTestCase
         $this->assertSame('t=1700000000,v1=' . hash_hmac('sha256', '1700000000.{}', 'k'), \Raptor\Services\RaptorApi\Webhooks::signature('k', '{}', 1700000000));
     }
 
+    public function testInstalledWebhookDoesNotDependOnInstallEmails()
+    {
+        Bus::fake([DeliverRaptorWebhook::class]);
+        config()->set('raptor.email.send_install_notification', false);
+        $this->postJson($this->api('/webhooks'), ['url' => 'https://billing.example/hook', 'events' => ['server.installed']])->assertCreated();
+
+        $user = User::factory()->create();
+        $this->postJson($this->api('/servers'), ['package' => 'proxy-1g', 'external_id' => 'o-5', 'user' => $user->email])->assertCreated();
+
+        // What the install callback of Wings does when the script finished.
+        Server::query()->where('external_id', 'o-5')->firstOrFail()->update(['status' => null]);
+
+        $this->assertSame(['server.installed'], RaptorWebhook::query()->first()->deliveries()->pluck('event')->all());
+    }
+
     public function testKeysNeedTheRightPermissions()
     {
         $this->createNewDefaultApiKey($this->getApiUser(), ['r_servers' => AdminAcl::READ, 'r_users' => AdminAcl::READ]);
