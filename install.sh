@@ -2,7 +2,7 @@
 #
 # Raptor Panel installer for a clean Ubuntu 24.04 LTS server.
 #
-#   bash <(curl -fsSL https://raw.githubusercontent.com/brocker96/raptor-panel/0.x_beta/install.sh)
+#   bash <(curl -fsSL https://raw.githubusercontent.com/brocker96/raptor-panel/main/install.sh)
 #
 # Installs and configures everything the Panel needs: PHP 8.3, MariaDB, Redis, nginx, Composer,
 # Node.js (only when building from source), the queue worker, the scheduler cron job and an
@@ -26,7 +26,7 @@
 #   RAPTOR_CLOUDFLARE      yes/no - the Panel domain is proxied by Cloudflare (orange cloud).
 #   RAPTOR_NODE_FQDN       Domain for Wings/SFTP/game connections. Behind Cloudflare this should be a
 #                          separate "DNS only" (grey cloud) record, e.g. node.example.com.
-#   RAPTOR_BRANCH          Git branch to install from (default: 0.x_beta).
+#   RAPTOR_BRANCH          Git branch to install from (default: main).
 #   RAPTOR_RELEASE         Install a pre-built release instead of building from git, e.g. "latest" or "v1.0.0".
 #   RAPTOR_DIR             Install directory (default: /var/www/raptor).
 #   RAPTOR_PORTS           Port range to create as allocations on the local node (default: 25565-25600).
@@ -35,7 +35,7 @@
 set -Eeuo pipefail
 
 REPO="brocker96/raptor-panel"
-BRANCH="${RAPTOR_BRANCH:-0.x_beta}"
+BRANCH="${RAPTOR_BRANCH:-main}"
 RELEASE="${RAPTOR_RELEASE:-}"
 DIR="${RAPTOR_DIR:-/var/www/raptor}"
 PHP_VERSION="8.3"

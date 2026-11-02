@@ -2,7 +2,7 @@
 #
 # Moves an existing Pterodactyl Panel to Raptor Panel without losing any data.
 #
-#   bash <(curl -fsSL https://raw.githubusercontent.com/brocker96/raptor-panel/0.x_beta/migrate.sh)
+#   bash <(curl -fsSL https://raw.githubusercontent.com/brocker96/raptor-panel/main/migrate.sh)
 #
 # Raptor Panel uses the same database schema, so the migration keeps the database, the .env file
 # (including APP_KEY, which every stored secret is encrypted with) and everything in it: users,
@@ -26,7 +26,7 @@
 # Variables:
 #   PTERODACTYL_DIR   Directory of the Pterodactyl Panel (default: /var/www/pterodactyl).
 #   RAPTOR_DIR        Directory Raptor Panel is installed to (default: /var/www/raptor).
-#   RAPTOR_BRANCH     Git branch to install from (default: 0.x_beta).
+#   RAPTOR_BRANCH     Git branch to install from (default: main).
 #   RAPTOR_RELEASE    Install a pre-built release instead, e.g. "latest" or "v1.0.0".
 #   RAPTOR_SOURCE     Copy Raptor Panel from this local directory instead of downloading it.
 #   RAPTOR_YES=1      Do not ask for confirmation.
@@ -34,7 +34,7 @@
 set -Eeuo pipefail
 
 REPO="brocker96/raptor-panel"
-BRANCH="${RAPTOR_BRANCH:-0.x_beta}"
+BRANCH="${RAPTOR_BRANCH:-main}"
 RELEASE="${RAPTOR_RELEASE:-}"
 OLD="${PTERODACTYL_DIR:-/var/www/pterodactyl}"
 DIR="${RAPTOR_DIR:-/var/www/raptor}"

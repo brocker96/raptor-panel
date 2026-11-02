@@ -2,7 +2,7 @@
 #
 # Raptor Wings installer for a clean node server (Ubuntu 22.04/24.04, Debian 11/12).
 #
-#   bash <(curl -fsSL https://raw.githubusercontent.com/brocker96/raptor-panel/0.x_beta/wings.sh)
+#   bash <(curl -fsSL https://raw.githubusercontent.com/brocker96/raptor-panel/main/wings.sh)
 #
 # Raptor Wings is the Pterodactyl® Wings daemon (MIT licensed, https://github.com/pterodactyl/wings)
 # installed, configured and managed the Raptor way: Docker, Wings, a Let's Encrypt certificate,
@@ -30,7 +30,7 @@
 set -Eeuo pipefail
 
 REPO="brocker96/raptor-panel"
-BRANCH="${RAPTOR_BRANCH:-0.x_beta}"
+BRANCH="${RAPTOR_BRANCH:-main}"
 LOG_FILE="/var/log/raptor-wings-install.log"
 CONFIG_DIR="/etc/pterodactyl"
 DATA_DIR="/var/lib/pterodactyl"

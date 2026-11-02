@@ -33,7 +33,7 @@ export default [
                     {
                         language: 'Shell',
                         content:
-                            'bash <(curl -fsSL https://raw.githubusercontent.com/brocker96/raptor-panel/0.x_beta/migrate.sh)',
+                            'bash <(curl -fsSL https://raw.githubusercontent.com/brocker96/raptor-panel/main/migrate.sh)',
                     },
                 ],
             },

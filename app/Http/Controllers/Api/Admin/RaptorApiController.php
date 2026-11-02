@@ -34,7 +34,7 @@ class RaptorApiController extends AdminApiController
 
         return new JsonResponse([
             'base_url' => url('/api/raptor/v1'),
-            'docs_url' => 'https://github.com/brocker96/raptor-panel/blob/0.x_beta/docs/raptor-api.md',
+            'docs_url' => 'https://github.com/brocker96/raptor-panel/blob/main/docs/raptor-api.md',
             'events' => RaptorWebhook::EVENTS,
             'packages' => ServerPackage::query()->count(),
             'webhooks' => RaptorWebhook::query()->count(),

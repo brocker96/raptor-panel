@@ -64,20 +64,20 @@
 **Install the Panel** (as root):
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/brocker96/raptor-panel/0.x_beta/install.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/brocker96/raptor-panel/main/install.sh)
 ```
 
 **Add a node** — copy the ready command from **Admin → Nodes → Configuration**, or:
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/brocker96/raptor-panel/0.x_beta/wings.sh) \
+bash <(curl -fsSL https://raw.githubusercontent.com/brocker96/raptor-panel/main/wings.sh) \
   --panel-url https://panel.example.com --token ptla_xxx --node 1 --fqdn node.example.com
 ```
 
 **Coming from Pterodactyl** — users, servers, nodes, eggs, API keys, schedules and backups stay, game servers keep running:
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/brocker96/raptor-panel/0.x_beta/migrate.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/brocker96/raptor-panel/main/migrate.sh)
 ```
 
 <details>
@@ -89,7 +89,7 @@ Wings on the same machine, registered as the first node with ready-to-use alloca
 get a swap file automatically for the front-end build. Credentials end up in `/root/raptor-credentials.txt`.
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/brocker96/raptor-panel/0.x_beta/install.sh -o install.sh
+curl -fsSL https://raw.githubusercontent.com/brocker96/raptor-panel/main/install.sh -o install.sh
 RAPTOR_FQDN=panel.example.com RAPTOR_EMAIL=me@example.com RAPTOR_WINGS=yes RAPTOR_YES=1 bash install.sh
 ```
 
@@ -252,16 +252,13 @@ The project aims to preserve the security principles of Pterodactyl while improv
 
 ## 🚧 Development Status
 
-> [!IMPORTANT]
-> **Raptor Panel is currently in early development.**
->
-> The project is based on Pterodactyl's `1.0-develop` branch.
->
-> Major changes, improvements, and new features are planned. The current codebase may still closely resemble the original Raptor Panel.
->
-> Raptor Panel is not yet recommended for production environments.
+| Branch | |
+| --- | --- |
+| `main` | **Stable.** Releases come from here, the install, Wings and migration scripts use it. |
+| `0.x_beta` | Development. New features land here first and are merged into `main` for a release. |
 
-Development is ongoing, and additional information will be added as the project evolves.
+Raptor Panel is based on Pterodactyl's `1.0-develop` branch and has moved far beyond it. Updates are installed
+from *Admin → Updates*: the **stable** channel offers releases from `main`, the **beta** channel also pre-releases.
 
 ## 🗺️ Roadmap
 

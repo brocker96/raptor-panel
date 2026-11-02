@@ -3,6 +3,20 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v1.0.0
+The first stable release. `main` is now the release branch, the install, Wings and migration scripts install from it.
+
+### Added
+* **Billing in the Panel**: suspending through the Raptor API takes a reason and a payment link, the owner sees a suspended screen with "Pay and reactivate" and a support link instead of a dead end. *Admin → Settings → Billing* adds a "Billing" entry to the account menu and a "Manage plan" button to every server.
+* Package changes can switch the game with `"reinstall": true`.
+* `POST /servers` with `"dry_run": true` checks package, capacity and user without creating anything.
+* OpenAPI 3.1 document at `/api/raptor/v1/openapi.json` and `docs/raptor-api.openapi.yaml`, ready for Postman or a generated client.
+
+### Fixed
+* The `server.installed` webhook did not fire when install e-mails were turned off.
+* Deleting an egg used by a package failed with a database error, it now names the packages to change first.
+* Saving a database host that cannot be reached times out instead of hanging.
+
 ## v0.7.0
 
 ### Added

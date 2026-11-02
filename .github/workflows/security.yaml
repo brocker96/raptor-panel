@@ -3,9 +3,11 @@ name: Security
 on:
   push:
     branches:
+      - "main"
       - "0.x_beta"
   pull_request:
     branches:
+      - "main"
       - "0.x_beta"
   schedule:
     # Every day, so a newly published advisory for a dependency shows up without a code change.

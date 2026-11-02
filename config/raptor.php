@@ -54,7 +54,7 @@ return [
     */
 
     // Branch of the repository the node installer (wings.sh) is downloaded from.
-    'installer_branch' => env('RAPTOR_INSTALLER_BRANCH', '0.x_beta'),
+    'installer_branch' => env('RAPTOR_INSTALLER_BRANCH', 'main'),
 
     'billing' => [
         // The client area of the billing system, shown as "Billing" in the account menu.
