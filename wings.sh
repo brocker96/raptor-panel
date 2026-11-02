@@ -278,7 +278,7 @@ if curl -fsSL -o /tmp/wings-checksums.txt "$URL/checksums.txt" 2>>"$LOG_FILE"; t
 fi
 install -m 755 /tmp/wings /usr/local/bin/wings
 rm -f /tmp/wings /tmp/wings-checksums.txt
-info "$(/usr/local/bin/wings --version 2>/dev/null | head -1)"
+info "$(/usr/local/bin/wings version 2>/dev/null | head -1 || true)"
 
 # ---------------------------------------------------------------------------------------------
 # Certificate
@@ -304,6 +304,31 @@ if yes_no "${RAPTOR_SSL:-no}"; then
     chmod +x /etc/letsencrypt/renewal-hooks/deploy/restart-wings.sh
 fi
 
+# Asks the Panel directly why the configuration could not be fetched and says what to fix.
+explain_configure_failure() {
+    local url="${RAPTOR_PANEL_URL%/}/api/application/nodes/${RAPTOR_NODE_ID}/configuration" code body
+    body="$(mktemp)"
+    code="$(curl -sS -o "$body" -w '%{http_code}' --max-time 20 ${RAPTOR_INSECURE:+-k} \
+        -H "Authorization: Bearer $RAPTOR_TOKEN" -H 'Accept: application/json' "$url" 2>>"$LOG_FILE" || true)"
+    warn "The Panel answered HTTP ${code:-000} for node #$RAPTOR_NODE_ID."
+    case "$code" in
+        000 | "") warn "The Panel is not reachable from this server: check DNS of ${RAPTOR_PANEL_URL}, the firewall and HTTPS." ;;
+        401) warn "The API key is wrong or was deleted. Create a new one in Admin → Nodes → node → Configuration (Generate token)." ;;
+        403)
+            if grep -qiE 'cloudflare|cf-ray|challenge' "$body"; then
+                warn "Cloudflare blocked the request (Bot Fight Mode or a challenge). Allow this server's IP ($PUBLIC_IP) in Cloudflare → Security → WAF, or turn Bot Fight Mode off."
+            else
+                warn "The API key may not read nodes. Use the token from the node's Configuration tab, or an application key with Nodes: read."
+            fi
+            ;;
+        404) warn "There is no node #$RAPTOR_NODE_ID. Check the ID in Admin → Nodes (it is in the address of the node page)." ;;
+        5*) warn "The Panel had an error, see storage/logs/laravel.log on the Panel server." ;;
+        200) warn "The Panel answered fine, so Wings itself failed. Its output:"; tail -n 8 "$LOG_FILE" | sed 's/^/        /' ;;
+    esac
+    rm -f "$body"
+    fail "Wings could not download its configuration. Fix the above and run the installer again, it is safe to repeat."
+}
+
 # ---------------------------------------------------------------------------------------------
 # Configuration from the Panel
 # ---------------------------------------------------------------------------------------------
@@ -313,7 +338,7 @@ if [[ -n "${RAPTOR_PANEL_URL:-}" ]]; then
     ARGS=(configure --panel-url "$RAPTOR_PANEL_URL" --token "$RAPTOR_TOKEN" --node "$RAPTOR_NODE_ID" --override)
     [[ "${RAPTOR_INSECURE:-}" == "1" ]] && ARGS+=(--allow-insecure)
     if ! (cd "$CONFIG_DIR" && /usr/local/bin/wings "${ARGS[@]}") >>"$LOG_FILE" 2>&1; then
-        fail "Wings could not download its configuration. Check the Panel URL, the API key and the node ID."
+        explain_configure_failure
     fi
     chmod 600 "$CONFIG_DIR/config.yml"
     info "Saved to $CONFIG_DIR/config.yml"
@@ -368,12 +393,12 @@ case "\${1:-status}" in
         arch=\$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/')
         curl -fsSL -o /tmp/wings "https://github.com/pterodactyl/wings/releases/latest/download/wings_linux_\$arch"
         install -m 755 /tmp/wings /usr/local/bin/wings && rm -f /tmp/wings
-        systemctl restart wings && wings --version
+        systemctl restart wings && wings version
         ;;
     doctor)
         echo "Service:  \$(systemctl is-active wings)"
         echo "Docker:   \$(systemctl is-active docker)"
-        echo "Version:  \$(wings --version 2>/dev/null | head -1)"
+        echo "Version:  \$(wings version 2>/dev/null | head -1)"
         echo "Config:   \$([[ -f /etc/pterodactyl/config.yml ]] && echo present || echo MISSING)"
         echo "Disk:     \$(df -h /var/lib/pterodactyl | awk 'NR==2 {print \$4 " free of " \$2}')"
         echo "Memory:   \$(free -h | awk '/Mem:/ {print \$7 " available of " \$2}')"
