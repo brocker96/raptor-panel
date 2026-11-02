@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
-import { ServerIcon } from '@heroicons/react/outline';
+import { CreditCardIcon, ServerIcon } from '@heroicons/react/outline';
+import { useStoreState } from '@/state/hooks';
 import DashboardContainer from '@/components/dashboard/DashboardContainer';
 import { NotFound } from '@/components/elements/ScreenBlock';
 import TransitionRouter from '@/TransitionRouter';
@@ -15,6 +16,7 @@ const accountPath = (path: string) => `/account/${path}`.replace(/\/+/g, '/').re
 export default () => {
     const location = useLocation();
     const inbox = useInbox();
+    const billingUrl = useStoreState((state) => state.settings.data?.billingUrl);
     const available = useMemo(() => routes.account.filter((route) => !route.feature || inbox.enabled), [inbox.enabled]);
 
     const nav = useMemo<NavEntry[]>(
@@ -30,8 +32,9 @@ export default () => {
                     badge: route.feature === 'support' ? inbox.tickets : undefined,
                     linkProps: preload(route),
                 })),
+            ...(billingUrl ? [{ to: billingUrl, label: t('Billing'), icon: CreditCardIcon, external: true }] : []),
         ],
-        [available, inbox.tickets]
+        [available, inbox.tickets, billingUrl]
     );
 
     const current = nav.find((entry) =>

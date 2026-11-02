@@ -76,6 +76,7 @@ class ServerController extends RaptorController
             'start_on_completion' => 'boolean',
             'send_welcome_email' => 'boolean',
             'login_link' => 'boolean',
+            'dry_run' => 'boolean',
         ]);
 
         if (!empty($data['external_id']) && ($existing = Server::query()->where('external_id', $data['external_id'])->first())) {
@@ -85,6 +86,13 @@ class ServerController extends RaptorController
         $package = Lookup::package((string) $data['package']);
         if (!$package->active) {
             throw new HttpException(422, "The package \"$package->slug\" is not active.");
+        }
+
+        // A dry run checks everything and answers what would happen, nothing is created.
+        if ($request->boolean('dry_run')) {
+            return new JsonResponse(['dry_run' => true, 'package' => $package->slug] + $this->deployer->availability($package) + [
+                'user' => $this->previewUser($request->input('user')),
+            ]);
         }
 
         [$user, $created] = $this->resolveUser($request->input('user'), $request->boolean('send_welcome_email', true));
@@ -131,11 +139,17 @@ class ServerController extends RaptorController
      */
     public function package(Request $request, string $server): JsonResponse
     {
-        $data = $request->validate(['package' => 'required', 'overrides' => 'nullable|array']);
+        $data = $request->validate([
+            'package' => 'required',
+            'overrides' => 'nullable|array',
+            'reinstall' => 'boolean',
+            'environment' => 'nullable|array',
+            'environment.*' => 'nullable|string|max:2000',
+        ]);
         $server = Lookup::server($server);
         $package = Lookup::package((string) $data['package']);
 
-        $this->deployer->change($server, $package, $data['overrides'] ?? []);
+        $this->deployer->change($server, $package, $data['overrides'] ?? [], $request->boolean('reinstall'), $data['environment'] ?? []);
         Activity::event('raptor:server.package')->subject($server)->property('package', $package->slug)->log();
 
         return $this->show((string) $server->id);
@@ -169,10 +183,17 @@ class ServerController extends RaptorController
         return $this->show((string) $server->id);
     }
 
-    public function suspend(string $server, SuspensionService $suspension): JsonResponse
+    /**
+     * The reason and payment link are shown to the owner on the suspended screen.
+     */
+    public function suspend(Request $request, string $server, SuspensionService $suspension): JsonResponse
     {
+        $data = $request->validate([
+            'reason' => 'nullable|string|max:500',
+            'payment_url' => 'nullable|url:http,https|max:2048',
+        ]);
         $server = Lookup::server($server);
-        $suspension->toggle($server, SuspensionService::ACTION_SUSPEND);
+        $suspension->toggle($server, SuspensionService::ACTION_SUSPEND, $data['reason'] ?? null, $data['payment_url'] ?? null);
 
         return $this->show((string) $server->id);
     }
@@ -238,6 +259,24 @@ class ServerController extends RaptorController
         Activity::event('raptor:server.delete')->property(['uuid' => $server->uuid, 'external_id' => $server->external_id])->log();
 
         return response('', 204);
+    }
+
+    /**
+     * Who would own the server: the existing user, or the one that would be created.
+     */
+    private function previewUser(mixed $user): array
+    {
+        if (is_string($user) || is_int($user)) {
+            return Presenter::userSummary(Lookup::user((string) $user)) + ['exists' => true];
+        }
+
+        validator(['user' => $user], ['user' => 'array', 'user.email' => 'required|email|max:191'])->validate();
+        $existing = !empty($user['external_id']) ? User::query()->where('external_id', $user['external_id'])->first() : null;
+        $existing ??= User::query()->where('email', mb_strtolower(trim($user['email'])))->first();
+
+        return $existing
+            ? Presenter::userSummary($existing) + ['exists' => true]
+            : ['email' => mb_strtolower(trim($user['email'])), 'username' => $user['username'] ?? $this->accounts->username($user['email']), 'exists' => false];
     }
 
     /**

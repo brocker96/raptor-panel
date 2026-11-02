@@ -188,6 +188,7 @@ location_ids, node_ids, port_range, dedicated_ip, start_on_completion, metadata,
   "name": "Minecraft 4 GB",
   "description": "",
   "state": "installing",
+  "suspension": null,
   "package": { "id": 3, "slug": "minecraft-4gb", "name": "Minecraft 4 GB" },
   "owner": { "id": 7, "uuid": "…", "external_id": "client-7", "username": "jane", "email": "jane@example.com" },
   "node": { "id": 2, "name": "de-fra-1", "location_id": 1 },
@@ -201,6 +202,8 @@ location_ids, node_ids, port_range, dedicated_ip, start_on_completion, metadata,
   "updated_at": "2026-10-29T12:00:00+00:00"
 }
 ```
+
+`suspension` is `null`, or `{ "reason": "...", "payment_url": "..." }` while suspended.
 
 `state` is one of `installing`, `install_failed`, `reinstall_failed`, `suspended`, `restoring_backup` or
 `active`. `address.display` can be shown to the customer as is.
@@ -218,6 +221,7 @@ location_ids, node_ids, port_range, dedicated_ip, start_on_completion, metadata,
 | `start_on_completion` | | Default from the package |
 | `send_welcome_email` | | `true` by default. A new user gets the Panel e-mail with a link to set a password |
 | `login_link` | | `true` adds a one time sign in link that opens the new server |
+| `dry_run` | | `true` checks everything (package, capacity, user) and creates nothing. Handy for a checkout page and for developing the module |
 
 The user object is matched by `external_id`, then by `email`, and created when nothing matches:
 
@@ -252,9 +256,9 @@ has finished installing it.
 | `GET` | `/servers/{server}` | | |
 | `GET` | `/servers/{server}/resources` | | Live usage from Wings |
 | `PATCH` | `/servers/{server}` | `name, description, external_id, owner` | `owner` takes any user reference |
-| `PUT` | `/servers/{server}/package` | `package, overrides?` | Upgrade or downgrade. Limits change, files and game stay |
+| `PUT` | `/servers/{server}/package` | `package, overrides?, reinstall?, environment?` | Upgrade or downgrade. Limits change, files stay. A package with another game needs `"reinstall": true`, then the game is switched and its install script runs |
 | `PATCH` | `/servers/{server}/limits` | any limit | Single changes, e.g. `{"memory": 6144}` for a RAM add-on |
-| `POST` | `/servers/{server}/suspend` | | Overdue invoice |
+| `POST` | `/servers/{server}/suspend` | `reason?, payment_url?` | Overdue invoice. The owner sees the reason and a "Pay and reactivate" button |
 | `POST` | `/servers/{server}/unsuspend` | | Paid |
 | `POST` | `/servers/{server}/reinstall` | | Runs the install script again |
 | `POST` | `/servers/{server}/power` | `signal: start, stop, restart, kill` | 204 |
@@ -491,8 +495,9 @@ The usual hooks of a billing system, each with the Raptor API call it needs:
 | --- | --- |
 | Test connection | `GET /` |
 | Product page | `GET /packages?active=1`, `GET /packages/{slug}/availability` |
+| Checkout validation | `POST /servers` with `"dry_run": true` |
 | Order paid / service created | `POST /servers` with `external_id = service id`, `Idempotency-Key = service id` |
-| Invoice overdue | `POST /servers/ext:{service}/suspend` |
+| Invoice overdue | `POST /servers/ext:{service}/suspend` with `reason` and `payment_url` of the invoice |
 | Invoice paid | `POST /servers/ext:{service}/unsuspend` |
 | Upgrade or downgrade | `PUT /servers/ext:{service}/package` |
 | Add-on bought | `PATCH /servers/ext:{service}/limits` |
@@ -545,6 +550,19 @@ $result = $raptor->call('POST', '/servers', [
 ---
 
 ## Configuration
+
+### Billing links in the Panel
+
+*Admin → Settings → General → Billing* (or `.env`) makes the shop part of the Panel for customers:
+
+| Setting | `.env` | |
+| --- | --- | --- |
+| Client area | `RAPTOR_BILLING_URL` | A "Billing" entry in the account menu |
+| Service page | `RAPTOR_BILLING_SERVER_URL` | The "Manage plan" button of every server and the button on the suspended screen. `{external_id}`, `{uuid}` and `{identifier}` are filled in, e.g. `https://billing.example.com/service/{external_id}` |
+
+A `payment_url` sent with `suspend` wins over the service page until the server is unsuspended.
+
+### API options
 
 `.env` options of the Raptor API:
 

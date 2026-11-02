@@ -76,6 +76,8 @@ class ServerTransformer extends BaseClientTransformer
             'status' => $server->status,
             // This field is deprecated, please use "status".
             'is_suspended' => $server->isSuspended(),
+            'suspension' => $server->isSuspended() ? ['reason' => $server->suspension_reason, 'url' => $server->suspension_url] : null,
+            'billing_url' => $server->billingUrl(),
             // This field is deprecated, please use "status".
             'is_installing' => !$server->isInstalled(),
             'is_transferring' => !is_null($server->transfer),

@@ -3,6 +3,7 @@ import { Link, NavLink, useLocation } from 'react-router-dom';
 import classNames from 'classnames';
 import {
     DotsHorizontalIcon,
+    ExternalLinkIcon,
     LogoutIcon,
     ServerIcon,
     ShieldCheckIcon,
@@ -25,6 +26,8 @@ export interface NavEntry {
     end?: boolean;
     /** Sidebar section the entry belongs to, a heading is rendered whenever the group changes. */
     group?: string;
+    /** Opens another site in a new tab, `to` is then a full URL. */
+    external?: boolean;
     /** Count shown next to the label, such as tickets waiting for an answer. */
     badge?: number;
     /** Props spread onto the link, used to preload the route when the user shows intent. */
@@ -61,6 +64,22 @@ const groupLabel = (group: string) => groupLabels[group]?.() ?? t(group);
 
 const NavItem = ({ entry, compact, onNavigate }: { entry: NavEntry; compact?: boolean; onNavigate?: () => void }) => {
     const Icon = entry.icon;
+
+    if (entry.external) {
+        return (
+            <a
+                href={entry.to}
+                target={'_blank'}
+                rel={'noopener noreferrer'}
+                onClick={onNavigate}
+                className={compact ? styles.tab : styles.nav_item}
+            >
+                {Icon && <Icon className={styles.nav_icon} aria-hidden />}
+                <span className={compact ? styles.tab_label : 'truncate flex-1'}>{entry.label}</span>
+                {!compact && <ExternalLinkIcon className={'w-3.5 h-3.5 text-gray-600'} aria-hidden />}
+            </a>
+        );
+    }
 
     return (
         <NavLink

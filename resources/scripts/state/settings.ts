@@ -9,6 +9,8 @@ export interface SiteSettings {
     passkeys?: boolean;
     /** Support tickets in the account area, RAPTOR_SUPPORT. */
     support?: boolean;
+    /** Client area of the billing system, RAPTOR_BILLING_URL or Admin → Settings. */
+    billingUrl?: string | null;
     recaptcha: {
         enabled: boolean;
         siteKey: string;

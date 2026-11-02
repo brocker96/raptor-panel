@@ -150,6 +150,8 @@ export interface PanelSettings {
         'raptor:auth:2fa_required': number;
         'raptor:support:enabled': 'true' | 'false';
         'raptor:support:mail': 'true' | 'false';
+        'raptor:billing:url': string;
+        'raptor:billing:server_url': string;
     };
     mail: {
         'mail:mailers:smtp:host': string;

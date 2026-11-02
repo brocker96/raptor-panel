@@ -25,6 +25,7 @@ class Presenter
             'name' => $server->name,
             'description' => $server->description,
             'state' => self::state($server),
+            'suspension' => $server->isSuspended() ? ['reason' => $server->suspension_reason, 'payment_url' => $server->suspension_url] : null,
             'package' => $server->package ? ['id' => $server->package->id, 'slug' => $server->package->slug, 'name' => $server->package->name] : null,
             'owner' => $server->user ? self::userSummary($server->user) : null,
             'node' => $server->node ? ['id' => $server->node->id, 'name' => $server->node->name, 'location_id' => $server->node->location_id] : null,

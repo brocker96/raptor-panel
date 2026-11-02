@@ -58,6 +58,10 @@ export interface Server {
         backups: number;
     };
     isTransferring: boolean;
+    /** Set while suspended: why, and where the owner can pay. */
+    suspension: { reason: string | null; url: string | null } | null;
+    /** The page of this server in the billing system, when the Panel has one configured. */
+    billingUrl: string | null;
     skipScripts: boolean;
     variables: ServerEggVariable[];
     allocations: Allocation[];
@@ -84,6 +88,8 @@ export const rawDataToServerObject = ({ attributes: data }: FractalResponseData)
     eggFeatures: data.egg_features || [],
     featureLimits: { ...data.feature_limits },
     isTransferring: data.is_transferring,
+    suspension: data.suspension || null,
+    billingUrl: data.billing_url || null,
     skipScripts: data.skip_scripts,
     variables: ((data.relationships?.variables as FractalResponseList | undefined)?.data || []).map(
         rawDataToServerEggVariable

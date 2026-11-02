@@ -22,6 +22,8 @@ use Raptor\Exceptions\Http\Server\ServerStateConflictException;
  * @property int $id
  * @property string|null $external_id
  * @property int|null $package_id
+ * @property string|null $suspension_reason
+ * @property string|null $suspension_url
  * @property string $uuid
  * @property string $uuidShort
  * @property int $node_id
@@ -227,6 +229,28 @@ class Server extends Model implements Identifiable
     public function lockForResourceCreation(): void
     {
         static::query()->whereKey($this->getKey())->lockForUpdate()->first();
+    }
+
+    /**
+     * The page of the billing system for this server: the payment link of the suspension, or
+     * the template from Admin → Settings with {external_id}, {uuid} and {identifier} filled in.
+     */
+    public function billingUrl(): ?string
+    {
+        if ($this->isSuspended() && $this->suspension_url) {
+            return $this->suspension_url;
+        }
+
+        $template = trim((string) config('raptor.billing.server_url'));
+        if ($template === '' || ($this->external_id === null && str_contains($template, '{external_id}'))) {
+            return null;
+        }
+
+        return strtr($template, [
+            '{external_id}' => rawurlencode((string) $this->external_id),
+            '{uuid}' => $this->uuid,
+            '{identifier}' => $this->uuidShort,
+        ]);
     }
 
     public function isSuspended(): bool

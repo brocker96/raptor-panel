@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import isEqual from 'react-fast-compare';
 import {
+    CreditCardIcon,
     CogIcon,
     ExternalLinkIcon,
     InformationCircleIcon,
@@ -16,7 +17,7 @@ import { usePermissions } from '@/plugins/usePermissions';
 import ServerContentBlock from '@/components/elements/ServerContentBlock';
 import CopyField from '@/components/ui/CopyField';
 import { Card } from '@/components/admin/ui/Card';
-import Button from '@/components/admin/ui/Button';
+import Button, { buttonClass } from '@/components/admin/ui/Button';
 import { Callout } from '@/components/admin/ui/Feedback';
 import { TextArea, TextInput } from '@/components/admin/ui/Form';
 import { Confirm } from '@/components/admin/ui/Overlay';
@@ -109,6 +110,7 @@ export default () => {
             limits: server.data!.limits,
             featureLimits: server.data!.featureLimits,
             skipScripts: server.data!.skipScripts,
+            billingUrl: server.data!.billingUrl,
         }),
         isEqual
     );
@@ -179,7 +181,23 @@ export default () => {
                     {canRename && <DetailsCard />}
                 </div>
                 <div className={'space-y-5'}>
-                    <Card title={t('Plan')} description={t('Resources of this server, set by your hosting provider.')}>
+                    <Card
+                        title={t('Plan')}
+                        description={t('Resources of this server, set by your hosting provider.')}
+                        actions={
+                            server.billingUrl && (
+                                <a
+                                    href={server.billingUrl}
+                                    target={'_blank'}
+                                    rel={'noopener noreferrer'}
+                                    className={buttonClass('secondary', 'sm')}
+                                >
+                                    <CreditCardIcon className={'w-3.5 h-3.5'} />
+                                    {t('Manage plan')}
+                                </a>
+                            )
+                        }
+                    >
                         <div className={'grid grid-cols-2 sm:grid-cols-3 gap-2'}>
                             <Limit
                                 label={t('Memory')}

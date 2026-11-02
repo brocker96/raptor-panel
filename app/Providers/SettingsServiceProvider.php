@@ -27,6 +27,8 @@ class SettingsServiceProvider extends ServiceProvider
         'raptor:console:count',
         'raptor:console:frequency',
         'raptor:auth:2fa_required',
+        'raptor:billing:url',
+        'raptor:billing:server_url',
         'raptor:support:enabled',
         'raptor:support:mail',
         'raptor:security:session_days',

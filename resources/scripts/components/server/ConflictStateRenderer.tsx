@@ -4,6 +4,7 @@ import ScreenBlock from '@/components/elements/ScreenBlock';
 import ServerInstallSvg from '@/assets/images/server_installing.svg';
 import ServerErrorSvg from '@/assets/images/server_error.svg';
 import ServerRestoreSvg from '@/assets/images/server_restore.svg';
+import SuspendedScreen from '@/components/server/SuspendedScreen';
 import { t } from '@/i18n';
 
 export default () => {
@@ -20,11 +21,7 @@ export default () => {
             message={t('Your server should be ready soon, please try again in a few minutes.')}
         />
     ) : status === 'suspended' ? (
-        <ScreenBlock
-            title={t('Server Suspended')}
-            image={ServerErrorSvg}
-            message={t('This server is suspended and cannot be accessed.')}
-        />
+        <SuspendedScreen />
     ) : isNodeUnderMaintenance ? (
         <ScreenBlock
             title={t('Node under Maintenance')}

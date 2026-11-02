@@ -25,7 +25,7 @@ class SuspensionService
      *
      * @throws \Throwable
      */
-    public function toggle(Server $server, string $action = self::ACTION_SUSPEND): void
+    public function toggle(Server $server, string $action = self::ACTION_SUSPEND, ?string $reason = null, ?string $url = null): void
     {
         Assert::oneOf($action, [self::ACTION_SUSPEND, self::ACTION_UNSUSPEND]);
 
@@ -34,6 +34,11 @@ class SuspensionService
         // suspended in the database. Additionally, nothing needs to happen if the server
         // is not suspended, and we try to un-suspend the instance.
         if ($isSuspending === $server->isSuspended()) {
+            // Suspending again only updates what the owner is told.
+            if ($isSuspending && ($reason !== null || $url !== null)) {
+                $server->update(['suspension_reason' => $reason, 'suspension_url' => $url]);
+            }
+
             return;
         }
 
@@ -45,6 +50,8 @@ class SuspensionService
         // Update the server's suspension status.
         $server->update([
             'status' => $isSuspending ? Server::STATUS_SUSPENDED : null,
+            'suspension_reason' => $isSuspending ? $reason : null,
+            'suspension_url' => $isSuspending ? $url : null,
         ]);
 
         try {

@@ -2792,5 +2792,16 @@
     "Signed with HMAC-SHA256 and retried for about six hours.": "Підписані HMAC-SHA256, повторюються близько шести годин.",
     "Add webhook": "Додати вебхук",
     "No webhooks": "Вебхуків немає",
-    "Your billing system learns about installs, suspensions and deletions as they happen.": "Білінг дізнається про встановлення, призупинення та видалення одразу, як вони стаються."
+    "Your billing system learns about installs, suspensions and deletions as they happen.": "Білінг дізнається про встановлення, призупинення та видалення одразу, як вони стаються.",
+    "Manage plan": "Керувати тарифом",
+    "{{name}} is paused, its files are safe and nothing has been deleted.": "{{name}} на паузі: файли в безпеці, нічого не видалено.",
+    "Reason": "Причина",
+    "Pay and reactivate": "Оплатити й відновити",
+    "Open billing": "Відкрити білінг",
+    "Contact support": "Написати в підтримку",
+    "The server starts working again a few moments after the payment arrives.": "Сервер знову запрацює за кілька миттєвостей після надходження оплати.",
+    "Client area": "Особистий кабінет",
+    "Shown as \"Billing\" in the account menu. Empty hides it.": "Показується як «Білінг» у меню акаунта. Порожньо — приховано.",
+    "Service page": "Сторінка послуги",
+    "The \"Manage plan\" button of a server and the suspended screen. {external_id}, {uuid} and {identifier} are filled in.": "Кнопка «Керувати тарифом» у сервера та екран призупинення. Підставляються {external_id}, {uuid} і {identifier}."
 }

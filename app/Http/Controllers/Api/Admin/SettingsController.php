@@ -48,6 +48,8 @@ class SettingsController extends AdminApiController
                 'raptor:auth:2fa_required' => (int) config('raptor.auth.2fa_required'),
                 'raptor:support:enabled' => filter_var(config('raptor.support.enabled'), FILTER_VALIDATE_BOOLEAN) ? 'true' : 'false',
                 'raptor:support:mail' => filter_var(config('raptor.support.mail'), FILTER_VALIDATE_BOOLEAN) ? 'true' : 'false',
+                'raptor:billing:url' => config('raptor.billing.url') ?: '',
+                'raptor:billing:server_url' => config('raptor.billing.server_url') ?: '',
             ],
             'mail' => [
                 'mail:mailers:smtp:host' => config('mail.mailers.smtp.host'),

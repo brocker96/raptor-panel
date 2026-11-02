@@ -3,6 +3,7 @@ import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import {
     AdjustmentsIcon,
     ChatAlt2Icon,
+    CreditCardIcon,
     ClockIcon,
     CloudIcon,
     CogIcon,
@@ -74,12 +75,15 @@ const General = ({ settings }: { settings: PanelSettings }) => {
 
     // The Support entries in the navigation follow the switch without reloading the page.
     const submit = () =>
-        save
-            .run(values)
-            .then(
-                (saved) =>
-                    saved !== undefined && setSite({ ...site, support: values['raptor:support:enabled'] === 'true' })
-            );
+        save.run(values).then(
+            (saved) =>
+                saved !== undefined &&
+                setSite({
+                    ...site,
+                    support: values['raptor:support:enabled'] === 'true',
+                    billingUrl: values['raptor:billing:url'] || null,
+                })
+        );
 
     return (
         <Card
@@ -126,6 +130,31 @@ const General = ({ settings }: { settings: PanelSettings }) => {
                     <p className={'mt-2 text-xs text-gray-500'}>
                         {t('Affected users must set up 2FA before they can continue using the Panel.')}
                     </p>
+                </div>
+                <div className={'space-y-3'}>
+                    <p className={'flex items-center gap-2 text-xs font-medium text-gray-300'}>
+                        <CreditCardIcon className={'w-4 h-4 text-raptor-400'} /> {t('Billing')}
+                    </p>
+                    <FormGrid>
+                        <TextInput
+                            label={t('Client area')}
+                            value={values['raptor:billing:url'] || ''}
+                            onChange={set('raptor:billing:url')}
+                            error={save.errors['raptor:billing:url']}
+                            placeholder={'https://billing.example.com/clientarea'}
+                            description={t('Shown as "Billing" in the account menu. Empty hides it.')}
+                        />
+                        <TextInput
+                            label={t('Service page')}
+                            value={values['raptor:billing:server_url'] || ''}
+                            onChange={set('raptor:billing:server_url')}
+                            error={save.errors['raptor:billing:server_url']}
+                            placeholder={'https://billing.example.com/service/{external_id}'}
+                            description={t(
+                                'The "Manage plan" button of a server and the suspended screen. {external_id}, {uuid} and {identifier} are filled in.'
+                            )}
+                        />
+                    </FormGrid>
                 </div>
                 <div className={'space-y-2'}>
                     <p className={'flex items-center gap-2 text-xs font-medium text-gray-300'}>

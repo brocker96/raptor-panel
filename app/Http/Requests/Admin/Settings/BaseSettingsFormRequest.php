@@ -18,6 +18,8 @@ class BaseSettingsFormRequest extends AdminFormRequest
             // Optional so the classic settings page, which has no such fields, keeps working.
             'raptor:support:enabled' => 'sometimes|in:true,false',
             'raptor:support:mail' => 'sometimes|in:true,false',
+            'raptor:billing:url' => 'sometimes|nullable|string|max:500|starts_with:https://,http://',
+            'raptor:billing:server_url' => 'sometimes|nullable|string|max:500|starts_with:https://,http://',
             'app:locale' => ['required', 'string', Rule::in(array_keys($this->getAvailableLanguages()))],
         ];
     }

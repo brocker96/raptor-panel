@@ -10,8 +10,11 @@ use Illuminate\Support\Arr;
 use Raptor\Models\ServerPackage;
 use Raptor\Models\Objects\DeploymentObject;
 use Raptor\Services\Servers\ServerCreationService;
+use Raptor\Services\Servers\ReinstallServerService;
 use Raptor\Services\Servers\BuildModificationService;
 use Raptor\Services\Deployment\FindViableNodesService;
+use Raptor\Services\Servers\StartupModificationService;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Raptor\Services\Deployment\AllocationSelectionService;
 use Raptor\Exceptions\Service\Deployment\NoViableNodeException;
 use Raptor\Exceptions\Service\Deployment\NoViableAllocationException;
@@ -27,6 +30,8 @@ class PackageDeployer
     public function __construct(
         private ServerCreationService $creation,
         private BuildModificationService $build,
+        private StartupModificationService $startup,
+        private ReinstallServerService $reinstall,
         private FindViableNodesService $nodes,
         private AllocationSelectionService $allocations,
     ) {
@@ -71,12 +76,33 @@ class PackageDeployer
      *
      * @throws \Throwable
      */
-    public function change(Server $server, ServerPackage $package, array $overrides = []): Server
+    public function change(Server $server, ServerPackage $package, array $overrides = [], bool $reinstall = false, array $environment = []): Server
     {
+        // Another game needs a reinstall, which is only done when asked for explicitly.
+        if ($package->egg_id !== $server->egg_id) {
+            if (!$reinstall) {
+                throw new HttpException(422, 'This package runs another game. Send "reinstall": true to switch, the install script of the new game will run on the server.');
+            }
+
+            $egg = Egg::query()->with('variables')->findOrFail($package->egg_id);
+            $this->startup->setUserLevel(User::USER_LEVEL_ADMIN)->handle($server, [
+                'egg_id' => $egg->id,
+                'docker_image' => $package->image ?: (array_values($egg->docker_images ?? [])[0] ?? $server->image),
+                'startup' => $package->startup ?: $egg->startup,
+                'environment' => $this->environment($egg, $package, $environment),
+                'skip_scripts' => false,
+            ]);
+            $server->refresh();
+        }
+
         $limits = array_merge($package->limits(), Arr::only($overrides, self::OVERRIDABLE));
 
         $server = $this->build->handle($server, $limits + ['allocation_id' => $server->allocation_id]);
         $server->forceFill(['package_id' => $package->id])->save();
+
+        if ($reinstall) {
+            $this->reinstall->handle($server);
+        }
 
         return $server;
     }

@@ -56,6 +56,13 @@ return [
     // Branch of the repository the node installer (wings.sh) is downloaded from.
     'installer_branch' => env('RAPTOR_INSTALLER_BRANCH', '0.x_beta'),
 
+    'billing' => [
+        // The client area of the billing system, shown as "Billing" in the account menu.
+        'url' => env('RAPTOR_BILLING_URL'),
+        // The page of one service. {external_id}, {uuid} and {identifier} are filled in.
+        'server_url' => env('RAPTOR_BILLING_SERVER_URL'),
+    ],
+
     'raptor_api' => [
         // Minutes a sign in link from POST /users/{user}/login-link stays valid. Links work once.
         'login_link_minutes' => (int) env('RAPTOR_API_LOGIN_LINK_MINUTES', 5),

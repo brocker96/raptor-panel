@@ -113,6 +113,49 @@ class RaptorApiTest extends ApplicationApiIntegrationTestCase
         $this->getJson($this->api('/servers/ext:o-1'))->assertNotFound();
     }
 
+    public function testSuspensionCarriesAReasonAndPaymentLink()
+    {
+        config()->set('raptor.billing.server_url', 'https://billing.example/service/{external_id}');
+        $user = User::factory()->create();
+        $this->postJson($this->api('/servers'), ['package' => 'proxy-1g', 'external_id' => 'o 7', 'user' => $user->email])->assertCreated();
+
+        $this->postJson($this->api('/servers/ext:o 7/suspend'), ['reason' => 'Invoice #55 is overdue', 'payment_url' => 'https://billing.example/pay/55'])
+            ->assertOk()->assertJsonPath('suspension.reason', 'Invoice #55 is overdue')->assertJsonPath('suspension.payment_url', 'https://billing.example/pay/55');
+
+        $server = Server::query()->where('external_id', 'o 7')->firstOrFail();
+        $this->assertSame('https://billing.example/pay/55', $server->billingUrl());
+
+        $this->postJson($this->api('/servers/ext:o 7/unsuspend'))->assertOk()->assertJsonPath('suspension', null);
+        $this->assertSame('https://billing.example/service/o%207', $server->refresh()->billingUrl());
+
+        // Last: the error handler rolls back open transactions, the test's own included.
+        $this->postJson($this->api('/servers/ext:o 7/suspend'), ['payment_url' => 'javascript:alert(1)'])->assertUnprocessable();
+    }
+
+    public function testDryRunCreatesNothing()
+    {
+        $this->postJson($this->api('/servers'), ['package' => 'proxy-1g', 'user' => ['email' => 'New@Example.com'], 'dry_run' => true])
+            ->assertOk()->assertJsonPath('dry_run', true)->assertJsonPath('available', true)
+            ->assertJsonPath('user.exists', false)->assertJsonPath('user.email', 'new@example.com');
+
+        $this->assertSame(0, Server::query()->count());
+        $this->assertFalse(User::query()->where('email', 'new@example.com')->exists());
+    }
+
+    public function testSwitchingToAnotherGameNeedsAReinstall()
+    {
+        $user = User::factory()->create();
+        $this->postJson($this->api('/servers'), ['package' => 'proxy-1g', 'external_id' => 'o-3', 'user' => $user->email])->assertCreated();
+        $other = Egg::query()->where('id', '!=', $this->package->egg_id)->whereHas('variables')->firstOrFail();
+        ServerPackage::query()->create(['slug' => 'other-game', 'name' => 'Other', 'egg_id' => $other->id, 'memory' => 1024, 'disk' => 1024]);
+
+        $this->putJson($this->api('/servers/ext:o-3/package'), ['package' => 'other-game', 'reinstall' => true])->assertOk()
+            ->assertJsonPath('egg.id', $other->id)->assertJsonPath('package.slug', 'other-game');
+
+        // Last: the error handler rolls back open transactions, the test's own included.
+        $this->putJson($this->api('/servers/ext:o-3/package'), ['package' => 'proxy-1g'])->assertUnprocessable();
+    }
+
     public function testIdempotencyKeyReplaysTheFirstAnswer()
     {
         $headers = ['Idempotency-Key' => 'abc-1'];

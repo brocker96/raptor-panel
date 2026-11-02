@@ -18,6 +18,7 @@ class AssetComposer
             'websocketKeepalive' => filter_var(config('raptor.cloudflare.websocket_keepalive', true), FILTER_VALIDATE_BOOLEAN),
             'passkeys' => filter_var(config('raptor.security.passkeys', true), FILTER_VALIDATE_BOOLEAN),
             'support' => filter_var(config('raptor.support.enabled'), FILTER_VALIDATE_BOOLEAN),
+            'billingUrl' => config('raptor.billing.url') ?: null,
             'recaptcha' => [
                 'enabled' => config('recaptcha.enabled', false),
                 'siteKey' => config('recaptcha.website_key') ?? '',
