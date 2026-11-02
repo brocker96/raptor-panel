@@ -311,6 +311,9 @@ explain_configure_failure() {
     code="$(curl -sS -o "$body" -w '%{http_code}' --max-time 20 ${RAPTOR_INSECURE:+-k} \
         -H "Authorization: Bearer $RAPTOR_TOKEN" -H 'Accept: application/json' "$url" 2>>"$LOG_FILE" || true)"
     warn "The Panel answered HTTP ${code:-000} for node #$RAPTOR_NODE_ID."
+    local detail
+    detail="$(grep -o '"detail":"[^"]*"' "$body" 2>/dev/null | head -1 | cut -d'"' -f4 || true)"
+    [[ -n "$detail" ]] && warn "Panel says: $detail"
     case "$code" in
         000 | "") warn "The Panel is not reachable from this server: check DNS of ${RAPTOR_PANEL_URL}, the firewall and HTTPS." ;;
         401) warn "The API key is wrong or was deleted. Create a new one in Admin → Nodes → node → Configuration (Generate token)." ;;
@@ -318,7 +321,8 @@ explain_configure_failure() {
             if grep -qiE 'cloudflare|cf-ray|challenge' "$body"; then
                 warn "Cloudflare blocked the request (Bot Fight Mode or a challenge). Allow this server's IP ($PUBLIC_IP) in Cloudflare → Security → WAF, or turn Bot Fight Mode off."
             else
-                warn "The API key may not read nodes. Use the token from the node's Configuration tab, or an application key with Nodes: read."
+                warn "This API key may not hand out node configurations: that needs Nodes read AND write, and a root admin owner."
+                warn "Billing keys only read nodes. Open Admin → Nodes → node → Configuration → Generate token and run the command shown there."
             fi
             ;;
         404) warn "There is no node #$RAPTOR_NODE_ID. Check the ID in Admin → Nodes (it is in the address of the node page)." ;;
