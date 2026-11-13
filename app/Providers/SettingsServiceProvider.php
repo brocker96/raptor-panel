@@ -84,8 +84,14 @@ class SettingsServiceProvider extends ServiceProvider
     /**
      * Boot the service provider.
      */
-    public function boot(ConfigRepository $config, Encrypter $encrypter, Log $log, SettingsRepositoryInterface $settings): void
+    public function boot(ConfigRepository $config, Log $log, SettingsRepositoryInterface $settings): void
     {
+        // A fresh install has no APP_KEY yet: nothing stored can be decrypted, and asking for the
+        // encrypter here would break "php artisan key:generate", the command that creates the key.
+        if (empty($config->get('app.key'))) {
+            return;
+        }
+
         try {
             $values = $settings->all()->mapWithKeys(function ($setting) {
                 return [$setting->key => $setting->value];
@@ -113,7 +119,7 @@ class SettingsServiceProvider extends ServiceProvider
             $value = array_get($values, 'settings::' . $key, $config->get(str_replace(':', '.', $key)));
             if (in_array($key, self::$encrypted)) {
                 try {
-                    $value = $encrypter->decrypt($value);
+                    $value = $this->app->make(Encrypter::class)->decrypt($value);
                 } catch (DecryptException $exception) {
                 }
             }

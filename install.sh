@@ -125,7 +125,12 @@ case "$(uname -m)" in
 esac
 
 if [[ -e "$DIR/.env" ]]; then
-    fail "$DIR already contains a Panel installation. Update it from the admin area (Updates) or with 'php artisan raptor:update'."
+    if grep -qE '^APP_KEY=.+' "$DIR/.env"; then
+        fail "$DIR already contains a Panel installation. Update it from the admin area (Updates) or with 'php artisan raptor:update'."
+    fi
+    # No app key means the earlier run stopped before the Panel was set up: start it over.
+    warn "$DIR holds an unfinished installation (no APP_KEY yet), it is replaced."
+    rm -rf "${DIR:?}"
 fi
 
 if [[ -f /var/www/pterodactyl/artisan && -f /var/www/pterodactyl/.env ]]; then
